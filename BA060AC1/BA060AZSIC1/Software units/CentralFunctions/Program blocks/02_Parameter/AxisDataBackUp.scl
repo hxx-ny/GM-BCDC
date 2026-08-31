@@ -1,0 +1,421 @@
+﻿FUNCTION "AxisDataBackUp" : Void
+{ S7_Optimized_Access := 'TRUE' ; Published := 'FALSE' }
+VERSION : 0.1
+
+BEGIN
+	REGION BackUp Update
+	
+	    IF "AxisConfigBackUp_DB".ManualSave THEN
+	        //Distance
+	        "AxisDataBackUp_DB"."emDistance[1]" := Unit1.EmNodes.emDistance[1];
+	        "AxisDataBackUp_DB"."emDistance[2]" := Unit1.EmNodes.emDistance[2];
+	        
+	        //DR01 ALL NO USE
+	        IF "AxisDataBackUp_DB".DR1."configuration.setPositions" <> Unit1.Em2.HmiInterface.cmJROutPnPLeftAxisX.configuration.setPositions THEN
+	            "AxisDataBackUp_DB".DR1."configuration.setPositions" := Unit1.Em2.HmiInterface.cmJROutPnPLeftAxisX.configuration.setPositions;
+	        END_IF;
+	//        IF "AxisDataBackUp_DB".DR1.softcam <> Unit1.Em2.HmiInterface.cm.softcam.jrOutPnPLeftAxisX THEN
+	//            "AxisDataBackUp_DB".DR1.softcam := Unit1.Em2.HmiInterface.cm.softcam.jrOutPnPLeftAxisX;
+	//        END_IF;
+	        IF "AxisConfigBackUp_DB".DR1.cmJROutPnPLeftPositionX <> Unit1.Em2.Config.cmJROutPnPLeftAxisX.setPositions THEN
+	            "AxisConfigBackUp_DB".DR1.cmJROutPnPLeftPositionX := Unit1.Em2.Config.cmJROutPnPLeftAxisX.setPositions;
+	        END_IF;
+	        
+	        
+	        //DR02
+	        IF "AxisDataBackUp_DB".DR2."configuration.setPositions" <> Unit1.Em2.HmiInterface.cmJROutPnPLeftAxisZ.configuration.setPositions THEN
+	            "AxisDataBackUp_DB".DR2."configuration.setPositions" := Unit1.Em2.HmiInterface.cmJROutPnPLeftAxisZ.configuration.setPositions;
+	        END_IF;
+	//        IF "AxisDataBackUp_DB".DR2.softcam <> Unit1.Em2.HmiInterface.cm.softcam.jrOutPnPLeftAxisZ THEN
+	//            "AxisDataBackUp_DB".DR2.softcam := Unit1.Em2.HmiInterface.cm.softcam.jrOutPnPLeftAxisZ;
+	//        END_IF;
+	        IF "AxisConfigBackUp_DB".DR2.cmJROutPnPLeftPositionZ <> Unit1.Em2.Config.cmJROutPnPLeftAxisZ.setPositions THEN
+	            "AxisConfigBackUp_DB".DR2.cmJROutPnPLeftPositionZ := Unit1.Em2.Config.cmJROutPnPLeftAxisZ.setPositions;
+	        END_IF;
+	        
+	        
+	        //DR03
+	        IF "AxisDataBackUp_DB".DR3."configuration.setPositions" <> Unit1.Em2.HmiInterface.cmJROutPnPRightAxisX.configuration.setPositions THEN
+	            "AxisDataBackUp_DB".DR3."configuration.setPositions" := Unit1.Em2.HmiInterface.cmJROutPnPRightAxisX.configuration.setPositions;
+	        END_IF;
+	//        IF "AxisDataBackUp_DB".DR3.softcam <> Unit1.Em2.HmiInterface.cm.softcam.jrOutPnPRightAxisX THEN
+	//            "AxisDataBackUp_DB".DR3.softcam := Unit1.Em2.HmiInterface.cm.softcam.jrOutPnPRightAxisX;
+	//        END_IF;
+	        IF "AxisConfigBackUp_DB".DR3.cmJROutPnPRightPositionX <> Unit1.Em2.Config.cmJROutPnPRightAxisX.setPositions THEN
+	            "AxisConfigBackUp_DB".DR3.cmJROutPnPRightPositionX := Unit1.Em2.Config.cmJROutPnPRightAxisX.setPositions;
+	        END_IF;
+	        
+	        //DR04
+	        IF "AxisDataBackUp_DB".DR4."configuration.setPositions" <> Unit1.Em2.HmiInterface.cmJROutPnPRightAxisZ.configuration.setPositions THEN
+	            "AxisDataBackUp_DB".DR4."configuration.setPositions" := Unit1.Em2.HmiInterface.cmJROutPnPRightAxisZ.configuration.setPositions;
+	        END_IF;
+	//        IF "AxisDataBackUp_DB".DR4.softcam <> Unit1.Em2.HmiInterface.cm.softcam.jrOutPnPRightAxisZ THEN
+	//            "AxisDataBackUp_DB".DR4.softcam := Unit1.Em2.HmiInterface.cm.softcam.jrOutPnPRightAxisZ;
+	//        END_IF;
+	        IF "AxisConfigBackUp_DB".DR4.cmJROutPnPRightPositionZ <> Unit1.Em2.Config.cmJROutPnPRightAxisZ.setPositions THEN
+	            "AxisConfigBackUp_DB".DR4.cmJROutPnPRightPositionZ := Unit1.Em2.Config.cmJROutPnPRightAxisZ.setPositions;
+	        END_IF;
+	        
+	        //DR05
+	        IF "AxisDataBackUp_DB".DR5."configuration.setPositions" <> Unit1.Em3.HmiInterface.cmTopTapeAxisX.configuration.setPositions THEN
+	            "AxisDataBackUp_DB".DR5."configuration.setPositions" := Unit1.Em3.HmiInterface.cmTopTapeAxisX.configuration.setPositions;
+	        END_IF;
+	//        IF "AxisDataBackUp_DB".DR5.softcam <> Unit1.Em3.HmiInterface.cm.softcam.topTapeAxisX THEN
+	//            "AxisDataBackUp_DB".DR5.softcam := Unit1.Em3.HmiInterface.cm.softcam.topTapeAxisX;
+	//        END_IF;
+	        IF "AxisConfigBackUp_DB".DR5.cmTopTapingX <> Unit1.Em3.Config.cmTopTapeAxisX.setPositions THEN
+	            "AxisConfigBackUp_DB".DR5.cmTopTapingX := Unit1.Em3.Config.cmTopTapeAxisX.setPositions;
+	        END_IF;
+	        
+	        //DR06
+	        IF "AxisDataBackUp_DB".DR6."configuration.setPositions" <> Unit1.Em3.HmiInterface.cmTopTapeAxisY.configuration.setPositions THEN
+	            "AxisDataBackUp_DB".DR6."configuration.setPositions" := Unit1.Em3.HmiInterface.cmTopTapeAxisY.configuration.setPositions;
+	        END_IF;
+	//        IF "AxisDataBackUp_DB".DR6.softcam <> Unit1.Em3.HmiInterface.cm.softcam.topTapeAxisY THEN
+	//            "AxisDataBackUp_DB".DR6.softcam := Unit1.Em3.HmiInterface.cm.softcam.topTapeAxisY;
+	//        END_IF;
+	        IF "AxisConfigBackUp_DB".DR6.cmTopTapingY <> Unit1.Em3.Config.cmTopTapeAxisY.setPositions THEN
+	            "AxisConfigBackUp_DB".DR6.cmTopTapingY := Unit1.Em3.Config.cmTopTapeAxisY.setPositions;
+	        END_IF;
+	        
+	        //DR07
+	        IF "AxisDataBackUp_DB".DR7."configuration.setPositions" <> Unit1.Em4.HmiInterface.cmSideTapeFixStageAxisX.configuration.setPositions THEN
+	            "AxisDataBackUp_DB".DR7."configuration.setPositions" := Unit1.Em4.HmiInterface.cmSideTapeFixStageAxisX.configuration.setPositions;
+	        END_IF;
+	//        IF "AxisDataBackUp_DB".DR7.softcam <> Unit1.Em4.HmiInterface.cm.softcam.sideTapeFixStageAxisX THEN
+	//            "AxisDataBackUp_DB".DR7.softcam := Unit1.Em4.HmiInterface.cm.softcam.sideTapeFixStageAxisX;
+	//        END_IF;
+	        IF "AxisConfigBackUp_DB".DR7.cmJrFixStageX <> Unit1.Em4.Config.cmSideTapeFixStageAxisX.setPositions THEN
+	            "AxisConfigBackUp_DB".DR7.cmJrFixStageX := Unit1.Em4.Config.cmSideTapeFixStageAxisX.setPositions;
+	        END_IF;
+	        
+	        //DR08
+	        IF "AxisDataBackUp_DB".DR8."configuration.setPositions" <> Unit1.Em4.HmiInterface.cmSideTapeFixStageAxisC.configuration.setPositions THEN
+	            "AxisDataBackUp_DB".DR8."configuration.setPositions" := Unit1.Em4.HmiInterface.cmSideTapeFixStageAxisC.configuration.setPositions;
+	        END_IF;
+	//        IF "AxisDataBackUp_DB".DR8.softcam <> Unit1.Em4.HmiInterface.cm.softcam.sideTapeFixStageAxisC THEN
+	//            "AxisDataBackUp_DB".DR8.softcam := Unit1.Em4.HmiInterface.cm.softcam.sideTapeFixStageAxisC;
+	//        END_IF;
+	        IF "AxisConfigBackUp_DB".DR8.cmJrFixStageC <> Unit1.Em4.Config.cmSideTapeFixStageAxisC.setPositions THEN
+	            "AxisConfigBackUp_DB".DR8.cmJrFixStageC := Unit1.Em4.Config.cmSideTapeFixStageAxisC.setPositions;
+	        END_IF;
+	        
+	        //DR09
+	        IF "AxisDataBackUp_DB".DR9."configuration.setPositions" <> Unit1.Em4.HmiInterface.cmSideTapeAttachmentAxisX.configuration.setPositions THEN
+	            "AxisDataBackUp_DB".DR9."configuration.setPositions" := Unit1.Em4.HmiInterface.cmSideTapeAttachmentAxisX.configuration.setPositions;
+	        END_IF;
+	//        IF "AxisDataBackUp_DB".DR9.softcam <> Unit1.Em4.HmiInterface.cm.softcam.sideTapeAttachmentAxisX THEN
+	//            "AxisDataBackUp_DB".DR9.softcam := Unit1.Em4.HmiInterface.cm.softcam.sideTapeAttachmentAxisX;
+	//        END_IF;
+	        IF "AxisConfigBackUp_DB".DR9.cmSideTapingX <> Unit1.Em4.Config.cmSideTapeAttachmentAxisX.setPositions THEN
+	            "AxisConfigBackUp_DB".DR9.cmSideTapingX := Unit1.Em4.Config.cmSideTapeAttachmentAxisX.setPositions;
+	        END_IF;
+	        
+	        //DR10
+	        IF "AxisDataBackUp_DB".DR10."configuration.setPositions" <> Unit1.Em4.HmiInterface.cmSideTapeAttachmentAxisY.configuration.setPositions THEN
+	            "AxisDataBackUp_DB".DR10."configuration.setPositions" := Unit1.Em4.HmiInterface.cmSideTapeAttachmentAxisY.configuration.setPositions;
+	        END_IF;
+	//        IF "AxisDataBackUp_DB".DR10.softcam <> Unit1.Em4.HmiInterface.cm.softcam.sideTapeAttachmentAxisY THEN
+	//            "AxisDataBackUp_DB".DR10.softcam := Unit1.Em4.HmiInterface.cm.softcam.sideTapeAttachmentAxisY;
+	//        END_IF;
+	        IF "AxisConfigBackUp_DB".DR10.cmSideTapingY <> Unit1.Em4.Config.cmSideTapeAttachmentAxisY.setPositions THEN
+	            "AxisConfigBackUp_DB".DR10.cmSideTapingY := Unit1.Em4.Config.cmSideTapeAttachmentAxisY.setPositions;
+	        END_IF;
+	        
+	        //DR11
+	        IF "AxisDataBackUp_DB".DR11."configuration.setPositions" <> Unit1.Em8.HmiInterface.cmThicknessAxisZ.configuration.setPositions THEN
+	            "AxisDataBackUp_DB".DR11."configuration.setPositions" := Unit1.Em8.HmiInterface.cmThicknessAxisZ.configuration.setPositions;
+	        END_IF;
+	//        IF "AxisDataBackUp_DB".DR11.softcam <> Unit1.Em8.HmiInterface.cm.softcam.thicknessAxisZ THEN
+	//            "AxisDataBackUp_DB".DR11.softcam := Unit1.Em8.HmiInterface.cm.softcam.thicknessAxisZ;
+	//        END_IF;
+	        IF "AxisConfigBackUp_DB".DR11.cmHipotThicknessZ <> Unit1.Em8.Config.cmThicknessAxisZ.setPositions THEN
+	            "AxisConfigBackUp_DB".DR11.cmHipotThicknessZ := Unit1.Em8.Config.cmThicknessAxisZ.setPositions;
+	        END_IF;
+	        
+	        //DR12
+	        IF "AxisDataBackUp_DB".DR12."configuration.setPositions" <> Unit1.Em5.HmiInterface.cmTransferPnPLeftAxisX.configuration.setPositions THEN
+	            "AxisDataBackUp_DB".DR12."configuration.setPositions" := Unit1.Em5.HmiInterface.cmTransferPnPLeftAxisX.configuration.setPositions;
+	        END_IF;
+	//        IF "AxisDataBackUp_DB".DR12.softcam <> Unit1.Em5.HmiInterface.cm.softcam.transferPnPLeftAxisX THEN
+	//            "AxisDataBackUp_DB".DR12.softcam := Unit1.Em5.HmiInterface.cm.softcam.transferPnPLeftAxisX;
+	//        END_IF;
+	        IF "AxisConfigBackUp_DB".DR12.cmTransferPPLeftX <> Unit1.Em5.Config.cmTransferPnPLeftAxisX.setPositions THEN
+	            "AxisConfigBackUp_DB".DR12.cmTransferPPLeftX := Unit1.Em5.Config.cmTransferPnPLeftAxisX.setPositions;
+	        END_IF;
+	        
+	        //DR13
+	        IF "AxisDataBackUp_DB".DR13."configuration.setPositions" <> Unit1.Em5.HmiInterface.cmTransferPnPLeftAxisY.configuration.setPositions THEN
+	            "AxisDataBackUp_DB".DR13."configuration.setPositions" := Unit1.Em5.HmiInterface.cmTransferPnPLeftAxisY.configuration.setPositions;
+	        END_IF;
+	//        IF "AxisDataBackUp_DB".DR13.softcam <> Unit1.Em5.HmiInterface.cm.softcam.transferPnPLeftAxisY THEN
+	//            "AxisDataBackUp_DB".DR13.softcam := Unit1.Em5.HmiInterface.cm.softcam.transferPnPLeftAxisY;
+	//        END_IF;
+	        IF "AxisConfigBackUp_DB".DR13.cmTransferPPLeftY <> Unit1.Em5.Config.cmTransferPnPLeftAxisY.setPositions THEN
+	            "AxisConfigBackUp_DB".DR13.cmTransferPPLeftY := Unit1.Em5.Config.cmTransferPnPLeftAxisY.setPositions;
+	        END_IF;
+	        
+	        //DR14
+	        IF "AxisDataBackUp_DB".DR14."configuration.setPositions" <> Unit1.Em5.HmiInterface.cmTransferPnPLeftAxisZ.configuration.setPositions THEN
+	            "AxisDataBackUp_DB".DR14."configuration.setPositions" := Unit1.Em5.HmiInterface.cmTransferPnPLeftAxisZ.configuration.setPositions;
+	        END_IF;
+	//        IF "AxisDataBackUp_DB".DR14.softcam <> Unit1.Em5.HmiInterface.cm.softcam.transferPnPLeftAxisZ THEN
+	//            "AxisDataBackUp_DB".DR14.softcam := Unit1.Em5.HmiInterface.cm.softcam.transferPnPLeftAxisZ;
+	//        END_IF;
+	        IF "AxisConfigBackUp_DB".DR14.cmTransferPPLeftZ <> Unit1.Em5.Config.cmTransferPnPLeftAxisZ.setPositions THEN
+	            "AxisConfigBackUp_DB".DR14.cmTransferPPLeftZ := Unit1.Em5.Config.cmTransferPnPLeftAxisZ.setPositions;
+	        END_IF;
+	        
+	        //DR15
+	        IF "AxisDataBackUp_DB".DR15."configuration.setPositions" <> Unit1.Em5.HmiInterface.cmTransferPnPRightAxisX.configuration.setPositions THEN
+	            "AxisDataBackUp_DB".DR15."configuration.setPositions" := Unit1.Em5.HmiInterface.cmTransferPnPRightAxisX.configuration.setPositions;
+	        END_IF;
+	//        IF "AxisDataBackUp_DB".DR15.softcam <> Unit1.Em5.HmiInterface.cm.softcam.transferPnPRightAxisX THEN
+	//            "AxisDataBackUp_DB".DR15.softcam := Unit1.Em5.HmiInterface.cm.softcam.transferPnPRightAxisX;
+	//        END_IF;
+	        IF "AxisConfigBackUp_DB".DR15.cmTransferPPRightX <> Unit1.Em5.Config.cmTransferPnPRightAxisX.setPositions THEN
+	            "AxisConfigBackUp_DB".DR15.cmTransferPPRightX := Unit1.Em5.Config.cmTransferPnPRightAxisX.setPositions;
+	        END_IF;
+	        
+	        //DR16
+	        IF "AxisDataBackUp_DB".DR16."configuration.setPositions" <> Unit1.Em5.HmiInterface.cmTransferPnPRightAxisY.configuration.setPositions THEN
+	            "AxisDataBackUp_DB".DR16."configuration.setPositions" := Unit1.Em5.HmiInterface.cmTransferPnPRightAxisY.configuration.setPositions;
+	        END_IF;
+	//        IF "AxisDataBackUp_DB".DR16.softcam <> Unit1.Em5.HmiInterface.cm.softcam.transferPnPRightAxisY THEN
+	//            "AxisDataBackUp_DB".DR16.softcam := Unit1.Em5.HmiInterface.cm.softcam.transferPnPRightAxisY;
+	//        END_IF;
+	        IF "AxisConfigBackUp_DB".DR16.cmTransferPPRightY <> Unit1.Em5.Config.cmTransferPnPRightAxisY.setPositions THEN
+	            "AxisConfigBackUp_DB".DR16.cmTransferPPRightY := Unit1.Em5.Config.cmTransferPnPRightAxisY.setPositions;
+	        END_IF;
+	        
+	        //DR17
+	        IF "AxisDataBackUp_DB".DR17."configuration.setPositions" <> Unit1.Em5.HmiInterface.cmTransferPnPRightAxisZ.configuration.setPositions THEN
+	            "AxisDataBackUp_DB".DR17."configuration.setPositions" := Unit1.Em5.HmiInterface.cmTransferPnPRightAxisZ.configuration.setPositions;
+	        END_IF;
+	//        IF "AxisDataBackUp_DB".DR17.softcam <> Unit1.Em5.HmiInterface.cm.softcam.transferPnPRightAxisZ THEN
+	//            "AxisDataBackUp_DB".DR17.softcam := Unit1.Em5.HmiInterface.cm.softcam.transferPnPRightAxisZ;
+	//        END_IF;
+	        IF "AxisConfigBackUp_DB".DR17.cmTransferPPRightZ <> Unit1.Em5.Config.cmTransferPnPRightAxisZ.setPositions THEN
+	            "AxisConfigBackUp_DB".DR17.cmTransferPPRightZ := Unit1.Em5.Config.cmTransferPnPRightAxisZ.setPositions;
+	        END_IF;
+	        
+	        //DR18
+	        IF "AxisDataBackUp_DB".DR18."configuration.setPositions" <> Unit1.Em13.HmiInterface.cmJRUnloadingPnPAxisX.configuration.setPositions THEN
+	            "AxisDataBackUp_DB".DR18."configuration.setPositions" := Unit1.Em13.HmiInterface.cmJRUnloadingPnPAxisX.configuration.setPositions;
+	        END_IF;
+	//        IF "AxisDataBackUp_DB".DR18.softcam <> Unit1.Em13.HmiInterface.cm.softcam.jrUnloadingPnPAxisX THEN
+	//            "AxisDataBackUp_DB".DR18.softcam := Unit1.Em13.HmiInterface.cm.softcam.jrUnloadingPnPAxisX;
+	//        END_IF;
+	        IF "AxisConfigBackUp_DB".DR18.cmJrUnloadingX <> Unit1.Em13.Config.cmJRUnloadingPnPAxisX.setPositions THEN
+	            "AxisConfigBackUp_DB".DR18.cmJrUnloadingX := Unit1.Em13.Config.cmJRUnloadingPnPAxisX.setPositions;
+	        END_IF;
+	        
+	        //DR19
+	        IF "AxisDataBackUp_DB".DR19."configuration.setPositions" <> Unit1.Em13.HmiInterface.cmJRUnloadingPnPAxisZ.configuration.setPositions THEN
+	            "AxisDataBackUp_DB".DR19."configuration.setPositions" := Unit1.Em13.HmiInterface.cmJRUnloadingPnPAxisZ.configuration.setPositions;
+	        END_IF;
+	//        IF "AxisDataBackUp_DB".DR19.softcam <> Unit1.Em13.HmiInterface.cm.softcam.jrUnloadingPnPAxisZ THEN
+	//            "AxisDataBackUp_DB".DR19.softcam := Unit1.Em13.HmiInterface.cm.softcam.jrUnloadingPnPAxisZ;
+	//        END_IF;
+	        IF "AxisConfigBackUp_DB".DR19.cmJrUnloadingZ <> Unit1.Em13.Config.cmJRUnloadingPnPAxisZ.setPositions THEN
+	            "AxisConfigBackUp_DB".DR19.cmJrUnloadingZ := Unit1.Em13.Config.cmJRUnloadingPnPAxisZ.setPositions;
+	        END_IF;
+	        
+	        //DR20
+	        IF "AxisDataBackUp_DB".DR20."configuration.setPositions" <> Unit1.Em13.HmiInterface.cmJRUnloadingPnPAxisC.configuration.setPositions THEN
+	            "AxisDataBackUp_DB".DR20."configuration.setPositions" := Unit1.Em13.HmiInterface.cmJRUnloadingPnPAxisC.configuration.setPositions;
+	        END_IF;
+	//        IF "AxisDataBackUp_DB".DR20.softcam <> _.Unit1.Em13.HmiInterface.cm.softcam.jrUnloadingPnPAxisC THEN
+	//            "AxisDataBackUp_DB".DR20.softcam := _.Unit1.Em13.HmiInterface.cm.softcam.jrUnloadingPnPAxisC;
+	//        END_IF;
+	        IF "AxisConfigBackUp_DB".DR20.cmJrUnloadingC <> Unit1.Em13.Config.cmJRUnloadingPnPAxisC.setPositions THEN
+	            "AxisConfigBackUp_DB".DR20.cmJrUnloadingC := Unit1.Em13.Config.cmJRUnloadingPnPAxisC.setPositions;
+	        END_IF;
+	        
+	    END_IF;
+	END_REGION
+	
+	REGION Apply BackUp Data -> Process Data
+	    
+	    //DR01
+	    IF "AxisDataBackUp_DB".saveBit[1] THEN
+	        Unit1.Em2.HmiInterface.cmJROutPnPLeftAxisX.configuration.setPositions := "AxisDataBackUp_DB".DR1."configuration.setPositions";
+	//        Unit1.Em2.HmiInterface.cm.softcam.jrOutPnPLeftAxisX := "AxisDataBackUp_DB".DR1.softcam;
+	//"HMI_Interface_Parameter".Softcam[1].position := "AxisDataBackUp_DB".DR1.softcam.position;
+	        Unit1.Em2.Config.cmJROutPnPLeftAxisX.setPositions := "AxisConfigBackUp_DB".DR1.cmJROutPnPLeftPositionX;
+	    END_IF;
+	    
+	    //DR02
+	    IF "AxisDataBackUp_DB".saveBit[2] THEN
+	        Unit1.Em2.HmiInterface.cmJROutPnPLeftAxisZ.configuration.setPositions := "AxisDataBackUp_DB".DR2."configuration.setPositions";
+	//        Unit1.Em2.HmiInterface.cm.softcam.jrOutPnPLeftAxisZ := "AxisDataBackUp_DB".DR2.softcam;
+	//"HMI_Interface_Parameter".Softcam[2].position := "AxisDataBackUp_DB".DR2.softcam.position;
+	        Unit1.Em2.Config.cmJROutPnPLeftAxisZ.setPositions := "AxisConfigBackUp_DB".DR2.cmJROutPnPLeftPositionZ;
+	    END_IF;
+	    
+	    
+	    //DR03
+	    IF "AxisDataBackUp_DB".saveBit[3] THEN
+	        Unit1.Em2.HmiInterface.cmJROutPnPRightAxisX.configuration.setPositions := "AxisDataBackUp_DB".DR3."configuration.setPositions";
+	//        Unit1.Em2.HmiInterface.cm.softcam.jrOutPnPRightAxisX := "AxisDataBackUp_DB".DR3.softcam;
+	//"HMI_Interface_Parameter".Softcam[3].position := "AxisDataBackUp_DB".DR3.softcam.position;
+	        Unit1.Em2.Config.cmJROutPnPRightAxisX.setPositions := "AxisConfigBackUp_DB".DR3.cmJROutPnPRightPositionX;
+	    END_IF;
+	    
+	    
+	    //DR04
+	    IF "AxisDataBackUp_DB".saveBit[4] THEN
+	        Unit1.Em2.HmiInterface.cmJROutPnPRightAxisZ.configuration.setPositions := "AxisDataBackUp_DB".DR4."configuration.setPositions";
+	//        Unit1.Em2.HmiInterface.cm.softcam.jrOutPnPRightAxisZ := "AxisDataBackUp_DB".DR4.softcam;
+	//"HMI_Interface_Parameter".Softcam[4].position := "AxisDataBackUp_DB".DR4.softcam.position;
+	        Unit1.Em2.Config.cmJROutPnPRightAxisZ.setPositions := "AxisConfigBackUp_DB".DR4.cmJROutPnPRightPositionZ;
+	    END_IF;
+	    
+	    
+	    //DR05
+	    IF "AxisDataBackUp_DB".saveBit[5] THEN
+	        Unit1.Em3.HmiInterface.cmTopTapeAxisX.configuration.setPositions := "AxisDataBackUp_DB".DR5."configuration.setPositions";
+	//        Unit1.Em3.HmiInterface.cm.softcam.topTapeAxisX := "AxisDataBackUp_DB".DR5.softcam;
+	//"HMI_Interface_Parameter".Softcam[5].position := "AxisDataBackUp_DB".DR5.softcam.position;
+	        Unit1.Em3.Config.cmTopTapeAxisX.setPositions := "AxisConfigBackUp_DB".DR5.cmTopTapingX;
+	    END_IF;
+	    
+	    
+	    //DR06
+	    IF "AxisDataBackUp_DB".saveBit[6] THEN
+	        Unit1.Em3.HmiInterface.cmTopTapeAxisY.configuration.setPositions := "AxisDataBackUp_DB".DR6."configuration.setPositions";
+	//        Unit1.Em3.HmiInterface.cm.softcam.topTapeAxisY := "AxisDataBackUp_DB".DR6.softcam;
+	//"HMI_Interface_Parameter".Softcam[6].position := "AxisDataBackUp_DB".DR6.softcam.position;
+	        Unit1.Em3.Config.cmTopTapeAxisY.setPositions :="AxisConfigBackUp_DB".DR6.cmTopTapingY;
+	    END_IF;
+	    
+	    
+	    //DR07
+	    IF "AxisDataBackUp_DB".saveBit[7] THEN
+	        Unit1.Em4.HmiInterface.cmSideTapeFixStageAxisX.configuration.setPositions := "AxisDataBackUp_DB".DR7."configuration.setPositions";
+	//        Unit1.Em4.HmiInterface.cm.softcam.sideTapeFixStageAxisX := "AxisDataBackUp_DB".DR7.softcam;
+	//"HMI_Interface_Parameter".Softcam[7].position := "AxisDataBackUp_DB".DR7.softcam.position;
+	        Unit1.Em4.Config.cmSideTapeFixStageAxisX.setPositions := "AxisConfigBackUp_DB".DR7.cmJrFixStageX;
+	    END_IF;
+	    
+	    
+	    //DR08
+	    IF "AxisDataBackUp_DB".saveBit[8] THEN
+	        Unit1.Em4.HmiInterface.cmSideTapeFixStageAxisC.configuration.setPositions := "AxisDataBackUp_DB".DR8."configuration.setPositions";
+	//        Unit1.Em4.HmiInterface.cm.softcam.sideTapeFixStageAxisC := "AxisDataBackUp_DB".DR8.softcam;
+	//"HMI_Interface_Parameter".Softcam[8].position := "AxisDataBackUp_DB".DR8.softcam.position;
+	        Unit1.Em4.Config.cmSideTapeFixStageAxisC.setPositions := "AxisConfigBackUp_DB".DR8.cmJrFixStageC;
+	    END_IF;
+	    
+	    
+	    //DR09
+	    IF "AxisDataBackUp_DB".saveBit[9] THEN
+	        Unit1.Em4.HmiInterface.cmSideTapeAttachmentAxisX.configuration.setPositions := "AxisDataBackUp_DB".DR9."configuration.setPositions";
+	//        Unit1.Em4.HmiInterface.cm.softcam.sideTapeAttachmentAxisX := "AxisDataBackUp_DB".DR9.softcam;
+	//"HMI_Interface_Parameter".Softcam[9].position := "AxisDataBackUp_DB".DR9.softcam.position;
+	        Unit1.Em4.Config.cmSideTapeAttachmentAxisX.setPositions := "AxisConfigBackUp_DB".DR9.cmSideTapingX;
+	    END_IF;
+	    
+	    
+	    //DR10
+	    IF "AxisDataBackUp_DB".saveBit[10] THEN
+	        Unit1.Em4.HmiInterface.cmSideTapeAttachmentAxisY.configuration.setPositions := "AxisDataBackUp_DB".DR10."configuration.setPositions";
+	//        Unit1.Em4.HmiInterface.cm.softcam.sideTapeAttachmentAxisY := "AxisDataBackUp_DB".DR10.softcam;
+	//"HMI_Interface_Parameter".Softcam[10].position := "AxisDataBackUp_DB".DR10.softcam.position;
+	        Unit1.Em4.Config.cmSideTapeAttachmentAxisY.setPositions := "AxisConfigBackUp_DB".DR10.cmSideTapingY;
+	    END_IF;
+	    
+	    
+	    //DR11
+	    IF "AxisDataBackUp_DB".saveBit[11] THEN
+	        Unit1.Em8.HmiInterface.cmThicknessAxisZ.configuration.setPositions := "AxisDataBackUp_DB".DR11."configuration.setPositions";
+	//        Unit1.Em8.HmiInterface.cm.softcam.thicknessAxisZ := "AxisDataBackUp_DB".DR11.softcam;
+	//"HMI_Interface_Parameter".Softcam[11].position := "AxisDataBackUp_DB".DR11.softcam.position;
+	        Unit1.Em8.Config.cmThicknessAxisZ.setPositions := "AxisConfigBackUp_DB".DR11.cmHipotThicknessZ;
+	    END_IF;
+	    
+	    
+	    //DR12
+	    IF "AxisDataBackUp_DB".saveBit[12] THEN
+	        Unit1.Em5.HmiInterface.cmTransferPnPLeftAxisX.configuration.setPositions := "AxisDataBackUp_DB".DR12."configuration.setPositions";
+	//        Unit1.Em5.HmiInterface.cm.softcam.transferPnPLeftAxisX := "AxisDataBackUp_DB".DR12.softcam;
+	//"HMI_Interface_Parameter".Softcam[12].position := "AxisDataBackUp_DB".DR12.softcam.position;
+	        Unit1.Em5.Config.cmTransferPnPLeftAxisX.setPositions := "AxisConfigBackUp_DB".DR12.cmTransferPPLeftX;
+	    END_IF;
+	    
+	    
+	    //DR13
+	    IF "AxisDataBackUp_DB".saveBit[13] THEN
+	        Unit1.Em5.HmiInterface.cmTransferPnPLeftAxisY.configuration.setPositions := "AxisDataBackUp_DB".DR13."configuration.setPositions";
+	//        Unit1.Em5.HmiInterface.cm.softcam.transferPnPLeftAxisY := "AxisDataBackUp_DB".DR13.softcam;
+	//"HMI_Interface_Parameter".Softcam[13].position := "AxisDataBackUp_DB".DR13.softcam.position;
+	        Unit1.Em5.Config.cmTransferPnPLeftAxisY.setPositions := "AxisConfigBackUp_DB".DR13.cmTransferPPLeftY;
+	    END_IF;
+	    
+	    
+	    //DR14
+	    IF "AxisDataBackUp_DB".saveBit[14] THEN
+	        Unit1.Em5.HmiInterface.cmTransferPnPLeftAxisZ.configuration.setPositions := "AxisDataBackUp_DB".DR14."configuration.setPositions";
+	//        Unit1.Em5.HmiInterface.cm.softcam.transferPnPLeftAxisZ := "AxisDataBackUp_DB".DR14.softcam;
+	//"HMI_Interface_Parameter".Softcam[14].position := "AxisDataBackUp_DB".DR14.softcam.position;
+	        Unit1.Em5.Config.cmTransferPnPLeftAxisZ.setPositions := "AxisConfigBackUp_DB".DR14.cmTransferPPLeftZ;
+	    END_IF;
+	    
+	    
+	    //DR15
+	    IF "AxisDataBackUp_DB".saveBit[15] THEN
+	        Unit1.Em5.HmiInterface.cmTransferPnPRightAxisX.configuration.setPositions := "AxisDataBackUp_DB".DR15."configuration.setPositions";
+	//        Unit1.Em5.HmiInterface.cm.softcam.transferPnPRightAxisX := "AxisDataBackUp_DB".DR15.softcam;
+	//"HMI_Interface_Parameter".Softcam[15].position := "AxisDataBackUp_DB".DR15.softcam.position;
+	        Unit1.Em5.Config.cmTransferPnPRightAxisX.setPositions := "AxisConfigBackUp_DB".DR15.cmTransferPPRightX;
+	    END_IF;
+	    
+	    
+	    //DR16
+	    IF "AxisDataBackUp_DB".saveBit[16] THEN
+	        Unit1.Em5.HmiInterface.cmTransferPnPRightAxisY.configuration.setPositions := "AxisDataBackUp_DB".DR16."configuration.setPositions";
+	//        Unit1.Em5.HmiInterface.cm.softcam.transferPnPRightAxisY := "AxisDataBackUp_DB".DR16.softcam;
+	//"HMI_Interface_Parameter".Softcam[16].position := "AxisDataBackUp_DB".DR16.softcam.position;
+	        Unit1.Em5.Config.cmTransferPnPRightAxisY.setPositions := "AxisConfigBackUp_DB".DR16.cmTransferPPRightY;
+	    END_IF;
+	    
+	    
+	    //DR17
+	    IF "AxisDataBackUp_DB".saveBit[17] THEN
+	        Unit1.Em5.HmiInterface.cmTransferPnPRightAxisZ.configuration.setPositions := "AxisDataBackUp_DB".DR17."configuration.setPositions";
+	//        Unit1.Em5.HmiInterface.cm.softcam.transferPnPRightAxisZ := "AxisDataBackUp_DB".DR17.softcam;
+	//"HMI_Interface_Parameter".Softcam[17].position := "AxisDataBackUp_DB".DR17.softcam.position;
+	        Unit1.Em5.Config.cmTransferPnPRightAxisZ.setPositions := "AxisConfigBackUp_DB".DR17.cmTransferPPRightZ;
+	    END_IF;
+	    
+	    
+	    //DR18
+	    IF "AxisDataBackUp_DB".saveBit[18] THEN
+	        Unit1.Em13.HmiInterface.cmJRUnloadingPnPAxisX.configuration.setPositions := "AxisDataBackUp_DB".DR18."configuration.setPositions";
+	//        Unit1.Em13.HmiInterface.cm.softcam.jrUnloadingPnPAxisX := "AxisDataBackUp_DB".DR18.softcam;
+	//"HMI_Interface_Parameter".Softcam[18].position := "AxisDataBackUp_DB".DR18.softcam.position;
+	        Unit1.Em13.Config.cmJRUnloadingPnPAxisX.setPositions := "AxisConfigBackUp_DB".DR18.cmJrUnloadingX;
+	    END_IF;
+	    
+	    
+	    //DR19
+	    IF "AxisDataBackUp_DB".saveBit[19] THEN
+	        Unit1.Em13.HmiInterface.cmJRUnloadingPnPAxisZ.configuration.setPositions := "AxisDataBackUp_DB".DR19."configuration.setPositions";
+	//        Unit1.Em13.HmiInterface.cm.softcam.jrUnloadingPnPAxisZ := "AxisDataBackUp_DB".DR19.softcam;
+	//"HMI_Interface_Parameter".Softcam[19].position := "AxisDataBackUp_DB".DR19.softcam.position;
+	        Unit1.Em13.Config.cmJRUnloadingPnPAxisZ.setPositions :="AxisConfigBackUp_DB".DR19.cmJrUnloadingZ;
+	    END_IF;
+	    
+	    
+	    //DR20
+	    IF "AxisDataBackUp_DB".saveBit[20] THEN
+	        Unit1.Em13.HmiInterface.cmJRUnloadingPnPAxisC.configuration.setPositions := "AxisDataBackUp_DB".DR20."configuration.setPositions";
+	//        Unit1.Em13.HmiInterface.cm.softcam.jrUnloadingPnPAxisC := "AxisDataBackUp_DB".DR20.softcam;
+	//"HMI_Interface_Parameter".Softcam[20].position := "AxisDataBackUp_DB".DR20.softcam.position;
+	        Unit1.Em13.Config.cmJRUnloadingPnPAxisC.setPositions := "AxisConfigBackUp_DB".DR20.cmJrUnloadingC;
+	    END_IF;
+	    
+	END_REGION
+	
+END_FUNCTION
+

@@ -1,0 +1,1041 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Document>
+  <Engineering version="V20" />
+  <SW.Blocks.FB ID="0">
+    <AttributeList>
+      <Interface><Sections xmlns="http://www.siemens.com/automation/Openness/SW/Interface/v5">
+  <Section Name="Input">
+    <Member Name="simulation" Datatype="Bool">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+    </Member>
+  </Section>
+  <Section Name="Output" />
+  <Section Name="InOut" />
+  <Section Name="Static">
+    <Member Name="instActuator" Datatype="Array[0..9] of &quot;Simulation_Actuator&quot;">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="statDigitalSignal" Datatype="Array[0..9] of Bool">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+    </Member>
+  </Section>
+  <Section Name="Temp" />
+  <Section Name="Constant" />
+</Sections></Interface>
+      <MemoryReserve>100</MemoryReserve>
+      <Name>Simulation</Name>
+      <Namespace>Unit1.Em8</Namespace>
+      <Number>32840</Number>
+      <ProgrammingLanguage>LAD</ProgrammingLanguage>
+      <SetENOAutomatically>false</SetENOAutomatically>
+    </AttributeList>
+    <ObjectList>
+      <MultilingualText ID="1" CompositionName="Comment">
+        <ObjectList>
+          <MultilingualTextItem ID="2" CompositionName="Items">
+            <AttributeList>
+              <Culture>de-DE</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="3" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-US</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+        </ObjectList>
+      </MultilingualText>
+      <SW.Blocks.CompileUnit ID="4" CompositionName="CompileUnits">
+        <AttributeList>
+          <NetworkSource><FlgNet xmlns="http://www.siemens.com/automation/Openness/SW/NetworkSource/FlgNet/v5">
+  <Parts>
+    <Access Scope="LocalVariable" UId="21">
+      <Symbol>
+        <Component Name="simulation" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="22">
+      <Symbol>
+        <Component Name="Unit1.EmNodes" />
+        <Component Name="unitStatus" />
+        <Component Name="specialFunctions" />
+        <Component Name="Dry Run" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="23">
+      <Symbol>
+        <Component Name="Unit1.EmNodes" />
+        <Component Name="emRelations" />
+        <Component Name="em05" />
+        <Component Name="sequence" />
+        <Component Name="transferPnPLeft" />
+        <Component Name="selectJobStatus" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>9</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+        <Component Name="active" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="24">
+      <Symbol>
+        <Component Name="Unit1.EmNodes" />
+        <Component Name="emRelations" />
+        <Component Name="em05" />
+        <Component Name="cmStatus" />
+        <Component Name="TransferPnPLeftClampOpenClose" />
+        <Component Name="monitoring" />
+        <Component Name="inHomePos" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="25">
+      <Symbol>
+        <Component Name="Unit1.EmNodes" />
+        <Component Name="emRelations" />
+        <Component Name="em08" />
+        <Component Name="sequence" />
+        <Component Name="hipotThickness" />
+        <Component Name="selectJobStatus" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>2</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+        <Component Name="active" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="26">
+      <Symbol>
+        <Component Name="statDigitalSignal" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>0</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="27">
+      <Symbol>
+        <Component Name="Unit1.EmNodes" />
+        <Component Name="unitStatus" />
+        <Component Name="specialFunctions" />
+        <Component Name="Gauge R&amp;R Type1" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="28">
+      <Symbol>
+        <Component Name="Unit1.EmNodes" />
+        <Component Name="unitStatus" />
+        <Component Name="specialFunctions" />
+        <Component Name="Vision R&amp;R" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="29">
+      <Symbol>
+        <Component Name="statDigitalSignal" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>9</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="30">
+      <Symbol>
+        <Component Name="Unit1.EmNodes" />
+        <Component Name="emRelations" />
+        <Component Name="em05" />
+        <Component Name="sequence" />
+        <Component Name="transferPnPRight" />
+        <Component Name="jobInterface" />
+        <Component Name="hipotThicknessPICKJob2" />
+        <Component Name="workingDone" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="31">
+      <Symbol>
+        <Component Name="Unit1.EmNodes" />
+        <Component Name="emRelations" />
+        <Component Name="em05" />
+        <Component Name="sequence" />
+        <Component Name="GRnR_TransferPnP" />
+        <Component Name="jobInterface" />
+        <Component Name="transferPnPRight" />
+        <Component Name="hipotThicknessPICKJob5" />
+        <Component Name="workingDone" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="32">
+      <Symbol>
+        <Component Name="statDigitalSignal" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>0</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="33">
+      <Symbol>
+        <Component Name="statDigitalSignal" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>0</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="34">
+      <Symbol>
+        <Component Name="Unit1.EmNodes" />
+        <Component Name="unitStatus" />
+        <Component Name="specialFunctions" />
+        <Component Name="Gauge R&amp;R Type3" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="35">
+      <Symbol>
+        <Component Name="Unit1.EmNodes" />
+        <Component Name="unitStatus" />
+        <Component Name="specialFunctions" />
+        <Component Name="Thickness R&amp;R" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="36">
+      <Symbol>
+        <Component Name="BA060ZSIBK15.02" />
+      </Symbol>
+    </Access>
+    <Part Name="Contact" UId="37" />
+    <Part Name="Contact" UId="38">
+      <Negated Name="operand" />
+    </Part>
+    <Part Name="Contact" UId="39" />
+    <Part Name="Contact" UId="40" />
+    <Part Name="Contact" UId="41" />
+    <Part Name="Contact" UId="42" />
+    <Part Name="Contact" UId="43" />
+    <Part Name="PContact" UId="44" />
+    <Part Name="O" UId="45">
+      <TemplateValue Name="Card" Type="Cardinality">3</TemplateValue>
+    </Part>
+    <Part Name="Contact" UId="46">
+      <Negated Name="operand" />
+    </Part>
+    <Part Name="Contact" UId="47">
+      <Negated Name="operand" />
+    </Part>
+    <Part Name="Coil" UId="48" />
+    <Part Name="Contact" UId="49" />
+    <Part Name="Contact" UId="50" />
+    <Part Name="Contact" UId="51" />
+    <Part Name="O" UId="52">
+      <TemplateValue Name="Card" Type="Cardinality">2</TemplateValue>
+    </Part>
+    <Part Name="Coil" UId="53" />
+  </Parts>
+  <Wires>
+    <Wire UId="54">
+      <Powerrail />
+      <NameCon UId="37" Name="in" />
+    </Wire>
+    <Wire UId="55">
+      <IdentCon UId="21" />
+      <NameCon UId="37" Name="operand" />
+    </Wire>
+    <Wire UId="56">
+      <NameCon UId="37" Name="out" />
+      <NameCon UId="38" Name="in" />
+    </Wire>
+    <Wire UId="57">
+      <IdentCon UId="22" />
+      <NameCon UId="38" Name="operand" />
+    </Wire>
+    <Wire UId="58">
+      <NameCon UId="38" Name="out" />
+      <NameCon UId="39" Name="in" />
+      <NameCon UId="42" Name="in" />
+      <NameCon UId="43" Name="in" />
+      <NameCon UId="49" Name="in" />
+      <NameCon UId="50" Name="in" />
+    </Wire>
+    <Wire UId="59">
+      <IdentCon UId="23" />
+      <NameCon UId="39" Name="operand" />
+    </Wire>
+    <Wire UId="60">
+      <NameCon UId="39" Name="out" />
+      <NameCon UId="40" Name="in" />
+    </Wire>
+    <Wire UId="61">
+      <IdentCon UId="24" />
+      <NameCon UId="40" Name="operand" />
+    </Wire>
+    <Wire UId="62">
+      <NameCon UId="40" Name="out" />
+      <NameCon UId="41" Name="in" />
+    </Wire>
+    <Wire UId="63">
+      <IdentCon UId="25" />
+      <NameCon UId="41" Name="operand" />
+    </Wire>
+    <Wire UId="64">
+      <NameCon UId="41" Name="out" />
+      <NameCon UId="45" Name="in1" />
+    </Wire>
+    <Wire UId="65">
+      <IdentCon UId="26" />
+      <NameCon UId="42" Name="operand" />
+    </Wire>
+    <Wire UId="66">
+      <NameCon UId="42" Name="out" />
+      <NameCon UId="45" Name="in2" />
+    </Wire>
+    <Wire UId="67">
+      <IdentCon UId="27" />
+      <NameCon UId="43" Name="operand" />
+    </Wire>
+    <Wire UId="68">
+      <NameCon UId="43" Name="out" />
+      <NameCon UId="44" Name="pre" />
+    </Wire>
+    <Wire UId="69">
+      <IdentCon UId="29" />
+      <NameCon UId="44" Name="bit" />
+    </Wire>
+    <Wire UId="70">
+      <IdentCon UId="28" />
+      <NameCon UId="44" Name="operand" />
+    </Wire>
+    <Wire UId="71">
+      <NameCon UId="44" Name="out" />
+      <NameCon UId="45" Name="in3" />
+    </Wire>
+    <Wire UId="72">
+      <NameCon UId="45" Name="out" />
+      <NameCon UId="46" Name="in" />
+    </Wire>
+    <Wire UId="73">
+      <IdentCon UId="30" />
+      <NameCon UId="46" Name="operand" />
+    </Wire>
+    <Wire UId="74">
+      <NameCon UId="46" Name="out" />
+      <NameCon UId="47" Name="in" />
+    </Wire>
+    <Wire UId="75">
+      <IdentCon UId="31" />
+      <NameCon UId="47" Name="operand" />
+    </Wire>
+    <Wire UId="76">
+      <NameCon UId="47" Name="out" />
+      <NameCon UId="48" Name="in" />
+    </Wire>
+    <Wire UId="77">
+      <IdentCon UId="32" />
+      <NameCon UId="48" Name="operand" />
+    </Wire>
+    <Wire UId="78">
+      <IdentCon UId="33" />
+      <NameCon UId="49" Name="operand" />
+    </Wire>
+    <Wire UId="79">
+      <NameCon UId="49" Name="out" />
+      <NameCon UId="52" Name="in1" />
+    </Wire>
+    <Wire UId="80">
+      <IdentCon UId="34" />
+      <NameCon UId="50" Name="operand" />
+    </Wire>
+    <Wire UId="81">
+      <NameCon UId="50" Name="out" />
+      <NameCon UId="51" Name="in" />
+    </Wire>
+    <Wire UId="82">
+      <IdentCon UId="35" />
+      <NameCon UId="51" Name="operand" />
+    </Wire>
+    <Wire UId="83">
+      <NameCon UId="51" Name="out" />
+      <NameCon UId="52" Name="in2" />
+    </Wire>
+    <Wire UId="84">
+      <NameCon UId="52" Name="out" />
+      <NameCon UId="53" Name="in" />
+    </Wire>
+    <Wire UId="85">
+      <IdentCon UId="36" />
+      <NameCon UId="53" Name="operand" />
+    </Wire>
+  </Wires>
+</FlgNet></NetworkSource>
+          <ProgrammingLanguage>LAD</ProgrammingLanguage>
+        </AttributeList>
+        <ObjectList>
+          <MultilingualText ID="5" CompositionName="Comment">
+            <ObjectList>
+              <MultilingualTextItem ID="6" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="7" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+          <MultilingualText ID="8" CompositionName="Title">
+            <ObjectList>
+              <MultilingualTextItem ID="9" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="A" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text>Digital Signal</Text>
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+        </ObjectList>
+      </SW.Blocks.CompileUnit>
+      <SW.Blocks.CompileUnit ID="B" CompositionName="CompileUnits">
+        <AttributeList>
+          <NetworkSource><FlgNet xmlns="http://www.siemens.com/automation/Openness/SW/NetworkSource/FlgNet/v5">
+  <Parts>
+    <Access Scope="LocalVariable" UId="21">
+      <Symbol>
+        <Component Name="simulation" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="22">
+      <Symbol>
+        <Component Name="Unit1.Em8.HmiInterface" />
+        <Component Name="cmHipotThicknessStageLiftFrontUpDown" />
+        <Component Name="monitoring" />
+        <Component Name="goToHomePos" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="23">
+      <Symbol>
+        <Component Name="Unit1.Em8.HmiInterface" />
+        <Component Name="cmHipotThicknessStageLiftFrontUpDown" />
+        <Component Name="monitoring" />
+        <Component Name="goToWorkPos" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="24">
+      <Symbol>
+        <Component Name="BA060ZSIBK14.05" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="25">
+      <Symbol>
+        <Component Name="BA060ZSIBK14.13" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="26">
+      <Symbol>
+        <Component Name="Unit1.Em8.HmiInterface" />
+        <Component Name="cmHipotThicknessStageLiftRearUpDown" />
+        <Component Name="monitoring" />
+        <Component Name="goToHomePos" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="27">
+      <Symbol>
+        <Component Name="Unit1.Em8.HmiInterface" />
+        <Component Name="cmHipotThicknessStageLiftRearUpDown" />
+        <Component Name="monitoring" />
+        <Component Name="goToWorkPos" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="28">
+      <Symbol>
+        <Component Name="BA060ZSIBK14.06" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="29">
+      <Symbol>
+        <Component Name="BA060ZSIBK14.14" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="30">
+      <Symbol>
+        <Component Name="Unit1.Em8.HmiInterface" />
+        <Component Name="cmHipotTabContactorBwdFwd" />
+        <Component Name="monitoring" />
+        <Component Name="goToHomePos" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="31">
+      <Symbol>
+        <Component Name="Unit1.Em8.HmiInterface" />
+        <Component Name="cmHipotTabContactorBwdFwd" />
+        <Component Name="monitoring" />
+        <Component Name="goToWorkPos" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="32">
+      <Symbol>
+        <Component Name="BA060ZSIBK14.00" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="33">
+      <Symbol>
+        <Component Name="BA060ZSIBK14.08" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="34">
+      <Symbol>
+        <Component Name="Unit1.Em8.HmiInterface" />
+        <Component Name="cmHipotTabContactorLeftOpenClose" />
+        <Component Name="monitoring" />
+        <Component Name="goToHomePos" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="35">
+      <Symbol>
+        <Component Name="Unit1.Em8.HmiInterface" />
+        <Component Name="cmHipotTabContactorLeftOpenClose" />
+        <Component Name="monitoring" />
+        <Component Name="goToWorkPos" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="36">
+      <Symbol>
+        <Component Name="BA060ZSIBK14.01" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="37">
+      <Symbol>
+        <Component Name="BA060ZSIBK14.09" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="38">
+      <Symbol>
+        <Component Name="Unit1.Em8.HmiInterface" />
+        <Component Name="cmHipotTabContactorRightOpenClose" />
+        <Component Name="monitoring" />
+        <Component Name="goToHomePos" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="39">
+      <Symbol>
+        <Component Name="Unit1.Em8.HmiInterface" />
+        <Component Name="cmHipotTabContactorRightOpenClose" />
+        <Component Name="monitoring" />
+        <Component Name="goToWorkPos" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="40">
+      <Symbol>
+        <Component Name="BA060ZSIBK14.02" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="41">
+      <Symbol>
+        <Component Name="BA060ZSIBK14.10" />
+      </Symbol>
+    </Access>
+    <Part Name="Contact" UId="42" />
+    <Call UId="43">
+      <CallInfo Name="Simulation_Actuator" BlockType="FB">
+        <Instance Scope="LocalVariable" UId="44">
+          <Component Name="instActuator" AccessModifier="Array">
+            <Access Scope="LiteralConstant">
+              <Constant>
+                <ConstantType>DInt</ConstantType>
+                <ConstantValue>0</ConstantValue>
+              </Constant>
+            </Access>
+          </Component>
+        </Instance>
+        <Parameter Name="cmdHomePos" Section="Input" Type="Bool" />
+        <Parameter Name="cmdWorkPos" Section="Input" Type="Bool" />
+        <Parameter Name="homePos" Section="Output" Type="Bool" />
+        <Parameter Name="WorkPos" Section="Output" Type="Bool" />
+      </CallInfo>
+    </Call>
+    <Call UId="45">
+      <CallInfo Name="Simulation_Actuator" BlockType="FB">
+        <Instance Scope="LocalVariable" UId="46">
+          <Component Name="instActuator" AccessModifier="Array">
+            <Access Scope="LiteralConstant">
+              <Constant>
+                <ConstantType>DInt</ConstantType>
+                <ConstantValue>1</ConstantValue>
+              </Constant>
+            </Access>
+          </Component>
+        </Instance>
+        <Parameter Name="cmdHomePos" Section="Input" Type="Bool" />
+        <Parameter Name="cmdWorkPos" Section="Input" Type="Bool" />
+        <Parameter Name="homePos" Section="Output" Type="Bool" />
+        <Parameter Name="WorkPos" Section="Output" Type="Bool" />
+      </CallInfo>
+    </Call>
+    <Call UId="47">
+      <CallInfo Name="Simulation_Actuator" BlockType="FB">
+        <Instance Scope="LocalVariable" UId="48">
+          <Component Name="instActuator" AccessModifier="Array">
+            <Access Scope="LiteralConstant">
+              <Constant>
+                <ConstantType>DInt</ConstantType>
+                <ConstantValue>2</ConstantValue>
+              </Constant>
+            </Access>
+          </Component>
+        </Instance>
+        <Parameter Name="cmdHomePos" Section="Input" Type="Bool" />
+        <Parameter Name="cmdWorkPos" Section="Input" Type="Bool" />
+        <Parameter Name="homePos" Section="Output" Type="Bool" />
+        <Parameter Name="WorkPos" Section="Output" Type="Bool" />
+      </CallInfo>
+    </Call>
+    <Call UId="49">
+      <CallInfo Name="Simulation_Actuator" BlockType="FB">
+        <Instance Scope="LocalVariable" UId="50">
+          <Component Name="instActuator" AccessModifier="Array">
+            <Access Scope="LiteralConstant">
+              <Constant>
+                <ConstantType>DInt</ConstantType>
+                <ConstantValue>3</ConstantValue>
+              </Constant>
+            </Access>
+          </Component>
+        </Instance>
+        <Parameter Name="cmdHomePos" Section="Input" Type="Bool" />
+        <Parameter Name="cmdWorkPos" Section="Input" Type="Bool" />
+        <Parameter Name="homePos" Section="Output" Type="Bool" />
+        <Parameter Name="WorkPos" Section="Output" Type="Bool" />
+      </CallInfo>
+    </Call>
+    <Call UId="51">
+      <CallInfo Name="Simulation_Actuator" BlockType="FB">
+        <Instance Scope="LocalVariable" UId="52">
+          <Component Name="instActuator" AccessModifier="Array">
+            <Access Scope="LiteralConstant">
+              <Constant>
+                <ConstantType>DInt</ConstantType>
+                <ConstantValue>4</ConstantValue>
+              </Constant>
+            </Access>
+          </Component>
+        </Instance>
+        <Parameter Name="cmdHomePos" Section="Input" Type="Bool" />
+        <Parameter Name="cmdWorkPos" Section="Input" Type="Bool" />
+        <Parameter Name="homePos" Section="Output" Type="Bool" />
+        <Parameter Name="WorkPos" Section="Output" Type="Bool" />
+      </CallInfo>
+    </Call>
+  </Parts>
+  <Wires>
+    <Wire UId="53">
+      <Powerrail />
+      <NameCon UId="42" Name="in" />
+    </Wire>
+    <Wire UId="54">
+      <IdentCon UId="21" />
+      <NameCon UId="42" Name="operand" />
+    </Wire>
+    <Wire UId="55">
+      <NameCon UId="42" Name="out" />
+      <NameCon UId="43" Name="en" />
+      <NameCon UId="45" Name="en" />
+      <NameCon UId="47" Name="en" />
+      <NameCon UId="49" Name="en" />
+      <NameCon UId="51" Name="en" />
+    </Wire>
+    <Wire UId="56">
+      <IdentCon UId="22" />
+      <NameCon UId="43" Name="cmdHomePos" />
+    </Wire>
+    <Wire UId="57">
+      <IdentCon UId="23" />
+      <NameCon UId="43" Name="cmdWorkPos" />
+    </Wire>
+    <Wire UId="58">
+      <NameCon UId="43" Name="homePos" />
+      <IdentCon UId="24" />
+    </Wire>
+    <Wire UId="59">
+      <NameCon UId="43" Name="WorkPos" />
+      <IdentCon UId="25" />
+    </Wire>
+    <Wire UId="60">
+      <IdentCon UId="26" />
+      <NameCon UId="45" Name="cmdHomePos" />
+    </Wire>
+    <Wire UId="61">
+      <IdentCon UId="27" />
+      <NameCon UId="45" Name="cmdWorkPos" />
+    </Wire>
+    <Wire UId="62">
+      <NameCon UId="45" Name="homePos" />
+      <IdentCon UId="28" />
+    </Wire>
+    <Wire UId="63">
+      <NameCon UId="45" Name="WorkPos" />
+      <IdentCon UId="29" />
+    </Wire>
+    <Wire UId="64">
+      <IdentCon UId="30" />
+      <NameCon UId="47" Name="cmdHomePos" />
+    </Wire>
+    <Wire UId="65">
+      <IdentCon UId="31" />
+      <NameCon UId="47" Name="cmdWorkPos" />
+    </Wire>
+    <Wire UId="66">
+      <NameCon UId="47" Name="homePos" />
+      <IdentCon UId="32" />
+    </Wire>
+    <Wire UId="67">
+      <NameCon UId="47" Name="WorkPos" />
+      <IdentCon UId="33" />
+    </Wire>
+    <Wire UId="68">
+      <IdentCon UId="34" />
+      <NameCon UId="49" Name="cmdHomePos" />
+    </Wire>
+    <Wire UId="69">
+      <IdentCon UId="35" />
+      <NameCon UId="49" Name="cmdWorkPos" />
+    </Wire>
+    <Wire UId="70">
+      <NameCon UId="49" Name="homePos" />
+      <IdentCon UId="36" />
+    </Wire>
+    <Wire UId="71">
+      <NameCon UId="49" Name="WorkPos" />
+      <IdentCon UId="37" />
+    </Wire>
+    <Wire UId="72">
+      <IdentCon UId="38" />
+      <NameCon UId="51" Name="cmdHomePos" />
+    </Wire>
+    <Wire UId="73">
+      <IdentCon UId="39" />
+      <NameCon UId="51" Name="cmdWorkPos" />
+    </Wire>
+    <Wire UId="74">
+      <NameCon UId="51" Name="homePos" />
+      <IdentCon UId="40" />
+    </Wire>
+    <Wire UId="75">
+      <NameCon UId="51" Name="WorkPos" />
+      <IdentCon UId="41" />
+    </Wire>
+  </Wires>
+</FlgNet></NetworkSource>
+          <ProgrammingLanguage>LAD</ProgrammingLanguage>
+        </AttributeList>
+        <ObjectList>
+          <MultilingualText ID="C" CompositionName="Comment">
+            <ObjectList>
+              <MultilingualTextItem ID="D" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="E" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+          <MultilingualText ID="F" CompositionName="Title">
+            <ObjectList>
+              <MultilingualTextItem ID="10" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="11" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text>Two Way Actuator</Text>
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+        </ObjectList>
+      </SW.Blocks.CompileUnit>
+      <SW.Blocks.CompileUnit ID="12" CompositionName="CompileUnits">
+        <AttributeList>
+          <NetworkSource><StructuredText xmlns="http://www.siemens.com/automation/Openness/SW/NetworkSource/StructuredText/v4">
+  <Token Text="IF" UId="21" />
+  <Blank UId="22" />
+  <Access Scope="LocalVariable" UId="23">
+    <Symbol UId="24">
+      <Component Name="simulation" UId="25" />
+    </Symbol>
+  </Access>
+  <Blank UId="26" />
+  <Token Text="AND" UId="27" />
+  <Blank UId="28" />
+  <Access Scope="GlobalVariable" UId="29">
+    <Symbol UId="30">
+      <Component Name="JB_Temp" UId="31" />
+      <Token Text="." UId="32" />
+      <Component Name="Test_Homing" UId="33">
+        <Token Text="[" UId="34" />
+        <Access Scope="LiteralConstant" UId="35">
+          <Constant UId="36">
+            <ConstantValue UId="38">8</ConstantValue>
+          </Constant>
+        </Access>
+        <Token Text="]" UId="39" />
+      </Component>
+    </Symbol>
+  </Access>
+  <Blank UId="40" />
+  <Token Text="THEN" UId="41" />
+  <NewLine UId="42" />
+  <Blank Num="4" UId="43" />
+  <NewLine UId="44" />
+  <Blank Num="4" UId="45" />
+  <Access Scope="GlobalVariable" UId="46">
+    <Symbol UId="47">
+      <Component Name="Unit1.Em8.HmiInterface" UId="48" />
+      <Token Text="." UId="49" />
+      <Component Name="cmHipotThicknessStageLiftAllUpDown" UId="50" />
+      <Token Text="." UId="51" />
+      <Component Name="commands" UId="52" />
+      <Token Text="." UId="53" />
+      <Component Name="commandHomePos" UId="54">
+        <BooleanAttribute Name="HasQuotes" UId="55">true</BooleanAttribute>
+      </Component>
+    </Symbol>
+  </Access>
+  <Blank UId="56" />
+  <Token Text=":=" UId="57" />
+  <NewLine UId="58" />
+  <Blank Num="4" UId="59" />
+  <Access Scope="GlobalVariable" UId="60">
+    <Symbol UId="61">
+      <Component Name="Unit1.Em8.HmiInterface" UId="62" />
+      <Token Text="." UId="63" />
+      <Component Name="cmThicknessAxisZ" UId="64" />
+      <Token Text="." UId="65" />
+      <Component Name="commands" UId="66" />
+      <Token Text="." UId="67" />
+      <Component Name="homing" UId="68" />
+    </Symbol>
+  </Access>
+  <Blank UId="69" />
+  <Token Text=":=" UId="70" />
+  <Blank UId="71" />
+  <Access Scope="LiteralConstant" UId="72">
+    <Constant UId="73">
+      <ConstantValue UId="75">true</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="76" />
+  <NewLine UId="77" />
+  <Blank Num="4" UId="78" />
+  <NewLine UId="79" />
+  <Blank Num="4" UId="80" />
+  <Access Scope="GlobalVariable" UId="81">
+    <Symbol UId="82">
+      <Component Name="JB_Temp" UId="83" />
+      <Token Text="." UId="84" />
+      <Component Name="Test_Homing" UId="85">
+        <Token Text="[" UId="86" />
+        <Access Scope="LiteralConstant" UId="87">
+          <Constant UId="88">
+            <ConstantValue UId="90">8</ConstantValue>
+          </Constant>
+        </Access>
+        <Token Text="]" UId="91" />
+      </Component>
+    </Symbol>
+  </Access>
+  <Blank UId="92" />
+  <Token Text=":=" UId="93" />
+  <Blank UId="94" />
+  <Access Scope="LiteralConstant" UId="95">
+    <Constant UId="96">
+      <ConstantValue UId="98">false</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="99" />
+  <NewLine UId="100" />
+  <Blank UId="101" />
+  <LineComment UId="102">
+    <Text UId="103">   </Text>
+  </LineComment>
+  <NewLine UId="104" />
+  <Token Text="END_IF" UId="105" />
+  <Token Text=";" UId="106" />
+  <NewLine Num="2" UId="107" />
+  <Token Text="IF" UId="108" />
+  <Blank UId="109" />
+  <Access Scope="LocalVariable" UId="110">
+    <Symbol UId="111">
+      <Component Name="simulation" UId="112" />
+    </Symbol>
+  </Access>
+  <Blank UId="113" />
+  <Token Text="AND" UId="114" />
+  <Blank UId="115" />
+  <Access Scope="GlobalVariable" UId="116">
+    <Symbol UId="117">
+      <Component Name="JB_Temp" UId="118" />
+      <Token Text="." UId="119" />
+      <Component Name="Test_Homing" UId="120">
+        <Token Text="[" UId="121" />
+        <Access Scope="LiteralConstant" UId="122">
+          <Constant UId="123">
+            <ConstantValue UId="125">20</ConstantValue>
+          </Constant>
+        </Access>
+        <Token Text="]" UId="126" />
+      </Component>
+    </Symbol>
+  </Access>
+  <Blank UId="127" />
+  <Token Text="THEN" UId="128" />
+  <NewLine UId="129" />
+  <Blank Num="4" UId="130" />
+  <NewLine Num="2" UId="131" />
+  <Blank Num="4" UId="132" />
+  <Access Scope="GlobalVariable" UId="133">
+    <Symbol UId="134">
+      <Component Name="Unit1.Em8.HmiInterface" UId="135" />
+      <Token Text="." UId="136" />
+      <Component Name="cmHipotThicknessStageLiftAllUpDown" UId="137" />
+      <Token Text="." UId="138" />
+      <Component Name="commands" UId="139" />
+      <Token Text="." UId="140" />
+      <Component Name="commandHomePos" UId="141">
+        <BooleanAttribute Name="HasQuotes" UId="142">true</BooleanAttribute>
+      </Component>
+    </Symbol>
+  </Access>
+  <Blank UId="143" />
+  <Token Text=":=" UId="144" />
+  <NewLine UId="145" />
+  <Blank Num="4" UId="146" />
+  <Access Scope="GlobalVariable" UId="147">
+    <Symbol UId="148">
+      <Component Name="Unit1.Em8.HmiInterface" UId="149" />
+      <Token Text="." UId="150" />
+      <Component Name="cmThicknessAxisZ" UId="151" />
+      <Token Text="." UId="152" />
+      <Component Name="commands" UId="153" />
+      <Token Text="." UId="154" />
+      <Component Name="homing" UId="155" />
+    </Symbol>
+  </Access>
+  <Blank UId="156" />
+  <Token Text=":=" UId="157" />
+  <Blank UId="158" />
+  <Access Scope="LiteralConstant" UId="159">
+    <Constant UId="160">
+      <ConstantValue UId="162">false</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="163" />
+  <NewLine UId="164" />
+  <Blank Num="4" UId="165" />
+  <NewLine UId="166" />
+  <Token Text="END_IF" UId="167" />
+  <Token Text=";" UId="168" />
+  <NewLine UId="169" />
+  <Blank Num="4" UId="170" />
+</StructuredText></NetworkSource>
+          <ProgrammingLanguage>SCL</ProgrammingLanguage>
+        </AttributeList>
+        <ObjectList>
+          <MultilingualText ID="13" CompositionName="Comment">
+            <ObjectList>
+              <MultilingualTextItem ID="14" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="15" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+          <MultilingualText ID="16" CompositionName="Title">
+            <ObjectList>
+              <MultilingualTextItem ID="17" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="18" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text>homing </Text>
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+        </ObjectList>
+      </SW.Blocks.CompileUnit>
+      <MultilingualText ID="19" CompositionName="Title">
+        <ObjectList>
+          <MultilingualTextItem ID="1A" CompositionName="Items">
+            <AttributeList>
+              <Culture>de-DE</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="1B" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-US</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+        </ObjectList>
+      </MultilingualText>
+    </ObjectList>
+  </SW.Blocks.FB>
+</Document>

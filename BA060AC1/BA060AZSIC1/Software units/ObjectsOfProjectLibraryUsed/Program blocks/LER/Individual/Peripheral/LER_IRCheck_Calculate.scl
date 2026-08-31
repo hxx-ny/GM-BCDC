@@ -1,0 +1,37 @@
+﻿FUNCTION_BLOCK "LER_IRCheck_Calculate"
+{ S7_Optimized_Access := 'TRUE' ; Published := 'TRUE' }
+VERSION : 0.1
+   VAR_INPUT 
+      realValue : Real;
+   END_VAR
+
+   VAR_OUTPUT 
+      stringValue : String;
+   END_VAR
+
+   VAR 
+      statStringValue : String;
+   END_VAR
+
+
+BEGIN
+	REGION made in GH
+	    
+	    IF (REAL_TO_DINT(#realValue * 100.0) MOD 10) = 0 THEN
+	        IF (REAL_TO_DINT(#realValue * 100.0) MOD 100) = 0 THEN
+	            #statStringValue := DINT_TO_STRING(REAL_TO_DINT(#realValue));
+	            #stringValue := #statStringValue;
+	            #stringValue := DELETE(IN := #stringValue, L := 1, P := 1);
+	        ELSE
+	            #statStringValue := DINT_TO_STRING(REAL_TO_DINT(#realValue * 10.0));
+	            #stringValue := INSERT(IN1 := #statStringValue, IN2 := '.', P := LEN(#statStringValue) - 1);
+	            #stringValue := DELETE(IN := #stringValue, L := 1, P := 1);
+	        END_IF;
+	    ELSE
+	        #statStringValue := DINT_TO_STRING(REAL_TO_DINT(#realValue * 100.0));
+	        #stringValue := INSERT(IN1 := #statStringValue, IN2 := '.', P := LEN(#statStringValue) - 2);
+	        #stringValue := DELETE(IN := #stringValue, L := 1, P := 1);
+	    END_IF;
+	END_REGION
+END_FUNCTION_BLOCK
+

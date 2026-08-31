@@ -1,0 +1,310 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Document>
+  <Engineering version="V20" />
+  <SW.Blocks.GlobalDB ID="0">
+    <AttributeList>
+      <Access>Published</Access>
+      <Interface><Sections xmlns="http://www.siemens.com/automation/Openness/SW/Interface/v5">
+  <Section Name="Static">
+    <Member Name="em" Datatype="&quot;LAF_typeEmConfiguration&quot;">
+      <Comment>
+        <MultiLanguageText Lang="en-US">Configuration of EM Parameters</MultiLanguageText>
+      </Comment>
+      <Sections>
+        <Section Name="None">
+          <Member Name="referenceDesignator" Datatype="&quot;LAF_typeReferenceConfiguration&quot;">
+            <Sections>
+              <Section Name="None">
+                <Member Name="parent" Datatype="WString[128]">
+                  <StartValue>WSTRING#'U1'</StartValue>
+                </Member>
+                <Member Name="relative" Datatype="WString[25]">
+                  <StartValue>WSTRING#'EM1'</StartValue>
+                </Member>
+              </Section>
+            </Sections>
+          </Member>
+        </Section>
+      </Sections>
+    </Member>
+    <Member Name="axis" Datatype="Array[0.._.U1EM3_NO_OF_AXES] of DB_ANY" />
+    <Member Name="cmTopTapeJRDetect" Datatype="&quot;LBC_typeDigitalSignalConfiguration&quot;" />
+    <Member Name="cmTopTapeDiameter" Datatype="&quot;LBC_typeDigitalSignalConfiguration&quot;" />
+    <Member Name="cmTopTapeAxisX" Datatype="&quot;LBC_typeAxis64PosConfiguration&quot;" Remanence="Retain">
+      <Sections>
+        <Section Name="None">
+          <Member Name="referenceDesignator" Datatype="WString[25]">
+            <StartValue>WSTRING#'TOP TAPING X-Axis'</StartValue>
+          </Member>
+          <Member Name="disableAlarms" Datatype="Bool">
+            <StartValue>FALSE</StartValue>
+          </Member>
+          <Member Name="masterControlPopUp" Datatype="Bool">
+            <StartValue>TRUE</StartValue>
+          </Member>
+          <Member Name="setPositions" Datatype="Array[0..15] of &quot;LBC_typeAxis64PosSetPosition&quot;">
+            <Sections>
+              <Section Name="None">
+                <Member Name="position" Datatype="LReal">
+                  <Subelement Path="0">
+                    <StartValue>0.0</StartValue>
+                  </Subelement>
+                  <Subelement Path="1">
+                    <StartValue>424.0</StartValue>
+                  </Subelement>
+                  <Subelement Path="3">
+                    <StartValue>200.0</StartValue>
+                  </Subelement>
+                </Member>
+                <Member Name="velocity" Datatype="LReal">
+                  <Subelement Path="0">
+                    <StartValue>10.0</StartValue>
+                  </Subelement>
+                  <Subelement Path="1">
+                    <StartValue>10.0</StartValue>
+                  </Subelement>
+                  <Subelement Path="3">
+                    <StartValue>10.0</StartValue>
+                  </Subelement>
+                </Member>
+                <Member Name="acceleration" Datatype="LReal">
+                  <Subelement Path="0">
+                    <StartValue>100.0</StartValue>
+                  </Subelement>
+                  <Subelement Path="1">
+                    <StartValue>100.0</StartValue>
+                  </Subelement>
+                  <Subelement Path="3">
+                    <StartValue>100.0</StartValue>
+                  </Subelement>
+                </Member>
+                <Member Name="deceleration" Datatype="LReal">
+                  <Subelement Path="0">
+                    <StartValue>100.0</StartValue>
+                  </Subelement>
+                  <Subelement Path="1">
+                    <StartValue>100.0</StartValue>
+                  </Subelement>
+                  <Subelement Path="3">
+                    <StartValue>100.0</StartValue>
+                  </Subelement>
+                </Member>
+                <Member Name="name" Datatype="String[32]">
+                  <Subelement Path="0">
+                    <StartValue>'Wait [Tape Get]'</StartValue>
+                  </Subelement>
+                  <Subelement Path="1">
+                    <StartValue>'Tape1 Put'</StartValue>
+                  </Subelement>
+                  <Subelement Path="3">
+                    <StartValue>'Remain Attachment'</StartValue>
+                  </Subelement>
+                </Member>
+              </Section>
+            </Sections>
+          </Member>
+        </Section>
+      </Sections>
+    </Member>
+    <Member Name="cmTopTapeAxisY" Datatype="&quot;LBC_typeAxis64PosConfiguration&quot;" Remanence="Retain">
+      <Sections>
+        <Section Name="None">
+          <Member Name="referenceDesignator" Datatype="WString[25]">
+            <StartValue>WSTRING#'TOP TAPING Y-Axis'</StartValue>
+          </Member>
+        </Section>
+      </Sections>
+    </Member>
+    <Member Name="cmTopTapeLoadingBwdFwd" Datatype="&quot;LBC_typeTwoWayActuatorConfiguration&quot;">
+      <Sections>
+        <Section Name="None">
+          <Member Name="referenceDesignator" Datatype="WString[25]">
+            <StartValue>WSTRING#'T.TAPE LOADING'</StartValue>
+          </Member>
+          <Member Name="monitoringDiscrepancy" Datatype="Time">
+            <StartValue>T#5s</StartValue>
+          </Member>
+        </Section>
+      </Sections>
+    </Member>
+    <Member Name="cmTopTapeLoadingClampOpenClose" Datatype="&quot;LBC_typeTwoWayActuatorConfiguration&quot;">
+      <Sections>
+        <Section Name="None">
+          <Member Name="referenceDesignator" Datatype="WString[25]">
+            <StartValue>WSTRING#'T.TAPE LOADING CLAMP'</StartValue>
+          </Member>
+          <Member Name="monitoringDiscrepancy" Datatype="Time">
+            <StartValue>T#5s</StartValue>
+          </Member>
+        </Section>
+      </Sections>
+    </Member>
+    <Member Name="cmTopTapeCutterUpDown" Datatype="&quot;LBC_typeTwoWayActuatorConfiguration&quot;">
+      <Sections>
+        <Section Name="None">
+          <Member Name="referenceDesignator" Datatype="WString[25]">
+            <StartValue>WSTRING#'T.TAPE CUTTER'</StartValue>
+          </Member>
+          <Member Name="monitoringDiscrepancy" Datatype="Time">
+            <StartValue>T#5s</StartValue>
+          </Member>
+        </Section>
+      </Sections>
+    </Member>
+    <Member Name="cmTopTapeCutterClampUpDown" Datatype="&quot;LBC_typeTwoWayActuatorConfiguration&quot;">
+      <Sections>
+        <Section Name="None">
+          <Member Name="referenceDesignator" Datatype="WString[25]">
+            <StartValue>WSTRING#'T.TAPE CUTTER CLAMP'</StartValue>
+          </Member>
+          <Member Name="monitoringDiscrepancy" Datatype="Time">
+            <StartValue>T#5s</StartValue>
+          </Member>
+        </Section>
+      </Sections>
+    </Member>
+    <Member Name="cmTopTapeTensionBwdFwd" Datatype="&quot;LBC_typeTwoWayActuatorConfiguration&quot;">
+      <Sections>
+        <Section Name="None">
+          <Member Name="referenceDesignator" Datatype="WString[25]">
+            <StartValue>WSTRING#'T.TAPE TENSION'</StartValue>
+          </Member>
+          <Member Name="monitoringDiscrepancy" Datatype="Time">
+            <StartValue>T#5s</StartValue>
+          </Member>
+        </Section>
+      </Sections>
+    </Member>
+    <Member Name="cmTopTapeAttachmentUpDown" Datatype="&quot;LBC_typeTwoWayActuatorConfiguration&quot;">
+      <Sections>
+        <Section Name="None">
+          <Member Name="referenceDesignator" Datatype="WString[25]">
+            <StartValue>WSTRING#'T.TAPE ATTACHMENT'</StartValue>
+          </Member>
+          <Member Name="monitoringDiscrepancy" Datatype="Time">
+            <StartValue>T#5s</StartValue>
+          </Member>
+        </Section>
+      </Sections>
+    </Member>
+    <Member Name="cmTopTapeClampTopLeftUpDown" Datatype="&quot;LBC_typeTwoWayActuatorConfiguration&quot;">
+      <Sections>
+        <Section Name="None">
+          <Member Name="referenceDesignator" Datatype="WString[25]">
+            <StartValue>WSTRING#'T.TAPE CLAMP TOP LEFT'</StartValue>
+          </Member>
+          <Member Name="monitoringDiscrepancy" Datatype="Time">
+            <StartValue>T#5s</StartValue>
+          </Member>
+        </Section>
+      </Sections>
+    </Member>
+    <Member Name="cmTopTapeClampTopCenterUpDown" Datatype="&quot;LBC_typeTwoWayActuatorConfiguration&quot;">
+      <Sections>
+        <Section Name="None">
+          <Member Name="referenceDesignator" Datatype="WString[25]">
+            <StartValue>WSTRING#'T.TAPE CLAMP TOP CENTER'</StartValue>
+          </Member>
+          <Member Name="monitoringDiscrepancy" Datatype="Time">
+            <StartValue>T#5s</StartValue>
+          </Member>
+        </Section>
+      </Sections>
+    </Member>
+    <Member Name="cmTopTapeClampTopRightUpDown" Datatype="&quot;LBC_typeTwoWayActuatorConfiguration&quot;">
+      <Sections>
+        <Section Name="None">
+          <Member Name="referenceDesignator" Datatype="WString[25]">
+            <StartValue>WSTRING#'T.TAPE CLAMP TOP'</StartValue>
+          </Member>
+          <Member Name="monitoringDiscrepancy" Datatype="Time">
+            <StartValue>T#5s</StartValue>
+          </Member>
+        </Section>
+      </Sections>
+    </Member>
+    <Member Name="cmTopTapeClampBtmDownUp" Datatype="&quot;LBC_typeTwoWayActuatorConfiguration&quot;">
+      <Sections>
+        <Section Name="None">
+          <Member Name="referenceDesignator" Datatype="WString[25]">
+            <StartValue>WSTRING#'T.TAPE CLAMP BTM'</StartValue>
+          </Member>
+          <Member Name="monitoringDiscrepancy" Datatype="Time">
+            <StartValue>T#5s</StartValue>
+          </Member>
+        </Section>
+      </Sections>
+    </Member>
+    <Member Name="cmTopTapeClampAllOpenClose" Datatype="&quot;LBC_typeTwoWayActuatorConfiguration&quot;">
+      <Sections>
+        <Section Name="None">
+          <Member Name="referenceDesignator" Datatype="WString[25]">
+            <StartValue>WSTRING#'TOP CLAMP ALL'</StartValue>
+          </Member>
+          <Member Name="monitoringDiscrepancy" Datatype="Time">
+            <StartValue>T#5s</StartValue>
+          </Member>
+        </Section>
+      </Sections>
+    </Member>
+    <Member Name="cmTopTapeAttachmentVaccumOffOn" Datatype="&quot;LBC_typeTwoWayActuatorConfiguration&quot;">
+      <Sections>
+        <Section Name="None">
+          <Member Name="referenceDesignator" Datatype="WString[25]">
+            <StartValue>WSTRING#'ATTACHMENT VACUUM'</StartValue>
+          </Member>
+          <Member Name="monitoringDiscrepancy" Datatype="Time">
+            <StartValue>T#5s</StartValue>
+          </Member>
+        </Section>
+      </Sections>
+    </Member>
+    <Member Name="cmQrHandyReader" Datatype="&quot;LER_typeDM8700Configuration&quot;" />
+    <Member Name="softcam" Datatype="Struct">
+      <Member Name="topTapeAxisX" Datatype="&quot;LER_typeSoftCamInterface&quot;" />
+      <Member Name="topTapeAxisY" Datatype="&quot;LER_typeSoftCamInterface&quot;" />
+    </Member>
+  </Section>
+</Sections></Interface>
+      <MemoryReserve>100</MemoryReserve>
+      <Name>Config</Name>
+      <Namespace>Unit1.Em3</Namespace>
+      <Number>161</Number>
+      <ProgrammingLanguage>DB</ProgrammingLanguage>
+    </AttributeList>
+    <ObjectList>
+      <MultilingualText ID="1" CompositionName="Comment">
+        <ObjectList>
+          <MultilingualTextItem ID="2" CompositionName="Items">
+            <AttributeList>
+              <Culture>de-DE</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="3" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-US</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+        </ObjectList>
+      </MultilingualText>
+      <MultilingualText ID="4" CompositionName="Title">
+        <ObjectList>
+          <MultilingualTextItem ID="5" CompositionName="Items">
+            <AttributeList>
+              <Culture>de-DE</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="6" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-US</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+        </ObjectList>
+      </MultilingualText>
+    </ObjectList>
+  </SW.Blocks.GlobalDB>
+</Document>

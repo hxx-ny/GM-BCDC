@@ -1,0 +1,4800 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Document>
+  <Engineering version="V20" />
+  <SW.Blocks.FC ID="0">
+    <AttributeList>
+      <HeaderAuthor>SICAR</HeaderAuthor>
+      <HeaderFamily>Diag</HeaderFamily>
+      <Interface><Sections xmlns="http://www.siemens.com/automation/Openness/SW/Interface/v5">
+  <Section Name="Input" />
+  <Section Name="Output" />
+  <Section Name="InOut" />
+  <Section Name="Temp">
+    <Member Name="statWStringName" Datatype="WString[24]" />
+    <Member Name="tempHardwareOKexample" Datatype="Bool">
+      <Comment>
+        <MultiLanguageText Lang="en-US">REPLACE: This output can be used as an interlock for Control Modules</MultiLanguageText>
+      </Comment>
+    </Member>
+  </Section>
+  <Section Name="Constant">
+    <Member Name="TRUE" Datatype="Bool">
+      <StartValue>TRUE</StartValue>
+    </Member>
+  </Section>
+  <Section Name="Return">
+    <Member Name="Ret_Val" Datatype="Void">
+      <Comment>
+        <MultiLanguageText Lang="en-US">Ret_Val</MultiLanguageText>
+      </Comment>
+    </Member>
+  </Section>
+</Sections></Interface>
+      <IsIECCheckEnabled>true</IsIECCheckEnabled>
+      <Name>CallDiagnostic</Name>
+      <Namespace />
+      <Number>16</Number>
+      <ProgrammingLanguage>LAD</ProgrammingLanguage>
+      <SetENOAutomatically>true</SetENOAutomatically>
+    </AttributeList>
+    <ObjectList>
+      <MultilingualText ID="1" CompositionName="Comment">
+        <ObjectList>
+          <MultilingualTextItem ID="2" CompositionName="Items">
+            <AttributeList>
+              <Culture>de-DE</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="3" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-US</Culture>
+              <Text>Call of SICAR Diagnostic blocks</Text>
+            </AttributeList>
+          </MultilingualTextItem>
+        </ObjectList>
+      </MultilingualText>
+      <SW.Blocks.CompileUnit ID="4" CompositionName="CompileUnits">
+        <AttributeList>
+          <NetworkSource />
+          <ProgrammingLanguage>LAD</ProgrammingLanguage>
+        </AttributeList>
+        <ObjectList>
+          <MultilingualText ID="5" CompositionName="Comment">
+            <ObjectList>
+              <MultilingualTextItem ID="6" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="7" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text>SIEMENS AG / (c)Copyright 2023
+------------------------------------------------------------------------------
+Title:            CallDiagnostic (FC16)
+Comment/Function: Call of SICAR Diagnostic blocks
+Library/Family:   Diag
+Author:           SICAR
+Tested with:      ---
+Engineering:      TIA Portal V19
+Restrictions:     -
+Requirements:     ---
+------------------------------------------------------------------------------
+Change log table:
+Version | Date | Expert in charge | Changes applied
+-------|---------|-------------|--------------------------------------------
+01.00.00 | 01.01.1999 | Person x | First released version
+01.00.01 | 02.01.1999 | Person y | Block was Updated </Text>
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+          <MultilingualText ID="8" CompositionName="Title">
+            <ObjectList>
+              <MultilingualTextItem ID="9" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="A" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text>BLOCK INFO HEADER</Text>
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+        </ObjectList>
+      </SW.Blocks.CompileUnit>
+      <SW.Blocks.CompileUnit ID="B" CompositionName="CompileUnits">
+        <AttributeList>
+          <NetworkSource><FlgNet xmlns="http://www.siemens.com/automation/Openness/SW/NetworkSource/FlgNet/v5">
+  <Parts>
+    <Access Scope="LiteralConstant" UId="21">
+      <Constant>
+        <ConstantType>Bool</ConstantType>
+        <ConstantValue>FALSE</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="TypedConstant" UId="22">
+      <Constant>
+        <ConstantValue>WSTRING#'PN_DIAGNOSTIC'</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="GlobalConstant" UId="23">
+      <Constant Name="TEXT_LIST_ID_PN_DEV_DIAG" />
+    </Access>
+    <Access Scope="GlobalConstant" UId="24">
+      <Constant Name="Local~PROFINET_IO-System_1" />
+    </Access>
+    <Access Scope="GlobalVariable" UId="25">
+      <Symbol>
+        <Component Name="Global.Data" />
+        <Component Name="general" />
+        <Component Name="firstCycle" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalConstant" UId="26">
+      <Constant Name="MAX_NO_OF_DEVICES_X1" />
+    </Access>
+    <Access Scope="GlobalConstant" UId="27">
+      <Constant Name="MAX_NO_OF_MODULES_X1" />
+    </Access>
+    <Access Scope="GlobalVariable" UId="28">
+      <Symbol>
+        <Component Name="Global.Data" />
+        <Component Name="general" />
+        <Component Name="acknowledge" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="29">
+      <Symbol>
+        <Component Name="PNDevDiagInterface_X1" />
+      </Symbol>
+    </Access>
+    <Access Scope="LiteralConstant" UId="30">
+      <Constant>
+        <ConstantType>Bool</ConstantType>
+        <ConstantValue>FALSE</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="TypedConstant" UId="31">
+      <Constant>
+        <ConstantValue>WSTRING#'PN_DIAGNOSTIC'</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="GlobalConstant" UId="32">
+      <Constant Name="TEXT_LIST_ID_PN_DEV_DIAG" />
+    </Access>
+    <Access Scope="GlobalConstant" UId="33">
+      <Constant Name="Local~PROFINET_IO-System" />
+    </Access>
+    <Access Scope="GlobalVariable" UId="34">
+      <Symbol>
+        <Component Name="Global.Data" />
+        <Component Name="general" />
+        <Component Name="firstCycle" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalConstant" UId="35">
+      <Constant Name="MAX_NO_OF_DEVICES_X2" />
+    </Access>
+    <Access Scope="GlobalConstant" UId="36">
+      <Constant Name="MAX_NO_OF_MODULES_X2" />
+    </Access>
+    <Access Scope="GlobalVariable" UId="37">
+      <Symbol>
+        <Component Name="Global.Data" />
+        <Component Name="general" />
+        <Component Name="acknowledge" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="38">
+      <Symbol>
+        <Component Name="PNDevDiagInterface_X2" />
+      </Symbol>
+    </Access>
+    <Access Scope="LiteralConstant" UId="39">
+      <Constant>
+        <ConstantType>Bool</ConstantType>
+        <ConstantValue>FALSE</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="GlobalConstant" UId="40">
+      <Constant Name="BA060AZSISP200~BA060AZSISP200" />
+    </Access>
+    <Access Scope="LiteralConstant" UId="41">
+      <Constant>
+        <ConstantType>DWord</ConstantType>
+        <ConstantValue>16#00000000</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="GlobalVariable" UId="42">
+      <Symbol>
+        <Component Name="PNDevDiagInterface_X1" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="43">
+      <Symbol>
+        <Component Name="InstProfinetDeviceDiag_x1" />
+        <Component Name="statDevDiagInternal" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="44">
+      <Symbol>
+        <Component Name="tempHardwareOKexample" />
+      </Symbol>
+    </Access>
+    <Access Scope="LiteralConstant" UId="45">
+      <Constant>
+        <ConstantType>Bool</ConstantType>
+        <ConstantValue>FALSE</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="GlobalConstant" UId="46">
+      <Constant Name="BA060AZSISP500~BA060AZSISP1" />
+    </Access>
+    <Access Scope="LiteralConstant" UId="47">
+      <Constant>
+        <ConstantType>DWord</ConstantType>
+        <ConstantValue>16#00000000</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="GlobalVariable" UId="48">
+      <Symbol>
+        <Component Name="PNDevDiagInterface_X2" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="49">
+      <Symbol>
+        <Component Name="InstProfinetDeviceDiag_x2" />
+        <Component Name="statDevDiagInternal" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="50">
+      <Symbol>
+        <Component Name="tempHardwareOKexample" />
+      </Symbol>
+    </Access>
+    <Part Name="Contact" UId="51" />
+    <Call UId="52">
+      <CallInfo Name="LAF_ProfinetDevDiag" BlockType="FB">
+        <Instance Scope="GlobalVariable" UId="53">
+          <Component Name="InstProfinetDeviceDiag_x1" />
+        </Instance>
+        <Parameter Name="plantIdentifier" Section="Input" Type="WString[#MAX_CHAR]" />
+        <Parameter Name="textListId" Section="Input" Type="Int" />
+        <Parameter Name="localProfinetSystem" Section="Input" Type="HW_IOSYSTEM" />
+        <Parameter Name="firstCycle" Section="Input" Type="Bool" />
+        <Parameter Name="maxDevicesDiag" Section="Input" Type="DInt" />
+        <Parameter Name="maxModulesDiag" Section="Input" Type="DInt" />
+        <Parameter Name="ackAlarms" Section="Input" Type="Bool" />
+        <Parameter Name="hideAlarmMask" Section="Input" Type="Word" />
+        <Parameter Name="generalAlarm" Section="Output" Type="Bool" />
+        <Parameter Name="deviceFaulty" Section="Output" Type="Bool" />
+        <Parameter Name="deviceProblem" Section="Output" Type="Bool" />
+        <Parameter Name="deviceDeactivated" Section="Output" Type="Bool" />
+        <Parameter Name="deviceNotPresent" Section="Output" Type="Bool" />
+        <Parameter Name="interfaceDevDiag" Section="InOut" Type="&quot;LAF_typeDevDiagInterface&quot;" />
+      </CallInfo>
+    </Call>
+    <Part Name="Contact" UId="54" />
+    <Call UId="55">
+      <CallInfo Name="LAF_ProfinetDevDiag" BlockType="FB">
+        <Instance Scope="GlobalVariable" UId="56">
+          <Component Name="InstProfinetDeviceDiag_x2" />
+        </Instance>
+        <Parameter Name="plantIdentifier" Section="Input" Type="WString[#MAX_CHAR]" />
+        <Parameter Name="textListId" Section="Input" Type="Int" />
+        <Parameter Name="localProfinetSystem" Section="Input" Type="HW_IOSYSTEM" />
+        <Parameter Name="firstCycle" Section="Input" Type="Bool" />
+        <Parameter Name="maxDevicesDiag" Section="Input" Type="DInt" />
+        <Parameter Name="maxModulesDiag" Section="Input" Type="DInt" />
+        <Parameter Name="ackAlarms" Section="Input" Type="Bool" />
+        <Parameter Name="hideAlarmMask" Section="Input" Type="Word" />
+        <Parameter Name="generalAlarm" Section="Output" Type="Bool" />
+        <Parameter Name="deviceFaulty" Section="Output" Type="Bool" />
+        <Parameter Name="deviceProblem" Section="Output" Type="Bool" />
+        <Parameter Name="deviceDeactivated" Section="Output" Type="Bool" />
+        <Parameter Name="deviceNotPresent" Section="Output" Type="Bool" />
+        <Parameter Name="interfaceDevDiag" Section="InOut" Type="&quot;LAF_typeDevDiagInterface&quot;" />
+      </CallInfo>
+    </Call>
+    <Part Name="Contact" UId="57" />
+    <Call UId="58">
+      <CallInfo Name="LGM_HardwareOk" BlockType="FC">
+        <Parameter Name="hwID_ProfinetPort" Section="Input" Type="HW_INTERFACE" />
+        <Parameter Name="slotMask" Section="Input" Type="DWord" />
+        <Parameter Name="hardwareOK" Section="Output" Type="Bool" />
+        <Parameter Name="interfaceDevDiag" Section="InOut" Type="&quot;LAF_typeDevDiagInterface&quot;" />
+        <Parameter Name="pnDeviceData" Section="InOut" Type="&quot;LAF_typeDevDiagInternal&quot;" />
+      </CallInfo>
+    </Call>
+    <Part Name="Contact" UId="59" />
+    <Call UId="60">
+      <CallInfo Name="LGM_HardwareOk" BlockType="FC">
+        <Parameter Name="hwID_ProfinetPort" Section="Input" Type="HW_INTERFACE" />
+        <Parameter Name="slotMask" Section="Input" Type="DWord" />
+        <Parameter Name="hardwareOK" Section="Output" Type="Bool" />
+        <Parameter Name="interfaceDevDiag" Section="InOut" Type="&quot;LAF_typeDevDiagInterface&quot;" />
+        <Parameter Name="pnDeviceData" Section="InOut" Type="&quot;LAF_typeDevDiagInternal&quot;" />
+      </CallInfo>
+    </Call>
+  </Parts>
+  <Wires>
+    <Wire UId="73">
+      <Powerrail />
+      <NameCon UId="51" Name="in" />
+      <NameCon UId="54" Name="in" />
+      <NameCon UId="57" Name="in" />
+      <NameCon UId="59" Name="in" />
+    </Wire>
+    <Wire UId="74">
+      <IdentCon UId="21" />
+      <NameCon UId="51" Name="operand" />
+    </Wire>
+    <Wire UId="75">
+      <NameCon UId="51" Name="out" />
+      <NameCon UId="52" Name="en" />
+    </Wire>
+    <Wire UId="76">
+      <IdentCon UId="22" />
+      <NameCon UId="52" Name="plantIdentifier" />
+    </Wire>
+    <Wire UId="77">
+      <IdentCon UId="23" />
+      <NameCon UId="52" Name="textListId" />
+    </Wire>
+    <Wire UId="78">
+      <IdentCon UId="24" />
+      <NameCon UId="52" Name="localProfinetSystem" />
+    </Wire>
+    <Wire UId="79">
+      <IdentCon UId="25" />
+      <NameCon UId="52" Name="firstCycle" />
+    </Wire>
+    <Wire UId="80">
+      <IdentCon UId="26" />
+      <NameCon UId="52" Name="maxDevicesDiag" />
+    </Wire>
+    <Wire UId="81">
+      <IdentCon UId="27" />
+      <NameCon UId="52" Name="maxModulesDiag" />
+    </Wire>
+    <Wire UId="82">
+      <IdentCon UId="28" />
+      <NameCon UId="52" Name="ackAlarms" />
+    </Wire>
+    <Wire UId="83">
+      <OpenCon UId="61" />
+      <NameCon UId="52" Name="hideAlarmMask" />
+    </Wire>
+    <Wire UId="84">
+      <IdentCon UId="29" />
+      <NameCon UId="52" Name="interfaceDevDiag" />
+    </Wire>
+    <Wire UId="85">
+      <NameCon UId="52" Name="generalAlarm" />
+      <OpenCon UId="62" />
+    </Wire>
+    <Wire UId="86">
+      <NameCon UId="52" Name="deviceFaulty" />
+      <OpenCon UId="63" />
+    </Wire>
+    <Wire UId="87">
+      <NameCon UId="52" Name="deviceProblem" />
+      <OpenCon UId="64" />
+    </Wire>
+    <Wire UId="88">
+      <NameCon UId="52" Name="deviceDeactivated" />
+      <OpenCon UId="65" />
+    </Wire>
+    <Wire UId="89">
+      <NameCon UId="52" Name="deviceNotPresent" />
+      <OpenCon UId="66" />
+    </Wire>
+    <Wire UId="90">
+      <IdentCon UId="30" />
+      <NameCon UId="54" Name="operand" />
+    </Wire>
+    <Wire UId="91">
+      <NameCon UId="54" Name="out" />
+      <NameCon UId="55" Name="en" />
+    </Wire>
+    <Wire UId="92">
+      <IdentCon UId="31" />
+      <NameCon UId="55" Name="plantIdentifier" />
+    </Wire>
+    <Wire UId="93">
+      <IdentCon UId="32" />
+      <NameCon UId="55" Name="textListId" />
+    </Wire>
+    <Wire UId="94">
+      <IdentCon UId="33" />
+      <NameCon UId="55" Name="localProfinetSystem" />
+    </Wire>
+    <Wire UId="95">
+      <IdentCon UId="34" />
+      <NameCon UId="55" Name="firstCycle" />
+    </Wire>
+    <Wire UId="96">
+      <IdentCon UId="35" />
+      <NameCon UId="55" Name="maxDevicesDiag" />
+    </Wire>
+    <Wire UId="97">
+      <IdentCon UId="36" />
+      <NameCon UId="55" Name="maxModulesDiag" />
+    </Wire>
+    <Wire UId="98">
+      <IdentCon UId="37" />
+      <NameCon UId="55" Name="ackAlarms" />
+    </Wire>
+    <Wire UId="99">
+      <OpenCon UId="67" />
+      <NameCon UId="55" Name="hideAlarmMask" />
+    </Wire>
+    <Wire UId="100">
+      <IdentCon UId="38" />
+      <NameCon UId="55" Name="interfaceDevDiag" />
+    </Wire>
+    <Wire UId="101">
+      <NameCon UId="55" Name="generalAlarm" />
+      <OpenCon UId="68" />
+    </Wire>
+    <Wire UId="102">
+      <NameCon UId="55" Name="deviceFaulty" />
+      <OpenCon UId="69" />
+    </Wire>
+    <Wire UId="103">
+      <NameCon UId="55" Name="deviceProblem" />
+      <OpenCon UId="70" />
+    </Wire>
+    <Wire UId="104">
+      <NameCon UId="55" Name="deviceDeactivated" />
+      <OpenCon UId="71" />
+    </Wire>
+    <Wire UId="105">
+      <NameCon UId="55" Name="deviceNotPresent" />
+      <OpenCon UId="72" />
+    </Wire>
+    <Wire UId="106">
+      <IdentCon UId="39" />
+      <NameCon UId="57" Name="operand" />
+    </Wire>
+    <Wire UId="107">
+      <NameCon UId="57" Name="out" />
+      <NameCon UId="58" Name="en" />
+    </Wire>
+    <Wire UId="108">
+      <IdentCon UId="40" />
+      <NameCon UId="58" Name="hwID_ProfinetPort" />
+    </Wire>
+    <Wire UId="109">
+      <IdentCon UId="41" />
+      <NameCon UId="58" Name="slotMask" />
+    </Wire>
+    <Wire UId="110">
+      <IdentCon UId="42" />
+      <NameCon UId="58" Name="interfaceDevDiag" />
+    </Wire>
+    <Wire UId="111">
+      <IdentCon UId="43" />
+      <NameCon UId="58" Name="pnDeviceData" />
+    </Wire>
+    <Wire UId="112">
+      <NameCon UId="58" Name="hardwareOK" />
+      <IdentCon UId="44" />
+    </Wire>
+    <Wire UId="113">
+      <IdentCon UId="45" />
+      <NameCon UId="59" Name="operand" />
+    </Wire>
+    <Wire UId="114">
+      <NameCon UId="59" Name="out" />
+      <NameCon UId="60" Name="en" />
+    </Wire>
+    <Wire UId="115">
+      <IdentCon UId="46" />
+      <NameCon UId="60" Name="hwID_ProfinetPort" />
+    </Wire>
+    <Wire UId="116">
+      <IdentCon UId="47" />
+      <NameCon UId="60" Name="slotMask" />
+    </Wire>
+    <Wire UId="117">
+      <IdentCon UId="48" />
+      <NameCon UId="60" Name="interfaceDevDiag" />
+    </Wire>
+    <Wire UId="118">
+      <IdentCon UId="49" />
+      <NameCon UId="60" Name="pnDeviceData" />
+    </Wire>
+    <Wire UId="119">
+      <NameCon UId="60" Name="hardwareOK" />
+      <IdentCon UId="50" />
+    </Wire>
+  </Wires>
+</FlgNet></NetworkSource>
+          <ProgrammingLanguage>LAD</ProgrammingLanguage>
+        </AttributeList>
+        <ObjectList>
+          <MultilingualText ID="C" CompositionName="Comment">
+            <ObjectList>
+              <MultilingualTextItem ID="D" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="E" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text>For diagnose the whole profinet devices of this PLC
+</Text>
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+          <MultilingualText ID="F" CompositionName="Title">
+            <ObjectList>
+              <MultilingualTextItem ID="10" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="11" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text>Call: Diagnostic Profinet Devices</Text>
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+        </ObjectList>
+      </SW.Blocks.CompileUnit>
+      <SW.Blocks.CompileUnit ID="12" CompositionName="CompileUnits">
+        <AttributeList>
+          <NetworkSource><FlgNet xmlns="http://www.siemens.com/automation/Openness/SW/NetworkSource/FlgNet/v5">
+  <Parts>
+    <Access Scope="GlobalVariable" UId="21">
+      <Symbol>
+        <Component Name="InterfaceSignals" />
+        <Component Name="HMI_Interface_Mode" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="22">
+      <Symbol>
+        <Component Name="Unit1.EmNodes" />
+        <Component Name="BA030" />
+        <Component Name="InspectionToStack" />
+        <Component Name="InterfaceData" />
+        <Component Name="Bool" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="23">
+      <Symbol>
+        <Component Name="Unit1.EmNodes" />
+        <Component Name="BA030" />
+        <Component Name="StackToInspection" />
+        <Component Name="InterfaceData" />
+        <Component Name="Bool" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="24">
+      <Symbol>
+        <Component Name="InterfaceSignals" />
+        <Component Name="Button Value" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>1</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="25">
+      <Symbol>
+        <Component Name="InspectionToStack30" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="26">
+      <Symbol>
+        <Component Name="StackToInspection30" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="27">
+      <Symbol>
+        <Component Name="InterfaceSignals" />
+        <Component Name="HMI_Interface_Mode" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="28">
+      <Symbol>
+        <Component Name="Unit1.EmNodes" />
+        <Component Name="BA040" />
+        <Component Name="InspectionToStack" />
+        <Component Name="InterfaceData" />
+        <Component Name="Bool" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="29">
+      <Symbol>
+        <Component Name="Unit1.EmNodes" />
+        <Component Name="BA040" />
+        <Component Name="StackToInspection" />
+        <Component Name="InterfaceData" />
+        <Component Name="Bool" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="30">
+      <Symbol>
+        <Component Name="InterfaceSignals" />
+        <Component Name="Button Value" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>2</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="31">
+      <Symbol>
+        <Component Name="InspectionToStack40" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="32">
+      <Symbol>
+        <Component Name="StackToInspection40" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalConstant" UId="33">
+      <Constant Name="TRUE" />
+    </Access>
+    <Access Scope="GlobalVariable" UId="34">
+      <Symbol>
+        <Component Name="Unit1.EmNodes" />
+        <Component Name="unitStatus" />
+        <Component Name="mode" />
+        <Component Name="production" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="35">
+      <Symbol>
+        <Component Name="InterfaceSignals" />
+        <Component Name="HMI_Interface_Mode" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="36">
+      <Symbol>
+        <Component Name="InterfaceSignals" />
+        <Component Name="HMI_Interface_Mode" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="37">
+      <Symbol>
+        <Component Name="Unit1.EmNodes" />
+        <Component Name="InterfaceTestMode" />
+      </Symbol>
+    </Access>
+    <Call UId="38">
+      <CallInfo Name="CallInterfaceSignals" BlockType="FB">
+        <Instance Scope="GlobalVariable" UId="39">
+          <Component Name="InstInterfaceSignals" />
+        </Instance>
+      </CallInfo>
+    </Call>
+    <Call UId="40">
+      <CallInfo Name="CallInterfaceSignalsConv" BlockType="FB">
+        <Instance Scope="GlobalVariable" UId="41">
+          <Component Name="InterfaceSignalsConv_BA30" />
+        </Instance>
+        <Parameter Name="InterfaceTestMode" Section="Input" Type="Bool" />
+        <Parameter Name="signals_I2S" Section="Output" Type="&quot;typeInspectionToStack&quot;" />
+        <Parameter Name="signals_S2I" Section="Output" Type="&quot;typeStackToInspection&quot;" />
+        <Parameter Name="Comm_I2S" Section="InOut" Type="Array[0..95] of Bool" />
+        <Parameter Name="Comm_S2I" Section="InOut" Type="Array[0..95] of Bool" />
+        <Parameter Name="InterfaceTestButton" Section="InOut" Type="&quot;LER_SignalsInput&quot;" />
+      </CallInfo>
+    </Call>
+    <Call UId="42">
+      <CallInfo Name="CallInterfaceSignalsConv" BlockType="FB">
+        <Instance Scope="GlobalVariable" UId="43">
+          <Component Name="InterfaceSignalsConv_BA40" />
+        </Instance>
+        <Parameter Name="InterfaceTestMode" Section="Input" Type="Bool" />
+        <Parameter Name="signals_I2S" Section="Output" Type="&quot;typeInspectionToStack&quot;" />
+        <Parameter Name="signals_S2I" Section="Output" Type="&quot;typeStackToInspection&quot;" />
+        <Parameter Name="Comm_I2S" Section="InOut" Type="Array[0..95] of Bool" />
+        <Parameter Name="Comm_S2I" Section="InOut" Type="Array[0..95] of Bool" />
+        <Parameter Name="InterfaceTestButton" Section="InOut" Type="&quot;LER_SignalsInput&quot;" />
+      </CallInfo>
+    </Call>
+    <Part Name="Contact" UId="44" />
+    <Part Name="Contact" UId="45" />
+    <Part Name="RCoil" UId="46" />
+    <Part Name="Contact" UId="47" />
+    <Part Name="Coil" UId="48" />
+  </Parts>
+  <Wires>
+    <Wire UId="49">
+      <Powerrail />
+      <NameCon UId="38" Name="en" />
+      <NameCon UId="40" Name="en" />
+      <NameCon UId="44" Name="in" />
+    </Wire>
+    <Wire UId="50">
+      <IdentCon UId="21" />
+      <NameCon UId="40" Name="InterfaceTestMode" />
+    </Wire>
+    <Wire UId="51">
+      <IdentCon UId="22" />
+      <NameCon UId="40" Name="Comm_I2S" />
+    </Wire>
+    <Wire UId="52">
+      <IdentCon UId="23" />
+      <NameCon UId="40" Name="Comm_S2I" />
+    </Wire>
+    <Wire UId="53">
+      <IdentCon UId="24" />
+      <NameCon UId="40" Name="InterfaceTestButton" />
+    </Wire>
+    <Wire UId="54">
+      <NameCon UId="40" Name="eno" />
+      <NameCon UId="42" Name="en" />
+    </Wire>
+    <Wire UId="55">
+      <NameCon UId="40" Name="signals_I2S" />
+      <IdentCon UId="25" />
+    </Wire>
+    <Wire UId="56">
+      <NameCon UId="40" Name="signals_S2I" />
+      <IdentCon UId="26" />
+    </Wire>
+    <Wire UId="57">
+      <IdentCon UId="27" />
+      <NameCon UId="42" Name="InterfaceTestMode" />
+    </Wire>
+    <Wire UId="58">
+      <IdentCon UId="28" />
+      <NameCon UId="42" Name="Comm_I2S" />
+    </Wire>
+    <Wire UId="59">
+      <IdentCon UId="29" />
+      <NameCon UId="42" Name="Comm_S2I" />
+    </Wire>
+    <Wire UId="60">
+      <IdentCon UId="30" />
+      <NameCon UId="42" Name="InterfaceTestButton" />
+    </Wire>
+    <Wire UId="61">
+      <NameCon UId="42" Name="signals_I2S" />
+      <IdentCon UId="31" />
+    </Wire>
+    <Wire UId="62">
+      <NameCon UId="42" Name="signals_S2I" />
+      <IdentCon UId="32" />
+    </Wire>
+    <Wire UId="63">
+      <IdentCon UId="33" />
+      <NameCon UId="44" Name="operand" />
+    </Wire>
+    <Wire UId="64">
+      <NameCon UId="44" Name="out" />
+      <NameCon UId="45" Name="in" />
+      <NameCon UId="47" Name="in" />
+    </Wire>
+    <Wire UId="65">
+      <IdentCon UId="34" />
+      <NameCon UId="45" Name="operand" />
+    </Wire>
+    <Wire UId="66">
+      <NameCon UId="45" Name="out" />
+      <NameCon UId="46" Name="in" />
+    </Wire>
+    <Wire UId="67">
+      <IdentCon UId="35" />
+      <NameCon UId="46" Name="operand" />
+    </Wire>
+    <Wire UId="68">
+      <IdentCon UId="36" />
+      <NameCon UId="47" Name="operand" />
+    </Wire>
+    <Wire UId="69">
+      <NameCon UId="47" Name="out" />
+      <NameCon UId="48" Name="in" />
+    </Wire>
+    <Wire UId="70">
+      <IdentCon UId="37" />
+      <NameCon UId="48" Name="operand" />
+    </Wire>
+  </Wires>
+</FlgNet></NetworkSource>
+          <ProgrammingLanguage>LAD</ProgrammingLanguage>
+        </AttributeList>
+        <ObjectList>
+          <MultilingualText ID="13" CompositionName="Comment">
+            <ObjectList>
+              <MultilingualTextItem ID="14" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="15" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text>Call the interface bool blocks to show boolean signals on the HMI</Text>
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+          <MultilingualText ID="16" CompositionName="Title">
+            <ObjectList>
+              <MultilingualTextItem ID="17" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="18" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text>Call: Diagnostic Bool Interface Signals</Text>
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+        </ObjectList>
+      </SW.Blocks.CompileUnit>
+      <SW.Blocks.CompileUnit ID="19" CompositionName="CompileUnits">
+        <AttributeList>
+          <NetworkSource><FlgNet xmlns="http://www.siemens.com/automation/Openness/SW/NetworkSource/FlgNet/v5">
+  <Parts>
+    <Access Scope="GlobalVariable" UId="21">
+      <Symbol>
+        <Component Name="MotorStarterHMI" />
+        <Component Name="unitMotorstarter" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalConstant" UId="22">
+      <Constant Name="NO_OF_ET200SPMOTORSTARTER" />
+    </Access>
+    <Access Scope="GlobalVariable" UId="23">
+      <Symbol>
+        <Component Name="Et200SpMotorstarterInterfaceHmi" />
+      </Symbol>
+    </Access>
+    <Call UId="24">
+      <CallInfo Name="GetMotorstarterSignals" BlockType="FB">
+        <Instance Scope="GlobalVariable" UId="25">
+          <Component Name="instGetMotorstarterSignals" />
+        </Instance>
+        <Parameter Name="Et200SpMotorstarterInterfaceAllUnits" Section="Input" Type="Array[1..&quot;NO_OF_UNITS&quot;] of &quot;typeEmMotorStarterInterface&quot;" />
+        <Parameter Name="numberOfMS" Section="Input" Type="USInt" />
+        <Parameter Name="selectedUnit" Section="Output" Type="USInt" />
+        <Parameter Name="selectedEM" Section="Output" Type="USInt" />
+        <Parameter Name="error" Section="Output" Type="Word" />
+        <Parameter Name="Et200SpMotorstarterInterfaceHmi" Section="InOut" Type="&quot;typeEt200SpMotorstarterInterfaceHmi&quot;" />
+      </CallInfo>
+    </Call>
+  </Parts>
+  <Wires>
+    <Wire UId="29">
+      <Powerrail />
+      <NameCon UId="24" Name="en" />
+    </Wire>
+    <Wire UId="30">
+      <IdentCon UId="21" />
+      <NameCon UId="24" Name="Et200SpMotorstarterInterfaceAllUnits" />
+    </Wire>
+    <Wire UId="31">
+      <IdentCon UId="22" />
+      <NameCon UId="24" Name="numberOfMS" />
+    </Wire>
+    <Wire UId="32">
+      <IdentCon UId="23" />
+      <NameCon UId="24" Name="Et200SpMotorstarterInterfaceHmi" />
+    </Wire>
+    <Wire UId="33">
+      <NameCon UId="24" Name="selectedUnit" />
+      <OpenCon UId="26" />
+    </Wire>
+    <Wire UId="34">
+      <NameCon UId="24" Name="selectedEM" />
+      <OpenCon UId="27" />
+    </Wire>
+    <Wire UId="35">
+      <NameCon UId="24" Name="error" />
+      <OpenCon UId="28" />
+    </Wire>
+  </Wires>
+</FlgNet></NetworkSource>
+          <ProgrammingLanguage>LAD</ProgrammingLanguage>
+        </AttributeList>
+        <ObjectList>
+          <MultilingualText ID="1A" CompositionName="Comment">
+            <ObjectList>
+              <MultilingualTextItem ID="1B" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="1C" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+          <MultilingualText ID="1D" CompositionName="Title">
+            <ObjectList>
+              <MultilingualTextItem ID="1E" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="1F" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text>Call: Diagnostics Motorstarter Signals</Text>
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+        </ObjectList>
+      </SW.Blocks.CompileUnit>
+      <SW.Blocks.CompileUnit ID="20" CompositionName="CompileUnits">
+        <AttributeList>
+          <NetworkSource><FlgNet xmlns="http://www.siemens.com/automation/Openness/SW/NetworkSource/FlgNet/v5">
+  <Parts>
+    <Access Scope="LiteralConstant" UId="21">
+      <Constant>
+        <ConstantType>Bool</ConstantType>
+        <ConstantValue>TRUE</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="GlobalVariable" UId="22">
+      <Symbol>
+        <Component Name="DriveDiagConfig" />
+        <Component Name="driveObjects" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="23">
+      <Symbol>
+        <Component Name="DriveDiagInterfaceHmi" />
+        <Component Name="diagStatus" />
+      </Symbol>
+    </Access>
+    <Access Scope="LiteralConstant" UId="24">
+      <Constant>
+        <ConstantType>Bool</ConstantType>
+        <ConstantValue>TRUE</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="GlobalVariable" UId="25">
+      <Symbol>
+        <Component Name="DriveDiagConfig" />
+        <Component Name="driveObjects" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="26">
+      <Symbol>
+        <Component Name="DriveDiagInterfaceHmi" />
+        <Component Name="diagStatus" />
+      </Symbol>
+    </Access>
+    <Access Scope="LiteralConstant" UId="27">
+      <Constant>
+        <ConstantType>Bool</ConstantType>
+        <ConstantValue>TRUE</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="GlobalVariable" UId="28">
+      <Symbol>
+        <Component Name="DriveDiagConfig" />
+        <Component Name="driveObjects" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="29">
+      <Symbol>
+        <Component Name="DriveDiagInterfaceHmi" />
+        <Component Name="diagStatus" />
+      </Symbol>
+    </Access>
+    <Access Scope="LiteralConstant" UId="30">
+      <Constant>
+        <ConstantType>Bool</ConstantType>
+        <ConstantValue>TRUE</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="GlobalVariable" UId="31">
+      <Symbol>
+        <Component Name="DriveDiagConfig" />
+        <Component Name="driveObjects" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="32">
+      <Symbol>
+        <Component Name="DriveDiagInterfaceHmi" />
+        <Component Name="diagStatus" />
+      </Symbol>
+    </Access>
+    <Call UId="33">
+      <CallInfo Name="LAF_GetAxisStatus" BlockType="FB">
+        <Instance Scope="GlobalVariable" UId="34">
+          <Component Name="InstGetAxisStatus" />
+        </Instance>
+        <Parameter Name="enable" Section="Input" Type="Bool" />
+        <Parameter Name="valid" Section="Output" Type="Bool" />
+        <Parameter Name="busy" Section="Output" Type="Bool" />
+        <Parameter Name="error" Section="Output" Type="Bool" />
+        <Parameter Name="status" Section="Output" Type="Word" />
+        <Parameter Name="diagnostics" Section="Output" Type="&quot;LAF_typeDiagnostics&quot;" />
+        <Parameter Name="configuration" Section="InOut" Type="Array[*] of &quot;LAF_typeDriveDiagConfig&quot;" />
+        <Parameter Name="moduleInterface" Section="InOut" Type="&quot;LAF_typeDriveDiagInterfaceHmi&quot;" />
+      </CallInfo>
+    </Call>
+    <Call UId="35">
+      <CallInfo Name="LAF_GetSinaStatus" BlockType="FB">
+        <Instance Scope="GlobalVariable" UId="36">
+          <Component Name="InstGetSinaStatus" />
+        </Instance>
+        <Parameter Name="enable" Section="Input" Type="Bool" />
+        <Parameter Name="valid" Section="Output" Type="Bool" />
+        <Parameter Name="busy" Section="Output" Type="Bool" />
+        <Parameter Name="error" Section="Output" Type="Bool" />
+        <Parameter Name="status" Section="Output" Type="Word" />
+        <Parameter Name="diagnostics" Section="Output" Type="&quot;LAF_typeDiagnostics&quot;" />
+        <Parameter Name="statusWriteRecord" Section="Output" Type="DWord" />
+        <Parameter Name="statusReadRecord" Section="Output" Type="DWord" />
+        <Parameter Name="configuration" Section="InOut" Type="Array[*] of &quot;LAF_typeDriveDiagConfig&quot;" />
+        <Parameter Name="moduleInterface" Section="InOut" Type="&quot;LAF_typeDriveDiagInterfaceHmi&quot;" />
+      </CallInfo>
+    </Call>
+    <Call UId="37">
+      <CallInfo Name="LAF_GetSinaAlarms" BlockType="FB">
+        <Instance Scope="GlobalVariable" UId="38">
+          <Component Name="InstGetSinaAlarms" />
+        </Instance>
+        <Parameter Name="enable" Section="Input" Type="Bool" />
+        <Parameter Name="valid" Section="Output" Type="Bool" />
+        <Parameter Name="busy" Section="Output" Type="Bool" />
+        <Parameter Name="error" Section="Output" Type="Bool" />
+        <Parameter Name="status" Section="Output" Type="Word" />
+        <Parameter Name="diagnostics" Section="Output" Type="&quot;LAF_typeDiagnostics&quot;" />
+        <Parameter Name="statusWriteRecord" Section="Output" Type="DWord" />
+        <Parameter Name="statusReadRecord" Section="Output" Type="DWord" />
+        <Parameter Name="configuration" Section="InOut" Type="Array[*] of &quot;LAF_typeDriveDiagConfig&quot;" />
+        <Parameter Name="moduleInterface" Section="InOut" Type="&quot;LAF_typeDriveDiagInterfaceHmi&quot;" />
+      </CallInfo>
+    </Call>
+    <Call UId="39">
+      <CallInfo Name="LAF_GetSinaEpos" BlockType="FB">
+        <Instance Scope="GlobalVariable" UId="40">
+          <Component Name="InstGetSinaEpos" />
+        </Instance>
+        <Parameter Name="enable" Section="Input" Type="Bool" />
+        <Parameter Name="valid" Section="Output" Type="Bool" />
+        <Parameter Name="busy" Section="Output" Type="Bool" />
+        <Parameter Name="error" Section="Output" Type="Bool" />
+        <Parameter Name="status" Section="Output" Type="Word" />
+        <Parameter Name="diagnostics" Section="Output" Type="&quot;LAF_typeDiagnostics&quot;" />
+        <Parameter Name="statusWriteRecord" Section="Output" Type="DWord" />
+        <Parameter Name="statusReadRecord" Section="Output" Type="DWord" />
+        <Parameter Name="configuration" Section="InOut" Type="Array[*] of &quot;LAF_typeDriveDiagConfig&quot;" />
+        <Parameter Name="moduleInterface" Section="InOut" Type="&quot;LAF_typeDriveDiagInterfaceHmi&quot;" />
+      </CallInfo>
+    </Call>
+  </Parts>
+  <Wires>
+    <Wire UId="67">
+      <Powerrail />
+      <NameCon UId="33" Name="en" />
+      <NameCon UId="35" Name="en" />
+      <NameCon UId="37" Name="en" />
+      <NameCon UId="39" Name="en" />
+    </Wire>
+    <Wire UId="68">
+      <IdentCon UId="21" />
+      <NameCon UId="33" Name="enable" />
+    </Wire>
+    <Wire UId="69">
+      <IdentCon UId="22" />
+      <NameCon UId="33" Name="configuration" />
+    </Wire>
+    <Wire UId="70">
+      <IdentCon UId="23" />
+      <NameCon UId="33" Name="moduleInterface" />
+    </Wire>
+    <Wire UId="71">
+      <NameCon UId="33" Name="valid" />
+      <OpenCon UId="41" />
+    </Wire>
+    <Wire UId="72">
+      <NameCon UId="33" Name="busy" />
+      <OpenCon UId="42" />
+    </Wire>
+    <Wire UId="73">
+      <NameCon UId="33" Name="error" />
+      <OpenCon UId="43" />
+    </Wire>
+    <Wire UId="74">
+      <NameCon UId="33" Name="status" />
+      <OpenCon UId="44" />
+    </Wire>
+    <Wire UId="75">
+      <NameCon UId="33" Name="diagnostics" />
+      <OpenCon UId="45" />
+    </Wire>
+    <Wire UId="76">
+      <IdentCon UId="24" />
+      <NameCon UId="35" Name="enable" />
+    </Wire>
+    <Wire UId="77">
+      <IdentCon UId="25" />
+      <NameCon UId="35" Name="configuration" />
+    </Wire>
+    <Wire UId="78">
+      <IdentCon UId="26" />
+      <NameCon UId="35" Name="moduleInterface" />
+    </Wire>
+    <Wire UId="79">
+      <NameCon UId="35" Name="valid" />
+      <OpenCon UId="46" />
+    </Wire>
+    <Wire UId="80">
+      <NameCon UId="35" Name="busy" />
+      <OpenCon UId="47" />
+    </Wire>
+    <Wire UId="81">
+      <NameCon UId="35" Name="error" />
+      <OpenCon UId="48" />
+    </Wire>
+    <Wire UId="82">
+      <NameCon UId="35" Name="status" />
+      <OpenCon UId="49" />
+    </Wire>
+    <Wire UId="83">
+      <NameCon UId="35" Name="diagnostics" />
+      <OpenCon UId="50" />
+    </Wire>
+    <Wire UId="84">
+      <NameCon UId="35" Name="statusWriteRecord" />
+      <OpenCon UId="51" />
+    </Wire>
+    <Wire UId="85">
+      <NameCon UId="35" Name="statusReadRecord" />
+      <OpenCon UId="52" />
+    </Wire>
+    <Wire UId="86">
+      <IdentCon UId="27" />
+      <NameCon UId="37" Name="enable" />
+    </Wire>
+    <Wire UId="87">
+      <IdentCon UId="28" />
+      <NameCon UId="37" Name="configuration" />
+    </Wire>
+    <Wire UId="88">
+      <IdentCon UId="29" />
+      <NameCon UId="37" Name="moduleInterface" />
+    </Wire>
+    <Wire UId="89">
+      <NameCon UId="37" Name="valid" />
+      <OpenCon UId="53" />
+    </Wire>
+    <Wire UId="90">
+      <NameCon UId="37" Name="busy" />
+      <OpenCon UId="54" />
+    </Wire>
+    <Wire UId="91">
+      <NameCon UId="37" Name="error" />
+      <OpenCon UId="55" />
+    </Wire>
+    <Wire UId="92">
+      <NameCon UId="37" Name="status" />
+      <OpenCon UId="56" />
+    </Wire>
+    <Wire UId="93">
+      <NameCon UId="37" Name="diagnostics" />
+      <OpenCon UId="57" />
+    </Wire>
+    <Wire UId="94">
+      <NameCon UId="37" Name="statusWriteRecord" />
+      <OpenCon UId="58" />
+    </Wire>
+    <Wire UId="95">
+      <NameCon UId="37" Name="statusReadRecord" />
+      <OpenCon UId="59" />
+    </Wire>
+    <Wire UId="96">
+      <IdentCon UId="30" />
+      <NameCon UId="39" Name="enable" />
+    </Wire>
+    <Wire UId="97">
+      <IdentCon UId="31" />
+      <NameCon UId="39" Name="configuration" />
+    </Wire>
+    <Wire UId="98">
+      <IdentCon UId="32" />
+      <NameCon UId="39" Name="moduleInterface" />
+    </Wire>
+    <Wire UId="99">
+      <NameCon UId="39" Name="valid" />
+      <OpenCon UId="60" />
+    </Wire>
+    <Wire UId="100">
+      <NameCon UId="39" Name="busy" />
+      <OpenCon UId="61" />
+    </Wire>
+    <Wire UId="101">
+      <NameCon UId="39" Name="error" />
+      <OpenCon UId="62" />
+    </Wire>
+    <Wire UId="102">
+      <NameCon UId="39" Name="status" />
+      <OpenCon UId="63" />
+    </Wire>
+    <Wire UId="103">
+      <NameCon UId="39" Name="diagnostics" />
+      <OpenCon UId="64" />
+    </Wire>
+    <Wire UId="104">
+      <NameCon UId="39" Name="statusWriteRecord" />
+      <OpenCon UId="65" />
+    </Wire>
+    <Wire UId="105">
+      <NameCon UId="39" Name="statusReadRecord" />
+      <OpenCon UId="66" />
+    </Wire>
+  </Wires>
+</FlgNet></NetworkSource>
+          <ProgrammingLanguage>LAD</ProgrammingLanguage>
+        </AttributeList>
+        <ObjectList>
+          <MultilingualText ID="21" CompositionName="Comment">
+            <ObjectList>
+              <MultilingualTextItem ID="22" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="23" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+          <MultilingualText ID="24" CompositionName="Title">
+            <ObjectList>
+              <MultilingualTextItem ID="25" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="26" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text>Call: Diagnostics Drives</Text>
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+        </ObjectList>
+      </SW.Blocks.CompileUnit>
+      <SW.Blocks.CompileUnit ID="27" CompositionName="CompileUnits">
+        <AttributeList>
+          <NetworkSource><FlgNet xmlns="http://www.siemens.com/automation/Openness/SW/NetworkSource/FlgNet/v5">
+  <Parts>
+    <Access Scope="GlobalVariable" UId="21">
+      <Symbol>
+        <Component Name="Unit1.EmNodes" />
+        <Component Name="unitStatus" />
+        <Component Name="mode" />
+        <Component Name="production" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalConstant" UId="22">
+      <Constant Name="TRUE" />
+    </Access>
+    <Access Scope="LiteralConstant" UId="23">
+      <Constant>
+        <ConstantType>UInt</ConstantType>
+        <ConstantValue>30</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="GlobalVariable" UId="24">
+      <Symbol>
+        <Component Name="Unit1.EmNodes" />
+        <Component Name="clock" />
+        <Component Name="cycle1000Msec" />
+      </Symbol>
+    </Access>
+    <Access Scope="LiteralConstant" UId="25">
+      <Constant>
+        <ConstantType>LReal</ConstantType>
+        <ConstantValue>561.0</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="GlobalVariable" UId="26">
+      <Symbol>
+        <Component Name="BA060AZSIDR1_JROutPnPLeftAxisX" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="27">
+      <Symbol>
+        <Component Name="DriveDiagConfig" />
+        <Component Name="torqueLoad" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>1</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="28">
+      <Symbol>
+        <Component Name="DriveDiagInterfaceHmi" />
+        <Component Name="torqueLoad" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>1</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="29">
+      <Symbol>
+        <Component Name="Unit1.EmNodes" />
+        <Component Name="unitStatus" />
+        <Component Name="mode" />
+        <Component Name="production" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalConstant" UId="30">
+      <Constant Name="TRUE" />
+    </Access>
+    <Access Scope="LiteralConstant" UId="31">
+      <Constant>
+        <ConstantType>UInt</ConstantType>
+        <ConstantValue>30</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="GlobalVariable" UId="32">
+      <Symbol>
+        <Component Name="Unit1.EmNodes" />
+        <Component Name="clock" />
+        <Component Name="cycle1000Msec" />
+      </Symbol>
+    </Access>
+    <Access Scope="LiteralConstant" UId="33">
+      <Constant>
+        <ConstantType>LReal</ConstantType>
+        <ConstantValue>1.27</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="GlobalVariable" UId="34">
+      <Symbol>
+        <Component Name="BA060AZSIDR2_JROutPnPLeftAxisZ" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="35">
+      <Symbol>
+        <Component Name="DriveDiagConfig" />
+        <Component Name="torqueLoad" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>2</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="36">
+      <Symbol>
+        <Component Name="DriveDiagInterfaceHmi" />
+        <Component Name="torqueLoad" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>2</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="37">
+      <Symbol>
+        <Component Name="Unit1.EmNodes" />
+        <Component Name="unitStatus" />
+        <Component Name="mode" />
+        <Component Name="production" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalConstant" UId="38">
+      <Constant Name="TRUE" />
+    </Access>
+    <Access Scope="LiteralConstant" UId="39">
+      <Constant>
+        <ConstantType>UInt</ConstantType>
+        <ConstantValue>30</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="GlobalVariable" UId="40">
+      <Symbol>
+        <Component Name="Unit1.EmNodes" />
+        <Component Name="clock" />
+        <Component Name="cycle1000Msec" />
+      </Symbol>
+    </Access>
+    <Access Scope="LiteralConstant" UId="41">
+      <Constant>
+        <ConstantType>LReal</ConstantType>
+        <ConstantValue>561.0</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="GlobalVariable" UId="42">
+      <Symbol>
+        <Component Name="BA060AZSIDR3_JROutPnPRightAxisX" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="43">
+      <Symbol>
+        <Component Name="DriveDiagConfig" />
+        <Component Name="torqueLoad" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>3</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="44">
+      <Symbol>
+        <Component Name="DriveDiagInterfaceHmi" />
+        <Component Name="torqueLoad" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>3</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="45">
+      <Symbol>
+        <Component Name="Unit1.EmNodes" />
+        <Component Name="unitStatus" />
+        <Component Name="mode" />
+        <Component Name="production" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalConstant" UId="46">
+      <Constant Name="TRUE" />
+    </Access>
+    <Access Scope="LiteralConstant" UId="47">
+      <Constant>
+        <ConstantType>UInt</ConstantType>
+        <ConstantValue>30</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="GlobalVariable" UId="48">
+      <Symbol>
+        <Component Name="Unit1.EmNodes" />
+        <Component Name="clock" />
+        <Component Name="cycle1000Msec" />
+      </Symbol>
+    </Access>
+    <Access Scope="LiteralConstant" UId="49">
+      <Constant>
+        <ConstantType>LReal</ConstantType>
+        <ConstantValue>1.27</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="GlobalVariable" UId="50">
+      <Symbol>
+        <Component Name="BA060AZSIDR4_JROutPnPRightAxisZ" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="51">
+      <Symbol>
+        <Component Name="DriveDiagConfig" />
+        <Component Name="torqueLoad" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>4</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="52">
+      <Symbol>
+        <Component Name="DriveDiagInterfaceHmi" />
+        <Component Name="torqueLoad" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>4</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="53">
+      <Symbol>
+        <Component Name="Unit1.EmNodes" />
+        <Component Name="unitStatus" />
+        <Component Name="mode" />
+        <Component Name="production" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalConstant" UId="54">
+      <Constant Name="TRUE" />
+    </Access>
+    <Access Scope="LiteralConstant" UId="55">
+      <Constant>
+        <ConstantType>UInt</ConstantType>
+        <ConstantValue>30</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="GlobalVariable" UId="56">
+      <Symbol>
+        <Component Name="Unit1.EmNodes" />
+        <Component Name="clock" />
+        <Component Name="cycle1000Msec" />
+      </Symbol>
+    </Access>
+    <Access Scope="LiteralConstant" UId="57">
+      <Constant>
+        <ConstantType>LReal</ConstantType>
+        <ConstantValue>0.41</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="GlobalVariable" UId="58">
+      <Symbol>
+        <Component Name="BA060AZSIDR5_TopTapeAxisX" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="59">
+      <Symbol>
+        <Component Name="DriveDiagConfig" />
+        <Component Name="torqueLoad" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>5</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="60">
+      <Symbol>
+        <Component Name="DriveDiagInterfaceHmi" />
+        <Component Name="torqueLoad" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>5</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="61">
+      <Symbol>
+        <Component Name="Unit1.EmNodes" />
+        <Component Name="unitStatus" />
+        <Component Name="mode" />
+        <Component Name="production" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalConstant" UId="62">
+      <Constant Name="TRUE" />
+    </Access>
+    <Access Scope="LiteralConstant" UId="63">
+      <Constant>
+        <ConstantType>UInt</ConstantType>
+        <ConstantValue>30</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="GlobalVariable" UId="64">
+      <Symbol>
+        <Component Name="Unit1.EmNodes" />
+        <Component Name="clock" />
+        <Component Name="cycle1000Msec" />
+      </Symbol>
+    </Access>
+    <Access Scope="LiteralConstant" UId="65">
+      <Constant>
+        <ConstantType>LReal</ConstantType>
+        <ConstantValue>1.27</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="GlobalVariable" UId="66">
+      <Symbol>
+        <Component Name="BA060AZSIDR6_TopTapeAxisY" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="67">
+      <Symbol>
+        <Component Name="DriveDiagConfig" />
+        <Component Name="torqueLoad" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>6</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="68">
+      <Symbol>
+        <Component Name="DriveDiagInterfaceHmi" />
+        <Component Name="torqueLoad" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>6</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="69">
+      <Symbol>
+        <Component Name="Unit1.EmNodes" />
+        <Component Name="unitStatus" />
+        <Component Name="mode" />
+        <Component Name="production" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalConstant" UId="70">
+      <Constant Name="TRUE" />
+    </Access>
+    <Access Scope="LiteralConstant" UId="71">
+      <Constant>
+        <ConstantType>UInt</ConstantType>
+        <ConstantValue>30</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="GlobalVariable" UId="72">
+      <Symbol>
+        <Component Name="Unit1.EmNodes" />
+        <Component Name="clock" />
+        <Component Name="cycle1000Msec" />
+      </Symbol>
+    </Access>
+    <Access Scope="LiteralConstant" UId="73">
+      <Constant>
+        <ConstantType>LReal</ConstantType>
+        <ConstantValue>1.27</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="GlobalVariable" UId="74">
+      <Symbol>
+        <Component Name="BA060AZSIDR7_SideTapeFixStageAxisX" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="75">
+      <Symbol>
+        <Component Name="DriveDiagConfig" />
+        <Component Name="torqueLoad" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>7</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="76">
+      <Symbol>
+        <Component Name="DriveDiagInterfaceHmi" />
+        <Component Name="torqueLoad" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>7</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="77">
+      <Symbol>
+        <Component Name="Unit1.EmNodes" />
+        <Component Name="unitStatus" />
+        <Component Name="mode" />
+        <Component Name="production" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalConstant" UId="78">
+      <Constant Name="TRUE" />
+    </Access>
+    <Access Scope="LiteralConstant" UId="79">
+      <Constant>
+        <ConstantType>UInt</ConstantType>
+        <ConstantValue>30</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="GlobalVariable" UId="80">
+      <Symbol>
+        <Component Name="Unit1.EmNodes" />
+        <Component Name="clock" />
+        <Component Name="cycle1000Msec" />
+      </Symbol>
+    </Access>
+    <Access Scope="LiteralConstant" UId="81">
+      <Constant>
+        <ConstantType>LReal</ConstantType>
+        <ConstantValue>1.27</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="GlobalVariable" UId="82">
+      <Symbol>
+        <Component Name="BA060AZSIDR8_SideTapeFixStageAxisC" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="83">
+      <Symbol>
+        <Component Name="DriveDiagConfig" />
+        <Component Name="torqueLoad" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>8</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="84">
+      <Symbol>
+        <Component Name="DriveDiagInterfaceHmi" />
+        <Component Name="torqueLoad" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>8</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="85">
+      <Symbol>
+        <Component Name="Unit1.EmNodes" />
+        <Component Name="unitStatus" />
+        <Component Name="mode" />
+        <Component Name="production" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalConstant" UId="86">
+      <Constant Name="TRUE" />
+    </Access>
+    <Access Scope="LiteralConstant" UId="87">
+      <Constant>
+        <ConstantType>UInt</ConstantType>
+        <ConstantValue>30</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="GlobalVariable" UId="88">
+      <Symbol>
+        <Component Name="Unit1.EmNodes" />
+        <Component Name="clock" />
+        <Component Name="cycle1000Msec" />
+      </Symbol>
+    </Access>
+    <Access Scope="LiteralConstant" UId="89">
+      <Constant>
+        <ConstantType>LReal</ConstantType>
+        <ConstantValue>1.27</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="GlobalVariable" UId="90">
+      <Symbol>
+        <Component Name="BA060AZSIDR9_SideTapeAttachmentAxisX" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="91">
+      <Symbol>
+        <Component Name="DriveDiagConfig" />
+        <Component Name="torqueLoad" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>9</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="92">
+      <Symbol>
+        <Component Name="DriveDiagInterfaceHmi" />
+        <Component Name="torqueLoad" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>9</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="93">
+      <Symbol>
+        <Component Name="Unit1.EmNodes" />
+        <Component Name="unitStatus" />
+        <Component Name="mode" />
+        <Component Name="production" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalConstant" UId="94">
+      <Constant Name="TRUE" />
+    </Access>
+    <Access Scope="LiteralConstant" UId="95">
+      <Constant>
+        <ConstantType>UInt</ConstantType>
+        <ConstantValue>30</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="GlobalVariable" UId="96">
+      <Symbol>
+        <Component Name="Unit1.EmNodes" />
+        <Component Name="clock" />
+        <Component Name="cycle1000Msec" />
+      </Symbol>
+    </Access>
+    <Access Scope="LiteralConstant" UId="97">
+      <Constant>
+        <ConstantType>LReal</ConstantType>
+        <ConstantValue>0.41</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="GlobalVariable" UId="98">
+      <Symbol>
+        <Component Name="BA060AZSIDR10_SideTapeAttachmentAxisY" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="99">
+      <Symbol>
+        <Component Name="DriveDiagConfig" />
+        <Component Name="torqueLoad" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>10</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="100">
+      <Symbol>
+        <Component Name="DriveDiagInterfaceHmi" />
+        <Component Name="torqueLoad" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>10</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Part Name="Contact" UId="101">
+      <Negated Name="operand" />
+    </Part>
+    <Call UId="102">
+      <CallInfo Name="LER_ServoTorqueCal" BlockType="FB">
+        <Instance Scope="GlobalVariable" UId="103">
+          <Component Name="InstTorqueCal_JROutPnPLeftAxisX" />
+        </Instance>
+        <Parameter Name="enable" Section="Input" Type="Bool" />
+        <Parameter Name="enableManualCmds" Section="Input" Type="Bool" />
+        <Parameter Name="storageCount" Section="Input" Type="UInt" />
+        <Parameter Name="storageCycle" Section="Input" Type="Bool" />
+        <Parameter Name="RatedTorque" Section="Input" Type="LReal" />
+        <Parameter Name="axis" Section="Input" Type="DB_ANY" />
+        <Parameter Name="actualTorque" Section="Output" Type="LReal" />
+        <Parameter Name="averageTorque" Section="Output" Type="LReal" />
+        <Parameter Name="peakTorque" Section="Output" Type="LReal" />
+        <Parameter Name="currentload" Section="Output" Type="LReal" />
+        <Parameter Name="averageload" Section="Output" Type="LReal" />
+        <Parameter Name="peakload" Section="Output" Type="LReal" />
+        <Parameter Name="configuration" Section="InOut" Type="&quot;LER_typeServoTorqueCalConfigruation&quot;" />
+        <Parameter Name="moduleInterface" Section="InOut" Type="&quot;LER_typeServoTorqueCalInterface&quot;" />
+      </CallInfo>
+    </Call>
+    <Part Name="Contact" UId="104">
+      <Negated Name="operand" />
+    </Part>
+    <Call UId="105">
+      <CallInfo Name="LER_ServoTorqueCal" BlockType="FB">
+        <Instance Scope="GlobalVariable" UId="106">
+          <Component Name="InstTorqueCal_JROutPnPLeftAxisZ" />
+        </Instance>
+        <Parameter Name="enable" Section="Input" Type="Bool" />
+        <Parameter Name="enableManualCmds" Section="Input" Type="Bool" />
+        <Parameter Name="storageCount" Section="Input" Type="UInt" />
+        <Parameter Name="storageCycle" Section="Input" Type="Bool" />
+        <Parameter Name="RatedTorque" Section="Input" Type="LReal" />
+        <Parameter Name="axis" Section="Input" Type="DB_ANY" />
+        <Parameter Name="actualTorque" Section="Output" Type="LReal" />
+        <Parameter Name="averageTorque" Section="Output" Type="LReal" />
+        <Parameter Name="peakTorque" Section="Output" Type="LReal" />
+        <Parameter Name="currentload" Section="Output" Type="LReal" />
+        <Parameter Name="averageload" Section="Output" Type="LReal" />
+        <Parameter Name="peakload" Section="Output" Type="LReal" />
+        <Parameter Name="configuration" Section="InOut" Type="&quot;LER_typeServoTorqueCalConfigruation&quot;" />
+        <Parameter Name="moduleInterface" Section="InOut" Type="&quot;LER_typeServoTorqueCalInterface&quot;" />
+      </CallInfo>
+    </Call>
+    <Part Name="Contact" UId="107">
+      <Negated Name="operand" />
+    </Part>
+    <Call UId="108">
+      <CallInfo Name="LER_ServoTorqueCal" BlockType="FB">
+        <Instance Scope="GlobalVariable" UId="109">
+          <Component Name="InstTorqueCal_JROutPnPRightAxisX" />
+        </Instance>
+        <Parameter Name="enable" Section="Input" Type="Bool" />
+        <Parameter Name="enableManualCmds" Section="Input" Type="Bool" />
+        <Parameter Name="storageCount" Section="Input" Type="UInt" />
+        <Parameter Name="storageCycle" Section="Input" Type="Bool" />
+        <Parameter Name="RatedTorque" Section="Input" Type="LReal" />
+        <Parameter Name="axis" Section="Input" Type="DB_ANY" />
+        <Parameter Name="actualTorque" Section="Output" Type="LReal" />
+        <Parameter Name="averageTorque" Section="Output" Type="LReal" />
+        <Parameter Name="peakTorque" Section="Output" Type="LReal" />
+        <Parameter Name="currentload" Section="Output" Type="LReal" />
+        <Parameter Name="averageload" Section="Output" Type="LReal" />
+        <Parameter Name="peakload" Section="Output" Type="LReal" />
+        <Parameter Name="configuration" Section="InOut" Type="&quot;LER_typeServoTorqueCalConfigruation&quot;" />
+        <Parameter Name="moduleInterface" Section="InOut" Type="&quot;LER_typeServoTorqueCalInterface&quot;" />
+      </CallInfo>
+    </Call>
+    <Part Name="Contact" UId="110">
+      <Negated Name="operand" />
+    </Part>
+    <Call UId="111">
+      <CallInfo Name="LER_ServoTorqueCal" BlockType="FB">
+        <Instance Scope="GlobalVariable" UId="112">
+          <Component Name="InstTorqueCal_JROutPnPRightAxisZ" />
+        </Instance>
+        <Parameter Name="enable" Section="Input" Type="Bool" />
+        <Parameter Name="enableManualCmds" Section="Input" Type="Bool" />
+        <Parameter Name="storageCount" Section="Input" Type="UInt" />
+        <Parameter Name="storageCycle" Section="Input" Type="Bool" />
+        <Parameter Name="RatedTorque" Section="Input" Type="LReal" />
+        <Parameter Name="axis" Section="Input" Type="DB_ANY" />
+        <Parameter Name="actualTorque" Section="Output" Type="LReal" />
+        <Parameter Name="averageTorque" Section="Output" Type="LReal" />
+        <Parameter Name="peakTorque" Section="Output" Type="LReal" />
+        <Parameter Name="currentload" Section="Output" Type="LReal" />
+        <Parameter Name="averageload" Section="Output" Type="LReal" />
+        <Parameter Name="peakload" Section="Output" Type="LReal" />
+        <Parameter Name="configuration" Section="InOut" Type="&quot;LER_typeServoTorqueCalConfigruation&quot;" />
+        <Parameter Name="moduleInterface" Section="InOut" Type="&quot;LER_typeServoTorqueCalInterface&quot;" />
+      </CallInfo>
+    </Call>
+    <Part Name="Contact" UId="113">
+      <Negated Name="operand" />
+    </Part>
+    <Call UId="114">
+      <CallInfo Name="LER_ServoTorqueCal" BlockType="FB">
+        <Instance Scope="GlobalVariable" UId="115">
+          <Component Name="InstTorqueCal_TopTapeAxisX" />
+        </Instance>
+        <Parameter Name="enable" Section="Input" Type="Bool" />
+        <Parameter Name="enableManualCmds" Section="Input" Type="Bool" />
+        <Parameter Name="storageCount" Section="Input" Type="UInt" />
+        <Parameter Name="storageCycle" Section="Input" Type="Bool" />
+        <Parameter Name="RatedTorque" Section="Input" Type="LReal" />
+        <Parameter Name="axis" Section="Input" Type="DB_ANY" />
+        <Parameter Name="actualTorque" Section="Output" Type="LReal" />
+        <Parameter Name="averageTorque" Section="Output" Type="LReal" />
+        <Parameter Name="peakTorque" Section="Output" Type="LReal" />
+        <Parameter Name="currentload" Section="Output" Type="LReal" />
+        <Parameter Name="averageload" Section="Output" Type="LReal" />
+        <Parameter Name="peakload" Section="Output" Type="LReal" />
+        <Parameter Name="configuration" Section="InOut" Type="&quot;LER_typeServoTorqueCalConfigruation&quot;" />
+        <Parameter Name="moduleInterface" Section="InOut" Type="&quot;LER_typeServoTorqueCalInterface&quot;" />
+      </CallInfo>
+    </Call>
+    <Part Name="Contact" UId="116">
+      <Negated Name="operand" />
+    </Part>
+    <Call UId="117">
+      <CallInfo Name="LER_ServoTorqueCal" BlockType="FB">
+        <Instance Scope="GlobalVariable" UId="118">
+          <Component Name="InstTorqueCal_TopTapeAxisY" />
+        </Instance>
+        <Parameter Name="enable" Section="Input" Type="Bool" />
+        <Parameter Name="enableManualCmds" Section="Input" Type="Bool" />
+        <Parameter Name="storageCount" Section="Input" Type="UInt" />
+        <Parameter Name="storageCycle" Section="Input" Type="Bool" />
+        <Parameter Name="RatedTorque" Section="Input" Type="LReal" />
+        <Parameter Name="axis" Section="Input" Type="DB_ANY" />
+        <Parameter Name="actualTorque" Section="Output" Type="LReal" />
+        <Parameter Name="averageTorque" Section="Output" Type="LReal" />
+        <Parameter Name="peakTorque" Section="Output" Type="LReal" />
+        <Parameter Name="currentload" Section="Output" Type="LReal" />
+        <Parameter Name="averageload" Section="Output" Type="LReal" />
+        <Parameter Name="peakload" Section="Output" Type="LReal" />
+        <Parameter Name="configuration" Section="InOut" Type="&quot;LER_typeServoTorqueCalConfigruation&quot;" />
+        <Parameter Name="moduleInterface" Section="InOut" Type="&quot;LER_typeServoTorqueCalInterface&quot;" />
+      </CallInfo>
+    </Call>
+    <Part Name="Contact" UId="119">
+      <Negated Name="operand" />
+    </Part>
+    <Call UId="120">
+      <CallInfo Name="LER_ServoTorqueCal" BlockType="FB">
+        <Instance Scope="GlobalVariable" UId="121">
+          <Component Name="InstTorqueCal_SideTapeFixStageAxisX" />
+        </Instance>
+        <Parameter Name="enable" Section="Input" Type="Bool" />
+        <Parameter Name="enableManualCmds" Section="Input" Type="Bool" />
+        <Parameter Name="storageCount" Section="Input" Type="UInt" />
+        <Parameter Name="storageCycle" Section="Input" Type="Bool" />
+        <Parameter Name="RatedTorque" Section="Input" Type="LReal" />
+        <Parameter Name="axis" Section="Input" Type="DB_ANY" />
+        <Parameter Name="actualTorque" Section="Output" Type="LReal" />
+        <Parameter Name="averageTorque" Section="Output" Type="LReal" />
+        <Parameter Name="peakTorque" Section="Output" Type="LReal" />
+        <Parameter Name="currentload" Section="Output" Type="LReal" />
+        <Parameter Name="averageload" Section="Output" Type="LReal" />
+        <Parameter Name="peakload" Section="Output" Type="LReal" />
+        <Parameter Name="configuration" Section="InOut" Type="&quot;LER_typeServoTorqueCalConfigruation&quot;" />
+        <Parameter Name="moduleInterface" Section="InOut" Type="&quot;LER_typeServoTorqueCalInterface&quot;" />
+      </CallInfo>
+    </Call>
+    <Part Name="Contact" UId="122">
+      <Negated Name="operand" />
+    </Part>
+    <Call UId="123">
+      <CallInfo Name="LER_ServoTorqueCal" BlockType="FB">
+        <Instance Scope="GlobalVariable" UId="124">
+          <Component Name="InstTorqueCal_SideTapeFixStageAxisC" />
+        </Instance>
+        <Parameter Name="enable" Section="Input" Type="Bool" />
+        <Parameter Name="enableManualCmds" Section="Input" Type="Bool" />
+        <Parameter Name="storageCount" Section="Input" Type="UInt" />
+        <Parameter Name="storageCycle" Section="Input" Type="Bool" />
+        <Parameter Name="RatedTorque" Section="Input" Type="LReal" />
+        <Parameter Name="axis" Section="Input" Type="DB_ANY" />
+        <Parameter Name="actualTorque" Section="Output" Type="LReal" />
+        <Parameter Name="averageTorque" Section="Output" Type="LReal" />
+        <Parameter Name="peakTorque" Section="Output" Type="LReal" />
+        <Parameter Name="currentload" Section="Output" Type="LReal" />
+        <Parameter Name="averageload" Section="Output" Type="LReal" />
+        <Parameter Name="peakload" Section="Output" Type="LReal" />
+        <Parameter Name="configuration" Section="InOut" Type="&quot;LER_typeServoTorqueCalConfigruation&quot;" />
+        <Parameter Name="moduleInterface" Section="InOut" Type="&quot;LER_typeServoTorqueCalInterface&quot;" />
+      </CallInfo>
+    </Call>
+    <Part Name="Contact" UId="125">
+      <Negated Name="operand" />
+    </Part>
+    <Call UId="126">
+      <CallInfo Name="LER_ServoTorqueCal" BlockType="FB">
+        <Instance Scope="GlobalVariable" UId="127">
+          <Component Name="InstTorqueCal_SideTapeAttachmentAxisX" />
+        </Instance>
+        <Parameter Name="enable" Section="Input" Type="Bool" />
+        <Parameter Name="enableManualCmds" Section="Input" Type="Bool" />
+        <Parameter Name="storageCount" Section="Input" Type="UInt" />
+        <Parameter Name="storageCycle" Section="Input" Type="Bool" />
+        <Parameter Name="RatedTorque" Section="Input" Type="LReal" />
+        <Parameter Name="axis" Section="Input" Type="DB_ANY" />
+        <Parameter Name="actualTorque" Section="Output" Type="LReal" />
+        <Parameter Name="averageTorque" Section="Output" Type="LReal" />
+        <Parameter Name="peakTorque" Section="Output" Type="LReal" />
+        <Parameter Name="currentload" Section="Output" Type="LReal" />
+        <Parameter Name="averageload" Section="Output" Type="LReal" />
+        <Parameter Name="peakload" Section="Output" Type="LReal" />
+        <Parameter Name="configuration" Section="InOut" Type="&quot;LER_typeServoTorqueCalConfigruation&quot;" />
+        <Parameter Name="moduleInterface" Section="InOut" Type="&quot;LER_typeServoTorqueCalInterface&quot;" />
+      </CallInfo>
+    </Call>
+    <Part Name="Contact" UId="128">
+      <Negated Name="operand" />
+    </Part>
+    <Call UId="129">
+      <CallInfo Name="LER_ServoTorqueCal" BlockType="FB">
+        <Instance Scope="GlobalVariable" UId="130">
+          <Component Name="InstTorqueCal_SideTapeAttachmentAxisY" />
+        </Instance>
+        <Parameter Name="enable" Section="Input" Type="Bool" />
+        <Parameter Name="enableManualCmds" Section="Input" Type="Bool" />
+        <Parameter Name="storageCount" Section="Input" Type="UInt" />
+        <Parameter Name="storageCycle" Section="Input" Type="Bool" />
+        <Parameter Name="RatedTorque" Section="Input" Type="LReal" />
+        <Parameter Name="axis" Section="Input" Type="DB_ANY" />
+        <Parameter Name="actualTorque" Section="Output" Type="LReal" />
+        <Parameter Name="averageTorque" Section="Output" Type="LReal" />
+        <Parameter Name="peakTorque" Section="Output" Type="LReal" />
+        <Parameter Name="currentload" Section="Output" Type="LReal" />
+        <Parameter Name="averageload" Section="Output" Type="LReal" />
+        <Parameter Name="peakload" Section="Output" Type="LReal" />
+        <Parameter Name="configuration" Section="InOut" Type="&quot;LER_typeServoTorqueCalConfigruation&quot;" />
+        <Parameter Name="moduleInterface" Section="InOut" Type="&quot;LER_typeServoTorqueCalInterface&quot;" />
+      </CallInfo>
+    </Call>
+  </Parts>
+  <Wires>
+    <Wire UId="191">
+      <Powerrail />
+      <NameCon UId="102" Name="en" />
+      <NameCon UId="101" Name="in" />
+      <NameCon UId="105" Name="en" />
+      <NameCon UId="104" Name="in" />
+      <NameCon UId="108" Name="en" />
+      <NameCon UId="107" Name="in" />
+      <NameCon UId="111" Name="en" />
+      <NameCon UId="110" Name="in" />
+      <NameCon UId="114" Name="en" />
+      <NameCon UId="113" Name="in" />
+      <NameCon UId="117" Name="en" />
+      <NameCon UId="116" Name="in" />
+      <NameCon UId="120" Name="en" />
+      <NameCon UId="119" Name="in" />
+      <NameCon UId="123" Name="en" />
+      <NameCon UId="122" Name="in" />
+      <NameCon UId="126" Name="en" />
+      <NameCon UId="125" Name="in" />
+      <NameCon UId="129" Name="en" />
+      <NameCon UId="128" Name="in" />
+    </Wire>
+    <Wire UId="192">
+      <IdentCon UId="21" />
+      <NameCon UId="101" Name="operand" />
+    </Wire>
+    <Wire UId="193">
+      <NameCon UId="101" Name="out" />
+      <NameCon UId="102" Name="enableManualCmds" />
+    </Wire>
+    <Wire UId="194">
+      <IdentCon UId="22" />
+      <NameCon UId="102" Name="enable" />
+    </Wire>
+    <Wire UId="195">
+      <IdentCon UId="23" />
+      <NameCon UId="102" Name="storageCount" />
+    </Wire>
+    <Wire UId="196">
+      <IdentCon UId="24" />
+      <NameCon UId="102" Name="storageCycle" />
+    </Wire>
+    <Wire UId="197">
+      <IdentCon UId="25" />
+      <NameCon UId="102" Name="RatedTorque" />
+    </Wire>
+    <Wire UId="198">
+      <IdentCon UId="26" />
+      <NameCon UId="102" Name="axis" />
+    </Wire>
+    <Wire UId="199">
+      <IdentCon UId="27" />
+      <NameCon UId="102" Name="configuration" />
+    </Wire>
+    <Wire UId="200">
+      <IdentCon UId="28" />
+      <NameCon UId="102" Name="moduleInterface" />
+    </Wire>
+    <Wire UId="201">
+      <NameCon UId="102" Name="actualTorque" />
+      <OpenCon UId="131" />
+    </Wire>
+    <Wire UId="202">
+      <NameCon UId="102" Name="averageTorque" />
+      <OpenCon UId="132" />
+    </Wire>
+    <Wire UId="203">
+      <NameCon UId="102" Name="peakTorque" />
+      <OpenCon UId="133" />
+    </Wire>
+    <Wire UId="204">
+      <NameCon UId="102" Name="currentload" />
+      <OpenCon UId="134" />
+    </Wire>
+    <Wire UId="205">
+      <NameCon UId="102" Name="averageload" />
+      <OpenCon UId="135" />
+    </Wire>
+    <Wire UId="206">
+      <NameCon UId="102" Name="peakload" />
+      <OpenCon UId="136" />
+    </Wire>
+    <Wire UId="207">
+      <IdentCon UId="29" />
+      <NameCon UId="104" Name="operand" />
+    </Wire>
+    <Wire UId="208">
+      <NameCon UId="104" Name="out" />
+      <NameCon UId="105" Name="enableManualCmds" />
+    </Wire>
+    <Wire UId="209">
+      <IdentCon UId="30" />
+      <NameCon UId="105" Name="enable" />
+    </Wire>
+    <Wire UId="210">
+      <IdentCon UId="31" />
+      <NameCon UId="105" Name="storageCount" />
+    </Wire>
+    <Wire UId="211">
+      <IdentCon UId="32" />
+      <NameCon UId="105" Name="storageCycle" />
+    </Wire>
+    <Wire UId="212">
+      <IdentCon UId="33" />
+      <NameCon UId="105" Name="RatedTorque" />
+    </Wire>
+    <Wire UId="213">
+      <IdentCon UId="34" />
+      <NameCon UId="105" Name="axis" />
+    </Wire>
+    <Wire UId="214">
+      <IdentCon UId="35" />
+      <NameCon UId="105" Name="configuration" />
+    </Wire>
+    <Wire UId="215">
+      <IdentCon UId="36" />
+      <NameCon UId="105" Name="moduleInterface" />
+    </Wire>
+    <Wire UId="216">
+      <NameCon UId="105" Name="actualTorque" />
+      <OpenCon UId="137" />
+    </Wire>
+    <Wire UId="217">
+      <NameCon UId="105" Name="averageTorque" />
+      <OpenCon UId="138" />
+    </Wire>
+    <Wire UId="218">
+      <NameCon UId="105" Name="peakTorque" />
+      <OpenCon UId="139" />
+    </Wire>
+    <Wire UId="219">
+      <NameCon UId="105" Name="currentload" />
+      <OpenCon UId="140" />
+    </Wire>
+    <Wire UId="220">
+      <NameCon UId="105" Name="averageload" />
+      <OpenCon UId="141" />
+    </Wire>
+    <Wire UId="221">
+      <NameCon UId="105" Name="peakload" />
+      <OpenCon UId="142" />
+    </Wire>
+    <Wire UId="222">
+      <IdentCon UId="37" />
+      <NameCon UId="107" Name="operand" />
+    </Wire>
+    <Wire UId="223">
+      <NameCon UId="107" Name="out" />
+      <NameCon UId="108" Name="enableManualCmds" />
+    </Wire>
+    <Wire UId="224">
+      <IdentCon UId="38" />
+      <NameCon UId="108" Name="enable" />
+    </Wire>
+    <Wire UId="225">
+      <IdentCon UId="39" />
+      <NameCon UId="108" Name="storageCount" />
+    </Wire>
+    <Wire UId="226">
+      <IdentCon UId="40" />
+      <NameCon UId="108" Name="storageCycle" />
+    </Wire>
+    <Wire UId="227">
+      <IdentCon UId="41" />
+      <NameCon UId="108" Name="RatedTorque" />
+    </Wire>
+    <Wire UId="228">
+      <IdentCon UId="42" />
+      <NameCon UId="108" Name="axis" />
+    </Wire>
+    <Wire UId="229">
+      <IdentCon UId="43" />
+      <NameCon UId="108" Name="configuration" />
+    </Wire>
+    <Wire UId="230">
+      <IdentCon UId="44" />
+      <NameCon UId="108" Name="moduleInterface" />
+    </Wire>
+    <Wire UId="231">
+      <NameCon UId="108" Name="actualTorque" />
+      <OpenCon UId="143" />
+    </Wire>
+    <Wire UId="232">
+      <NameCon UId="108" Name="averageTorque" />
+      <OpenCon UId="144" />
+    </Wire>
+    <Wire UId="233">
+      <NameCon UId="108" Name="peakTorque" />
+      <OpenCon UId="145" />
+    </Wire>
+    <Wire UId="234">
+      <NameCon UId="108" Name="currentload" />
+      <OpenCon UId="146" />
+    </Wire>
+    <Wire UId="235">
+      <NameCon UId="108" Name="averageload" />
+      <OpenCon UId="147" />
+    </Wire>
+    <Wire UId="236">
+      <NameCon UId="108" Name="peakload" />
+      <OpenCon UId="148" />
+    </Wire>
+    <Wire UId="237">
+      <IdentCon UId="45" />
+      <NameCon UId="110" Name="operand" />
+    </Wire>
+    <Wire UId="238">
+      <NameCon UId="110" Name="out" />
+      <NameCon UId="111" Name="enableManualCmds" />
+    </Wire>
+    <Wire UId="239">
+      <IdentCon UId="46" />
+      <NameCon UId="111" Name="enable" />
+    </Wire>
+    <Wire UId="240">
+      <IdentCon UId="47" />
+      <NameCon UId="111" Name="storageCount" />
+    </Wire>
+    <Wire UId="241">
+      <IdentCon UId="48" />
+      <NameCon UId="111" Name="storageCycle" />
+    </Wire>
+    <Wire UId="242">
+      <IdentCon UId="49" />
+      <NameCon UId="111" Name="RatedTorque" />
+    </Wire>
+    <Wire UId="243">
+      <IdentCon UId="50" />
+      <NameCon UId="111" Name="axis" />
+    </Wire>
+    <Wire UId="244">
+      <IdentCon UId="51" />
+      <NameCon UId="111" Name="configuration" />
+    </Wire>
+    <Wire UId="245">
+      <IdentCon UId="52" />
+      <NameCon UId="111" Name="moduleInterface" />
+    </Wire>
+    <Wire UId="246">
+      <NameCon UId="111" Name="actualTorque" />
+      <OpenCon UId="149" />
+    </Wire>
+    <Wire UId="247">
+      <NameCon UId="111" Name="averageTorque" />
+      <OpenCon UId="150" />
+    </Wire>
+    <Wire UId="248">
+      <NameCon UId="111" Name="peakTorque" />
+      <OpenCon UId="151" />
+    </Wire>
+    <Wire UId="249">
+      <NameCon UId="111" Name="currentload" />
+      <OpenCon UId="152" />
+    </Wire>
+    <Wire UId="250">
+      <NameCon UId="111" Name="averageload" />
+      <OpenCon UId="153" />
+    </Wire>
+    <Wire UId="251">
+      <NameCon UId="111" Name="peakload" />
+      <OpenCon UId="154" />
+    </Wire>
+    <Wire UId="252">
+      <IdentCon UId="53" />
+      <NameCon UId="113" Name="operand" />
+    </Wire>
+    <Wire UId="253">
+      <NameCon UId="113" Name="out" />
+      <NameCon UId="114" Name="enableManualCmds" />
+    </Wire>
+    <Wire UId="254">
+      <IdentCon UId="54" />
+      <NameCon UId="114" Name="enable" />
+    </Wire>
+    <Wire UId="255">
+      <IdentCon UId="55" />
+      <NameCon UId="114" Name="storageCount" />
+    </Wire>
+    <Wire UId="256">
+      <IdentCon UId="56" />
+      <NameCon UId="114" Name="storageCycle" />
+    </Wire>
+    <Wire UId="257">
+      <IdentCon UId="57" />
+      <NameCon UId="114" Name="RatedTorque" />
+    </Wire>
+    <Wire UId="258">
+      <IdentCon UId="58" />
+      <NameCon UId="114" Name="axis" />
+    </Wire>
+    <Wire UId="259">
+      <IdentCon UId="59" />
+      <NameCon UId="114" Name="configuration" />
+    </Wire>
+    <Wire UId="260">
+      <IdentCon UId="60" />
+      <NameCon UId="114" Name="moduleInterface" />
+    </Wire>
+    <Wire UId="261">
+      <NameCon UId="114" Name="actualTorque" />
+      <OpenCon UId="155" />
+    </Wire>
+    <Wire UId="262">
+      <NameCon UId="114" Name="averageTorque" />
+      <OpenCon UId="156" />
+    </Wire>
+    <Wire UId="263">
+      <NameCon UId="114" Name="peakTorque" />
+      <OpenCon UId="157" />
+    </Wire>
+    <Wire UId="264">
+      <NameCon UId="114" Name="currentload" />
+      <OpenCon UId="158" />
+    </Wire>
+    <Wire UId="265">
+      <NameCon UId="114" Name="averageload" />
+      <OpenCon UId="159" />
+    </Wire>
+    <Wire UId="266">
+      <NameCon UId="114" Name="peakload" />
+      <OpenCon UId="160" />
+    </Wire>
+    <Wire UId="267">
+      <IdentCon UId="61" />
+      <NameCon UId="116" Name="operand" />
+    </Wire>
+    <Wire UId="268">
+      <NameCon UId="116" Name="out" />
+      <NameCon UId="117" Name="enableManualCmds" />
+    </Wire>
+    <Wire UId="269">
+      <IdentCon UId="62" />
+      <NameCon UId="117" Name="enable" />
+    </Wire>
+    <Wire UId="270">
+      <IdentCon UId="63" />
+      <NameCon UId="117" Name="storageCount" />
+    </Wire>
+    <Wire UId="271">
+      <IdentCon UId="64" />
+      <NameCon UId="117" Name="storageCycle" />
+    </Wire>
+    <Wire UId="272">
+      <IdentCon UId="65" />
+      <NameCon UId="117" Name="RatedTorque" />
+    </Wire>
+    <Wire UId="273">
+      <IdentCon UId="66" />
+      <NameCon UId="117" Name="axis" />
+    </Wire>
+    <Wire UId="274">
+      <IdentCon UId="67" />
+      <NameCon UId="117" Name="configuration" />
+    </Wire>
+    <Wire UId="275">
+      <IdentCon UId="68" />
+      <NameCon UId="117" Name="moduleInterface" />
+    </Wire>
+    <Wire UId="276">
+      <NameCon UId="117" Name="actualTorque" />
+      <OpenCon UId="161" />
+    </Wire>
+    <Wire UId="277">
+      <NameCon UId="117" Name="averageTorque" />
+      <OpenCon UId="162" />
+    </Wire>
+    <Wire UId="278">
+      <NameCon UId="117" Name="peakTorque" />
+      <OpenCon UId="163" />
+    </Wire>
+    <Wire UId="279">
+      <NameCon UId="117" Name="currentload" />
+      <OpenCon UId="164" />
+    </Wire>
+    <Wire UId="280">
+      <NameCon UId="117" Name="averageload" />
+      <OpenCon UId="165" />
+    </Wire>
+    <Wire UId="281">
+      <NameCon UId="117" Name="peakload" />
+      <OpenCon UId="166" />
+    </Wire>
+    <Wire UId="282">
+      <IdentCon UId="69" />
+      <NameCon UId="119" Name="operand" />
+    </Wire>
+    <Wire UId="283">
+      <NameCon UId="119" Name="out" />
+      <NameCon UId="120" Name="enableManualCmds" />
+    </Wire>
+    <Wire UId="284">
+      <IdentCon UId="70" />
+      <NameCon UId="120" Name="enable" />
+    </Wire>
+    <Wire UId="285">
+      <IdentCon UId="71" />
+      <NameCon UId="120" Name="storageCount" />
+    </Wire>
+    <Wire UId="286">
+      <IdentCon UId="72" />
+      <NameCon UId="120" Name="storageCycle" />
+    </Wire>
+    <Wire UId="287">
+      <IdentCon UId="73" />
+      <NameCon UId="120" Name="RatedTorque" />
+    </Wire>
+    <Wire UId="288">
+      <IdentCon UId="74" />
+      <NameCon UId="120" Name="axis" />
+    </Wire>
+    <Wire UId="289">
+      <IdentCon UId="75" />
+      <NameCon UId="120" Name="configuration" />
+    </Wire>
+    <Wire UId="290">
+      <IdentCon UId="76" />
+      <NameCon UId="120" Name="moduleInterface" />
+    </Wire>
+    <Wire UId="291">
+      <NameCon UId="120" Name="actualTorque" />
+      <OpenCon UId="167" />
+    </Wire>
+    <Wire UId="292">
+      <NameCon UId="120" Name="averageTorque" />
+      <OpenCon UId="168" />
+    </Wire>
+    <Wire UId="293">
+      <NameCon UId="120" Name="peakTorque" />
+      <OpenCon UId="169" />
+    </Wire>
+    <Wire UId="294">
+      <NameCon UId="120" Name="currentload" />
+      <OpenCon UId="170" />
+    </Wire>
+    <Wire UId="295">
+      <NameCon UId="120" Name="averageload" />
+      <OpenCon UId="171" />
+    </Wire>
+    <Wire UId="296">
+      <NameCon UId="120" Name="peakload" />
+      <OpenCon UId="172" />
+    </Wire>
+    <Wire UId="297">
+      <IdentCon UId="77" />
+      <NameCon UId="122" Name="operand" />
+    </Wire>
+    <Wire UId="298">
+      <NameCon UId="122" Name="out" />
+      <NameCon UId="123" Name="enableManualCmds" />
+    </Wire>
+    <Wire UId="299">
+      <IdentCon UId="78" />
+      <NameCon UId="123" Name="enable" />
+    </Wire>
+    <Wire UId="300">
+      <IdentCon UId="79" />
+      <NameCon UId="123" Name="storageCount" />
+    </Wire>
+    <Wire UId="301">
+      <IdentCon UId="80" />
+      <NameCon UId="123" Name="storageCycle" />
+    </Wire>
+    <Wire UId="302">
+      <IdentCon UId="81" />
+      <NameCon UId="123" Name="RatedTorque" />
+    </Wire>
+    <Wire UId="303">
+      <IdentCon UId="82" />
+      <NameCon UId="123" Name="axis" />
+    </Wire>
+    <Wire UId="304">
+      <IdentCon UId="83" />
+      <NameCon UId="123" Name="configuration" />
+    </Wire>
+    <Wire UId="305">
+      <IdentCon UId="84" />
+      <NameCon UId="123" Name="moduleInterface" />
+    </Wire>
+    <Wire UId="306">
+      <NameCon UId="123" Name="actualTorque" />
+      <OpenCon UId="173" />
+    </Wire>
+    <Wire UId="307">
+      <NameCon UId="123" Name="averageTorque" />
+      <OpenCon UId="174" />
+    </Wire>
+    <Wire UId="308">
+      <NameCon UId="123" Name="peakTorque" />
+      <OpenCon UId="175" />
+    </Wire>
+    <Wire UId="309">
+      <NameCon UId="123" Name="currentload" />
+      <OpenCon UId="176" />
+    </Wire>
+    <Wire UId="310">
+      <NameCon UId="123" Name="averageload" />
+      <OpenCon UId="177" />
+    </Wire>
+    <Wire UId="311">
+      <NameCon UId="123" Name="peakload" />
+      <OpenCon UId="178" />
+    </Wire>
+    <Wire UId="312">
+      <IdentCon UId="85" />
+      <NameCon UId="125" Name="operand" />
+    </Wire>
+    <Wire UId="313">
+      <NameCon UId="125" Name="out" />
+      <NameCon UId="126" Name="enableManualCmds" />
+    </Wire>
+    <Wire UId="314">
+      <IdentCon UId="86" />
+      <NameCon UId="126" Name="enable" />
+    </Wire>
+    <Wire UId="315">
+      <IdentCon UId="87" />
+      <NameCon UId="126" Name="storageCount" />
+    </Wire>
+    <Wire UId="316">
+      <IdentCon UId="88" />
+      <NameCon UId="126" Name="storageCycle" />
+    </Wire>
+    <Wire UId="317">
+      <IdentCon UId="89" />
+      <NameCon UId="126" Name="RatedTorque" />
+    </Wire>
+    <Wire UId="318">
+      <IdentCon UId="90" />
+      <NameCon UId="126" Name="axis" />
+    </Wire>
+    <Wire UId="319">
+      <IdentCon UId="91" />
+      <NameCon UId="126" Name="configuration" />
+    </Wire>
+    <Wire UId="320">
+      <IdentCon UId="92" />
+      <NameCon UId="126" Name="moduleInterface" />
+    </Wire>
+    <Wire UId="321">
+      <NameCon UId="126" Name="actualTorque" />
+      <OpenCon UId="179" />
+    </Wire>
+    <Wire UId="322">
+      <NameCon UId="126" Name="averageTorque" />
+      <OpenCon UId="180" />
+    </Wire>
+    <Wire UId="323">
+      <NameCon UId="126" Name="peakTorque" />
+      <OpenCon UId="181" />
+    </Wire>
+    <Wire UId="324">
+      <NameCon UId="126" Name="currentload" />
+      <OpenCon UId="182" />
+    </Wire>
+    <Wire UId="325">
+      <NameCon UId="126" Name="averageload" />
+      <OpenCon UId="183" />
+    </Wire>
+    <Wire UId="326">
+      <NameCon UId="126" Name="peakload" />
+      <OpenCon UId="184" />
+    </Wire>
+    <Wire UId="327">
+      <IdentCon UId="93" />
+      <NameCon UId="128" Name="operand" />
+    </Wire>
+    <Wire UId="328">
+      <NameCon UId="128" Name="out" />
+      <NameCon UId="129" Name="enableManualCmds" />
+    </Wire>
+    <Wire UId="329">
+      <IdentCon UId="94" />
+      <NameCon UId="129" Name="enable" />
+    </Wire>
+    <Wire UId="330">
+      <IdentCon UId="95" />
+      <NameCon UId="129" Name="storageCount" />
+    </Wire>
+    <Wire UId="331">
+      <IdentCon UId="96" />
+      <NameCon UId="129" Name="storageCycle" />
+    </Wire>
+    <Wire UId="332">
+      <IdentCon UId="97" />
+      <NameCon UId="129" Name="RatedTorque" />
+    </Wire>
+    <Wire UId="333">
+      <IdentCon UId="98" />
+      <NameCon UId="129" Name="axis" />
+    </Wire>
+    <Wire UId="334">
+      <IdentCon UId="99" />
+      <NameCon UId="129" Name="configuration" />
+    </Wire>
+    <Wire UId="335">
+      <IdentCon UId="100" />
+      <NameCon UId="129" Name="moduleInterface" />
+    </Wire>
+    <Wire UId="336">
+      <NameCon UId="129" Name="actualTorque" />
+      <OpenCon UId="185" />
+    </Wire>
+    <Wire UId="337">
+      <NameCon UId="129" Name="averageTorque" />
+      <OpenCon UId="186" />
+    </Wire>
+    <Wire UId="338">
+      <NameCon UId="129" Name="peakTorque" />
+      <OpenCon UId="187" />
+    </Wire>
+    <Wire UId="339">
+      <NameCon UId="129" Name="currentload" />
+      <OpenCon UId="188" />
+    </Wire>
+    <Wire UId="340">
+      <NameCon UId="129" Name="averageload" />
+      <OpenCon UId="189" />
+    </Wire>
+    <Wire UId="341">
+      <NameCon UId="129" Name="peakload" />
+      <OpenCon UId="190" />
+    </Wire>
+  </Wires>
+</FlgNet></NetworkSource>
+          <ProgrammingLanguage>LAD</ProgrammingLanguage>
+        </AttributeList>
+        <ObjectList>
+          <MultilingualText ID="28" CompositionName="Comment">
+            <ObjectList>
+              <MultilingualTextItem ID="29" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="2A" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+          <MultilingualText ID="2B" CompositionName="Title">
+            <ObjectList>
+              <MultilingualTextItem ID="2C" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="2D" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text>Call: Servo Torque Cal (DR1~10)</Text>
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+        </ObjectList>
+      </SW.Blocks.CompileUnit>
+      <SW.Blocks.CompileUnit ID="2E" CompositionName="CompileUnits">
+        <AttributeList>
+          <NetworkSource><FlgNet xmlns="http://www.siemens.com/automation/Openness/SW/NetworkSource/FlgNet/v5">
+  <Parts>
+    <Access Scope="GlobalVariable" UId="21">
+      <Symbol>
+        <Component Name="Unit1.EmNodes" />
+        <Component Name="unitStatus" />
+        <Component Name="mode" />
+        <Component Name="production" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalConstant" UId="22">
+      <Constant Name="TRUE" />
+    </Access>
+    <Access Scope="LiteralConstant" UId="23">
+      <Constant>
+        <ConstantType>UInt</ConstantType>
+        <ConstantValue>30</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="GlobalVariable" UId="24">
+      <Symbol>
+        <Component Name="Unit1.EmNodes" />
+        <Component Name="clock" />
+        <Component Name="cycle1000Msec" />
+      </Symbol>
+    </Access>
+    <Access Scope="LiteralConstant" UId="25">
+      <Constant>
+        <ConstantType>LReal</ConstantType>
+        <ConstantValue>1.27</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="GlobalVariable" UId="26">
+      <Symbol>
+        <Component Name="BA060AZSIDR11_ThicknessAxisZ" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="27">
+      <Symbol>
+        <Component Name="DriveDiagConfig" />
+        <Component Name="torqueLoad" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>11</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="28">
+      <Symbol>
+        <Component Name="DriveDiagInterfaceHmi" />
+        <Component Name="torqueLoad" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>11</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="29">
+      <Symbol>
+        <Component Name="Unit1.EmNodes" />
+        <Component Name="unitStatus" />
+        <Component Name="mode" />
+        <Component Name="production" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalConstant" UId="30">
+      <Constant Name="TRUE" />
+    </Access>
+    <Access Scope="LiteralConstant" UId="31">
+      <Constant>
+        <ConstantType>UInt</ConstantType>
+        <ConstantValue>30</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="GlobalVariable" UId="32">
+      <Symbol>
+        <Component Name="Unit1.EmNodes" />
+        <Component Name="clock" />
+        <Component Name="cycle1000Msec" />
+      </Symbol>
+    </Access>
+    <Access Scope="LiteralConstant" UId="33">
+      <Constant>
+        <ConstantType>LReal</ConstantType>
+        <ConstantValue>561.0</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="GlobalVariable" UId="34">
+      <Symbol>
+        <Component Name="BA060AZSIDR12_TransferPnPLeftAxisX" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="35">
+      <Symbol>
+        <Component Name="DriveDiagConfig" />
+        <Component Name="torqueLoad" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>12</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="36">
+      <Symbol>
+        <Component Name="DriveDiagInterfaceHmi" />
+        <Component Name="torqueLoad" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>12</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="37">
+      <Symbol>
+        <Component Name="Unit1.EmNodes" />
+        <Component Name="unitStatus" />
+        <Component Name="mode" />
+        <Component Name="production" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalConstant" UId="38">
+      <Constant Name="TRUE" />
+    </Access>
+    <Access Scope="LiteralConstant" UId="39">
+      <Constant>
+        <ConstantType>UInt</ConstantType>
+        <ConstantValue>30</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="GlobalVariable" UId="40">
+      <Symbol>
+        <Component Name="Unit1.EmNodes" />
+        <Component Name="clock" />
+        <Component Name="cycle1000Msec" />
+      </Symbol>
+    </Access>
+    <Access Scope="LiteralConstant" UId="41">
+      <Constant>
+        <ConstantType>LReal</ConstantType>
+        <ConstantValue>1.27</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="GlobalVariable" UId="42">
+      <Symbol>
+        <Component Name="BA060AZSIDR13_TransferPnPLeftAxisY" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="43">
+      <Symbol>
+        <Component Name="DriveDiagConfig" />
+        <Component Name="torqueLoad" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>13</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="44">
+      <Symbol>
+        <Component Name="DriveDiagInterfaceHmi" />
+        <Component Name="torqueLoad" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>13</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="45">
+      <Symbol>
+        <Component Name="Unit1.EmNodes" />
+        <Component Name="unitStatus" />
+        <Component Name="mode" />
+        <Component Name="production" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalConstant" UId="46">
+      <Constant Name="TRUE" />
+    </Access>
+    <Access Scope="LiteralConstant" UId="47">
+      <Constant>
+        <ConstantType>UInt</ConstantType>
+        <ConstantValue>30</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="GlobalVariable" UId="48">
+      <Symbol>
+        <Component Name="Unit1.EmNodes" />
+        <Component Name="clock" />
+        <Component Name="cycle1000Msec" />
+      </Symbol>
+    </Access>
+    <Access Scope="LiteralConstant" UId="49">
+      <Constant>
+        <ConstantType>LReal</ConstantType>
+        <ConstantValue>1.27</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="GlobalVariable" UId="50">
+      <Symbol>
+        <Component Name="BA060AZSIDR14_TransferPnPLeftAxisZ" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="51">
+      <Symbol>
+        <Component Name="DriveDiagConfig" />
+        <Component Name="torqueLoad" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>14</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="52">
+      <Symbol>
+        <Component Name="DriveDiagInterfaceHmi" />
+        <Component Name="torqueLoad" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>14</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="53">
+      <Symbol>
+        <Component Name="Unit1.EmNodes" />
+        <Component Name="unitStatus" />
+        <Component Name="mode" />
+        <Component Name="production" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalConstant" UId="54">
+      <Constant Name="TRUE" />
+    </Access>
+    <Access Scope="LiteralConstant" UId="55">
+      <Constant>
+        <ConstantType>UInt</ConstantType>
+        <ConstantValue>30</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="GlobalVariable" UId="56">
+      <Symbol>
+        <Component Name="Unit1.EmNodes" />
+        <Component Name="clock" />
+        <Component Name="cycle1000Msec" />
+      </Symbol>
+    </Access>
+    <Access Scope="LiteralConstant" UId="57">
+      <Constant>
+        <ConstantType>LReal</ConstantType>
+        <ConstantValue>561.0</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="GlobalVariable" UId="58">
+      <Symbol>
+        <Component Name="BA060AZSIDR15_TransferPnPRightAxisX" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="59">
+      <Symbol>
+        <Component Name="DriveDiagConfig" />
+        <Component Name="torqueLoad" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>15</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="60">
+      <Symbol>
+        <Component Name="DriveDiagInterfaceHmi" />
+        <Component Name="torqueLoad" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>15</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="61">
+      <Symbol>
+        <Component Name="Unit1.EmNodes" />
+        <Component Name="unitStatus" />
+        <Component Name="mode" />
+        <Component Name="production" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalConstant" UId="62">
+      <Constant Name="TRUE" />
+    </Access>
+    <Access Scope="LiteralConstant" UId="63">
+      <Constant>
+        <ConstantType>UInt</ConstantType>
+        <ConstantValue>30</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="GlobalVariable" UId="64">
+      <Symbol>
+        <Component Name="Unit1.EmNodes" />
+        <Component Name="clock" />
+        <Component Name="cycle1000Msec" />
+      </Symbol>
+    </Access>
+    <Access Scope="LiteralConstant" UId="65">
+      <Constant>
+        <ConstantType>LReal</ConstantType>
+        <ConstantValue>1.27</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="GlobalVariable" UId="66">
+      <Symbol>
+        <Component Name="BA060AZSIDR16_TransferPnPRightAxisY" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="67">
+      <Symbol>
+        <Component Name="DriveDiagConfig" />
+        <Component Name="torqueLoad" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>16</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="68">
+      <Symbol>
+        <Component Name="DriveDiagInterfaceHmi" />
+        <Component Name="torqueLoad" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>16</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="69">
+      <Symbol>
+        <Component Name="Unit1.EmNodes" />
+        <Component Name="unitStatus" />
+        <Component Name="mode" />
+        <Component Name="production" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalConstant" UId="70">
+      <Constant Name="TRUE" />
+    </Access>
+    <Access Scope="LiteralConstant" UId="71">
+      <Constant>
+        <ConstantType>UInt</ConstantType>
+        <ConstantValue>30</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="GlobalVariable" UId="72">
+      <Symbol>
+        <Component Name="Unit1.EmNodes" />
+        <Component Name="clock" />
+        <Component Name="cycle1000Msec" />
+      </Symbol>
+    </Access>
+    <Access Scope="LiteralConstant" UId="73">
+      <Constant>
+        <ConstantType>LReal</ConstantType>
+        <ConstantValue>1.27</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="GlobalVariable" UId="74">
+      <Symbol>
+        <Component Name="BA060AZSIDR17_TransferPnPRightAxisZ" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="75">
+      <Symbol>
+        <Component Name="DriveDiagConfig" />
+        <Component Name="torqueLoad" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>17</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="76">
+      <Symbol>
+        <Component Name="DriveDiagInterfaceHmi" />
+        <Component Name="torqueLoad" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>17</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="77">
+      <Symbol>
+        <Component Name="Unit1.EmNodes" />
+        <Component Name="unitStatus" />
+        <Component Name="mode" />
+        <Component Name="production" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalConstant" UId="78">
+      <Constant Name="TRUE" />
+    </Access>
+    <Access Scope="LiteralConstant" UId="79">
+      <Constant>
+        <ConstantType>UInt</ConstantType>
+        <ConstantValue>30</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="GlobalVariable" UId="80">
+      <Symbol>
+        <Component Name="Unit1.EmNodes" />
+        <Component Name="clock" />
+        <Component Name="cycle1000Msec" />
+      </Symbol>
+    </Access>
+    <Access Scope="LiteralConstant" UId="81">
+      <Constant>
+        <ConstantType>LReal</ConstantType>
+        <ConstantValue>561.0</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="GlobalVariable" UId="82">
+      <Symbol>
+        <Component Name="BA060AZSIDR18_JRUnloadingAxisX" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="83">
+      <Symbol>
+        <Component Name="DriveDiagConfig" />
+        <Component Name="torqueLoad" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>18</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="84">
+      <Symbol>
+        <Component Name="DriveDiagInterfaceHmi" />
+        <Component Name="torqueLoad" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>18</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="85">
+      <Symbol>
+        <Component Name="Unit1.EmNodes" />
+        <Component Name="unitStatus" />
+        <Component Name="mode" />
+        <Component Name="production" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalConstant" UId="86">
+      <Constant Name="TRUE" />
+    </Access>
+    <Access Scope="LiteralConstant" UId="87">
+      <Constant>
+        <ConstantType>UInt</ConstantType>
+        <ConstantValue>30</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="GlobalVariable" UId="88">
+      <Symbol>
+        <Component Name="Unit1.EmNodes" />
+        <Component Name="clock" />
+        <Component Name="cycle1000Msec" />
+      </Symbol>
+    </Access>
+    <Access Scope="LiteralConstant" UId="89">
+      <Constant>
+        <ConstantType>LReal</ConstantType>
+        <ConstantValue>2.4</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="GlobalVariable" UId="90">
+      <Symbol>
+        <Component Name="BA060AZSIDR19_JRUnloadingAxisZ" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="91">
+      <Symbol>
+        <Component Name="DriveDiagConfig" />
+        <Component Name="torqueLoad" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>19</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="92">
+      <Symbol>
+        <Component Name="DriveDiagInterfaceHmi" />
+        <Component Name="torqueLoad" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>19</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="93">
+      <Symbol>
+        <Component Name="Unit1.EmNodes" />
+        <Component Name="unitStatus" />
+        <Component Name="mode" />
+        <Component Name="production" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalConstant" UId="94">
+      <Constant Name="TRUE" />
+    </Access>
+    <Access Scope="LiteralConstant" UId="95">
+      <Constant>
+        <ConstantType>UInt</ConstantType>
+        <ConstantValue>30</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="GlobalVariable" UId="96">
+      <Symbol>
+        <Component Name="Unit1.EmNodes" />
+        <Component Name="clock" />
+        <Component Name="cycle1000Msec" />
+      </Symbol>
+    </Access>
+    <Access Scope="LiteralConstant" UId="97">
+      <Constant>
+        <ConstantType>LReal</ConstantType>
+        <ConstantValue>1.27</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="GlobalVariable" UId="98">
+      <Symbol>
+        <Component Name="BA060AZSIDR20_JRUnloadingAxisC" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="99">
+      <Symbol>
+        <Component Name="DriveDiagConfig" />
+        <Component Name="torqueLoad" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>20</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="100">
+      <Symbol>
+        <Component Name="DriveDiagInterfaceHmi" />
+        <Component Name="torqueLoad" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>20</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Part Name="Contact" UId="101">
+      <Negated Name="operand" />
+    </Part>
+    <Call UId="102">
+      <CallInfo Name="LER_ServoTorqueCal" BlockType="FB">
+        <Instance Scope="GlobalVariable" UId="103">
+          <Component Name="InstTorqueCal_ThicknessAxisZ" />
+        </Instance>
+        <Parameter Name="enable" Section="Input" Type="Bool" />
+        <Parameter Name="enableManualCmds" Section="Input" Type="Bool" />
+        <Parameter Name="storageCount" Section="Input" Type="UInt" />
+        <Parameter Name="storageCycle" Section="Input" Type="Bool" />
+        <Parameter Name="RatedTorque" Section="Input" Type="LReal" />
+        <Parameter Name="axis" Section="Input" Type="DB_ANY" />
+        <Parameter Name="actualTorque" Section="Output" Type="LReal" />
+        <Parameter Name="averageTorque" Section="Output" Type="LReal" />
+        <Parameter Name="peakTorque" Section="Output" Type="LReal" />
+        <Parameter Name="currentload" Section="Output" Type="LReal" />
+        <Parameter Name="averageload" Section="Output" Type="LReal" />
+        <Parameter Name="peakload" Section="Output" Type="LReal" />
+        <Parameter Name="configuration" Section="InOut" Type="&quot;LER_typeServoTorqueCalConfigruation&quot;" />
+        <Parameter Name="moduleInterface" Section="InOut" Type="&quot;LER_typeServoTorqueCalInterface&quot;" />
+      </CallInfo>
+    </Call>
+    <Part Name="Contact" UId="104">
+      <Negated Name="operand" />
+    </Part>
+    <Call UId="105">
+      <CallInfo Name="LER_ServoTorqueCal" BlockType="FB">
+        <Instance Scope="GlobalVariable" UId="106">
+          <Component Name="InstTorqueCal_TransferPnPLeftAxisX" />
+        </Instance>
+        <Parameter Name="enable" Section="Input" Type="Bool" />
+        <Parameter Name="enableManualCmds" Section="Input" Type="Bool" />
+        <Parameter Name="storageCount" Section="Input" Type="UInt" />
+        <Parameter Name="storageCycle" Section="Input" Type="Bool" />
+        <Parameter Name="RatedTorque" Section="Input" Type="LReal" />
+        <Parameter Name="axis" Section="Input" Type="DB_ANY" />
+        <Parameter Name="actualTorque" Section="Output" Type="LReal" />
+        <Parameter Name="averageTorque" Section="Output" Type="LReal" />
+        <Parameter Name="peakTorque" Section="Output" Type="LReal" />
+        <Parameter Name="currentload" Section="Output" Type="LReal" />
+        <Parameter Name="averageload" Section="Output" Type="LReal" />
+        <Parameter Name="peakload" Section="Output" Type="LReal" />
+        <Parameter Name="configuration" Section="InOut" Type="&quot;LER_typeServoTorqueCalConfigruation&quot;" />
+        <Parameter Name="moduleInterface" Section="InOut" Type="&quot;LER_typeServoTorqueCalInterface&quot;" />
+      </CallInfo>
+    </Call>
+    <Part Name="Contact" UId="107">
+      <Negated Name="operand" />
+    </Part>
+    <Call UId="108">
+      <CallInfo Name="LER_ServoTorqueCal" BlockType="FB">
+        <Instance Scope="GlobalVariable" UId="109">
+          <Component Name="InstTorqueCal_TransferPnPLeftAxisY" />
+        </Instance>
+        <Parameter Name="enable" Section="Input" Type="Bool" />
+        <Parameter Name="enableManualCmds" Section="Input" Type="Bool" />
+        <Parameter Name="storageCount" Section="Input" Type="UInt" />
+        <Parameter Name="storageCycle" Section="Input" Type="Bool" />
+        <Parameter Name="RatedTorque" Section="Input" Type="LReal" />
+        <Parameter Name="axis" Section="Input" Type="DB_ANY" />
+        <Parameter Name="actualTorque" Section="Output" Type="LReal" />
+        <Parameter Name="averageTorque" Section="Output" Type="LReal" />
+        <Parameter Name="peakTorque" Section="Output" Type="LReal" />
+        <Parameter Name="currentload" Section="Output" Type="LReal" />
+        <Parameter Name="averageload" Section="Output" Type="LReal" />
+        <Parameter Name="peakload" Section="Output" Type="LReal" />
+        <Parameter Name="configuration" Section="InOut" Type="&quot;LER_typeServoTorqueCalConfigruation&quot;" />
+        <Parameter Name="moduleInterface" Section="InOut" Type="&quot;LER_typeServoTorqueCalInterface&quot;" />
+      </CallInfo>
+    </Call>
+    <Part Name="Contact" UId="110">
+      <Negated Name="operand" />
+    </Part>
+    <Call UId="111">
+      <CallInfo Name="LER_ServoTorqueCal" BlockType="FB">
+        <Instance Scope="GlobalVariable" UId="112">
+          <Component Name="InstTorqueCal_TransferPnPLeftAxisZ" />
+        </Instance>
+        <Parameter Name="enable" Section="Input" Type="Bool" />
+        <Parameter Name="enableManualCmds" Section="Input" Type="Bool" />
+        <Parameter Name="storageCount" Section="Input" Type="UInt" />
+        <Parameter Name="storageCycle" Section="Input" Type="Bool" />
+        <Parameter Name="RatedTorque" Section="Input" Type="LReal" />
+        <Parameter Name="axis" Section="Input" Type="DB_ANY" />
+        <Parameter Name="actualTorque" Section="Output" Type="LReal" />
+        <Parameter Name="averageTorque" Section="Output" Type="LReal" />
+        <Parameter Name="peakTorque" Section="Output" Type="LReal" />
+        <Parameter Name="currentload" Section="Output" Type="LReal" />
+        <Parameter Name="averageload" Section="Output" Type="LReal" />
+        <Parameter Name="peakload" Section="Output" Type="LReal" />
+        <Parameter Name="configuration" Section="InOut" Type="&quot;LER_typeServoTorqueCalConfigruation&quot;" />
+        <Parameter Name="moduleInterface" Section="InOut" Type="&quot;LER_typeServoTorqueCalInterface&quot;" />
+      </CallInfo>
+    </Call>
+    <Part Name="Contact" UId="113">
+      <Negated Name="operand" />
+    </Part>
+    <Call UId="114">
+      <CallInfo Name="LER_ServoTorqueCal" BlockType="FB">
+        <Instance Scope="GlobalVariable" UId="115">
+          <Component Name="InstTorqueCal_TransferPnPRightAxisX" />
+        </Instance>
+        <Parameter Name="enable" Section="Input" Type="Bool" />
+        <Parameter Name="enableManualCmds" Section="Input" Type="Bool" />
+        <Parameter Name="storageCount" Section="Input" Type="UInt" />
+        <Parameter Name="storageCycle" Section="Input" Type="Bool" />
+        <Parameter Name="RatedTorque" Section="Input" Type="LReal" />
+        <Parameter Name="axis" Section="Input" Type="DB_ANY" />
+        <Parameter Name="actualTorque" Section="Output" Type="LReal" />
+        <Parameter Name="averageTorque" Section="Output" Type="LReal" />
+        <Parameter Name="peakTorque" Section="Output" Type="LReal" />
+        <Parameter Name="currentload" Section="Output" Type="LReal" />
+        <Parameter Name="averageload" Section="Output" Type="LReal" />
+        <Parameter Name="peakload" Section="Output" Type="LReal" />
+        <Parameter Name="configuration" Section="InOut" Type="&quot;LER_typeServoTorqueCalConfigruation&quot;" />
+        <Parameter Name="moduleInterface" Section="InOut" Type="&quot;LER_typeServoTorqueCalInterface&quot;" />
+      </CallInfo>
+    </Call>
+    <Part Name="Contact" UId="116">
+      <Negated Name="operand" />
+    </Part>
+    <Call UId="117">
+      <CallInfo Name="LER_ServoTorqueCal" BlockType="FB">
+        <Instance Scope="GlobalVariable" UId="118">
+          <Component Name="InstTorqueCal_TransferPnPRightAxisY" />
+        </Instance>
+        <Parameter Name="enable" Section="Input" Type="Bool" />
+        <Parameter Name="enableManualCmds" Section="Input" Type="Bool" />
+        <Parameter Name="storageCount" Section="Input" Type="UInt" />
+        <Parameter Name="storageCycle" Section="Input" Type="Bool" />
+        <Parameter Name="RatedTorque" Section="Input" Type="LReal" />
+        <Parameter Name="axis" Section="Input" Type="DB_ANY" />
+        <Parameter Name="actualTorque" Section="Output" Type="LReal" />
+        <Parameter Name="averageTorque" Section="Output" Type="LReal" />
+        <Parameter Name="peakTorque" Section="Output" Type="LReal" />
+        <Parameter Name="currentload" Section="Output" Type="LReal" />
+        <Parameter Name="averageload" Section="Output" Type="LReal" />
+        <Parameter Name="peakload" Section="Output" Type="LReal" />
+        <Parameter Name="configuration" Section="InOut" Type="&quot;LER_typeServoTorqueCalConfigruation&quot;" />
+        <Parameter Name="moduleInterface" Section="InOut" Type="&quot;LER_typeServoTorqueCalInterface&quot;" />
+      </CallInfo>
+    </Call>
+    <Part Name="Contact" UId="119">
+      <Negated Name="operand" />
+    </Part>
+    <Call UId="120">
+      <CallInfo Name="LER_ServoTorqueCal" BlockType="FB">
+        <Instance Scope="GlobalVariable" UId="121">
+          <Component Name="InstTorqueCal_TransferPnPRightAxisZ" />
+        </Instance>
+        <Parameter Name="enable" Section="Input" Type="Bool" />
+        <Parameter Name="enableManualCmds" Section="Input" Type="Bool" />
+        <Parameter Name="storageCount" Section="Input" Type="UInt" />
+        <Parameter Name="storageCycle" Section="Input" Type="Bool" />
+        <Parameter Name="RatedTorque" Section="Input" Type="LReal" />
+        <Parameter Name="axis" Section="Input" Type="DB_ANY" />
+        <Parameter Name="actualTorque" Section="Output" Type="LReal" />
+        <Parameter Name="averageTorque" Section="Output" Type="LReal" />
+        <Parameter Name="peakTorque" Section="Output" Type="LReal" />
+        <Parameter Name="currentload" Section="Output" Type="LReal" />
+        <Parameter Name="averageload" Section="Output" Type="LReal" />
+        <Parameter Name="peakload" Section="Output" Type="LReal" />
+        <Parameter Name="configuration" Section="InOut" Type="&quot;LER_typeServoTorqueCalConfigruation&quot;" />
+        <Parameter Name="moduleInterface" Section="InOut" Type="&quot;LER_typeServoTorqueCalInterface&quot;" />
+      </CallInfo>
+    </Call>
+    <Part Name="Contact" UId="122">
+      <Negated Name="operand" />
+    </Part>
+    <Call UId="123">
+      <CallInfo Name="LER_ServoTorqueCal" BlockType="FB">
+        <Instance Scope="GlobalVariable" UId="124">
+          <Component Name="InstTorqueCal_JRUnloadingPnPAxisX" />
+        </Instance>
+        <Parameter Name="enable" Section="Input" Type="Bool" />
+        <Parameter Name="enableManualCmds" Section="Input" Type="Bool" />
+        <Parameter Name="storageCount" Section="Input" Type="UInt" />
+        <Parameter Name="storageCycle" Section="Input" Type="Bool" />
+        <Parameter Name="RatedTorque" Section="Input" Type="LReal" />
+        <Parameter Name="axis" Section="Input" Type="DB_ANY" />
+        <Parameter Name="actualTorque" Section="Output" Type="LReal" />
+        <Parameter Name="averageTorque" Section="Output" Type="LReal" />
+        <Parameter Name="peakTorque" Section="Output" Type="LReal" />
+        <Parameter Name="currentload" Section="Output" Type="LReal" />
+        <Parameter Name="averageload" Section="Output" Type="LReal" />
+        <Parameter Name="peakload" Section="Output" Type="LReal" />
+        <Parameter Name="configuration" Section="InOut" Type="&quot;LER_typeServoTorqueCalConfigruation&quot;" />
+        <Parameter Name="moduleInterface" Section="InOut" Type="&quot;LER_typeServoTorqueCalInterface&quot;" />
+      </CallInfo>
+    </Call>
+    <Part Name="Contact" UId="125">
+      <Negated Name="operand" />
+    </Part>
+    <Call UId="126">
+      <CallInfo Name="LER_ServoTorqueCal" BlockType="FB">
+        <Instance Scope="GlobalVariable" UId="127">
+          <Component Name="InstTorqueCal_JRUnloadingPnPAxisZ" />
+        </Instance>
+        <Parameter Name="enable" Section="Input" Type="Bool" />
+        <Parameter Name="enableManualCmds" Section="Input" Type="Bool" />
+        <Parameter Name="storageCount" Section="Input" Type="UInt" />
+        <Parameter Name="storageCycle" Section="Input" Type="Bool" />
+        <Parameter Name="RatedTorque" Section="Input" Type="LReal" />
+        <Parameter Name="axis" Section="Input" Type="DB_ANY" />
+        <Parameter Name="actualTorque" Section="Output" Type="LReal" />
+        <Parameter Name="averageTorque" Section="Output" Type="LReal" />
+        <Parameter Name="peakTorque" Section="Output" Type="LReal" />
+        <Parameter Name="currentload" Section="Output" Type="LReal" />
+        <Parameter Name="averageload" Section="Output" Type="LReal" />
+        <Parameter Name="peakload" Section="Output" Type="LReal" />
+        <Parameter Name="configuration" Section="InOut" Type="&quot;LER_typeServoTorqueCalConfigruation&quot;" />
+        <Parameter Name="moduleInterface" Section="InOut" Type="&quot;LER_typeServoTorqueCalInterface&quot;" />
+      </CallInfo>
+    </Call>
+    <Part Name="Contact" UId="128">
+      <Negated Name="operand" />
+    </Part>
+    <Call UId="129">
+      <CallInfo Name="LER_ServoTorqueCal" BlockType="FB">
+        <Instance Scope="GlobalVariable" UId="130">
+          <Component Name="InstTorqueCal_JRUnloadingPnPAxisC" />
+        </Instance>
+        <Parameter Name="enable" Section="Input" Type="Bool" />
+        <Parameter Name="enableManualCmds" Section="Input" Type="Bool" />
+        <Parameter Name="storageCount" Section="Input" Type="UInt" />
+        <Parameter Name="storageCycle" Section="Input" Type="Bool" />
+        <Parameter Name="RatedTorque" Section="Input" Type="LReal" />
+        <Parameter Name="axis" Section="Input" Type="DB_ANY" />
+        <Parameter Name="actualTorque" Section="Output" Type="LReal" />
+        <Parameter Name="averageTorque" Section="Output" Type="LReal" />
+        <Parameter Name="peakTorque" Section="Output" Type="LReal" />
+        <Parameter Name="currentload" Section="Output" Type="LReal" />
+        <Parameter Name="averageload" Section="Output" Type="LReal" />
+        <Parameter Name="peakload" Section="Output" Type="LReal" />
+        <Parameter Name="configuration" Section="InOut" Type="&quot;LER_typeServoTorqueCalConfigruation&quot;" />
+        <Parameter Name="moduleInterface" Section="InOut" Type="&quot;LER_typeServoTorqueCalInterface&quot;" />
+      </CallInfo>
+    </Call>
+  </Parts>
+  <Wires>
+    <Wire UId="191">
+      <Powerrail />
+      <NameCon UId="102" Name="en" />
+      <NameCon UId="101" Name="in" />
+      <NameCon UId="105" Name="en" />
+      <NameCon UId="104" Name="in" />
+      <NameCon UId="108" Name="en" />
+      <NameCon UId="107" Name="in" />
+      <NameCon UId="111" Name="en" />
+      <NameCon UId="110" Name="in" />
+      <NameCon UId="114" Name="en" />
+      <NameCon UId="113" Name="in" />
+      <NameCon UId="117" Name="en" />
+      <NameCon UId="116" Name="in" />
+      <NameCon UId="120" Name="en" />
+      <NameCon UId="119" Name="in" />
+      <NameCon UId="123" Name="en" />
+      <NameCon UId="122" Name="in" />
+      <NameCon UId="126" Name="en" />
+      <NameCon UId="125" Name="in" />
+      <NameCon UId="129" Name="en" />
+      <NameCon UId="128" Name="in" />
+    </Wire>
+    <Wire UId="192">
+      <IdentCon UId="21" />
+      <NameCon UId="101" Name="operand" />
+    </Wire>
+    <Wire UId="193">
+      <NameCon UId="101" Name="out" />
+      <NameCon UId="102" Name="enableManualCmds" />
+    </Wire>
+    <Wire UId="194">
+      <IdentCon UId="22" />
+      <NameCon UId="102" Name="enable" />
+    </Wire>
+    <Wire UId="195">
+      <IdentCon UId="23" />
+      <NameCon UId="102" Name="storageCount" />
+    </Wire>
+    <Wire UId="196">
+      <IdentCon UId="24" />
+      <NameCon UId="102" Name="storageCycle" />
+    </Wire>
+    <Wire UId="197">
+      <IdentCon UId="25" />
+      <NameCon UId="102" Name="RatedTorque" />
+    </Wire>
+    <Wire UId="198">
+      <IdentCon UId="26" />
+      <NameCon UId="102" Name="axis" />
+    </Wire>
+    <Wire UId="199">
+      <IdentCon UId="27" />
+      <NameCon UId="102" Name="configuration" />
+    </Wire>
+    <Wire UId="200">
+      <IdentCon UId="28" />
+      <NameCon UId="102" Name="moduleInterface" />
+    </Wire>
+    <Wire UId="201">
+      <NameCon UId="102" Name="actualTorque" />
+      <OpenCon UId="131" />
+    </Wire>
+    <Wire UId="202">
+      <NameCon UId="102" Name="averageTorque" />
+      <OpenCon UId="132" />
+    </Wire>
+    <Wire UId="203">
+      <NameCon UId="102" Name="peakTorque" />
+      <OpenCon UId="133" />
+    </Wire>
+    <Wire UId="204">
+      <NameCon UId="102" Name="currentload" />
+      <OpenCon UId="134" />
+    </Wire>
+    <Wire UId="205">
+      <NameCon UId="102" Name="averageload" />
+      <OpenCon UId="135" />
+    </Wire>
+    <Wire UId="206">
+      <NameCon UId="102" Name="peakload" />
+      <OpenCon UId="136" />
+    </Wire>
+    <Wire UId="207">
+      <IdentCon UId="29" />
+      <NameCon UId="104" Name="operand" />
+    </Wire>
+    <Wire UId="208">
+      <NameCon UId="104" Name="out" />
+      <NameCon UId="105" Name="enableManualCmds" />
+    </Wire>
+    <Wire UId="209">
+      <IdentCon UId="30" />
+      <NameCon UId="105" Name="enable" />
+    </Wire>
+    <Wire UId="210">
+      <IdentCon UId="31" />
+      <NameCon UId="105" Name="storageCount" />
+    </Wire>
+    <Wire UId="211">
+      <IdentCon UId="32" />
+      <NameCon UId="105" Name="storageCycle" />
+    </Wire>
+    <Wire UId="212">
+      <IdentCon UId="33" />
+      <NameCon UId="105" Name="RatedTorque" />
+    </Wire>
+    <Wire UId="213">
+      <IdentCon UId="34" />
+      <NameCon UId="105" Name="axis" />
+    </Wire>
+    <Wire UId="214">
+      <IdentCon UId="35" />
+      <NameCon UId="105" Name="configuration" />
+    </Wire>
+    <Wire UId="215">
+      <IdentCon UId="36" />
+      <NameCon UId="105" Name="moduleInterface" />
+    </Wire>
+    <Wire UId="216">
+      <NameCon UId="105" Name="actualTorque" />
+      <OpenCon UId="137" />
+    </Wire>
+    <Wire UId="217">
+      <NameCon UId="105" Name="averageTorque" />
+      <OpenCon UId="138" />
+    </Wire>
+    <Wire UId="218">
+      <NameCon UId="105" Name="peakTorque" />
+      <OpenCon UId="139" />
+    </Wire>
+    <Wire UId="219">
+      <NameCon UId="105" Name="currentload" />
+      <OpenCon UId="140" />
+    </Wire>
+    <Wire UId="220">
+      <NameCon UId="105" Name="averageload" />
+      <OpenCon UId="141" />
+    </Wire>
+    <Wire UId="221">
+      <NameCon UId="105" Name="peakload" />
+      <OpenCon UId="142" />
+    </Wire>
+    <Wire UId="222">
+      <IdentCon UId="37" />
+      <NameCon UId="107" Name="operand" />
+    </Wire>
+    <Wire UId="223">
+      <NameCon UId="107" Name="out" />
+      <NameCon UId="108" Name="enableManualCmds" />
+    </Wire>
+    <Wire UId="224">
+      <IdentCon UId="38" />
+      <NameCon UId="108" Name="enable" />
+    </Wire>
+    <Wire UId="225">
+      <IdentCon UId="39" />
+      <NameCon UId="108" Name="storageCount" />
+    </Wire>
+    <Wire UId="226">
+      <IdentCon UId="40" />
+      <NameCon UId="108" Name="storageCycle" />
+    </Wire>
+    <Wire UId="227">
+      <IdentCon UId="41" />
+      <NameCon UId="108" Name="RatedTorque" />
+    </Wire>
+    <Wire UId="228">
+      <IdentCon UId="42" />
+      <NameCon UId="108" Name="axis" />
+    </Wire>
+    <Wire UId="229">
+      <IdentCon UId="43" />
+      <NameCon UId="108" Name="configuration" />
+    </Wire>
+    <Wire UId="230">
+      <IdentCon UId="44" />
+      <NameCon UId="108" Name="moduleInterface" />
+    </Wire>
+    <Wire UId="231">
+      <NameCon UId="108" Name="actualTorque" />
+      <OpenCon UId="143" />
+    </Wire>
+    <Wire UId="232">
+      <NameCon UId="108" Name="averageTorque" />
+      <OpenCon UId="144" />
+    </Wire>
+    <Wire UId="233">
+      <NameCon UId="108" Name="peakTorque" />
+      <OpenCon UId="145" />
+    </Wire>
+    <Wire UId="234">
+      <NameCon UId="108" Name="currentload" />
+      <OpenCon UId="146" />
+    </Wire>
+    <Wire UId="235">
+      <NameCon UId="108" Name="averageload" />
+      <OpenCon UId="147" />
+    </Wire>
+    <Wire UId="236">
+      <NameCon UId="108" Name="peakload" />
+      <OpenCon UId="148" />
+    </Wire>
+    <Wire UId="237">
+      <IdentCon UId="45" />
+      <NameCon UId="110" Name="operand" />
+    </Wire>
+    <Wire UId="238">
+      <NameCon UId="110" Name="out" />
+      <NameCon UId="111" Name="enableManualCmds" />
+    </Wire>
+    <Wire UId="239">
+      <IdentCon UId="46" />
+      <NameCon UId="111" Name="enable" />
+    </Wire>
+    <Wire UId="240">
+      <IdentCon UId="47" />
+      <NameCon UId="111" Name="storageCount" />
+    </Wire>
+    <Wire UId="241">
+      <IdentCon UId="48" />
+      <NameCon UId="111" Name="storageCycle" />
+    </Wire>
+    <Wire UId="242">
+      <IdentCon UId="49" />
+      <NameCon UId="111" Name="RatedTorque" />
+    </Wire>
+    <Wire UId="243">
+      <IdentCon UId="50" />
+      <NameCon UId="111" Name="axis" />
+    </Wire>
+    <Wire UId="244">
+      <IdentCon UId="51" />
+      <NameCon UId="111" Name="configuration" />
+    </Wire>
+    <Wire UId="245">
+      <IdentCon UId="52" />
+      <NameCon UId="111" Name="moduleInterface" />
+    </Wire>
+    <Wire UId="246">
+      <NameCon UId="111" Name="actualTorque" />
+      <OpenCon UId="149" />
+    </Wire>
+    <Wire UId="247">
+      <NameCon UId="111" Name="averageTorque" />
+      <OpenCon UId="150" />
+    </Wire>
+    <Wire UId="248">
+      <NameCon UId="111" Name="peakTorque" />
+      <OpenCon UId="151" />
+    </Wire>
+    <Wire UId="249">
+      <NameCon UId="111" Name="currentload" />
+      <OpenCon UId="152" />
+    </Wire>
+    <Wire UId="250">
+      <NameCon UId="111" Name="averageload" />
+      <OpenCon UId="153" />
+    </Wire>
+    <Wire UId="251">
+      <NameCon UId="111" Name="peakload" />
+      <OpenCon UId="154" />
+    </Wire>
+    <Wire UId="252">
+      <IdentCon UId="53" />
+      <NameCon UId="113" Name="operand" />
+    </Wire>
+    <Wire UId="253">
+      <NameCon UId="113" Name="out" />
+      <NameCon UId="114" Name="enableManualCmds" />
+    </Wire>
+    <Wire UId="254">
+      <IdentCon UId="54" />
+      <NameCon UId="114" Name="enable" />
+    </Wire>
+    <Wire UId="255">
+      <IdentCon UId="55" />
+      <NameCon UId="114" Name="storageCount" />
+    </Wire>
+    <Wire UId="256">
+      <IdentCon UId="56" />
+      <NameCon UId="114" Name="storageCycle" />
+    </Wire>
+    <Wire UId="257">
+      <IdentCon UId="57" />
+      <NameCon UId="114" Name="RatedTorque" />
+    </Wire>
+    <Wire UId="258">
+      <IdentCon UId="58" />
+      <NameCon UId="114" Name="axis" />
+    </Wire>
+    <Wire UId="259">
+      <IdentCon UId="59" />
+      <NameCon UId="114" Name="configuration" />
+    </Wire>
+    <Wire UId="260">
+      <IdentCon UId="60" />
+      <NameCon UId="114" Name="moduleInterface" />
+    </Wire>
+    <Wire UId="261">
+      <NameCon UId="114" Name="actualTorque" />
+      <OpenCon UId="155" />
+    </Wire>
+    <Wire UId="262">
+      <NameCon UId="114" Name="averageTorque" />
+      <OpenCon UId="156" />
+    </Wire>
+    <Wire UId="263">
+      <NameCon UId="114" Name="peakTorque" />
+      <OpenCon UId="157" />
+    </Wire>
+    <Wire UId="264">
+      <NameCon UId="114" Name="currentload" />
+      <OpenCon UId="158" />
+    </Wire>
+    <Wire UId="265">
+      <NameCon UId="114" Name="averageload" />
+      <OpenCon UId="159" />
+    </Wire>
+    <Wire UId="266">
+      <NameCon UId="114" Name="peakload" />
+      <OpenCon UId="160" />
+    </Wire>
+    <Wire UId="267">
+      <IdentCon UId="61" />
+      <NameCon UId="116" Name="operand" />
+    </Wire>
+    <Wire UId="268">
+      <NameCon UId="116" Name="out" />
+      <NameCon UId="117" Name="enableManualCmds" />
+    </Wire>
+    <Wire UId="269">
+      <IdentCon UId="62" />
+      <NameCon UId="117" Name="enable" />
+    </Wire>
+    <Wire UId="270">
+      <IdentCon UId="63" />
+      <NameCon UId="117" Name="storageCount" />
+    </Wire>
+    <Wire UId="271">
+      <IdentCon UId="64" />
+      <NameCon UId="117" Name="storageCycle" />
+    </Wire>
+    <Wire UId="272">
+      <IdentCon UId="65" />
+      <NameCon UId="117" Name="RatedTorque" />
+    </Wire>
+    <Wire UId="273">
+      <IdentCon UId="66" />
+      <NameCon UId="117" Name="axis" />
+    </Wire>
+    <Wire UId="274">
+      <IdentCon UId="67" />
+      <NameCon UId="117" Name="configuration" />
+    </Wire>
+    <Wire UId="275">
+      <IdentCon UId="68" />
+      <NameCon UId="117" Name="moduleInterface" />
+    </Wire>
+    <Wire UId="276">
+      <NameCon UId="117" Name="actualTorque" />
+      <OpenCon UId="161" />
+    </Wire>
+    <Wire UId="277">
+      <NameCon UId="117" Name="averageTorque" />
+      <OpenCon UId="162" />
+    </Wire>
+    <Wire UId="278">
+      <NameCon UId="117" Name="peakTorque" />
+      <OpenCon UId="163" />
+    </Wire>
+    <Wire UId="279">
+      <NameCon UId="117" Name="currentload" />
+      <OpenCon UId="164" />
+    </Wire>
+    <Wire UId="280">
+      <NameCon UId="117" Name="averageload" />
+      <OpenCon UId="165" />
+    </Wire>
+    <Wire UId="281">
+      <NameCon UId="117" Name="peakload" />
+      <OpenCon UId="166" />
+    </Wire>
+    <Wire UId="282">
+      <IdentCon UId="69" />
+      <NameCon UId="119" Name="operand" />
+    </Wire>
+    <Wire UId="283">
+      <NameCon UId="119" Name="out" />
+      <NameCon UId="120" Name="enableManualCmds" />
+    </Wire>
+    <Wire UId="284">
+      <IdentCon UId="70" />
+      <NameCon UId="120" Name="enable" />
+    </Wire>
+    <Wire UId="285">
+      <IdentCon UId="71" />
+      <NameCon UId="120" Name="storageCount" />
+    </Wire>
+    <Wire UId="286">
+      <IdentCon UId="72" />
+      <NameCon UId="120" Name="storageCycle" />
+    </Wire>
+    <Wire UId="287">
+      <IdentCon UId="73" />
+      <NameCon UId="120" Name="RatedTorque" />
+    </Wire>
+    <Wire UId="288">
+      <IdentCon UId="74" />
+      <NameCon UId="120" Name="axis" />
+    </Wire>
+    <Wire UId="289">
+      <IdentCon UId="75" />
+      <NameCon UId="120" Name="configuration" />
+    </Wire>
+    <Wire UId="290">
+      <IdentCon UId="76" />
+      <NameCon UId="120" Name="moduleInterface" />
+    </Wire>
+    <Wire UId="291">
+      <NameCon UId="120" Name="actualTorque" />
+      <OpenCon UId="167" />
+    </Wire>
+    <Wire UId="292">
+      <NameCon UId="120" Name="averageTorque" />
+      <OpenCon UId="168" />
+    </Wire>
+    <Wire UId="293">
+      <NameCon UId="120" Name="peakTorque" />
+      <OpenCon UId="169" />
+    </Wire>
+    <Wire UId="294">
+      <NameCon UId="120" Name="currentload" />
+      <OpenCon UId="170" />
+    </Wire>
+    <Wire UId="295">
+      <NameCon UId="120" Name="averageload" />
+      <OpenCon UId="171" />
+    </Wire>
+    <Wire UId="296">
+      <NameCon UId="120" Name="peakload" />
+      <OpenCon UId="172" />
+    </Wire>
+    <Wire UId="297">
+      <IdentCon UId="77" />
+      <NameCon UId="122" Name="operand" />
+    </Wire>
+    <Wire UId="298">
+      <NameCon UId="122" Name="out" />
+      <NameCon UId="123" Name="enableManualCmds" />
+    </Wire>
+    <Wire UId="299">
+      <IdentCon UId="78" />
+      <NameCon UId="123" Name="enable" />
+    </Wire>
+    <Wire UId="300">
+      <IdentCon UId="79" />
+      <NameCon UId="123" Name="storageCount" />
+    </Wire>
+    <Wire UId="301">
+      <IdentCon UId="80" />
+      <NameCon UId="123" Name="storageCycle" />
+    </Wire>
+    <Wire UId="302">
+      <IdentCon UId="81" />
+      <NameCon UId="123" Name="RatedTorque" />
+    </Wire>
+    <Wire UId="303">
+      <IdentCon UId="82" />
+      <NameCon UId="123" Name="axis" />
+    </Wire>
+    <Wire UId="304">
+      <IdentCon UId="83" />
+      <NameCon UId="123" Name="configuration" />
+    </Wire>
+    <Wire UId="305">
+      <IdentCon UId="84" />
+      <NameCon UId="123" Name="moduleInterface" />
+    </Wire>
+    <Wire UId="306">
+      <NameCon UId="123" Name="actualTorque" />
+      <OpenCon UId="173" />
+    </Wire>
+    <Wire UId="307">
+      <NameCon UId="123" Name="averageTorque" />
+      <OpenCon UId="174" />
+    </Wire>
+    <Wire UId="308">
+      <NameCon UId="123" Name="peakTorque" />
+      <OpenCon UId="175" />
+    </Wire>
+    <Wire UId="309">
+      <NameCon UId="123" Name="currentload" />
+      <OpenCon UId="176" />
+    </Wire>
+    <Wire UId="310">
+      <NameCon UId="123" Name="averageload" />
+      <OpenCon UId="177" />
+    </Wire>
+    <Wire UId="311">
+      <NameCon UId="123" Name="peakload" />
+      <OpenCon UId="178" />
+    </Wire>
+    <Wire UId="312">
+      <IdentCon UId="85" />
+      <NameCon UId="125" Name="operand" />
+    </Wire>
+    <Wire UId="313">
+      <NameCon UId="125" Name="out" />
+      <NameCon UId="126" Name="enableManualCmds" />
+    </Wire>
+    <Wire UId="314">
+      <IdentCon UId="86" />
+      <NameCon UId="126" Name="enable" />
+    </Wire>
+    <Wire UId="315">
+      <IdentCon UId="87" />
+      <NameCon UId="126" Name="storageCount" />
+    </Wire>
+    <Wire UId="316">
+      <IdentCon UId="88" />
+      <NameCon UId="126" Name="storageCycle" />
+    </Wire>
+    <Wire UId="317">
+      <IdentCon UId="89" />
+      <NameCon UId="126" Name="RatedTorque" />
+    </Wire>
+    <Wire UId="318">
+      <IdentCon UId="90" />
+      <NameCon UId="126" Name="axis" />
+    </Wire>
+    <Wire UId="319">
+      <IdentCon UId="91" />
+      <NameCon UId="126" Name="configuration" />
+    </Wire>
+    <Wire UId="320">
+      <IdentCon UId="92" />
+      <NameCon UId="126" Name="moduleInterface" />
+    </Wire>
+    <Wire UId="321">
+      <NameCon UId="126" Name="actualTorque" />
+      <OpenCon UId="179" />
+    </Wire>
+    <Wire UId="322">
+      <NameCon UId="126" Name="averageTorque" />
+      <OpenCon UId="180" />
+    </Wire>
+    <Wire UId="323">
+      <NameCon UId="126" Name="peakTorque" />
+      <OpenCon UId="181" />
+    </Wire>
+    <Wire UId="324">
+      <NameCon UId="126" Name="currentload" />
+      <OpenCon UId="182" />
+    </Wire>
+    <Wire UId="325">
+      <NameCon UId="126" Name="averageload" />
+      <OpenCon UId="183" />
+    </Wire>
+    <Wire UId="326">
+      <NameCon UId="126" Name="peakload" />
+      <OpenCon UId="184" />
+    </Wire>
+    <Wire UId="327">
+      <IdentCon UId="93" />
+      <NameCon UId="128" Name="operand" />
+    </Wire>
+    <Wire UId="328">
+      <NameCon UId="128" Name="out" />
+      <NameCon UId="129" Name="enableManualCmds" />
+    </Wire>
+    <Wire UId="329">
+      <IdentCon UId="94" />
+      <NameCon UId="129" Name="enable" />
+    </Wire>
+    <Wire UId="330">
+      <IdentCon UId="95" />
+      <NameCon UId="129" Name="storageCount" />
+    </Wire>
+    <Wire UId="331">
+      <IdentCon UId="96" />
+      <NameCon UId="129" Name="storageCycle" />
+    </Wire>
+    <Wire UId="332">
+      <IdentCon UId="97" />
+      <NameCon UId="129" Name="RatedTorque" />
+    </Wire>
+    <Wire UId="333">
+      <IdentCon UId="98" />
+      <NameCon UId="129" Name="axis" />
+    </Wire>
+    <Wire UId="334">
+      <IdentCon UId="99" />
+      <NameCon UId="129" Name="configuration" />
+    </Wire>
+    <Wire UId="335">
+      <IdentCon UId="100" />
+      <NameCon UId="129" Name="moduleInterface" />
+    </Wire>
+    <Wire UId="336">
+      <NameCon UId="129" Name="actualTorque" />
+      <OpenCon UId="185" />
+    </Wire>
+    <Wire UId="337">
+      <NameCon UId="129" Name="averageTorque" />
+      <OpenCon UId="186" />
+    </Wire>
+    <Wire UId="338">
+      <NameCon UId="129" Name="peakTorque" />
+      <OpenCon UId="187" />
+    </Wire>
+    <Wire UId="339">
+      <NameCon UId="129" Name="currentload" />
+      <OpenCon UId="188" />
+    </Wire>
+    <Wire UId="340">
+      <NameCon UId="129" Name="averageload" />
+      <OpenCon UId="189" />
+    </Wire>
+    <Wire UId="341">
+      <NameCon UId="129" Name="peakload" />
+      <OpenCon UId="190" />
+    </Wire>
+  </Wires>
+</FlgNet></NetworkSource>
+          <ProgrammingLanguage>LAD</ProgrammingLanguage>
+        </AttributeList>
+        <ObjectList>
+          <MultilingualText ID="2F" CompositionName="Comment">
+            <ObjectList>
+              <MultilingualTextItem ID="30" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="31" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+          <MultilingualText ID="32" CompositionName="Title">
+            <ObjectList>
+              <MultilingualTextItem ID="33" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="34" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text>Call: Servo Torque Cal (DR11~20)</Text>
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+        </ObjectList>
+      </SW.Blocks.CompileUnit>
+      <SW.Blocks.CompileUnit ID="35" CompositionName="CompileUnits">
+        <AttributeList>
+          <NetworkSource><FlgNet xmlns="http://www.siemens.com/automation/Openness/SW/NetworkSource/FlgNet/v5">
+  <Parts>
+    <Call UId="21">
+      <CallInfo Name="DemoIdentRf" BlockType="FC" />
+    </Call>
+  </Parts>
+  <Wires>
+    <Wire UId="22">
+      <Powerrail />
+      <NameCon UId="21" Name="en" />
+    </Wire>
+  </Wires>
+</FlgNet></NetworkSource>
+          <ProgrammingLanguage>LAD</ProgrammingLanguage>
+        </AttributeList>
+        <ObjectList>
+          <MultilingualText ID="36" CompositionName="Comment">
+            <ObjectList>
+              <MultilingualTextItem ID="37" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="38" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+          <MultilingualText ID="39" CompositionName="Title">
+            <ObjectList>
+              <MultilingualTextItem ID="3A" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="3B" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text>Call RFID simulation</Text>
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+        </ObjectList>
+      </SW.Blocks.CompileUnit>
+      <SW.Blocks.CompileUnit ID="3C" CompositionName="CompileUnits">
+        <AttributeList>
+          <NetworkSource><FlgNet xmlns="http://www.siemens.com/automation/Openness/SW/NetworkSource/FlgNet/v5">
+  <Parts>
+    <Access Scope="GlobalVariable" UId="21">
+      <Symbol>
+        <Component Name="IdentRfHmi" />
+        <Component Name="unitIdentRf" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalConstant" UId="22">
+      <Constant Name="NO_OF_RF_IDENT_DEVICES" />
+    </Access>
+    <Access Scope="GlobalVariable" UId="23">
+      <Symbol>
+        <Component Name="IdentRfInterfaceHmi" />
+      </Symbol>
+    </Access>
+    <Call UId="24">
+      <CallInfo Name="GetIdentRf" BlockType="FB">
+        <Instance Scope="GlobalVariable" UId="25">
+          <Component Name="instGetIdentRf" />
+        </Instance>
+        <Parameter Name="identRfAllUnits" Section="Input" Type="Array[1..&quot;NO_OF_UNITS&quot;] of &quot;typeEMIdentRf&quot;" />
+        <Parameter Name="numberOfRfReaders" Section="Input" Type="USInt" />
+        <Parameter Name="selectedUnit" Section="Output" Type="USInt" />
+        <Parameter Name="selectedEM" Section="Output" Type="USInt" />
+        <Parameter Name="error" Section="Output" Type="Word" />
+        <Parameter Name="IdentRfInterfaceHmi" Section="InOut" Type="&quot;typeIdentRfHmi&quot;" />
+      </CallInfo>
+    </Call>
+  </Parts>
+  <Wires>
+    <Wire UId="29">
+      <Powerrail />
+      <NameCon UId="24" Name="en" />
+    </Wire>
+    <Wire UId="30">
+      <IdentCon UId="21" />
+      <NameCon UId="24" Name="identRfAllUnits" />
+    </Wire>
+    <Wire UId="31">
+      <IdentCon UId="22" />
+      <NameCon UId="24" Name="numberOfRfReaders" />
+    </Wire>
+    <Wire UId="32">
+      <IdentCon UId="23" />
+      <NameCon UId="24" Name="IdentRfInterfaceHmi" />
+    </Wire>
+    <Wire UId="33">
+      <NameCon UId="24" Name="selectedUnit" />
+      <OpenCon UId="26" />
+    </Wire>
+    <Wire UId="34">
+      <NameCon UId="24" Name="selectedEM" />
+      <OpenCon UId="27" />
+    </Wire>
+    <Wire UId="35">
+      <NameCon UId="24" Name="error" />
+      <OpenCon UId="28" />
+    </Wire>
+  </Wires>
+</FlgNet></NetworkSource>
+          <ProgrammingLanguage>LAD</ProgrammingLanguage>
+        </AttributeList>
+        <ObjectList>
+          <MultilingualText ID="3D" CompositionName="Comment">
+            <ObjectList>
+              <MultilingualTextItem ID="3E" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="3F" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+          <MultilingualText ID="40" CompositionName="Title">
+            <ObjectList>
+              <MultilingualTextItem ID="41" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="42" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text>Call: Diagnostics Ident RFID</Text>
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+        </ObjectList>
+      </SW.Blocks.CompileUnit>
+      <SW.Blocks.CompileUnit ID="43" CompositionName="CompileUnits">
+        <AttributeList>
+          <NetworkSource><FlgNet xmlns="http://www.siemens.com/automation/Openness/SW/NetworkSource/FlgNet/v5">
+  <Parts>
+    <Call UId="21">
+      <CallInfo Name="DemoIdentMv" BlockType="FC" />
+    </Call>
+  </Parts>
+  <Wires>
+    <Wire UId="22">
+      <Powerrail />
+      <NameCon UId="21" Name="en" />
+    </Wire>
+  </Wires>
+</FlgNet></NetworkSource>
+          <ProgrammingLanguage>LAD</ProgrammingLanguage>
+        </AttributeList>
+        <ObjectList>
+          <MultilingualText ID="44" CompositionName="Comment">
+            <ObjectList>
+              <MultilingualTextItem ID="45" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="46" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+          <MultilingualText ID="47" CompositionName="Title">
+            <ObjectList>
+              <MultilingualTextItem ID="48" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="49" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text>Call_ MV500 Demo</Text>
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+        </ObjectList>
+      </SW.Blocks.CompileUnit>
+      <SW.Blocks.CompileUnit ID="4A" CompositionName="CompileUnits">
+        <AttributeList>
+          <NetworkSource><FlgNet xmlns="http://www.siemens.com/automation/Openness/SW/NetworkSource/FlgNet/v5">
+  <Parts>
+    <Access Scope="GlobalVariable" UId="21">
+      <Symbol>
+        <Component Name="IdentMvHmi" />
+        <Component Name="unitIdentMv" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalConstant" UId="22">
+      <Constant Name="NO_OF_MV_IDENT_DEVICES" />
+    </Access>
+    <Access Scope="GlobalVariable" UId="23">
+      <Symbol>
+        <Component Name="IdentMvInterfaceHmi" />
+      </Symbol>
+    </Access>
+    <Call UId="24">
+      <CallInfo Name="GetIdentMv" BlockType="FB">
+        <Instance Scope="GlobalVariable" UId="25">
+          <Component Name="InstGetIdentMv" />
+        </Instance>
+        <Parameter Name="identMvAllUnits" Section="Input" Type="Array[1..&quot;NO_OF_UNITS&quot;] of &quot;typeEMIdentMv&quot;" />
+        <Parameter Name="numberOfMvReaders" Section="Input" Type="USInt" />
+        <Parameter Name="selectedUnit" Section="Output" Type="USInt" />
+        <Parameter Name="selectedEM" Section="Output" Type="USInt" />
+        <Parameter Name="error" Section="Output" Type="Word" />
+        <Parameter Name="IdentMvInterfaceHmi" Section="InOut" Type="&quot;typeIdentMvHmi&quot;" />
+      </CallInfo>
+    </Call>
+  </Parts>
+  <Wires>
+    <Wire UId="29">
+      <Powerrail />
+      <NameCon UId="24" Name="en" />
+    </Wire>
+    <Wire UId="30">
+      <IdentCon UId="21" />
+      <NameCon UId="24" Name="identMvAllUnits" />
+    </Wire>
+    <Wire UId="31">
+      <IdentCon UId="22" />
+      <NameCon UId="24" Name="numberOfMvReaders" />
+    </Wire>
+    <Wire UId="32">
+      <IdentCon UId="23" />
+      <NameCon UId="24" Name="IdentMvInterfaceHmi" />
+    </Wire>
+    <Wire UId="33">
+      <NameCon UId="24" Name="selectedUnit" />
+      <OpenCon UId="26" />
+    </Wire>
+    <Wire UId="34">
+      <NameCon UId="24" Name="selectedEM" />
+      <OpenCon UId="27" />
+    </Wire>
+    <Wire UId="35">
+      <NameCon UId="24" Name="error" />
+      <OpenCon UId="28" />
+    </Wire>
+  </Wires>
+</FlgNet></NetworkSource>
+          <ProgrammingLanguage>LAD</ProgrammingLanguage>
+        </AttributeList>
+        <ObjectList>
+          <MultilingualText ID="4B" CompositionName="Comment">
+            <ObjectList>
+              <MultilingualTextItem ID="4C" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="4D" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+          <MultilingualText ID="4E" CompositionName="Title">
+            <ObjectList>
+              <MultilingualTextItem ID="4F" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="50" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text>Call: Diagnosticsa Ident MV</Text>
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+        </ObjectList>
+      </SW.Blocks.CompileUnit>
+      <SW.Blocks.CompileUnit ID="51" CompositionName="CompileUnits">
+        <AttributeList>
+          <NetworkSource><FlgNet xmlns="http://www.siemens.com/automation/Openness/SW/NetworkSource/FlgNet/v5">
+  <Parts>
+    <Access Scope="GlobalVariable" UId="21">
+      <Symbol>
+        <Component Name="PNDevDiagInterface_X1" />
+        <Component Name="devStateHmi" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="22">
+      <Symbol>
+        <Component Name="PNDevDiagInterface_X2" />
+        <Component Name="devStateHmi" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="23">
+      <Symbol>
+        <Component Name="HMI_Interface_Parameter" />
+        <Component Name="ProcessUnitSelect" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="24">
+      <Symbol>
+        <Component Name="PNDevDiagStatus" />
+      </Symbol>
+    </Access>
+    <Call UId="25">
+      <CallInfo Name="LER_DiagnosticsStatus" BlockType="FB">
+        <Instance Scope="GlobalVariable" UId="26">
+          <Component Name="InstProfinetDeviceDiagStatus" />
+        </Instance>
+        <Parameter Name="devStateHmi_X1" Section="Input" Type="Array[0..256] of &quot;LAF_typeDevDiagBasic&quot;" />
+        <Parameter Name="devStateHmi_X2" Section="Input" Type="Array[0..256] of &quot;LAF_typeDevDiagBasic&quot;" />
+        <Parameter Name="UnitSelect" Section="Input" Type="Int" />
+        <Parameter Name="Reset" Section="Input" Type="Bool" />
+        <Parameter Name="DevState" Section="InOut" Type="&quot;LER_DiagnosticsInterface&quot;" />
+      </CallInfo>
+    </Call>
+  </Parts>
+  <Wires>
+    <Wire UId="28">
+      <Powerrail />
+      <NameCon UId="25" Name="en" />
+    </Wire>
+    <Wire UId="29">
+      <IdentCon UId="21" />
+      <NameCon UId="25" Name="devStateHmi_X1" />
+    </Wire>
+    <Wire UId="30">
+      <IdentCon UId="22" />
+      <NameCon UId="25" Name="devStateHmi_X2" />
+    </Wire>
+    <Wire UId="31">
+      <IdentCon UId="23" />
+      <NameCon UId="25" Name="UnitSelect" />
+    </Wire>
+    <Wire UId="32">
+      <OpenCon UId="27" />
+      <NameCon UId="25" Name="Reset" />
+    </Wire>
+    <Wire UId="33">
+      <IdentCon UId="24" />
+      <NameCon UId="25" Name="DevState" />
+    </Wire>
+  </Wires>
+</FlgNet></NetworkSource>
+          <ProgrammingLanguage>LAD</ProgrammingLanguage>
+        </AttributeList>
+        <ObjectList>
+          <MultilingualText ID="52" CompositionName="Comment">
+            <ObjectList>
+              <MultilingualTextItem ID="53" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="54" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+          <MultilingualText ID="55" CompositionName="Title">
+            <ObjectList>
+              <MultilingualTextItem ID="56" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="57" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text>Call: Diagnostics Status</Text>
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+        </ObjectList>
+      </SW.Blocks.CompileUnit>
+      <SW.Blocks.CompileUnit ID="58" CompositionName="CompileUnits">
+        <AttributeList>
+          <NetworkSource />
+          <ProgrammingLanguage>LAD</ProgrammingLanguage>
+        </AttributeList>
+        <ObjectList>
+          <MultilingualText ID="59" CompositionName="Comment">
+            <ObjectList>
+              <MultilingualTextItem ID="5A" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="5B" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+          <MultilingualText ID="5C" CompositionName="Title">
+            <ObjectList>
+              <MultilingualTextItem ID="5D" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="5E" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+        </ObjectList>
+      </SW.Blocks.CompileUnit>
+      <MultilingualText ID="5F" CompositionName="Title">
+        <ObjectList>
+          <MultilingualTextItem ID="60" CompositionName="Items">
+            <AttributeList>
+              <Culture>de-DE</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="61" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-US</Culture>
+              <Text>Diagnostics</Text>
+            </AttributeList>
+          </MultilingualTextItem>
+        </ObjectList>
+      </MultilingualText>
+    </ObjectList>
+  </SW.Blocks.FC>
+</Document>

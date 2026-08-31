@@ -1,0 +1,4354 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Document>
+  <Engineering version="V20" />
+  <SW.Blocks.FC ID="0">
+    <AttributeList>
+      <Interface><Sections xmlns="http://www.siemens.com/automation/Openness/SW/Interface/v5">
+  <Section Name="Input" />
+  <Section Name="Output" />
+  <Section Name="InOut" />
+  <Section Name="Temp">
+    <Member Name="tempSoftCamIndex" Datatype="Int" />
+  </Section>
+  <Section Name="Constant" />
+  <Section Name="Return">
+    <Member Name="Ret_Val" Datatype="Void" />
+  </Section>
+</Sections></Interface>
+      <Name>ParameterMove</Name>
+      <Namespace />
+      <Number>26</Number>
+      <ProgrammingLanguage>LAD</ProgrammingLanguage>
+      <SetENOAutomatically>false</SetENOAutomatically>
+    </AttributeList>
+    <ObjectList>
+      <MultilingualText ID="1" CompositionName="Comment">
+        <ObjectList>
+          <MultilingualTextItem ID="2" CompositionName="Items">
+            <AttributeList>
+              <Culture>de-DE</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="3" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-US</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+        </ObjectList>
+      </MultilingualText>
+      <SW.Blocks.CompileUnit ID="4" CompositionName="CompileUnits">
+        <AttributeList>
+          <NetworkSource><StructuredText xmlns="http://www.siemens.com/automation/Openness/SW/NetworkSource/StructuredText/v4" /></NetworkSource>
+          <ProgrammingLanguage>SCL</ProgrammingLanguage>
+        </AttributeList>
+        <ObjectList>
+          <MultilingualText ID="5" CompositionName="Comment">
+            <ObjectList>
+              <MultilingualTextItem ID="6" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="7" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+          <MultilingualText ID="8" CompositionName="Title">
+            <ObjectList>
+              <MultilingualTextItem ID="9" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="A" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text>Recipe → HMI | Read |</Text>
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+        </ObjectList>
+      </SW.Blocks.CompileUnit>
+      <SW.Blocks.CompileUnit ID="B" CompositionName="CompileUnits">
+        <AttributeList>
+          <NetworkSource><StructuredText xmlns="http://www.siemens.com/automation/Openness/SW/NetworkSource/StructuredText/v4">
+  <LineComment UId="21">
+    <Text UId="22">IF "HMI_Interface_Parameter".RecipeButton.Apply THEN</Text>
+  </LineComment>
+  <NewLine UId="23" />
+  <LineComment UId="24">
+    <Text UId="25">    FOR #tempSoftCamIndex := 0 TO 15 DO</Text>
+  </LineComment>
+  <NewLine UId="26" />
+  <LineComment UId="27">
+    <Text UId="28">        Unit1.Em2.HmiInterface.cm.softcam.jrOutPnPLeftAxisX.position[#tempSoftCamIndex].SetValue := "HMI_Interface_Parameter".Softcam[1].position[#tempSoftCamIndex].SetValue;</Text>
+  </LineComment>
+  <NewLine UId="29" />
+  <LineComment UId="30">
+    <Text UId="31">        Unit1.Em2.HmiInterface.cm.softcam.jrOutPnPLeftAxisZ.position[#tempSoftCamIndex].SetValue := "HMI_Interface_Parameter".Softcam[2].position[#tempSoftCamIndex].SetValue;</Text>
+  </LineComment>
+  <NewLine UId="32" />
+  <LineComment UId="33">
+    <Text UId="34">        Unit1.Em2.HmiInterface.cm.softcam.jrOutPnPRightAxisX.position[#tempSoftCamIndex].SetValue := "HMI_Interface_Parameter".Softcam[3].position[#tempSoftCamIndex].SetValue;</Text>
+  </LineComment>
+  <NewLine UId="35" />
+  <LineComment UId="36">
+    <Text UId="37">        Unit1.Em2.HmiInterface.cm.softcam.jrOutPnPRightAxisZ.position[#tempSoftCamIndex].SetValue := "HMI_Interface_Parameter".Softcam[4].position[#tempSoftCamIndex].SetValue;</Text>
+  </LineComment>
+  <NewLine UId="38" />
+  <Blank Num="8" UId="39" />
+  <NewLine UId="40" />
+  <Blank Num="8" UId="41" />
+  <LineComment UId="42">
+    <Text UId="43">        Unit1.Em3.HmiInterface.cm.softcam.topTapeAxisX.position[#tempSoftCamIndex].SetValue := "HMI_Interface_Parameter".Softcam[5].position[#tempSoftCamIndex].SetValue;</Text>
+  </LineComment>
+  <NewLine UId="44" />
+  <Blank Num="8" UId="45" />
+  <LineComment UId="46">
+    <Text UId="47">        Unit1.Em3.HmiInterface.cm.softcam.topTapeAxisY.position[#tempSoftCamIndex].SetValue := "HMI_Interface_Parameter".Softcam[6].position[#tempSoftCamIndex].SetValue;</Text>
+  </LineComment>
+  <NewLine UId="48" />
+  <Blank Num="8" UId="49" />
+  <NewLine UId="50" />
+  <Blank Num="8" UId="51" />
+  <LineComment UId="52">
+    <Text UId="53">        Unit1.Em4.HmiInterface.cm.softcam.sideTapeFixStageAxisX.position[#tempSoftCamIndex].SetValue := "HMI_Interface_Parameter".Softcam[7].position[#tempSoftCamIndex].SetValue;</Text>
+  </LineComment>
+  <NewLine UId="54" />
+  <Blank Num="8" UId="55" />
+  <LineComment UId="56">
+    <Text UId="57">        Unit1.Em4.HmiInterface.cm.softcam.sideTapeFixStageAxisC.position[#tempSoftCamIndex].SetValue := "HMI_Interface_Parameter".Softcam[8].position[#tempSoftCamIndex].SetValue;</Text>
+  </LineComment>
+  <NewLine UId="58" />
+  <Blank Num="8" UId="59" />
+  <LineComment UId="60">
+    <Text UId="61">        Unit1.Em4.HmiInterface.cm.softcam.sideTapeAttachmentAxisX.position[#tempSoftCamIndex].SetValue := "HMI_Interface_Parameter".Softcam[9].position[#tempSoftCamIndex].SetValue;</Text>
+  </LineComment>
+  <NewLine UId="62" />
+  <Blank Num="8" UId="63" />
+  <LineComment UId="64">
+    <Text UId="65">        Unit1.Em4.HmiInterface.cm.softcam.sideTapeAttachmentAxisY.position[#tempSoftCamIndex].SetValue := "HMI_Interface_Parameter".Softcam[10].position[#tempSoftCamIndex].SetValue;</Text>
+  </LineComment>
+  <NewLine UId="66" />
+  <Blank Num="8" UId="67" />
+  <NewLine UId="68" />
+  <Blank Num="8" UId="69" />
+  <LineComment UId="70">
+    <Text UId="71">        Unit1.Em5.HmiInterface.cm.softcam.transferPnPLeftAxisX.position[#tempSoftCamIndex].SetValue := "HMI_Interface_Parameter".Softcam[11].position[#tempSoftCamIndex].SetValue;</Text>
+  </LineComment>
+  <NewLine UId="72" />
+  <Blank Num="8" UId="73" />
+  <LineComment UId="74">
+    <Text UId="75">        Unit1.Em5.HmiInterface.cm.softcam.transferPnPLeftAxisY.position[#tempSoftCamIndex].SetValue := "HMI_Interface_Parameter".Softcam[12].position[#tempSoftCamIndex].SetValue;</Text>
+  </LineComment>
+  <NewLine UId="76" />
+  <Blank Num="8" UId="77" />
+  <LineComment UId="78">
+    <Text UId="79">        Unit1.Em5.HmiInterface.cm.softcam.transferPnPLeftAxisZ.position[#tempSoftCamIndex].SetValue := "HMI_Interface_Parameter".Softcam[13].position[#tempSoftCamIndex].SetValue;</Text>
+  </LineComment>
+  <NewLine UId="80" />
+  <Blank Num="8" UId="81" />
+  <LineComment UId="82">
+    <Text UId="83">        Unit1.Em5.HmiInterface.cm.softcam.transferPnPRightAxisX.position[#tempSoftCamIndex].SetValue := "HMI_Interface_Parameter".Softcam[14].position[#tempSoftCamIndex].SetValue;</Text>
+  </LineComment>
+  <NewLine UId="84" />
+  <Blank Num="8" UId="85" />
+  <LineComment UId="86">
+    <Text UId="87">        Unit1.Em5.HmiInterface.cm.softcam.transferPnPRightAxisY.position[#tempSoftCamIndex].SetValue := "HMI_Interface_Parameter".Softcam[15].position[#tempSoftCamIndex].SetValue;</Text>
+  </LineComment>
+  <NewLine UId="88" />
+  <Blank Num="8" UId="89" />
+  <LineComment UId="90">
+    <Text UId="91">        Unit1.Em5.HmiInterface.cm.softcam.transferPnPRightAxisZ.position[#tempSoftCamIndex].SetValue := "HMI_Interface_Parameter".Softcam[16].position[#tempSoftCamIndex].SetValue;</Text>
+  </LineComment>
+  <NewLine UId="92" />
+  <Blank Num="8" UId="93" />
+  <NewLine UId="94" />
+  <Blank Num="8" UId="95" />
+  <LineComment UId="96">
+    <Text UId="97">        Unit1.Em8.HmiInterface.cm.softcam.thicknessAxisZ.position[#tempSoftCamIndex].SetValue := "HMI_Interface_Parameter".Softcam[17].position[#tempSoftCamIndex].SetValue;</Text>
+  </LineComment>
+  <NewLine UId="98" />
+  <Blank Num="8" UId="99" />
+  <NewLine UId="100" />
+  <Blank Num="8" UId="101" />
+  <LineComment UId="102">
+    <Text UId="103">        Unit1.Em13.HmiInterface.cm.softcam.jrUnloadingPnPAxisX.position[#tempSoftCamIndex].SetValue := "HMI_Interface_Parameter".Softcam[18].position[#tempSoftCamIndex].SetValue;</Text>
+  </LineComment>
+  <NewLine UId="104" />
+  <Blank Num="8" UId="105" />
+  <LineComment UId="106">
+    <Text UId="107">        Unit1.Em13.HmiInterface.cm.softcam.jrUnloadingPnPAxisZ.position[#tempSoftCamIndex].SetValue := "HMI_Interface_Parameter".Softcam[19].position[#tempSoftCamIndex].SetValue;</Text>
+  </LineComment>
+  <NewLine UId="108" />
+  <Blank Num="8" UId="109" />
+  <LineComment UId="110">
+    <Text UId="111">        Unit1.Em13.HmiInterface.cm.softcam.jrUnloadingPnPAxisC.position[#tempSoftCamIndex].SetValue := "HMI_Interface_Parameter".Softcam[20].position[#tempSoftCamIndex].SetValue;</Text>
+  </LineComment>
+  <NewLine UId="112" />
+  <Blank Num="8" UId="113" />
+  <LineComment UId="114">
+    <Text UId="115">    END_FOR;</Text>
+  </LineComment>
+  <NewLine UId="116" />
+  <Blank Num="8" UId="117" />
+  <LineComment UId="118">
+    <Text UId="119">END_IF;</Text>
+  </LineComment>
+</StructuredText></NetworkSource>
+          <ProgrammingLanguage>SCL</ProgrammingLanguage>
+        </AttributeList>
+        <ObjectList>
+          <MultilingualText ID="C" CompositionName="Comment">
+            <ObjectList>
+              <MultilingualTextItem ID="D" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="E" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+          <MultilingualText ID="F" CompositionName="Title">
+            <ObjectList>
+              <MultilingualTextItem ID="10" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="11" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text>HMI → PLC | Apply | Softcam_unuse_0420</Text>
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+        </ObjectList>
+      </SW.Blocks.CompileUnit>
+      <SW.Blocks.CompileUnit ID="12" CompositionName="CompileUnits">
+        <AttributeList>
+          <NetworkSource><StructuredText xmlns="http://www.siemens.com/automation/Openness/SW/NetworkSource/StructuredText/v4">
+  <Token Text="IF" UId="21" />
+  <Blank UId="22" />
+  <Access Scope="GlobalVariable" UId="23">
+    <Symbol UId="24">
+      <Component Name="HMI_Interface_Parameter" UId="25">
+        <BooleanAttribute Name="HasQuotes" UId="26">true</BooleanAttribute>
+      </Component>
+      <Token Text="." UId="27" />
+      <Component Name="RecipeButton" UId="28" />
+      <Token Text="." UId="29" />
+      <Component Name="Apply" UId="30" />
+    </Symbol>
+  </Access>
+  <Blank UId="31" />
+  <Token Text="THEN" UId="32" />
+  <NewLine UId="33" />
+  <Blank Num="4" UId="34" />
+  <NewLine UId="35" />
+  <Blank Num="4" UId="36" />
+  <Access Scope="GlobalVariable" UId="37">
+    <Symbol UId="38">
+      <Component Name="HMI_Interface_Parameter" UId="39">
+        <BooleanAttribute Name="HasQuotes" UId="40">true</BooleanAttribute>
+      </Component>
+      <Token Text="." UId="41" />
+      <Component Name="Parameter" UId="42">
+        <Token Text="[" UId="43" />
+        <Access Scope="LiteralConstant" UId="44">
+          <Constant UId="45">
+            <ConstantValue UId="47">0</ConstantValue>
+          </Constant>
+        </Access>
+        <Token Text="]" UId="48" />
+      </Component>
+      <Token Text="." UId="49" />
+      <Component Name="Process Value" UId="50" />
+    </Symbol>
+  </Access>
+  <Blank UId="51" />
+  <Token Text=":=" UId="52" />
+  <Blank UId="53" />
+  <Access Scope="GlobalVariable" UId="54">
+    <Symbol UId="55">
+      <Component Name="HMI_Interface_Parameter" UId="56">
+        <BooleanAttribute Name="HasQuotes" UId="57">true</BooleanAttribute>
+      </Component>
+      <Token Text="." UId="58" />
+      <Component Name="Parameter" UId="59">
+        <Token Text="[" UId="60" />
+        <Access Scope="LiteralConstant" UId="61">
+          <Constant UId="62">
+            <ConstantValue UId="64">0</ConstantValue>
+          </Constant>
+        </Access>
+        <Token Text="]" UId="65" />
+      </Component>
+      <Token Text="." UId="66" />
+      <Component Name="Set Value" UId="67" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="68" />
+  <Blank UId="69" />
+  <LineComment UId="70">
+    <Text UId="71"> Sleep Mode Activation Time</Text>
+  </LineComment>
+  <NewLine UId="72" />
+  <Blank Num="4" UId="73" />
+  <Access Scope="GlobalVariable" UId="74">
+    <Symbol UId="75">
+      <Component Name="Unit1.EmNodes" UId="76" />
+      <Token Text="." UId="77" />
+      <Component Name="SleepModeActivationTime" UId="78" />
+    </Symbol>
+  </Access>
+  <Blank UId="79" />
+  <Token Text=":=" UId="80" />
+  <Blank UId="81" />
+  <Access Scope="Call" UId="82">
+    <Instruction Name="DINT_TO_TIME" UId="83">
+      <Token Text="(" UId="84" />
+      <NamelessParameter UId="85">
+        <Access Scope="Call" UId="86">
+          <Instruction Name="ROUND" UId="87">
+            <Token Text="(" UId="88" />
+            <NamelessParameter UId="89">
+              <Access Scope="GlobalVariable" UId="90">
+                <Symbol UId="91">
+                  <Component Name="HMI_Interface_Parameter" UId="92">
+                    <BooleanAttribute Name="HasQuotes" UId="93">true</BooleanAttribute>
+                  </Component>
+                  <Token Text="." UId="94" />
+                  <Component Name="Parameter" UId="95">
+                    <Token Text="[" UId="96" />
+                    <Access Scope="LiteralConstant" UId="97">
+                      <Constant UId="98">
+                        <ConstantValue UId="100">0</ConstantValue>
+                      </Constant>
+                    </Access>
+                    <Token Text="]" UId="101" />
+                  </Component>
+                  <Token Text="." UId="102" />
+                  <Component Name="Process Value" UId="103" />
+                </Symbol>
+              </Access>
+              <Blank UId="104" />
+              <Token Text="*" UId="105" />
+              <Blank UId="106" />
+              <Access Scope="LiteralConstant" UId="107">
+                <Constant UId="108">
+                  <ConstantValue UId="110">60000.0</ConstantValue>
+                </Constant>
+              </Access>
+            </NamelessParameter>
+            <Token Text=")" UId="112" />
+          </Instruction>
+        </Access>
+      </NamelessParameter>
+      <Token Text=")" UId="114" />
+    </Instruction>
+  </Access>
+  <Token Text=";" UId="115" />
+  <NewLine UId="116" />
+  <Blank Num="4" UId="117" />
+  <NewLine UId="118" />
+  <Blank Num="4" UId="119" />
+  <Access Scope="GlobalVariable" UId="120">
+    <Symbol UId="121">
+      <Component Name="HMI_Interface_Parameter" UId="122">
+        <BooleanAttribute Name="HasQuotes" UId="123">true</BooleanAttribute>
+      </Component>
+      <Token Text="." UId="124" />
+      <Component Name="Parameter" UId="125">
+        <Token Text="[" UId="126" />
+        <Access Scope="LiteralConstant" UId="127">
+          <Constant UId="128">
+            <ConstantValue UId="130">1</ConstantValue>
+          </Constant>
+        </Access>
+        <Token Text="]" UId="131" />
+      </Component>
+      <Token Text="." UId="132" />
+      <Component Name="Process Value" UId="133" />
+    </Symbol>
+  </Access>
+  <Blank UId="134" />
+  <Token Text=":=" UId="135" />
+  <Blank UId="136" />
+  <Access Scope="GlobalVariable" UId="137">
+    <Symbol UId="138">
+      <Component Name="HMI_Interface_Parameter" UId="139">
+        <BooleanAttribute Name="HasQuotes" UId="140">true</BooleanAttribute>
+      </Component>
+      <Token Text="." UId="141" />
+      <Component Name="Parameter" UId="142">
+        <Token Text="[" UId="143" />
+        <Access Scope="LiteralConstant" UId="144">
+          <Constant UId="145">
+            <ConstantValue UId="147">1</ConstantValue>
+          </Constant>
+        </Access>
+        <Token Text="]" UId="148" />
+      </Component>
+      <Token Text="." UId="149" />
+      <Component Name="Set Value" UId="150" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="151" />
+  <Blank UId="152" />
+  <LineComment UId="153">
+    <Text UId="154"> Deep Sleep Mode Activation Time</Text>
+  </LineComment>
+  <NewLine UId="155" />
+  <Blank Num="4" UId="156" />
+  <Access Scope="GlobalVariable" UId="157">
+    <Symbol UId="158">
+      <Component Name="Unit1.EmNodes" UId="159" />
+      <Token Text="." UId="160" />
+      <Component Name="DeepSleepModeActivationTime" UId="161" />
+    </Symbol>
+  </Access>
+  <Blank UId="162" />
+  <Token Text=":=" UId="163" />
+  <Blank UId="164" />
+  <Access Scope="Call" UId="165">
+    <Instruction Name="DINT_TO_TIME" UId="166">
+      <Token Text="(" UId="167" />
+      <NamelessParameter UId="168">
+        <Access Scope="Call" UId="169">
+          <Instruction Name="ROUND" UId="170">
+            <Token Text="(" UId="171" />
+            <NamelessParameter UId="172">
+              <Access Scope="GlobalVariable" UId="173">
+                <Symbol UId="174">
+                  <Component Name="HMI_Interface_Parameter" UId="175">
+                    <BooleanAttribute Name="HasQuotes" UId="176">true</BooleanAttribute>
+                  </Component>
+                  <Token Text="." UId="177" />
+                  <Component Name="Parameter" UId="178">
+                    <Token Text="[" UId="179" />
+                    <Access Scope="LiteralConstant" UId="180">
+                      <Constant UId="181">
+                        <ConstantValue UId="183">1</ConstantValue>
+                      </Constant>
+                    </Access>
+                    <Token Text="]" UId="184" />
+                  </Component>
+                  <Token Text="." UId="185" />
+                  <Component Name="Process Value" UId="186" />
+                </Symbol>
+              </Access>
+              <Blank UId="187" />
+              <Token Text="*" UId="188" />
+              <Blank UId="189" />
+              <Access Scope="LiteralConstant" UId="190">
+                <Constant UId="191">
+                  <ConstantValue UId="193">60000.0</ConstantValue>
+                </Constant>
+              </Access>
+            </NamelessParameter>
+            <Token Text=")" UId="195" />
+          </Instruction>
+        </Access>
+      </NamelessParameter>
+      <Token Text=")" UId="197" />
+    </Instruction>
+  </Access>
+  <Token Text=";" UId="198" />
+  <NewLine UId="199" />
+  <Blank Num="4" UId="200" />
+  <NewLine UId="201" />
+  <Blank Num="4" UId="202" />
+  <Access Scope="GlobalVariable" UId="203">
+    <Symbol UId="204">
+      <Component Name="HMI_Interface_Parameter" UId="205">
+        <BooleanAttribute Name="HasQuotes" UId="206">true</BooleanAttribute>
+      </Component>
+      <Token Text="." UId="207" />
+      <Component Name="Parameter" UId="208">
+        <Token Text="[" UId="209" />
+        <Access Scope="LiteralConstant" UId="210">
+          <Constant UId="211">
+            <ConstantValue UId="213">2</ConstantValue>
+          </Constant>
+        </Access>
+        <Token Text="]" UId="214" />
+      </Component>
+      <Token Text="." UId="215" />
+      <Component Name="Process Value" UId="216" />
+    </Symbol>
+  </Access>
+  <Blank UId="217" />
+  <Token Text=":=" UId="218" />
+  <Blank UId="219" />
+  <Access Scope="GlobalVariable" UId="220">
+    <Symbol UId="221">
+      <Component Name="HMI_Interface_Parameter" UId="222">
+        <BooleanAttribute Name="HasQuotes" UId="223">true</BooleanAttribute>
+      </Component>
+      <Token Text="." UId="224" />
+      <Component Name="Parameter" UId="225">
+        <Token Text="[" UId="226" />
+        <Access Scope="LiteralConstant" UId="227">
+          <Constant UId="228">
+            <ConstantValue UId="230">2</ConstantValue>
+          </Constant>
+        </Access>
+        <Token Text="]" UId="231" />
+      </Component>
+      <Token Text="." UId="232" />
+      <Component Name="Set Value" UId="233" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="234" />
+  <Blank UId="235" />
+  <LineComment UId="236">
+    <Text UId="237"> FFU_sleepmoderunpct</Text>
+  </LineComment>
+  <NewLine UId="238" />
+  <Blank Num="4" UId="239" />
+  <Access Scope="GlobalVariable" UId="240">
+    <Symbol UId="241">
+      <Component Name="Unit1.HmiInterface" UId="242" />
+      <Token Text="." UId="243" />
+      <Component Name="FFU_SleepModeRunPct" UId="244" />
+    </Symbol>
+  </Access>
+  <Blank UId="245" />
+  <Token Text=":=" UId="246" />
+  <Blank UId="247" />
+  <Access Scope="Call" UId="248">
+    <Instruction Name="LREAL_TO_INT" UId="249">
+      <Token Text="(" UId="250" />
+      <NamelessParameter UId="251">
+        <Access Scope="GlobalVariable" UId="252">
+          <Symbol UId="253">
+            <Component Name="HMI_Interface_Parameter" UId="254">
+              <BooleanAttribute Name="HasQuotes" UId="255">true</BooleanAttribute>
+            </Component>
+            <Token Text="." UId="256" />
+            <Component Name="Parameter" UId="257">
+              <Token Text="[" UId="258" />
+              <Access Scope="LiteralConstant" UId="259">
+                <Constant UId="260">
+                  <ConstantValue UId="262">2</ConstantValue>
+                </Constant>
+              </Access>
+              <Token Text="]" UId="263" />
+            </Component>
+            <Token Text="." UId="264" />
+            <Component Name="Set Value" UId="265" />
+          </Symbol>
+        </Access>
+      </NamelessParameter>
+      <Token Text=")" UId="267" />
+    </Instruction>
+  </Access>
+  <Token Text=";" UId="268" />
+  <NewLine UId="269" />
+  <Blank Num="4" UId="270" />
+  <NewLine UId="271" />
+  <Token Text="END_IF" UId="272" />
+  <Token Text=";" UId="273" />
+  <NewLine Num="2" UId="274" />
+  <Access Scope="GlobalVariable" UId="275">
+    <Symbol UId="276">
+      <Component Name="Unit1.Em2.HmiInterface" UId="277" />
+      <Token Text="." UId="278" />
+      <Component Name="cm" UId="279" />
+      <Token Text="." UId="280" />
+      <Component Name="distance" UId="281" />
+      <Token Text="." UId="282" />
+      <Component Name="setValue" UId="283" />
+      <Token Text="." UId="284" />
+      <Component Name="distanceLimitSV" UId="285" />
+    </Symbol>
+  </Access>
+  <Blank UId="286" />
+  <Token Text=":=" UId="287" />
+  <Blank UId="288" />
+  <Access Scope="GlobalVariable" UId="289">
+    <Symbol UId="290">
+      <Component Name="RecipeParameter" UId="291">
+        <BooleanAttribute Name="HasQuotes" UId="292">true</BooleanAttribute>
+      </Component>
+      <Token Text="." UId="293" />
+      <Component Name="ParameterPV" UId="294" />
+      <Token Text="." UId="295" />
+      <Component Name="Recipe1" UId="296" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="297" />
+  <Blank UId="298" />
+  <LineComment UId="299">
+    <Text UId="300"> BA060AZSIDR1_JROutP&amp;PLeftAxisX ↔ BA060AZSIDR3_JROutP&amp;PRightAxisX</Text>
+  </LineComment>
+  <NewLine UId="301" />
+  <Access Scope="GlobalVariable" UId="302">
+    <Symbol UId="303">
+      <Component Name="Unit1.Em5.HmiInterface" UId="304" />
+      <Token Text="." UId="305" />
+      <Component Name="cm" UId="306" />
+      <Token Text="." UId="307" />
+      <Component Name="distance" UId="308" />
+      <Token Text="." UId="309" />
+      <Component Name="setValue" UId="310" />
+      <Token Text="." UId="311" />
+      <Component Name="distanceLimitSV" UId="312" />
+    </Symbol>
+  </Access>
+  <Blank UId="313" />
+  <Token Text=":=" UId="314" />
+  <Blank UId="315" />
+  <Access Scope="GlobalVariable" UId="316">
+    <Symbol UId="317">
+      <Component Name="RecipeParameter" UId="318">
+        <BooleanAttribute Name="HasQuotes" UId="319">true</BooleanAttribute>
+      </Component>
+      <Token Text="." UId="320" />
+      <Component Name="ParameterPV" UId="321" />
+      <Token Text="." UId="322" />
+      <Component Name="Recipe2" UId="323" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="324" />
+  <Blank UId="325" />
+  <LineComment UId="326">
+    <Text UId="327"> BA060AZSIDR12_TransferP&amp;PLeftAxisX ↔ BA060AZSIDR15_TransferP&amp;PRightAxisX</Text>
+  </LineComment>
+  <NewLine UId="328" />
+  <Access Scope="GlobalVariable" UId="329">
+    <Symbol UId="330">
+      <Component Name="Unit1.Em9.HmiInterface" UId="331" />
+      <Token Text="." UId="332" />
+      <Component Name="gaugeRnR" UId="333" />
+      <Token Text="." UId="334" />
+      <Component Name="processCount" UId="335" />
+    </Symbol>
+  </Access>
+  <Blank UId="336" />
+  <Token Text=":=" UId="337" />
+  <Blank UId="338" />
+  <Access Scope="Call" UId="339">
+    <Instruction Name="LREAL_TO_INT" UId="340">
+      <Token Text="(" UId="341" />
+      <Parameter Name="IN" UId="342">
+        <Blank UId="343" />
+        <Token Text=":=" UId="344" />
+        <Blank UId="345" />
+        <Access Scope="GlobalVariable" UId="346">
+          <Symbol UId="347">
+            <Component Name="RecipeParameter" UId="348">
+              <BooleanAttribute Name="HasQuotes" UId="349">true</BooleanAttribute>
+            </Component>
+            <Token Text="." UId="350" />
+            <Component Name="ParameterPV" UId="351" />
+            <Token Text="." UId="352" />
+            <Component Name="Recipe3" UId="353">
+              <BooleanAttribute Name="HasQuotes" UId="354">true</BooleanAttribute>
+            </Component>
+          </Symbol>
+        </Access>
+      </Parameter>
+      <Token Text=")" UId="356" />
+    </Instruction>
+  </Access>
+  <Token Text=";" UId="357" />
+  <Blank UId="358" />
+  <LineComment UId="359">
+    <Text UId="360"> Vision R&amp;R</Text>
+  </LineComment>
+  <NewLine UId="361" />
+  <Access Scope="GlobalVariable" UId="362">
+    <Symbol UId="363">
+      <Component Name="Unit1.Em8.HmiInterface" UId="364" />
+      <Token Text="." UId="365" />
+      <Component Name="gaugeRnR" UId="366" />
+      <Token Text="." UId="367" />
+      <Component Name="processCount" UId="368" />
+    </Symbol>
+  </Access>
+  <Blank UId="369" />
+  <Token Text=":=" UId="370" />
+  <Blank UId="371" />
+  <Access Scope="Call" UId="372">
+    <Instruction Name="LREAL_TO_INT" UId="373">
+      <Token Text="(" UId="374" />
+      <Parameter Name="IN" UId="375">
+        <Blank UId="376" />
+        <Token Text=":=" UId="377" />
+        <Blank UId="378" />
+        <Access Scope="GlobalVariable" UId="379">
+          <Symbol UId="380">
+            <Component Name="RecipeParameter" UId="381">
+              <BooleanAttribute Name="HasQuotes" UId="382">true</BooleanAttribute>
+            </Component>
+            <Token Text="." UId="383" />
+            <Component Name="ParameterPV" UId="384" />
+            <Token Text="." UId="385" />
+            <Component Name="Recipe4" UId="386" />
+          </Symbol>
+        </Access>
+      </Parameter>
+      <Token Text=")" UId="388" />
+    </Instruction>
+  </Access>
+  <Token Text=";" UId="389" />
+  <Blank UId="390" />
+  <LineComment UId="391">
+    <Text UId="392"> Thickness R&amp;R</Text>
+  </LineComment>
+  <NewLine UId="393" />
+  <Access Scope="GlobalVariable" UId="394">
+    <Symbol UId="395">
+      <Component Name="Unit1.Em8.HmiInterface" UId="396" />
+      <Token Text="." UId="397" />
+      <Component Name="HipotRepeat" UId="398" />
+      <Token Text="." UId="399" />
+      <Component Name="processCount" UId="400" />
+    </Symbol>
+  </Access>
+  <Blank UId="401" />
+  <Token Text=":=" UId="402" />
+  <Blank UId="403" />
+  <Access Scope="Call" UId="404">
+    <Instruction Name="LREAL_TO_INT" UId="405">
+      <Token Text="(" UId="406" />
+      <Parameter Name="IN" UId="407">
+        <Blank UId="408" />
+        <Token Text=":=" UId="409" />
+        <Blank UId="410" />
+        <Access Scope="GlobalVariable" UId="411">
+          <Symbol UId="412">
+            <Component Name="RecipeParameter" UId="413">
+              <BooleanAttribute Name="HasQuotes" UId="414">true</BooleanAttribute>
+            </Component>
+            <Token Text="." UId="415" />
+            <Component Name="ParameterPV" UId="416" />
+            <Token Text="." UId="417" />
+            <Component Name="Recipe5" UId="418">
+              <BooleanAttribute Name="HasQuotes" UId="419">true</BooleanAttribute>
+            </Component>
+          </Symbol>
+        </Access>
+      </Parameter>
+      <Token Text=")" UId="421" />
+    </Instruction>
+  </Access>
+  <Token Text=";" UId="422" />
+  <Blank UId="423" />
+  <LineComment UId="424">
+    <Text UId="425"> Hipot Repeat SV</Text>
+  </LineComment>
+  <NewLine UId="426" />
+  <Access Scope="GlobalVariable" UId="427">
+    <Symbol UId="428">
+      <Component Name="Unit1.Em3.HmiInterface" UId="429" />
+      <Token Text="." UId="430" />
+      <Component Name="TopTapeIdleTime" UId="431" />
+      <Token Text="." UId="432" />
+      <Component Name="processCount" UId="433" />
+    </Symbol>
+  </Access>
+  <Blank UId="434" />
+  <Token Text=":=" UId="435" />
+  <Blank UId="436" />
+  <Access Scope="Call" UId="437">
+    <Instruction Name="DINT_TO_TIME" UId="438">
+      <Token Text="(" UId="439" />
+      <NamelessParameter UId="440">
+        <Access Scope="Call" UId="441">
+          <Instruction Name="ROUND" UId="442">
+            <Token Text="(" UId="443" />
+            <Parameter Name="IN" UId="444">
+              <Blank UId="445" />
+              <Token Text=":=" UId="446" />
+              <Blank UId="447" />
+              <Access Scope="GlobalVariable" UId="448">
+                <Symbol UId="449">
+                  <Component Name="RecipeParameter" UId="450">
+                    <BooleanAttribute Name="HasQuotes" UId="451">true</BooleanAttribute>
+                  </Component>
+                  <Token Text="." UId="452" />
+                  <Component Name="ParameterPV" UId="453" />
+                  <Token Text="." UId="454" />
+                  <Component Name="Recipe6" UId="455">
+                    <BooleanAttribute Name="HasQuotes" UId="456">true</BooleanAttribute>
+                  </Component>
+                </Symbol>
+              </Access>
+            </Parameter>
+            <Token Text=")" UId="458" />
+          </Instruction>
+        </Access>
+      </NamelessParameter>
+      <Token Text=")" UId="460" />
+    </Instruction>
+  </Access>
+  <Token Text=";" UId="461" />
+  <Blank UId="462" />
+  <LineComment UId="463">
+    <Text UId="464"> TopTape IDLE Time</Text>
+  </LineComment>
+  <NewLine UId="465" />
+  <Access Scope="GlobalVariable" UId="466">
+    <Symbol UId="467">
+      <Component Name="Unit1.Em4.HmiInterface" UId="468" />
+      <Token Text="." UId="469" />
+      <Component Name="SideTapeIdleTime" UId="470" />
+      <Token Text="." UId="471" />
+      <Component Name="processCount" UId="472" />
+    </Symbol>
+  </Access>
+  <Blank UId="473" />
+  <Token Text=":=" UId="474" />
+  <Blank UId="475" />
+  <Access Scope="Call" UId="476">
+    <Instruction Name="DINT_TO_TIME" UId="477">
+      <Token Text="(" UId="478" />
+      <NamelessParameter UId="479">
+        <Access Scope="Call" UId="480">
+          <Instruction Name="ROUND" UId="481">
+            <Token Text="(" UId="482" />
+            <Parameter Name="IN" UId="483">
+              <Blank UId="484" />
+              <Token Text=":=" UId="485" />
+              <Blank UId="486" />
+              <Access Scope="GlobalVariable" UId="487">
+                <Symbol UId="488">
+                  <Component Name="RecipeParameter" UId="489">
+                    <BooleanAttribute Name="HasQuotes" UId="490">true</BooleanAttribute>
+                  </Component>
+                  <Token Text="." UId="491" />
+                  <Component Name="ParameterPV" UId="492" />
+                  <Token Text="." UId="493" />
+                  <Component Name="Recipe7" UId="494">
+                    <BooleanAttribute Name="HasQuotes" UId="495">true</BooleanAttribute>
+                  </Component>
+                </Symbol>
+              </Access>
+            </Parameter>
+            <Token Text=")" UId="497" />
+          </Instruction>
+        </Access>
+      </NamelessParameter>
+      <Token Text=")" UId="499" />
+    </Instruction>
+  </Access>
+  <Token Text=";" UId="500" />
+  <Blank UId="501" />
+  <LineComment UId="502">
+    <Text UId="503"> SideTape IDLE Time</Text>
+  </LineComment>
+  <NewLine UId="504" />
+  <Access Scope="GlobalVariable" UId="505">
+    <Symbol UId="506">
+      <Component Name="Unit1.Em9.HmiInterface" UId="507" />
+      <Token Text="." UId="508" />
+      <Component Name="VisionRetryCount" UId="509" />
+      <Token Text="." UId="510" />
+      <Component Name="processCount" UId="511" />
+    </Symbol>
+  </Access>
+  <Blank UId="512" />
+  <Token Text=":=" UId="513" />
+  <Blank UId="514" />
+  <Access Scope="Call" UId="515">
+    <Instruction Name="LREAL_TO_INT" UId="516">
+      <Token Text="(" UId="517" />
+      <Parameter Name="IN" UId="518">
+        <Blank UId="519" />
+        <Token Text=":=" UId="520" />
+        <Blank UId="521" />
+        <Access Scope="GlobalVariable" UId="522">
+          <Symbol UId="523">
+            <Component Name="RecipeParameter" UId="524">
+              <BooleanAttribute Name="HasQuotes" UId="525">true</BooleanAttribute>
+            </Component>
+            <Token Text="." UId="526" />
+            <Component Name="ParameterPV" UId="527" />
+            <Token Text="." UId="528" />
+            <Component Name="Recipe8" UId="529">
+              <BooleanAttribute Name="HasQuotes" UId="530">true</BooleanAttribute>
+            </Component>
+          </Symbol>
+        </Access>
+      </Parameter>
+      <Token Text=")" UId="532" />
+    </Instruction>
+  </Access>
+  <Token Text=";" UId="533" />
+  <Blank UId="534" />
+  <LineComment UId="535">
+    <Text UId="536"> Vision NG Retry Count</Text>
+  </LineComment>
+  <NewLine UId="537" />
+</StructuredText></NetworkSource>
+          <ProgrammingLanguage>SCL</ProgrammingLanguage>
+        </AttributeList>
+        <ObjectList>
+          <MultilingualText ID="13" CompositionName="Comment">
+            <ObjectList>
+              <MultilingualTextItem ID="14" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="15" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+          <MultilingualText ID="16" CompositionName="Title">
+            <ObjectList>
+              <MultilingualTextItem ID="17" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="18" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text>HMI → PLC | Apply | Parameter</Text>
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+        </ObjectList>
+      </SW.Blocks.CompileUnit>
+      <SW.Blocks.CompileUnit ID="19" CompositionName="CompileUnits">
+        <AttributeList>
+          <NetworkSource><StructuredText xmlns="http://www.siemens.com/automation/Openness/SW/NetworkSource/StructuredText/v4">
+  <Token Text="IF" UId="21" />
+  <Blank UId="22" />
+  <Access Scope="GlobalVariable" UId="23">
+    <Symbol UId="24">
+      <Component Name="HMI_Interface_Parameter" UId="25">
+        <BooleanAttribute Name="HasQuotes" UId="26">true</BooleanAttribute>
+      </Component>
+      <Token Text="." UId="27" />
+      <Component Name="RecipeButton" UId="28" />
+      <Token Text="." UId="29" />
+      <Component Name="Apply" UId="30" />
+    </Symbol>
+  </Access>
+  <Blank UId="31" />
+  <Token Text="THEN" UId="32" />
+  <NewLine UId="33" />
+  <Blank Num="4" UId="34" />
+  <Access Scope="GlobalVariable" UId="35">
+    <Symbol UId="36">
+      <Component Name="Unit1.EmNodes" UId="37" />
+      <Token Text="." UId="38" />
+      <Component Name="FATModeInterface" UId="39" />
+      <Token Text="." UId="40" />
+      <Component Name="HoursTest" UId="41" />
+      <Token Text="." UId="42" />
+      <Component Name="ProcessValue" UId="43" />
+      <Token Text="." UId="44" />
+      <Component Name="SelectHours_ProcessValue" UId="45" />
+    </Symbol>
+  </Access>
+  <Blank UId="46" />
+  <Token Text=":=" UId="47" />
+  <Blank UId="48" />
+  <Access Scope="GlobalVariable" UId="49">
+    <Symbol UId="50">
+      <Component Name="HMI_Interface_Parameter" UId="51">
+        <BooleanAttribute Name="HasQuotes" UId="52">true</BooleanAttribute>
+      </Component>
+      <Token Text="." UId="53" />
+      <Component Name="FATModeInterface" UId="54" />
+      <Token Text="." UId="55" />
+      <Component Name="HoursTest" UId="56" />
+      <Token Text="." UId="57" />
+      <Component Name="ProcessValue" UId="58" />
+      <Token Text="." UId="59" />
+      <Component Name="SelectHours_ProcessValue" UId="60" />
+    </Symbol>
+  </Access>
+  <Blank UId="61" />
+  <Token Text=":=" UId="62" />
+  <Blank UId="63" />
+  <Access Scope="GlobalVariable" UId="64">
+    <Symbol UId="65">
+      <Component Name="HMI_Interface_Parameter" UId="66">
+        <BooleanAttribute Name="HasQuotes" UId="67">true</BooleanAttribute>
+      </Component>
+      <Token Text="." UId="68" />
+      <Component Name="FATModeInterface" UId="69" />
+      <Token Text="." UId="70" />
+      <Component Name="HoursTest" UId="71" />
+      <Token Text="." UId="72" />
+      <Component Name="SetValue" UId="73" />
+      <Token Text="." UId="74" />
+      <Component Name="SelectHours_SetValue" UId="75" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="76" />
+  <NewLine UId="77" />
+  <Blank Num="4" UId="78" />
+  <Access Scope="GlobalVariable" UId="79">
+    <Symbol UId="80">
+      <Component Name="Unit1.EmNodes" UId="81" />
+      <Token Text="." UId="82" />
+      <Component Name="FATModeInterface" UId="83" />
+      <Token Text="." UId="84" />
+      <Component Name="Capability" UId="85" />
+      <Token Text="." UId="86" />
+      <Component Name="ProcessValue" UId="87" />
+      <Token Text="." UId="88" />
+      <Component Name="SelectCycle_ProcessValue" UId="89" />
+    </Symbol>
+  </Access>
+  <Blank UId="90" />
+  <Token Text=":=" UId="91" />
+  <Blank UId="92" />
+  <Access Scope="GlobalVariable" UId="93">
+    <Symbol UId="94">
+      <Component Name="HMI_Interface_Parameter" UId="95">
+        <BooleanAttribute Name="HasQuotes" UId="96">true</BooleanAttribute>
+      </Component>
+      <Token Text="." UId="97" />
+      <Component Name="FATModeInterface" UId="98" />
+      <Token Text="." UId="99" />
+      <Component Name="Capability" UId="100" />
+      <Token Text="." UId="101" />
+      <Component Name="ProcessValue" UId="102" />
+      <Token Text="." UId="103" />
+      <Component Name="SelectCycle_ProcessValue" UId="104" />
+    </Symbol>
+  </Access>
+  <Blank UId="105" />
+  <Token Text=":=" UId="106" />
+  <Blank UId="107" />
+  <Access Scope="GlobalVariable" UId="108">
+    <Symbol UId="109">
+      <Component Name="HMI_Interface_Parameter" UId="110">
+        <BooleanAttribute Name="HasQuotes" UId="111">true</BooleanAttribute>
+      </Component>
+      <Token Text="." UId="112" />
+      <Component Name="FATModeInterface" UId="113" />
+      <Token Text="." UId="114" />
+      <Component Name="Capability" UId="115" />
+      <Token Text="." UId="116" />
+      <Component Name="SetValue" UId="117" />
+      <Token Text="." UId="118" />
+      <Component Name="SelectCycle_SetValue" UId="119" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="120" />
+  <NewLine UId="121" />
+  <Blank Num="4" UId="122" />
+  <Access Scope="GlobalVariable" UId="123">
+    <Symbol UId="124">
+      <Component Name="Unit1.EmNodes" UId="125" />
+      <Token Text="." UId="126" />
+      <Component Name="FATModeInterface" UId="127" />
+      <Token Text="." UId="128" />
+      <Component Name="Sampling" UId="129" />
+      <Token Text="." UId="130" />
+      <Component Name="ProcessValue" UId="131" />
+      <Token Text="." UId="132" />
+      <Component Name="SelectCount_ProcessValue" UId="133" />
+    </Symbol>
+  </Access>
+  <Blank UId="134" />
+  <Token Text=":=" UId="135" />
+  <Blank UId="136" />
+  <Access Scope="GlobalVariable" UId="137">
+    <Symbol UId="138">
+      <Component Name="HMI_Interface_Parameter" UId="139">
+        <BooleanAttribute Name="HasQuotes" UId="140">true</BooleanAttribute>
+      </Component>
+      <Token Text="." UId="141" />
+      <Component Name="FATModeInterface" UId="142" />
+      <Token Text="." UId="143" />
+      <Component Name="Sampling" UId="144" />
+      <Token Text="." UId="145" />
+      <Component Name="ProcessValue" UId="146" />
+      <Token Text="." UId="147" />
+      <Component Name="SelectCount_ProcessValue" UId="148" />
+    </Symbol>
+  </Access>
+  <Blank UId="149" />
+  <Token Text=":=" UId="150" />
+  <Blank UId="151" />
+  <Access Scope="GlobalVariable" UId="152">
+    <Symbol UId="153">
+      <Component Name="HMI_Interface_Parameter" UId="154">
+        <BooleanAttribute Name="HasQuotes" UId="155">true</BooleanAttribute>
+      </Component>
+      <Token Text="." UId="156" />
+      <Component Name="FATModeInterface" UId="157" />
+      <Token Text="." UId="158" />
+      <Component Name="Sampling" UId="159" />
+      <Token Text="." UId="160" />
+      <Component Name="SetValue" UId="161" />
+      <Token Text="." UId="162" />
+      <Component Name="SelectCount_SetValue" UId="163" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="164" />
+  <NewLine UId="165" />
+  <Token Text="END_IF" UId="166" />
+  <Token Text=";" UId="167" />
+</StructuredText></NetworkSource>
+          <ProgrammingLanguage>SCL</ProgrammingLanguage>
+        </AttributeList>
+        <ObjectList>
+          <MultilingualText ID="1A" CompositionName="Comment">
+            <ObjectList>
+              <MultilingualTextItem ID="1B" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="1C" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+          <MultilingualText ID="1D" CompositionName="Title">
+            <ObjectList>
+              <MultilingualTextItem ID="1E" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="1F" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text>HMI → PLC | Apply | FAT Mode</Text>
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+        </ObjectList>
+      </SW.Blocks.CompileUnit>
+      <SW.Blocks.CompileUnit ID="20" CompositionName="CompileUnits">
+        <AttributeList>
+          <NetworkSource><StructuredText xmlns="http://www.siemens.com/automation/Openness/SW/NetworkSource/StructuredText/v4">
+  <LineComment UId="21">
+    <Text UId="22"> FAT Parameter</Text>
+  </LineComment>
+  <NewLine UId="23" />
+  <Access Scope="GlobalVariable" UId="24">
+    <Symbol UId="25">
+      <Component Name="Unit1.EmNodes" UId="26" />
+      <Token Text="." UId="27" />
+      <Component Name="FATModeSelect" UId="28" />
+      <Token Text="." UId="29" />
+      <Component Name="HoursTestMode" UId="30" />
+    </Symbol>
+  </Access>
+  <Blank UId="31" />
+  <Token Text=":=" UId="32" />
+  <Blank UId="33" />
+  <Access Scope="GlobalVariable" UId="34">
+    <Symbol UId="35">
+      <Component Name="HMI_Interface_Parameter" UId="36">
+        <BooleanAttribute Name="HasQuotes" UId="37">true</BooleanAttribute>
+      </Component>
+      <Token Text="." UId="38" />
+      <Component Name="FATModeSelect" UId="39" />
+      <Token Text="." UId="40" />
+      <Component Name="HoursTestMode" UId="41" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="42" />
+  <NewLine UId="43" />
+  <Access Scope="GlobalVariable" UId="44">
+    <Symbol UId="45">
+      <Component Name="Unit1.EmNodes" UId="46" />
+      <Token Text="." UId="47" />
+      <Component Name="FATModeSelect" UId="48" />
+      <Token Text="." UId="49" />
+      <Component Name="CapabilityMode" UId="50" />
+    </Symbol>
+  </Access>
+  <Blank UId="51" />
+  <Token Text=":=" UId="52" />
+  <Blank UId="53" />
+  <Access Scope="GlobalVariable" UId="54">
+    <Symbol UId="55">
+      <Component Name="HMI_Interface_Parameter" UId="56">
+        <BooleanAttribute Name="HasQuotes" UId="57">true</BooleanAttribute>
+      </Component>
+      <Token Text="." UId="58" />
+      <Component Name="FATModeSelect" UId="59" />
+      <Token Text="." UId="60" />
+      <Component Name="CapabilityMode" UId="61" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="62" />
+  <NewLine UId="63" />
+  <Access Scope="GlobalVariable" UId="64">
+    <Symbol UId="65">
+      <Component Name="Unit1.EmNodes" UId="66" />
+      <Token Text="." UId="67" />
+      <Component Name="FATModeSelect" UId="68" />
+      <Token Text="." UId="69" />
+      <Component Name="SamplingMode" UId="70" />
+    </Symbol>
+  </Access>
+  <Blank UId="71" />
+  <Token Text=":=" UId="72" />
+  <Blank UId="73" />
+  <Access Scope="GlobalVariable" UId="74">
+    <Symbol UId="75">
+      <Component Name="HMI_Interface_Parameter" UId="76">
+        <BooleanAttribute Name="HasQuotes" UId="77">true</BooleanAttribute>
+      </Component>
+      <Token Text="." UId="78" />
+      <Component Name="FATModeSelect" UId="79" />
+      <Token Text="." UId="80" />
+      <Component Name="SamplingMode" UId="81" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="82" />
+  <NewLine Num="2" UId="83" />
+  <LineComment UId="84">
+    <Text UId="85"> FAT Mode Sampling Clear And Select Interlock</Text>
+  </LineComment>
+  <NewLine UId="86" />
+  <Token Text="IF" UId="87" />
+  <Blank UId="88" />
+  <Access Scope="GlobalVariable" UId="89">
+    <Symbol UId="90">
+      <Component Name="Unit1.EmNodes" UId="91" />
+      <Token Text="." UId="92" />
+      <Component Name="FATModeSelect" UId="93" />
+      <Token Text="." UId="94" />
+      <Component Name="SamplingMode" UId="95" />
+    </Symbol>
+  </Access>
+  <Blank UId="96" />
+  <Token Text="AND" UId="97" />
+  <Blank UId="98" />
+  <Access Scope="GlobalVariable" UId="99">
+    <Symbol UId="100">
+      <Component Name="Unit1.EmNodes" UId="101" />
+      <Token Text="." UId="102" />
+      <Component Name="SamplingModeComplete" UId="103" />
+    </Symbol>
+  </Access>
+  <Blank UId="104" />
+  <Token Text="THEN" UId="105" />
+  <NewLine UId="106" />
+  <Blank Num="4" UId="107" />
+  <Access Scope="GlobalVariable" UId="108">
+    <Symbol UId="109">
+      <Component Name="HMI_Interface_Parameter" UId="110">
+        <BooleanAttribute Name="HasQuotes" UId="111">true</BooleanAttribute>
+      </Component>
+      <Token Text="." UId="112" />
+      <Component Name="FATModeSelect" UId="113" />
+      <Token Text="." UId="114" />
+      <Component Name="SamplingMode" UId="115" />
+    </Symbol>
+  </Access>
+  <Blank UId="116" />
+  <Token Text=":=" UId="117" />
+  <Blank UId="118" />
+  <Access Scope="LiteralConstant" UId="119">
+    <Constant UId="120">
+      <ConstantValue UId="122">FALSE</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="123" />
+  <NewLine UId="124" />
+  <LineComment UId="125">
+    <Text UId="126"> ELSIF Unit1.EmNodes.unitStatus.specialFunctions.dryRun THEN</Text>
+  </LineComment>
+  <NewLine UId="127" />
+  <LineComment UId="128">
+    <Text UId="129">     "HMI_Interface_Parameter".FATModeSelect.SamplingMode := FALSE;</Text>
+  </LineComment>
+  <NewLine UId="130" />
+  <LineComment UId="131">
+    <Text UId="132">     "HMI_Interface_Parameter".FATModeSelect.CapabilityMode := FALSE;</Text>
+  </LineComment>
+  <NewLine UId="133" />
+  <Token Text="END_IF" UId="134" />
+  <Token Text=";" UId="135" />
+</StructuredText></NetworkSource>
+          <ProgrammingLanguage>SCL</ProgrammingLanguage>
+        </AttributeList>
+        <ObjectList>
+          <MultilingualText ID="21" CompositionName="Comment">
+            <ObjectList>
+              <MultilingualTextItem ID="22" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="23" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+          <MultilingualText ID="24" CompositionName="Title">
+            <ObjectList>
+              <MultilingualTextItem ID="25" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="26" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text>HMI → PLC | Button | FAT Mode</Text>
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+        </ObjectList>
+      </SW.Blocks.CompileUnit>
+      <SW.Blocks.CompileUnit ID="27" CompositionName="CompileUnits">
+        <AttributeList>
+          <NetworkSource><StructuredText xmlns="http://www.siemens.com/automation/Openness/SW/NetworkSource/StructuredText/v4">
+  <LineComment UId="21">
+    <Text UId="22">FOR #tempSoftCamIndex := 0 TO 15 DO</Text>
+  </LineComment>
+  <NewLine UId="23" />
+  <LineComment UId="24">
+    <Text UId="25">    "HMI_Interface_Parameter".Softcam[1].TargetPosition := Unit1.Em2.HmiInterface.cm.softcam.jrOutPnPLeftAxisX.TargetPosition;</Text>
+  </LineComment>
+  <NewLine UId="26" />
+  <LineComment UId="27">
+    <Text UId="28">    "HMI_Interface_Parameter".Softcam[1].ActualPosition := Unit1.Em2.HmiInterface.cm.softcam.jrOutPnPLeftAxisX.ActualPosition;</Text>
+  </LineComment>
+  <NewLine UId="29" />
+  <LineComment UId="30">
+    <Text UId="31">    "HMI_Interface_Parameter".Softcam[2].TargetPosition := Unit1.Em2.HmiInterface.cm.softcam.jrOutPnPLeftAxisZ.TargetPosition;</Text>
+  </LineComment>
+  <NewLine UId="32" />
+  <LineComment UId="33">
+    <Text UId="34">    "HMI_Interface_Parameter".Softcam[2].ActualPosition := Unit1.Em2.HmiInterface.cm.softcam.jrOutPnPLeftAxisZ.ActualPosition;</Text>
+  </LineComment>
+  <NewLine UId="35" />
+  <LineComment UId="36">
+    <Text UId="37">    "HMI_Interface_Parameter".Softcam[3].TargetPosition := Unit1.Em2.HmiInterface.cm.softcam.jrOutPnPRightAxisX.TargetPosition;</Text>
+  </LineComment>
+  <NewLine UId="38" />
+  <LineComment UId="39">
+    <Text UId="40">    "HMI_Interface_Parameter".Softcam[3].ActualPosition := Unit1.Em2.HmiInterface.cm.softcam.jrOutPnPRightAxisX.ActualPosition;</Text>
+  </LineComment>
+  <NewLine UId="41" />
+  <LineComment UId="42">
+    <Text UId="43">    "HMI_Interface_Parameter".Softcam[4].TargetPosition := Unit1.Em2.HmiInterface.cm.softcam.jrOutPnPRightAxisZ.TargetPosition;</Text>
+  </LineComment>
+  <NewLine UId="44" />
+  <LineComment UId="45">
+    <Text UId="46">    "HMI_Interface_Parameter".Softcam[4].ActualPosition := Unit1.Em2.HmiInterface.cm.softcam.jrOutPnPRightAxisZ.ActualPosition;</Text>
+  </LineComment>
+  <NewLine UId="47" />
+  <Blank Num="4" UId="48" />
+  <NewLine UId="49" />
+  <LineComment UId="50">
+    <Text UId="51">    "HMI_Interface_Parameter".Softcam[5].TargetPosition := Unit1.Em3.HmiInterface.cm.softcam.topTapeAxisX.TargetPosition;</Text>
+  </LineComment>
+  <NewLine UId="52" />
+  <LineComment UId="53">
+    <Text UId="54">    "HMI_Interface_Parameter".Softcam[5].ActualPosition := Unit1.Em3.HmiInterface.cm.softcam.topTapeAxisX.ActualPosition;</Text>
+  </LineComment>
+  <NewLine UId="55" />
+  <LineComment UId="56">
+    <Text UId="57">    "HMI_Interface_Parameter".Softcam[6].TargetPosition := Unit1.Em3.HmiInterface.cm.softcam.topTapeAxisY.TargetPosition;</Text>
+  </LineComment>
+  <NewLine UId="58" />
+  <LineComment UId="59">
+    <Text UId="60">    "HMI_Interface_Parameter".Softcam[6].ActualPosition := Unit1.Em3.HmiInterface.cm.softcam.topTapeAxisY.ActualPosition;</Text>
+  </LineComment>
+  <NewLine UId="61" />
+  <Blank Num="4" UId="62" />
+  <NewLine UId="63" />
+  <LineComment UId="64">
+    <Text UId="65">   "HMI_Interface_Parameter".Softcam[7].TargetPosition := Unit1.Em4.HmiInterface.cm.softcam.sideTapeFixStageAxisX.TargetPosition;</Text>
+  </LineComment>
+  <NewLine UId="66" />
+  <LineComment UId="67">
+    <Text UId="68">    "HMI_Interface_Parameter".Softcam[7].ActualPosition := Unit1.Em4.HmiInterface.cm.softcam.sideTapeFixStageAxisX.ActualPosition;</Text>
+  </LineComment>
+  <NewLine UId="69" />
+  <LineComment UId="70">
+    <Text UId="71">    "HMI_Interface_Parameter".Softcam[8].TargetPosition := Unit1.Em4.HmiInterface.cm.softcam.sideTapeFixStageAxisC.TargetPosition;</Text>
+  </LineComment>
+  <NewLine UId="72" />
+  <LineComment UId="73">
+    <Text UId="74">    "HMI_Interface_Parameter".Softcam[8].ActualPosition := Unit1.Em4.HmiInterface.cm.softcam.sideTapeFixStageAxisC.ActualPosition;</Text>
+  </LineComment>
+  <NewLine UId="75" />
+  <LineComment UId="76">
+    <Text UId="77">    "HMI_Interface_Parameter".Softcam[9].TargetPosition := Unit1.Em4.HmiInterface.cm.softcam.sideTapeAttachmentAxisX.TargetPosition;</Text>
+  </LineComment>
+  <NewLine UId="78" />
+  <LineComment UId="79">
+    <Text UId="80">    "HMI_Interface_Parameter".Softcam[9].ActualPosition := Unit1.Em4.HmiInterface.cm.softcam.sideTapeAttachmentAxisX.ActualPosition;</Text>
+  </LineComment>
+  <NewLine UId="81" />
+  <LineComment UId="82">
+    <Text UId="83">    "HMI_Interface_Parameter".Softcam[10].TargetPosition := Unit1.Em4.HmiInterface.cm.softcam.sideTapeAttachmentAxisY.TargetPosition;</Text>
+  </LineComment>
+  <NewLine UId="84" />
+  <LineComment UId="85">
+    <Text UId="86">    "HMI_Interface_Parameter".Softcam[10].ActualPosition := Unit1.Em4.HmiInterface.cm.softcam.sideTapeAttachmentAxisY.ActualPosition;</Text>
+  </LineComment>
+  <NewLine UId="87" />
+  <Blank Num="4" UId="88" />
+  <NewLine UId="89" />
+  <LineComment UId="90">
+    <Text UId="91">    "HMI_Interface_Parameter".Softcam[11].TargetPosition := Unit1.Em5.HmiInterface.cm.softcam.transferPnPLeftAxisX.TargetPosition;</Text>
+  </LineComment>
+  <NewLine UId="92" />
+  <LineComment UId="93">
+    <Text UId="94">    "HMI_Interface_Parameter".Softcam[11].ActualPosition := Unit1.Em5.HmiInterface.cm.softcam.transferPnPLeftAxisX.ActualPosition;</Text>
+  </LineComment>
+  <NewLine UId="95" />
+  <LineComment UId="96">
+    <Text UId="97">    "HMI_Interface_Parameter".Softcam[12].TargetPosition := Unit1.Em5.HmiInterface.cm.softcam.transferPnPLeftAxisY.TargetPosition;</Text>
+  </LineComment>
+  <NewLine UId="98" />
+  <LineComment UId="99">
+    <Text UId="100">    "HMI_Interface_Parameter".Softcam[12].ActualPosition := Unit1.Em5.HmiInterface.cm.softcam.transferPnPLeftAxisY.ActualPosition;</Text>
+  </LineComment>
+  <NewLine UId="101" />
+  <LineComment UId="102">
+    <Text UId="103">    "HMI_Interface_Parameter".Softcam[13].TargetPosition := Unit1.Em5.HmiInterface.cm.softcam.transferPnPLeftAxisZ.TargetPosition;</Text>
+  </LineComment>
+  <NewLine UId="104" />
+  <LineComment UId="105">
+    <Text UId="106">    "HMI_Interface_Parameter".Softcam[13].ActualPosition := Unit1.Em5.HmiInterface.cm.softcam.transferPnPLeftAxisZ.ActualPosition;</Text>
+  </LineComment>
+  <NewLine UId="107" />
+  <LineComment UId="108">
+    <Text UId="109">    "HMI_Interface_Parameter".Softcam[14].TargetPosition := Unit1.Em5.HmiInterface.cm.softcam.transferPnPRightAxisX.TargetPosition;</Text>
+  </LineComment>
+  <NewLine UId="110" />
+  <LineComment UId="111">
+    <Text UId="112">    "HMI_Interface_Parameter".Softcam[14].ActualPosition := Unit1.Em5.HmiInterface.cm.softcam.transferPnPRightAxisX.ActualPosition;</Text>
+  </LineComment>
+  <NewLine UId="113" />
+  <LineComment UId="114">
+    <Text UId="115">    "HMI_Interface_Parameter".Softcam[15].TargetPosition := Unit1.Em5.HmiInterface.cm.softcam.transferPnPRightAxisY.TargetPosition;</Text>
+  </LineComment>
+  <NewLine UId="116" />
+  <LineComment UId="117">
+    <Text UId="118">    "HMI_Interface_Parameter".Softcam[15].ActualPosition := Unit1.Em5.HmiInterface.cm.softcam.transferPnPRightAxisY.ActualPosition;</Text>
+  </LineComment>
+  <NewLine UId="119" />
+  <LineComment UId="120">
+    <Text UId="121">    "HMI_Interface_Parameter".Softcam[16].TargetPosition := Unit1.Em5.HmiInterface.cm.softcam.transferPnPRightAxisZ.TargetPosition;</Text>
+  </LineComment>
+  <NewLine UId="122" />
+  <LineComment UId="123">
+    <Text UId="124">    "HMI_Interface_Parameter".Softcam[16].ActualPosition := Unit1.Em5.HmiInterface.cm.softcam.transferPnPRightAxisZ.ActualPosition;</Text>
+  </LineComment>
+  <NewLine UId="125" />
+  <Blank Num="4" UId="126" />
+  <NewLine UId="127" />
+  <LineComment UId="128">
+    <Text UId="129">    "HMI_Interface_Parameter".Softcam[17].TargetPosition := Unit1.Em8.HmiInterface.cm.softcam.thicknessAxisZ.TargetPosition;</Text>
+  </LineComment>
+  <NewLine UId="130" />
+  <LineComment UId="131">
+    <Text UId="132">    "HMI_Interface_Parameter".Softcam[17].ActualPosition := Unit1.Em8.HmiInterface.cm.softcam.thicknessAxisZ.ActualPosition;</Text>
+  </LineComment>
+  <NewLine UId="133" />
+  <Blank Num="4" UId="134" />
+  <NewLine UId="135" />
+  <LineComment UId="136">
+    <Text UId="137">    "HMI_Interface_Parameter".Softcam[18].TargetPosition := Unit1.Em13.HmiInterface.cm.softcam.jrUnloadingPnPAxisX.TargetPosition;</Text>
+  </LineComment>
+  <NewLine UId="138" />
+  <LineComment UId="139">
+    <Text UId="140">    "HMI_Interface_Parameter".Softcam[18].ActualPosition := Unit1.Em13.HmiInterface.cm.softcam.jrUnloadingPnPAxisX.ActualPosition;</Text>
+  </LineComment>
+  <NewLine UId="141" />
+  <LineComment UId="142">
+    <Text UId="143">    "HMI_Interface_Parameter".Softcam[19].TargetPosition := Unit1.Em13.HmiInterface.cm.softcam.jrUnloadingPnPAxisZ.TargetPosition;</Text>
+  </LineComment>
+  <NewLine UId="144" />
+  <LineComment UId="145">
+    <Text UId="146">    "HMI_Interface_Parameter".Softcam[19].ActualPosition := Unit1.Em13.HmiInterface.cm.softcam.jrUnloadingPnPAxisZ.ActualPosition;</Text>
+  </LineComment>
+  <NewLine UId="147" />
+  <LineComment UId="148">
+    <Text UId="149">    "HMI_Interface_Parameter".Softcam[20].TargetPosition := Unit1.Em13.HmiInterface.cm.softcam.jrUnloadingPnPAxisC.TargetPosition;</Text>
+  </LineComment>
+  <NewLine UId="150" />
+  <LineComment UId="151">
+    <Text UId="152">    "HMI_Interface_Parameter".Softcam[20].ActualPosition := Unit1.Em13.HmiInterface.cm.softcam.jrUnloadingPnPAxisC.ActualPosition;</Text>
+  </LineComment>
+  <NewLine UId="153" />
+  <Blank Num="4" UId="154" />
+  <NewLine UId="155" />
+  <LineComment UId="156">
+    <Text UId="157">    "HMI_Interface_Parameter".Softcam[1].position[#tempSoftCamIndex].ProcessValue := Unit1.Em2.HmiInterface.cm.softcam.jrOutPnPLeftAxisX.position[#tempSoftCamIndex].ProcessValue;</Text>
+  </LineComment>
+  <NewLine UId="158" />
+  <LineComment UId="159">
+    <Text UId="160">    "HMI_Interface_Parameter".Softcam[2].position[#tempSoftCamIndex].ProcessValue := Unit1.Em2.HmiInterface.cm.softcam.jrOutPnPLeftAxisZ.position[#tempSoftCamIndex].ProcessValue;</Text>
+  </LineComment>
+  <NewLine UId="161" />
+  <LineComment UId="162">
+    <Text UId="163">    "HMI_Interface_Parameter".Softcam[3].position[#tempSoftCamIndex].ProcessValue := Unit1.Em2.HmiInterface.cm.softcam.jrOutPnPRightAxisX.position[#tempSoftCamIndex].ProcessValue;</Text>
+  </LineComment>
+  <NewLine UId="164" />
+  <LineComment UId="165">
+    <Text UId="166">    "HMI_Interface_Parameter".Softcam[4].position[#tempSoftCamIndex].ProcessValue := Unit1.Em2.HmiInterface.cm.softcam.jrOutPnPRightAxisZ.position[#tempSoftCamIndex].ProcessValue;</Text>
+  </LineComment>
+  <NewLine UId="167" />
+  <Blank Num="4" UId="168" />
+  <NewLine UId="169" />
+  <LineComment UId="170">
+    <Text UId="171">    "HMI_Interface_Parameter".Softcam[5].position[#tempSoftCamIndex].ProcessValue := Unit1.Em3.HmiInterface.cm.softcam.topTapeAxisX.position[#tempSoftCamIndex].ProcessValue;</Text>
+  </LineComment>
+  <NewLine UId="172" />
+  <LineComment UId="173">
+    <Text UId="174">    "HMI_Interface_Parameter".Softcam[6].position[#tempSoftCamIndex].ProcessValue := Unit1.Em3.HmiInterface.cm.softcam.topTapeAxisY.position[#tempSoftCamIndex].ProcessValue;</Text>
+  </LineComment>
+  <NewLine UId="175" />
+  <Blank Num="4" UId="176" />
+  <NewLine UId="177" />
+  <LineComment UId="178">
+    <Text UId="179">    "HMI_Interface_Parameter".Softcam[7].position[#tempSoftCamIndex].ProcessValue := Unit1.Em4.HmiInterface.cm.softcam.sideTapeFixStageAxisX.position[#tempSoftCamIndex].ProcessValue;</Text>
+  </LineComment>
+  <NewLine UId="180" />
+  <LineComment UId="181">
+    <Text UId="182">    "HMI_Interface_Parameter".Softcam[8].position[#tempSoftCamIndex].ProcessValue := Unit1.Em4.HmiInterface.cm.softcam.sideTapeFixStageAxisC.position[#tempSoftCamIndex].ProcessValue;</Text>
+  </LineComment>
+  <NewLine UId="183" />
+  <LineComment UId="184">
+    <Text UId="185">    "HMI_Interface_Parameter".Softcam[9].position[#tempSoftCamIndex].ProcessValue := Unit1.Em4.HmiInterface.cm.softcam.sideTapeAttachmentAxisX.position[#tempSoftCamIndex].ProcessValue;</Text>
+  </LineComment>
+  <NewLine UId="186" />
+  <LineComment UId="187">
+    <Text UId="188">    "HMI_Interface_Parameter".Softcam[10].position[#tempSoftCamIndex].ProcessValue := Unit1.Em4.HmiInterface.cm.softcam.sideTapeAttachmentAxisY.position[#tempSoftCamIndex].ProcessValue;</Text>
+  </LineComment>
+  <NewLine UId="189" />
+  <Blank Num="4" UId="190" />
+  <NewLine UId="191" />
+  <LineComment UId="192">
+    <Text UId="193">    "HMI_Interface_Parameter".Softcam[11].position[#tempSoftCamIndex].ProcessValue := Unit1.Em5.HmiInterface.cm.softcam.transferPnPLeftAxisX.position[#tempSoftCamIndex].ProcessValue;</Text>
+  </LineComment>
+  <NewLine UId="194" />
+  <LineComment UId="195">
+    <Text UId="196">    "HMI_Interface_Parameter".Softcam[12].position[#tempSoftCamIndex].ProcessValue := Unit1.Em5.HmiInterface.cm.softcam.transferPnPLeftAxisY.position[#tempSoftCamIndex].ProcessValue;</Text>
+  </LineComment>
+  <NewLine UId="197" />
+  <LineComment UId="198">
+    <Text UId="199">    "HMI_Interface_Parameter".Softcam[13].position[#tempSoftCamIndex].ProcessValue := Unit1.Em5.HmiInterface.cm.softcam.transferPnPLeftAxisZ.position[#tempSoftCamIndex].ProcessValue;</Text>
+  </LineComment>
+  <NewLine UId="200" />
+  <LineComment UId="201">
+    <Text UId="202">    "HMI_Interface_Parameter".Softcam[14].position[#tempSoftCamIndex].ProcessValue := Unit1.Em5.HmiInterface.cm.softcam.transferPnPRightAxisX.position[#tempSoftCamIndex].ProcessValue;</Text>
+  </LineComment>
+  <NewLine UId="203" />
+  <LineComment UId="204">
+    <Text UId="205">    "HMI_Interface_Parameter".Softcam[15].position[#tempSoftCamIndex].ProcessValue := Unit1.Em5.HmiInterface.cm.softcam.transferPnPRightAxisY.position[#tempSoftCamIndex].ProcessValue;</Text>
+  </LineComment>
+  <NewLine UId="206" />
+  <LineComment UId="207">
+    <Text UId="208">    "HMI_Interface_Parameter".Softcam[16].position[#tempSoftCamIndex].ProcessValue := Unit1.Em5.HmiInterface.cm.softcam.transferPnPRightAxisZ.position[#tempSoftCamIndex].ProcessValue;</Text>
+  </LineComment>
+  <NewLine UId="209" />
+  <Blank Num="4" UId="210" />
+  <NewLine UId="211" />
+  <LineComment UId="212">
+    <Text UId="213">    "HMI_Interface_Parameter".Softcam[17].position[#tempSoftCamIndex].ProcessValue := Unit1.Em8.HmiInterface.cm.softcam.thicknessAxisZ.position[#tempSoftCamIndex].ProcessValue;</Text>
+  </LineComment>
+  <NewLine UId="214" />
+  <Blank Num="4" UId="215" />
+  <NewLine UId="216" />
+  <LineComment UId="217">
+    <Text UId="218">    "HMI_Interface_Parameter".Softcam[18].position[#tempSoftCamIndex].ProcessValue := Unit1.Em13.HmiInterface.cm.softcam.jrUnloadingPnPAxisX.position[#tempSoftCamIndex].ProcessValue;</Text>
+  </LineComment>
+  <NewLine UId="219" />
+  <LineComment UId="220">
+    <Text UId="221">    "HMI_Interface_Parameter".Softcam[19].position[#tempSoftCamIndex].ProcessValue := Unit1.Em13.HmiInterface.cm.softcam.jrUnloadingPnPAxisZ.position[#tempSoftCamIndex].ProcessValue;</Text>
+  </LineComment>
+  <NewLine UId="222" />
+  <LineComment UId="223">
+    <Text UId="224">    "HMI_Interface_Parameter".Softcam[20].position[#tempSoftCamIndex].ProcessValue := Unit1.Em13.HmiInterface.cm.softcam.jrUnloadingPnPAxisC.position[#tempSoftCamIndex].ProcessValue;</Text>
+  </LineComment>
+  <NewLine UId="225" />
+  <LineComment UId="226">
+    <Text UId="227">END_FOR;</Text>
+  </LineComment>
+  <NewLine UId="228" />
+  <LineComment UId="229">
+    <Text UId="230" />
+  </LineComment>
+  <NewLine Num="2" UId="231" />
+  <Access Scope="GlobalVariable" UId="232">
+    <Symbol UId="233">
+      <Component Name="HMI_Interface_Parameter" UId="234">
+        <BooleanAttribute Name="HasQuotes" UId="235">true</BooleanAttribute>
+      </Component>
+      <Token Text="." UId="236" />
+      <Component Name="Softcam" UId="237">
+        <Token Text="[" UId="238" />
+        <Access Scope="LiteralConstant" UId="239">
+          <Constant UId="240">
+            <ConstantValue UId="242">1</ConstantValue>
+          </Constant>
+        </Access>
+        <Token Text="]" UId="243" />
+      </Component>
+    </Symbol>
+  </Access>
+  <Blank UId="244" />
+  <Token Text=":=" UId="245" />
+  <Blank UId="246" />
+  <Access Scope="GlobalVariable" UId="247">
+    <Symbol UId="248">
+      <Component Name="Unit1.Em2.HmiInterface" UId="249" />
+      <Token Text="." UId="250" />
+      <Component Name="cm" UId="251" />
+      <Token Text="." UId="252" />
+      <Component Name="softcam" UId="253" />
+      <Token Text="." UId="254" />
+      <Component Name="jrOutPnPLeftAxisX" UId="255" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="256" />
+  <NewLine UId="257" />
+  <Access Scope="GlobalVariable" UId="258">
+    <Symbol UId="259">
+      <Component Name="HMI_Interface_Parameter" UId="260">
+        <BooleanAttribute Name="HasQuotes" UId="261">true</BooleanAttribute>
+      </Component>
+      <Token Text="." UId="262" />
+      <Component Name="Softcam" UId="263">
+        <Token Text="[" UId="264" />
+        <Access Scope="LiteralConstant" UId="265">
+          <Constant UId="266">
+            <ConstantValue UId="268">2</ConstantValue>
+          </Constant>
+        </Access>
+        <Token Text="]" UId="269" />
+      </Component>
+    </Symbol>
+  </Access>
+  <Blank UId="270" />
+  <Token Text=":=" UId="271" />
+  <Blank UId="272" />
+  <Access Scope="GlobalVariable" UId="273">
+    <Symbol UId="274">
+      <Component Name="Unit1.Em2.HmiInterface" UId="275" />
+      <Token Text="." UId="276" />
+      <Component Name="cm" UId="277" />
+      <Token Text="." UId="278" />
+      <Component Name="softcam" UId="279" />
+      <Token Text="." UId="280" />
+      <Component Name="jrOutPnPLeftAxisZ" UId="281" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="282" />
+  <NewLine UId="283" />
+  <Access Scope="GlobalVariable" UId="284">
+    <Symbol UId="285">
+      <Component Name="HMI_Interface_Parameter" UId="286">
+        <BooleanAttribute Name="HasQuotes" UId="287">true</BooleanAttribute>
+      </Component>
+      <Token Text="." UId="288" />
+      <Component Name="Softcam" UId="289">
+        <Token Text="[" UId="290" />
+        <Access Scope="LiteralConstant" UId="291">
+          <Constant UId="292">
+            <ConstantValue UId="294">3</ConstantValue>
+          </Constant>
+        </Access>
+        <Token Text="]" UId="295" />
+      </Component>
+    </Symbol>
+  </Access>
+  <Blank UId="296" />
+  <Token Text=":=" UId="297" />
+  <Blank UId="298" />
+  <Access Scope="GlobalVariable" UId="299">
+    <Symbol UId="300">
+      <Component Name="Unit1.Em2.HmiInterface" UId="301" />
+      <Token Text="." UId="302" />
+      <Component Name="cm" UId="303" />
+      <Token Text="." UId="304" />
+      <Component Name="softcam" UId="305" />
+      <Token Text="." UId="306" />
+      <Component Name="jrOutPnPRightAxisX" UId="307" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="308" />
+  <NewLine UId="309" />
+  <Access Scope="GlobalVariable" UId="310">
+    <Symbol UId="311">
+      <Component Name="HMI_Interface_Parameter" UId="312">
+        <BooleanAttribute Name="HasQuotes" UId="313">true</BooleanAttribute>
+      </Component>
+      <Token Text="." UId="314" />
+      <Component Name="Softcam" UId="315">
+        <Token Text="[" UId="316" />
+        <Access Scope="LiteralConstant" UId="317">
+          <Constant UId="318">
+            <ConstantValue UId="320">4</ConstantValue>
+          </Constant>
+        </Access>
+        <Token Text="]" UId="321" />
+      </Component>
+    </Symbol>
+  </Access>
+  <Blank UId="322" />
+  <Token Text=":=" UId="323" />
+  <Blank UId="324" />
+  <Access Scope="GlobalVariable" UId="325">
+    <Symbol UId="326">
+      <Component Name="Unit1.Em2.HmiInterface" UId="327" />
+      <Token Text="." UId="328" />
+      <Component Name="cm" UId="329" />
+      <Token Text="." UId="330" />
+      <Component Name="softcam" UId="331" />
+      <Token Text="." UId="332" />
+      <Component Name="jrOutPnPRightAxisZ" UId="333" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="334" />
+  <NewLine UId="335" />
+  <Access Scope="GlobalVariable" UId="336">
+    <Symbol UId="337">
+      <Component Name="HMI_Interface_Parameter" UId="338">
+        <BooleanAttribute Name="HasQuotes" UId="339">true</BooleanAttribute>
+      </Component>
+      <Token Text="." UId="340" />
+      <Component Name="Softcam" UId="341">
+        <Token Text="[" UId="342" />
+        <Access Scope="LiteralConstant" UId="343">
+          <Constant UId="344">
+            <ConstantValue UId="346">5</ConstantValue>
+          </Constant>
+        </Access>
+        <Token Text="]" UId="347" />
+      </Component>
+    </Symbol>
+  </Access>
+  <Blank UId="348" />
+  <Token Text=":=" UId="349" />
+  <Blank UId="350" />
+  <Access Scope="GlobalVariable" UId="351">
+    <Symbol UId="352">
+      <Component Name="Unit1.Em3.HmiInterface" UId="353" />
+      <Token Text="." UId="354" />
+      <Component Name="cm" UId="355" />
+      <Token Text="." UId="356" />
+      <Component Name="softcam" UId="357" />
+      <Token Text="." UId="358" />
+      <Component Name="topTapeAxisX" UId="359" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="360" />
+  <NewLine UId="361" />
+  <Access Scope="GlobalVariable" UId="362">
+    <Symbol UId="363">
+      <Component Name="HMI_Interface_Parameter" UId="364">
+        <BooleanAttribute Name="HasQuotes" UId="365">true</BooleanAttribute>
+      </Component>
+      <Token Text="." UId="366" />
+      <Component Name="Softcam" UId="367">
+        <Token Text="[" UId="368" />
+        <Access Scope="LiteralConstant" UId="369">
+          <Constant UId="370">
+            <ConstantValue UId="372">6</ConstantValue>
+          </Constant>
+        </Access>
+        <Token Text="]" UId="373" />
+      </Component>
+    </Symbol>
+  </Access>
+  <Blank UId="374" />
+  <Token Text=":=" UId="375" />
+  <Blank UId="376" />
+  <Access Scope="GlobalVariable" UId="377">
+    <Symbol UId="378">
+      <Component Name="Unit1.Em3.HmiInterface" UId="379" />
+      <Token Text="." UId="380" />
+      <Component Name="cm" UId="381" />
+      <Token Text="." UId="382" />
+      <Component Name="softcam" UId="383" />
+      <Token Text="." UId="384" />
+      <Component Name="topTapeAxisY" UId="385" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="386" />
+  <NewLine UId="387" />
+  <Access Scope="GlobalVariable" UId="388">
+    <Symbol UId="389">
+      <Component Name="HMI_Interface_Parameter" UId="390">
+        <BooleanAttribute Name="HasQuotes" UId="391">true</BooleanAttribute>
+      </Component>
+      <Token Text="." UId="392" />
+      <Component Name="Softcam" UId="393">
+        <Token Text="[" UId="394" />
+        <Access Scope="LiteralConstant" UId="395">
+          <Constant UId="396">
+            <ConstantValue UId="398">7</ConstantValue>
+          </Constant>
+        </Access>
+        <Token Text="]" UId="399" />
+      </Component>
+    </Symbol>
+  </Access>
+  <Blank UId="400" />
+  <Token Text=":=" UId="401" />
+  <Blank UId="402" />
+  <Access Scope="GlobalVariable" UId="403">
+    <Symbol UId="404">
+      <Component Name="Unit1.Em4.HmiInterface" UId="405" />
+      <Token Text="." UId="406" />
+      <Component Name="cm" UId="407" />
+      <Token Text="." UId="408" />
+      <Component Name="softcam" UId="409" />
+      <Token Text="." UId="410" />
+      <Component Name="sideTapeFixStageAxisX" UId="411" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="412" />
+  <NewLine UId="413" />
+  <Access Scope="GlobalVariable" UId="414">
+    <Symbol UId="415">
+      <Component Name="HMI_Interface_Parameter" UId="416">
+        <BooleanAttribute Name="HasQuotes" UId="417">true</BooleanAttribute>
+      </Component>
+      <Token Text="." UId="418" />
+      <Component Name="Softcam" UId="419">
+        <Token Text="[" UId="420" />
+        <Access Scope="LiteralConstant" UId="421">
+          <Constant UId="422">
+            <ConstantValue UId="424">8</ConstantValue>
+          </Constant>
+        </Access>
+        <Token Text="]" UId="425" />
+      </Component>
+    </Symbol>
+  </Access>
+  <Blank UId="426" />
+  <Token Text=":=" UId="427" />
+  <Blank UId="428" />
+  <Access Scope="GlobalVariable" UId="429">
+    <Symbol UId="430">
+      <Component Name="Unit1.Em4.HmiInterface" UId="431" />
+      <Token Text="." UId="432" />
+      <Component Name="cm" UId="433" />
+      <Token Text="." UId="434" />
+      <Component Name="softcam" UId="435" />
+      <Token Text="." UId="436" />
+      <Component Name="sideTapeFixStageAxisC" UId="437" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="438" />
+  <NewLine UId="439" />
+  <Access Scope="GlobalVariable" UId="440">
+    <Symbol UId="441">
+      <Component Name="HMI_Interface_Parameter" UId="442">
+        <BooleanAttribute Name="HasQuotes" UId="443">true</BooleanAttribute>
+      </Component>
+      <Token Text="." UId="444" />
+      <Component Name="Softcam" UId="445">
+        <Token Text="[" UId="446" />
+        <Access Scope="LiteralConstant" UId="447">
+          <Constant UId="448">
+            <ConstantValue UId="450">9</ConstantValue>
+          </Constant>
+        </Access>
+        <Token Text="]" UId="451" />
+      </Component>
+    </Symbol>
+  </Access>
+  <Blank UId="452" />
+  <Token Text=":=" UId="453" />
+  <Blank UId="454" />
+  <Access Scope="GlobalVariable" UId="455">
+    <Symbol UId="456">
+      <Component Name="Unit1.Em4.HmiInterface" UId="457" />
+      <Token Text="." UId="458" />
+      <Component Name="cm" UId="459" />
+      <Token Text="." UId="460" />
+      <Component Name="softcam" UId="461" />
+      <Token Text="." UId="462" />
+      <Component Name="sideTapeAttachmentAxisX" UId="463" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="464" />
+  <NewLine UId="465" />
+  <Access Scope="GlobalVariable" UId="466">
+    <Symbol UId="467">
+      <Component Name="HMI_Interface_Parameter" UId="468">
+        <BooleanAttribute Name="HasQuotes" UId="469">true</BooleanAttribute>
+      </Component>
+      <Token Text="." UId="470" />
+      <Component Name="Softcam" UId="471">
+        <Token Text="[" UId="472" />
+        <Access Scope="LiteralConstant" UId="473">
+          <Constant UId="474">
+            <ConstantValue UId="476">10</ConstantValue>
+          </Constant>
+        </Access>
+        <Token Text="]" UId="477" />
+      </Component>
+    </Symbol>
+  </Access>
+  <Blank UId="478" />
+  <Token Text=":=" UId="479" />
+  <Blank UId="480" />
+  <Access Scope="GlobalVariable" UId="481">
+    <Symbol UId="482">
+      <Component Name="Unit1.Em4.HmiInterface" UId="483" />
+      <Token Text="." UId="484" />
+      <Component Name="cm" UId="485" />
+      <Token Text="." UId="486" />
+      <Component Name="softcam" UId="487" />
+      <Token Text="." UId="488" />
+      <Component Name="sideTapeAttachmentAxisY" UId="489" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="490" />
+  <NewLine UId="491" />
+  <Access Scope="GlobalVariable" UId="492">
+    <Symbol UId="493">
+      <Component Name="HMI_Interface_Parameter" UId="494">
+        <BooleanAttribute Name="HasQuotes" UId="495">true</BooleanAttribute>
+      </Component>
+      <Token Text="." UId="496" />
+      <Component Name="Softcam" UId="497">
+        <Token Text="[" UId="498" />
+        <Access Scope="LiteralConstant" UId="499">
+          <Constant UId="500">
+            <ConstantValue UId="502">11</ConstantValue>
+          </Constant>
+        </Access>
+        <Token Text="]" UId="503" />
+      </Component>
+    </Symbol>
+  </Access>
+  <Blank UId="504" />
+  <Token Text=":=" UId="505" />
+  <Blank UId="506" />
+  <Access Scope="GlobalVariable" UId="507">
+    <Symbol UId="508">
+      <Component Name="Unit1.Em5.HmiInterface" UId="509" />
+      <Token Text="." UId="510" />
+      <Component Name="cm" UId="511" />
+      <Token Text="." UId="512" />
+      <Component Name="softcam" UId="513" />
+      <Token Text="." UId="514" />
+      <Component Name="transferPnPLeftAxisX" UId="515" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="516" />
+  <NewLine UId="517" />
+  <Access Scope="GlobalVariable" UId="518">
+    <Symbol UId="519">
+      <Component Name="HMI_Interface_Parameter" UId="520">
+        <BooleanAttribute Name="HasQuotes" UId="521">true</BooleanAttribute>
+      </Component>
+      <Token Text="." UId="522" />
+      <Component Name="Softcam" UId="523">
+        <Token Text="[" UId="524" />
+        <Access Scope="LiteralConstant" UId="525">
+          <Constant UId="526">
+            <ConstantValue UId="528">12</ConstantValue>
+          </Constant>
+        </Access>
+        <Token Text="]" UId="529" />
+      </Component>
+    </Symbol>
+  </Access>
+  <Blank UId="530" />
+  <Token Text=":=" UId="531" />
+  <Blank UId="532" />
+  <Access Scope="GlobalVariable" UId="533">
+    <Symbol UId="534">
+      <Component Name="Unit1.Em5.HmiInterface" UId="535" />
+      <Token Text="." UId="536" />
+      <Component Name="cm" UId="537" />
+      <Token Text="." UId="538" />
+      <Component Name="softcam" UId="539" />
+      <Token Text="." UId="540" />
+      <Component Name="transferPnPLeftAxisY" UId="541" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="542" />
+  <NewLine UId="543" />
+  <Access Scope="GlobalVariable" UId="544">
+    <Symbol UId="545">
+      <Component Name="HMI_Interface_Parameter" UId="546">
+        <BooleanAttribute Name="HasQuotes" UId="547">true</BooleanAttribute>
+      </Component>
+      <Token Text="." UId="548" />
+      <Component Name="Softcam" UId="549">
+        <Token Text="[" UId="550" />
+        <Access Scope="LiteralConstant" UId="551">
+          <Constant UId="552">
+            <ConstantValue UId="554">13</ConstantValue>
+          </Constant>
+        </Access>
+        <Token Text="]" UId="555" />
+      </Component>
+    </Symbol>
+  </Access>
+  <Blank UId="556" />
+  <Token Text=":=" UId="557" />
+  <Blank UId="558" />
+  <Access Scope="GlobalVariable" UId="559">
+    <Symbol UId="560">
+      <Component Name="Unit1.Em5.HmiInterface" UId="561" />
+      <Token Text="." UId="562" />
+      <Component Name="cm" UId="563" />
+      <Token Text="." UId="564" />
+      <Component Name="softcam" UId="565" />
+      <Token Text="." UId="566" />
+      <Component Name="transferPnPLeftAxisZ" UId="567" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="568" />
+  <NewLine UId="569" />
+  <Access Scope="GlobalVariable" UId="570">
+    <Symbol UId="571">
+      <Component Name="HMI_Interface_Parameter" UId="572">
+        <BooleanAttribute Name="HasQuotes" UId="573">true</BooleanAttribute>
+      </Component>
+      <Token Text="." UId="574" />
+      <Component Name="Softcam" UId="575">
+        <Token Text="[" UId="576" />
+        <Access Scope="LiteralConstant" UId="577">
+          <Constant UId="578">
+            <ConstantValue UId="580">14</ConstantValue>
+          </Constant>
+        </Access>
+        <Token Text="]" UId="581" />
+      </Component>
+    </Symbol>
+  </Access>
+  <Blank UId="582" />
+  <Token Text=":=" UId="583" />
+  <Blank UId="584" />
+  <Access Scope="GlobalVariable" UId="585">
+    <Symbol UId="586">
+      <Component Name="Unit1.Em5.HmiInterface" UId="587" />
+      <Token Text="." UId="588" />
+      <Component Name="cm" UId="589" />
+      <Token Text="." UId="590" />
+      <Component Name="softcam" UId="591" />
+      <Token Text="." UId="592" />
+      <Component Name="transferPnPRightAxisX" UId="593" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="594" />
+  <NewLine UId="595" />
+  <Access Scope="GlobalVariable" UId="596">
+    <Symbol UId="597">
+      <Component Name="HMI_Interface_Parameter" UId="598">
+        <BooleanAttribute Name="HasQuotes" UId="599">true</BooleanAttribute>
+      </Component>
+      <Token Text="." UId="600" />
+      <Component Name="Softcam" UId="601">
+        <Token Text="[" UId="602" />
+        <Access Scope="LiteralConstant" UId="603">
+          <Constant UId="604">
+            <ConstantValue UId="606">15</ConstantValue>
+          </Constant>
+        </Access>
+        <Token Text="]" UId="607" />
+      </Component>
+    </Symbol>
+  </Access>
+  <Blank UId="608" />
+  <Token Text=":=" UId="609" />
+  <Blank UId="610" />
+  <Access Scope="GlobalVariable" UId="611">
+    <Symbol UId="612">
+      <Component Name="Unit1.Em5.HmiInterface" UId="613" />
+      <Token Text="." UId="614" />
+      <Component Name="cm" UId="615" />
+      <Token Text="." UId="616" />
+      <Component Name="softcam" UId="617" />
+      <Token Text="." UId="618" />
+      <Component Name="transferPnPRightAxisY" UId="619" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="620" />
+  <NewLine UId="621" />
+  <Access Scope="GlobalVariable" UId="622">
+    <Symbol UId="623">
+      <Component Name="HMI_Interface_Parameter" UId="624">
+        <BooleanAttribute Name="HasQuotes" UId="625">true</BooleanAttribute>
+      </Component>
+      <Token Text="." UId="626" />
+      <Component Name="Softcam" UId="627">
+        <Token Text="[" UId="628" />
+        <Access Scope="LiteralConstant" UId="629">
+          <Constant UId="630">
+            <ConstantValue UId="632">16</ConstantValue>
+          </Constant>
+        </Access>
+        <Token Text="]" UId="633" />
+      </Component>
+    </Symbol>
+  </Access>
+  <Blank UId="634" />
+  <Token Text=":=" UId="635" />
+  <Blank UId="636" />
+  <Access Scope="GlobalVariable" UId="637">
+    <Symbol UId="638">
+      <Component Name="Unit1.Em5.HmiInterface" UId="639" />
+      <Token Text="." UId="640" />
+      <Component Name="cm" UId="641" />
+      <Token Text="." UId="642" />
+      <Component Name="softcam" UId="643" />
+      <Token Text="." UId="644" />
+      <Component Name="transferPnPRightAxisZ" UId="645" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="646" />
+  <NewLine UId="647" />
+  <Access Scope="GlobalVariable" UId="648">
+    <Symbol UId="649">
+      <Component Name="HMI_Interface_Parameter" UId="650">
+        <BooleanAttribute Name="HasQuotes" UId="651">true</BooleanAttribute>
+      </Component>
+      <Token Text="." UId="652" />
+      <Component Name="Softcam" UId="653">
+        <Token Text="[" UId="654" />
+        <Access Scope="LiteralConstant" UId="655">
+          <Constant UId="656">
+            <ConstantValue UId="658">17</ConstantValue>
+          </Constant>
+        </Access>
+        <Token Text="]" UId="659" />
+      </Component>
+    </Symbol>
+  </Access>
+  <Blank UId="660" />
+  <Token Text=":=" UId="661" />
+  <Blank UId="662" />
+  <Access Scope="GlobalVariable" UId="663">
+    <Symbol UId="664">
+      <Component Name="Unit1.Em8.HmiInterface" UId="665" />
+      <Token Text="." UId="666" />
+      <Component Name="cm" UId="667" />
+      <Token Text="." UId="668" />
+      <Component Name="softcam" UId="669" />
+      <Token Text="." UId="670" />
+      <Component Name="thicknessAxisZ" UId="671" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="672" />
+  <NewLine UId="673" />
+  <Access Scope="GlobalVariable" UId="674">
+    <Symbol UId="675">
+      <Component Name="HMI_Interface_Parameter" UId="676">
+        <BooleanAttribute Name="HasQuotes" UId="677">true</BooleanAttribute>
+      </Component>
+      <Token Text="." UId="678" />
+      <Component Name="Softcam" UId="679">
+        <Token Text="[" UId="680" />
+        <Access Scope="LiteralConstant" UId="681">
+          <Constant UId="682">
+            <ConstantValue UId="684">18</ConstantValue>
+          </Constant>
+        </Access>
+        <Token Text="]" UId="685" />
+      </Component>
+    </Symbol>
+  </Access>
+  <Blank UId="686" />
+  <Token Text=":=" UId="687" />
+  <Blank UId="688" />
+  <Access Scope="GlobalVariable" UId="689">
+    <Symbol UId="690">
+      <Component Name="Unit1.Em13.HmiInterface" UId="691" />
+      <Token Text="." UId="692" />
+      <Component Name="cm" UId="693" />
+      <Token Text="." UId="694" />
+      <Component Name="softcam" UId="695" />
+      <Token Text="." UId="696" />
+      <Component Name="jrUnIoadingPnPAxisX" UId="697" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="698" />
+  <NewLine UId="699" />
+  <Access Scope="GlobalVariable" UId="700">
+    <Symbol UId="701">
+      <Component Name="HMI_Interface_Parameter" UId="702">
+        <BooleanAttribute Name="HasQuotes" UId="703">true</BooleanAttribute>
+      </Component>
+      <Token Text="." UId="704" />
+      <Component Name="Softcam" UId="705">
+        <Token Text="[" UId="706" />
+        <Access Scope="LiteralConstant" UId="707">
+          <Constant UId="708">
+            <ConstantValue UId="710">19</ConstantValue>
+          </Constant>
+        </Access>
+        <Token Text="]" UId="711" />
+      </Component>
+    </Symbol>
+  </Access>
+  <Blank UId="712" />
+  <Token Text=":=" UId="713" />
+  <Blank UId="714" />
+  <Access Scope="GlobalVariable" UId="715">
+    <Symbol UId="716">
+      <Component Name="Unit1.Em13.HmiInterface" UId="717" />
+      <Token Text="." UId="718" />
+      <Component Name="cm" UId="719" />
+      <Token Text="." UId="720" />
+      <Component Name="softcam" UId="721" />
+      <Token Text="." UId="722" />
+      <Component Name="jrUnIoadingPnPAxisZ" UId="723" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="724" />
+  <NewLine UId="725" />
+  <Access Scope="GlobalVariable" UId="726">
+    <Symbol UId="727">
+      <Component Name="HMI_Interface_Parameter" UId="728">
+        <BooleanAttribute Name="HasQuotes" UId="729">true</BooleanAttribute>
+      </Component>
+      <Token Text="." UId="730" />
+      <Component Name="Softcam" UId="731">
+        <Token Text="[" UId="732" />
+        <Access Scope="LiteralConstant" UId="733">
+          <Constant UId="734">
+            <ConstantValue UId="736">20</ConstantValue>
+          </Constant>
+        </Access>
+        <Token Text="]" UId="737" />
+      </Component>
+    </Symbol>
+  </Access>
+  <Blank UId="738" />
+  <Token Text=":=" UId="739" />
+  <Blank UId="740" />
+  <Access Scope="GlobalVariable" UId="741">
+    <Symbol UId="742">
+      <Component Name="Unit1.Em13.HmiInterface" UId="743" />
+      <Token Text="." UId="744" />
+      <Component Name="cm" UId="745" />
+      <Token Text="." UId="746" />
+      <Component Name="softcam" UId="747" />
+      <Token Text="." UId="748" />
+      <Component Name="jrUnIoadingPnPAxisC" UId="749" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="750" />
+</StructuredText></NetworkSource>
+          <ProgrammingLanguage>SCL</ProgrammingLanguage>
+        </AttributeList>
+        <ObjectList>
+          <MultilingualText ID="28" CompositionName="Comment">
+            <ObjectList>
+              <MultilingualTextItem ID="29" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="2A" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+          <MultilingualText ID="2B" CompositionName="Title">
+            <ObjectList>
+              <MultilingualTextItem ID="2C" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="2D" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text>PLC → HMI | Always | Softcam_unuse_0420</Text>
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+        </ObjectList>
+      </SW.Blocks.CompileUnit>
+      <SW.Blocks.CompileUnit ID="2E" CompositionName="CompileUnits">
+        <AttributeList>
+          <NetworkSource><StructuredText xmlns="http://www.siemens.com/automation/Openness/SW/NetworkSource/StructuredText/v4">
+  <LineComment UId="21">
+    <Text UId="22"> "RecipeParameter".ParameterPV."Recipe1" := Unit1.Em2.HmiInterface.cm.distance.processValue.distanceLimitPV; // BA060AZSIDR1_JROutP&amp;PLeftAxisX ↔ BA060AZSIDR3_JROutP&amp;PRightAxisX</Text>
+  </LineComment>
+  <NewLine UId="23" />
+  <LineComment UId="24">
+    <Text UId="25"> "RecipeParameter".ParameterPV."Recipe2" := Unit1.Em5.HmiInterface.cm.distance.processValue.distanceLimitPV; // BA060AZSIDR12_TransferP&amp;PLeftAxisX ↔ BA060AZSIDR15_TransferP&amp;PRightAxisX</Text>
+  </LineComment>
+</StructuredText></NetworkSource>
+          <ProgrammingLanguage>SCL</ProgrammingLanguage>
+        </AttributeList>
+        <ObjectList>
+          <MultilingualText ID="2F" CompositionName="Comment">
+            <ObjectList>
+              <MultilingualTextItem ID="30" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="31" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+          <MultilingualText ID="32" CompositionName="Title">
+            <ObjectList>
+              <MultilingualTextItem ID="33" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="34" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text>PLC → HMI | Always | Distance</Text>
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+        </ObjectList>
+      </SW.Blocks.CompileUnit>
+      <SW.Blocks.CompileUnit ID="35" CompositionName="CompileUnits">
+        <AttributeList>
+          <NetworkSource><StructuredText xmlns="http://www.siemens.com/automation/Openness/SW/NetworkSource/StructuredText/v4">
+  <LineComment UId="21">
+    <Text UId="22"> FAT Parameter</Text>
+  </LineComment>
+  <NewLine UId="23" />
+  <Access Scope="GlobalVariable" UId="24">
+    <Symbol UId="25">
+      <Component Name="HMI_Interface_Parameter" UId="26">
+        <BooleanAttribute Name="HasQuotes" UId="27">true</BooleanAttribute>
+      </Component>
+      <Token Text="." UId="28" />
+      <Component Name="FATModeInterface" UId="29" />
+      <Token Text="." UId="30" />
+      <Component Name="HoursTest" UId="31" />
+      <Token Text="." UId="32" />
+      <Component Name="ProcessValue" UId="33" />
+      <Token Text="." UId="34" />
+      <Component Name="ProcTimeLeft" UId="35" />
+    </Symbol>
+  </Access>
+  <Blank UId="36" />
+  <Token Text=":=" UId="37" />
+  <Blank UId="38" />
+  <Access Scope="GlobalVariable" UId="39">
+    <Symbol UId="40">
+      <Component Name="Unit1.EmNodes" UId="41" />
+      <Token Text="." UId="42" />
+      <Component Name="FATModeInterface" UId="43" />
+      <Token Text="." UId="44" />
+      <Component Name="HoursTest" UId="45" />
+      <Token Text="." UId="46" />
+      <Component Name="ProcessValue" UId="47" />
+      <Token Text="." UId="48" />
+      <Component Name="ProcTimeLeft" UId="49" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="50" />
+  <NewLine UId="51" />
+  <Access Scope="GlobalVariable" UId="52">
+    <Symbol UId="53">
+      <Component Name="HMI_Interface_Parameter" UId="54">
+        <BooleanAttribute Name="HasQuotes" UId="55">true</BooleanAttribute>
+      </Component>
+      <Token Text="." UId="56" />
+      <Component Name="FATModeInterface" UId="57" />
+      <Token Text="." UId="58" />
+      <Component Name="Capability" UId="59" />
+      <Token Text="." UId="60" />
+      <Component Name="ProcessValue" UId="61" />
+      <Token Text="." UId="62" />
+      <Component Name="CapabilityCount" UId="63" />
+    </Symbol>
+  </Access>
+  <Blank UId="64" />
+  <Token Text=":=" UId="65" />
+  <Blank UId="66" />
+  <Access Scope="GlobalVariable" UId="67">
+    <Symbol UId="68">
+      <Component Name="Unit1.EmNodes" UId="69" />
+      <Token Text="." UId="70" />
+      <Component Name="FATModeInterface" UId="71" />
+      <Token Text="." UId="72" />
+      <Component Name="Capability" UId="73" />
+      <Token Text="." UId="74" />
+      <Component Name="ProcessValue" UId="75" />
+      <Token Text="." UId="76" />
+      <Component Name="CapabilityCount" UId="77" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="78" />
+  <NewLine UId="79" />
+  <Access Scope="GlobalVariable" UId="80">
+    <Symbol UId="81">
+      <Component Name="HMI_Interface_Parameter" UId="82">
+        <BooleanAttribute Name="HasQuotes" UId="83">true</BooleanAttribute>
+      </Component>
+      <Token Text="." UId="84" />
+      <Component Name="FATModeInterface" UId="85" />
+      <Token Text="." UId="86" />
+      <Component Name="Sampling" UId="87" />
+      <Token Text="." UId="88" />
+      <Component Name="ProcessValue" UId="89" />
+      <Token Text="." UId="90" />
+      <Component Name="CellCount" UId="91" />
+    </Symbol>
+  </Access>
+  <Blank UId="92" />
+  <Token Text=":=" UId="93" />
+  <Blank UId="94" />
+  <Access Scope="GlobalVariable" UId="95">
+    <Symbol UId="96">
+      <Component Name="Unit1.EmNodes" UId="97" />
+      <Token Text="." UId="98" />
+      <Component Name="FATModeInterface" UId="99" />
+      <Token Text="." UId="100" />
+      <Component Name="Sampling" UId="101" />
+      <Token Text="." UId="102" />
+      <Component Name="ProcessValue" UId="103" />
+      <Token Text="." UId="104" />
+      <Component Name="CellCount" UId="105" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="106" />
+</StructuredText></NetworkSource>
+          <ProgrammingLanguage>SCL</ProgrammingLanguage>
+        </AttributeList>
+        <ObjectList>
+          <MultilingualText ID="36" CompositionName="Comment">
+            <ObjectList>
+              <MultilingualTextItem ID="37" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="38" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+          <MultilingualText ID="39" CompositionName="Title">
+            <ObjectList>
+              <MultilingualTextItem ID="3A" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="3B" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text>PLC → HMI | Always | FAT Mode</Text>
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+        </ObjectList>
+      </SW.Blocks.CompileUnit>
+      <SW.Blocks.CompileUnit ID="3C" CompositionName="CompileUnits">
+        <AttributeList>
+          <NetworkSource><FlgNet xmlns="http://www.siemens.com/automation/Openness/SW/NetworkSource/FlgNet/v5">
+  <Parts>
+    <Access Scope="LiteralConstant" UId="21">
+      <Constant>
+        <ConstantType>Bool</ConstantType>
+        <ConstantValue>TRUE</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="GlobalVariable" UId="22">
+      <Symbol>
+        <Component Name="HMI_Interface_Parameter" />
+        <Component Name="RecipeButton" />
+        <Component Name="Apply" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="23">
+      <Symbol>
+        <Component Name="HMI_Interface_Parameter" />
+        <Component Name="Recipe" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="24">
+      <Symbol>
+        <Component Name="RecipeParameter" />
+        <Component Name="ParameterSV" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="25">
+      <Symbol>
+        <Component Name="RecipeParameter" />
+        <Component Name="ParameterPV" />
+      </Symbol>
+    </Access>
+    <Call UId="26">
+      <CallInfo Name="LER_Recipe" BlockType="FB">
+        <Instance Scope="GlobalVariable" UId="27">
+          <Component Name="instRecipe" />
+        </Instance>
+        <Parameter Name="enable" Section="Input" Type="Bool" />
+        <Parameter Name="applyBT" Section="Input" Type="Bool" />
+        <Parameter Name="parameterRecipeInterface" Section="InOut" Type="&quot;HMI_IF_Parameter_LIstRecipe_Interface&quot;" />
+        <Parameter Name="parameterListSV" Section="InOut" Type="&quot;HMI_IF_Parameter_ListRecipe_UDT&quot;" />
+        <Parameter Name="parameterListPV" Section="InOut" Type="&quot;HMI_IF_Parameter_ListRecipe_UDT&quot;" />
+      </CallInfo>
+    </Call>
+  </Parts>
+  <Wires>
+    <Wire UId="28">
+      <Powerrail />
+      <NameCon UId="26" Name="en" />
+    </Wire>
+    <Wire UId="29">
+      <IdentCon UId="21" />
+      <NameCon UId="26" Name="enable" />
+    </Wire>
+    <Wire UId="30">
+      <IdentCon UId="22" />
+      <NameCon UId="26" Name="applyBT" />
+    </Wire>
+    <Wire UId="31">
+      <IdentCon UId="23" />
+      <NameCon UId="26" Name="parameterRecipeInterface" />
+    </Wire>
+    <Wire UId="32">
+      <IdentCon UId="24" />
+      <NameCon UId="26" Name="parameterListSV" />
+    </Wire>
+    <Wire UId="33">
+      <IdentCon UId="25" />
+      <NameCon UId="26" Name="parameterListPV" />
+    </Wire>
+  </Wires>
+</FlgNet></NetworkSource>
+          <ProgrammingLanguage>LAD</ProgrammingLanguage>
+        </AttributeList>
+        <ObjectList>
+          <MultilingualText ID="3D" CompositionName="Comment">
+            <ObjectList>
+              <MultilingualTextItem ID="3E" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="3F" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+          <MultilingualText ID="40" CompositionName="Title">
+            <ObjectList>
+              <MultilingualTextItem ID="41" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="42" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text>Call Recipe</Text>
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+        </ObjectList>
+      </SW.Blocks.CompileUnit>
+      <SW.Blocks.CompileUnit ID="43" CompositionName="CompileUnits">
+        <AttributeList>
+          <NetworkSource><FlgNet xmlns="http://www.siemens.com/automation/Openness/SW/NetworkSource/FlgNet/v5">
+  <Parts>
+    <Access Scope="LiteralConstant" UId="21">
+      <Constant>
+        <ConstantType>Bool</ConstantType>
+        <ConstantValue>TRUE</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="LiteralConstant" UId="22">
+      <Constant>
+        <ConstantType>SInt</ConstantType>
+        <ConstantValue>1</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="GlobalVariable" UId="23">
+      <Symbol>
+        <Component Name="HMI_Interface_Parameter" />
+        <Component Name="TeachingPos_Index" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="24">
+      <Symbol>
+        <Component Name="Unit1.Em2.Config" />
+        <Component Name="cmJROutPnPLeftAxisX" />
+        <Component Name="setPositions" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="25">
+      <Symbol>
+        <Component Name="Unit1.Em2.HmiInterface" />
+        <Component Name="cmJROutPnPLeftAxisX" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="26">
+      <Symbol>
+        <Component Name="HMI_Interface_Parameter" />
+        <Component Name="teachingPosInterface" />
+      </Symbol>
+    </Access>
+    <Access Scope="LiteralConstant" UId="27">
+      <Constant>
+        <ConstantType>Bool</ConstantType>
+        <ConstantValue>TRUE</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="LiteralConstant" UId="28">
+      <Constant>
+        <ConstantType>SInt</ConstantType>
+        <ConstantValue>2</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="GlobalVariable" UId="29">
+      <Symbol>
+        <Component Name="HMI_Interface_Parameter" />
+        <Component Name="TeachingPos_Index" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="30">
+      <Symbol>
+        <Component Name="Unit1.Em2.Config" />
+        <Component Name="cmJROutPnPLeftAxisZ" />
+        <Component Name="setPositions" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="31">
+      <Symbol>
+        <Component Name="Unit1.Em2.HmiInterface" />
+        <Component Name="cmJROutPnPLeftAxisZ" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="32">
+      <Symbol>
+        <Component Name="HMI_Interface_Parameter" />
+        <Component Name="teachingPosInterface" />
+      </Symbol>
+    </Access>
+    <Access Scope="LiteralConstant" UId="33">
+      <Constant>
+        <ConstantType>Bool</ConstantType>
+        <ConstantValue>TRUE</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="LiteralConstant" UId="34">
+      <Constant>
+        <ConstantType>SInt</ConstantType>
+        <ConstantValue>3</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="GlobalVariable" UId="35">
+      <Symbol>
+        <Component Name="HMI_Interface_Parameter" />
+        <Component Name="TeachingPos_Index" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="36">
+      <Symbol>
+        <Component Name="Unit1.Em2.Config" />
+        <Component Name="cmJROutPnPRightAxisX" />
+        <Component Name="setPositions" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="37">
+      <Symbol>
+        <Component Name="Unit1.Em2.HmiInterface" />
+        <Component Name="cmJROutPnPRightAxisX" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="38">
+      <Symbol>
+        <Component Name="HMI_Interface_Parameter" />
+        <Component Name="teachingPosInterface" />
+      </Symbol>
+    </Access>
+    <Access Scope="LiteralConstant" UId="39">
+      <Constant>
+        <ConstantType>Bool</ConstantType>
+        <ConstantValue>TRUE</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="LiteralConstant" UId="40">
+      <Constant>
+        <ConstantType>SInt</ConstantType>
+        <ConstantValue>4</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="GlobalVariable" UId="41">
+      <Symbol>
+        <Component Name="HMI_Interface_Parameter" />
+        <Component Name="TeachingPos_Index" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="42">
+      <Symbol>
+        <Component Name="Unit1.Em2.Config" />
+        <Component Name="cmJROutPnPRightAxisZ" />
+        <Component Name="setPositions" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="43">
+      <Symbol>
+        <Component Name="Unit1.Em2.HmiInterface" />
+        <Component Name="cmJROutPnPRightAxisZ" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="44">
+      <Symbol>
+        <Component Name="HMI_Interface_Parameter" />
+        <Component Name="teachingPosInterface" />
+      </Symbol>
+    </Access>
+    <Access Scope="LiteralConstant" UId="45">
+      <Constant>
+        <ConstantType>Bool</ConstantType>
+        <ConstantValue>TRUE</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="LiteralConstant" UId="46">
+      <Constant>
+        <ConstantType>SInt</ConstantType>
+        <ConstantValue>5</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="GlobalVariable" UId="47">
+      <Symbol>
+        <Component Name="HMI_Interface_Parameter" />
+        <Component Name="TeachingPos_Index" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="48">
+      <Symbol>
+        <Component Name="Unit1.Em3.Config" />
+        <Component Name="cmTopTapeAxisX" />
+        <Component Name="setPositions" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="49">
+      <Symbol>
+        <Component Name="Unit1.Em3.HmiInterface" />
+        <Component Name="cmTopTapeAxisX" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="50">
+      <Symbol>
+        <Component Name="HMI_Interface_Parameter" />
+        <Component Name="teachingPosInterface" />
+      </Symbol>
+    </Access>
+    <Access Scope="LiteralConstant" UId="51">
+      <Constant>
+        <ConstantType>Bool</ConstantType>
+        <ConstantValue>TRUE</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="LiteralConstant" UId="52">
+      <Constant>
+        <ConstantType>SInt</ConstantType>
+        <ConstantValue>6</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="GlobalVariable" UId="53">
+      <Symbol>
+        <Component Name="HMI_Interface_Parameter" />
+        <Component Name="TeachingPos_Index" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="54">
+      <Symbol>
+        <Component Name="Unit1.Em3.Config" />
+        <Component Name="cmTopTapeAxisY" />
+        <Component Name="setPositions" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="55">
+      <Symbol>
+        <Component Name="Unit1.Em3.HmiInterface" />
+        <Component Name="cmTopTapeAxisY" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="56">
+      <Symbol>
+        <Component Name="HMI_Interface_Parameter" />
+        <Component Name="teachingPosInterface" />
+      </Symbol>
+    </Access>
+    <Access Scope="LiteralConstant" UId="57">
+      <Constant>
+        <ConstantType>Bool</ConstantType>
+        <ConstantValue>TRUE</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="LiteralConstant" UId="58">
+      <Constant>
+        <ConstantType>SInt</ConstantType>
+        <ConstantValue>7</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="GlobalVariable" UId="59">
+      <Symbol>
+        <Component Name="HMI_Interface_Parameter" />
+        <Component Name="TeachingPos_Index" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="60">
+      <Symbol>
+        <Component Name="Unit1.Em4.Config" />
+        <Component Name="cmSideTapeFixStageAxisX" />
+        <Component Name="setPositions" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="61">
+      <Symbol>
+        <Component Name="Unit1.Em4.HmiInterface" />
+        <Component Name="cmSideTapeFixStageAxisX" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="62">
+      <Symbol>
+        <Component Name="HMI_Interface_Parameter" />
+        <Component Name="teachingPosInterface" />
+      </Symbol>
+    </Access>
+    <Access Scope="LiteralConstant" UId="63">
+      <Constant>
+        <ConstantType>Bool</ConstantType>
+        <ConstantValue>TRUE</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="LiteralConstant" UId="64">
+      <Constant>
+        <ConstantType>SInt</ConstantType>
+        <ConstantValue>8</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="GlobalVariable" UId="65">
+      <Symbol>
+        <Component Name="HMI_Interface_Parameter" />
+        <Component Name="TeachingPos_Index" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="66">
+      <Symbol>
+        <Component Name="Unit1.Em4.Config" />
+        <Component Name="cmSideTapeFixStageAxisC" />
+        <Component Name="setPositions" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="67">
+      <Symbol>
+        <Component Name="Unit1.Em4.HmiInterface" />
+        <Component Name="cmSideTapeFixStageAxisC" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="68">
+      <Symbol>
+        <Component Name="HMI_Interface_Parameter" />
+        <Component Name="teachingPosInterface" />
+      </Symbol>
+    </Access>
+    <Access Scope="LiteralConstant" UId="69">
+      <Constant>
+        <ConstantType>Bool</ConstantType>
+        <ConstantValue>TRUE</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="LiteralConstant" UId="70">
+      <Constant>
+        <ConstantType>SInt</ConstantType>
+        <ConstantValue>9</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="GlobalVariable" UId="71">
+      <Symbol>
+        <Component Name="HMI_Interface_Parameter" />
+        <Component Name="TeachingPos_Index" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="72">
+      <Symbol>
+        <Component Name="Unit1.Em4.Config" />
+        <Component Name="cmSideTapeAttachmentAxisX" />
+        <Component Name="setPositions" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="73">
+      <Symbol>
+        <Component Name="Unit1.Em4.HmiInterface" />
+        <Component Name="cmSideTapeAttachmentAxisX" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="74">
+      <Symbol>
+        <Component Name="HMI_Interface_Parameter" />
+        <Component Name="teachingPosInterface" />
+      </Symbol>
+    </Access>
+    <Access Scope="LiteralConstant" UId="75">
+      <Constant>
+        <ConstantType>Bool</ConstantType>
+        <ConstantValue>TRUE</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="LiteralConstant" UId="76">
+      <Constant>
+        <ConstantType>SInt</ConstantType>
+        <ConstantValue>10</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="GlobalVariable" UId="77">
+      <Symbol>
+        <Component Name="HMI_Interface_Parameter" />
+        <Component Name="TeachingPos_Index" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="78">
+      <Symbol>
+        <Component Name="Unit1.Em4.Config" />
+        <Component Name="cmSideTapeAttachmentAxisY" />
+        <Component Name="setPositions" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="79">
+      <Symbol>
+        <Component Name="Unit1.Em4.HmiInterface" />
+        <Component Name="cmSideTapeAttachmentAxisY" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="80">
+      <Symbol>
+        <Component Name="HMI_Interface_Parameter" />
+        <Component Name="teachingPosInterface" />
+      </Symbol>
+    </Access>
+    <Access Scope="LiteralConstant" UId="81">
+      <Constant>
+        <ConstantType>Bool</ConstantType>
+        <ConstantValue>TRUE</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="LiteralConstant" UId="82">
+      <Constant>
+        <ConstantType>SInt</ConstantType>
+        <ConstantValue>11</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="GlobalVariable" UId="83">
+      <Symbol>
+        <Component Name="HMI_Interface_Parameter" />
+        <Component Name="TeachingPos_Index" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="84">
+      <Symbol>
+        <Component Name="Unit1.Em5.Config" />
+        <Component Name="cmTransferPnPLeftAxisX" />
+        <Component Name="setPositions" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="85">
+      <Symbol>
+        <Component Name="Unit1.Em5.HmiInterface" />
+        <Component Name="cmTransferPnPLeftAxisX" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="86">
+      <Symbol>
+        <Component Name="HMI_Interface_Parameter" />
+        <Component Name="teachingPosInterface" />
+      </Symbol>
+    </Access>
+    <Access Scope="LiteralConstant" UId="87">
+      <Constant>
+        <ConstantType>Bool</ConstantType>
+        <ConstantValue>TRUE</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="LiteralConstant" UId="88">
+      <Constant>
+        <ConstantType>SInt</ConstantType>
+        <ConstantValue>12</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="GlobalVariable" UId="89">
+      <Symbol>
+        <Component Name="HMI_Interface_Parameter" />
+        <Component Name="TeachingPos_Index" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="90">
+      <Symbol>
+        <Component Name="Unit1.Em5.Config" />
+        <Component Name="cmTransferPnPLeftAxisY" />
+        <Component Name="setPositions" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="91">
+      <Symbol>
+        <Component Name="Unit1.Em5.HmiInterface" />
+        <Component Name="cmTransferPnPLeftAxisY" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="92">
+      <Symbol>
+        <Component Name="HMI_Interface_Parameter" />
+        <Component Name="teachingPosInterface" />
+      </Symbol>
+    </Access>
+    <Access Scope="LiteralConstant" UId="93">
+      <Constant>
+        <ConstantType>Bool</ConstantType>
+        <ConstantValue>TRUE</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="LiteralConstant" UId="94">
+      <Constant>
+        <ConstantType>SInt</ConstantType>
+        <ConstantValue>13</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="GlobalVariable" UId="95">
+      <Symbol>
+        <Component Name="HMI_Interface_Parameter" />
+        <Component Name="TeachingPos_Index" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="96">
+      <Symbol>
+        <Component Name="Unit1.Em5.Config" />
+        <Component Name="cmTransferPnPLeftAxisZ" />
+        <Component Name="setPositions" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="97">
+      <Symbol>
+        <Component Name="Unit1.Em5.HmiInterface" />
+        <Component Name="cmTransferPnPLeftAxisZ" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="98">
+      <Symbol>
+        <Component Name="HMI_Interface_Parameter" />
+        <Component Name="teachingPosInterface" />
+      </Symbol>
+    </Access>
+    <Access Scope="LiteralConstant" UId="99">
+      <Constant>
+        <ConstantType>Bool</ConstantType>
+        <ConstantValue>TRUE</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="LiteralConstant" UId="100">
+      <Constant>
+        <ConstantType>SInt</ConstantType>
+        <ConstantValue>14</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="GlobalVariable" UId="101">
+      <Symbol>
+        <Component Name="HMI_Interface_Parameter" />
+        <Component Name="TeachingPos_Index" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="102">
+      <Symbol>
+        <Component Name="Unit1.Em5.Config" />
+        <Component Name="cmTransferPnPRightAxisX" />
+        <Component Name="setPositions" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="103">
+      <Symbol>
+        <Component Name="Unit1.Em5.HmiInterface" />
+        <Component Name="cmTransferPnPRightAxisX" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="104">
+      <Symbol>
+        <Component Name="HMI_Interface_Parameter" />
+        <Component Name="teachingPosInterface" />
+      </Symbol>
+    </Access>
+    <Access Scope="LiteralConstant" UId="105">
+      <Constant>
+        <ConstantType>Bool</ConstantType>
+        <ConstantValue>TRUE</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="LiteralConstant" UId="106">
+      <Constant>
+        <ConstantType>SInt</ConstantType>
+        <ConstantValue>15</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="GlobalVariable" UId="107">
+      <Symbol>
+        <Component Name="HMI_Interface_Parameter" />
+        <Component Name="TeachingPos_Index" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="108">
+      <Symbol>
+        <Component Name="Unit1.Em5.Config" />
+        <Component Name="cmTransferPnPRightAxisY" />
+        <Component Name="setPositions" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="109">
+      <Symbol>
+        <Component Name="Unit1.Em5.HmiInterface" />
+        <Component Name="cmTransferPnPRightAxisY" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="110">
+      <Symbol>
+        <Component Name="HMI_Interface_Parameter" />
+        <Component Name="teachingPosInterface" />
+      </Symbol>
+    </Access>
+    <Access Scope="LiteralConstant" UId="111">
+      <Constant>
+        <ConstantType>Bool</ConstantType>
+        <ConstantValue>TRUE</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="LiteralConstant" UId="112">
+      <Constant>
+        <ConstantType>SInt</ConstantType>
+        <ConstantValue>16</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="GlobalVariable" UId="113">
+      <Symbol>
+        <Component Name="HMI_Interface_Parameter" />
+        <Component Name="TeachingPos_Index" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="114">
+      <Symbol>
+        <Component Name="Unit1.Em5.Config" />
+        <Component Name="cmTransferPnPRightAxisZ" />
+        <Component Name="setPositions" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="115">
+      <Symbol>
+        <Component Name="Unit1.Em5.HmiInterface" />
+        <Component Name="cmTransferPnPRightAxisZ" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="116">
+      <Symbol>
+        <Component Name="HMI_Interface_Parameter" />
+        <Component Name="teachingPosInterface" />
+      </Symbol>
+    </Access>
+    <Access Scope="LiteralConstant" UId="117">
+      <Constant>
+        <ConstantType>Bool</ConstantType>
+        <ConstantValue>TRUE</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="LiteralConstant" UId="118">
+      <Constant>
+        <ConstantType>SInt</ConstantType>
+        <ConstantValue>17</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="GlobalVariable" UId="119">
+      <Symbol>
+        <Component Name="HMI_Interface_Parameter" />
+        <Component Name="TeachingPos_Index" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="120">
+      <Symbol>
+        <Component Name="Unit1.Em8.Config" />
+        <Component Name="cmThicknessAxisZ" />
+        <Component Name="setPositions" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="121">
+      <Symbol>
+        <Component Name="Unit1.Em8.HmiInterface" />
+        <Component Name="cmThicknessAxisZ" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="122">
+      <Symbol>
+        <Component Name="HMI_Interface_Parameter" />
+        <Component Name="teachingPosInterface" />
+      </Symbol>
+    </Access>
+    <Access Scope="LiteralConstant" UId="123">
+      <Constant>
+        <ConstantType>Bool</ConstantType>
+        <ConstantValue>TRUE</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="LiteralConstant" UId="124">
+      <Constant>
+        <ConstantType>SInt</ConstantType>
+        <ConstantValue>18</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="GlobalVariable" UId="125">
+      <Symbol>
+        <Component Name="HMI_Interface_Parameter" />
+        <Component Name="TeachingPos_Index" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="126">
+      <Symbol>
+        <Component Name="Unit1.Em13.Config" />
+        <Component Name="cmJRUnloadingPnPAxisX" />
+        <Component Name="setPositions" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="127">
+      <Symbol>
+        <Component Name="Unit1.Em13.HmiInterface" />
+        <Component Name="cmJRUnloadingPnPAxisX" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="128">
+      <Symbol>
+        <Component Name="HMI_Interface_Parameter" />
+        <Component Name="teachingPosInterface" />
+      </Symbol>
+    </Access>
+    <Access Scope="LiteralConstant" UId="129">
+      <Constant>
+        <ConstantType>Bool</ConstantType>
+        <ConstantValue>TRUE</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="LiteralConstant" UId="130">
+      <Constant>
+        <ConstantType>SInt</ConstantType>
+        <ConstantValue>19</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="GlobalVariable" UId="131">
+      <Symbol>
+        <Component Name="HMI_Interface_Parameter" />
+        <Component Name="TeachingPos_Index" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="132">
+      <Symbol>
+        <Component Name="Unit1.Em13.Config" />
+        <Component Name="cmJRUnloadingPnPAxisZ" />
+        <Component Name="setPositions" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="133">
+      <Symbol>
+        <Component Name="Unit1.Em13.HmiInterface" />
+        <Component Name="cmJRUnloadingPnPAxisZ" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="134">
+      <Symbol>
+        <Component Name="HMI_Interface_Parameter" />
+        <Component Name="teachingPosInterface" />
+      </Symbol>
+    </Access>
+    <Access Scope="LiteralConstant" UId="135">
+      <Constant>
+        <ConstantType>Bool</ConstantType>
+        <ConstantValue>TRUE</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="LiteralConstant" UId="136">
+      <Constant>
+        <ConstantType>SInt</ConstantType>
+        <ConstantValue>20</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="GlobalVariable" UId="137">
+      <Symbol>
+        <Component Name="HMI_Interface_Parameter" />
+        <Component Name="TeachingPos_Index" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="138">
+      <Symbol>
+        <Component Name="Unit1.Em13.Config" />
+        <Component Name="cmJRUnloadingPnPAxisC" />
+        <Component Name="setPositions" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="139">
+      <Symbol>
+        <Component Name="Unit1.Em13.HmiInterface" />
+        <Component Name="cmJRUnloadingPnPAxisC" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="140">
+      <Symbol>
+        <Component Name="HMI_Interface_Parameter" />
+        <Component Name="teachingPosInterface" />
+      </Symbol>
+    </Access>
+    <Call UId="141">
+      <CallInfo Name="LER_TeachingPos_Interface" BlockType="FB">
+        <Instance Scope="GlobalVariable" UId="142">
+          <Component Name="InstTeachingPos_JROutPnPLeftAxisX" />
+        </Instance>
+        <Parameter Name="enable" Section="Input" Type="Bool" />
+        <Parameter Name="selectTeachingPos" Section="Input" Type="SInt" />
+        <Parameter Name="indexTeachingPos" Section="Input" Type="SInt" />
+        <Parameter Name="configurationSetPositions" Section="InOut" Type="Array[0..15] of &quot;LBC_typeAxis64PosSetPosition&quot;" />
+        <Parameter Name="moduleInterface" Section="InOut" Type="&quot;LBC_typeAxis64PosInterface&quot;" />
+        <Parameter Name="hmiInterface" Section="InOut" Type="Array[0..48] of &quot;LER_TypeTeachingPosInterface&quot;" />
+      </CallInfo>
+    </Call>
+    <Call UId="143">
+      <CallInfo Name="LER_TeachingPos_Interface" BlockType="FB">
+        <Instance Scope="GlobalVariable" UId="144">
+          <Component Name="InstTeachingPos_JROutPnPLeftAxisZ" />
+        </Instance>
+        <Parameter Name="enable" Section="Input" Type="Bool" />
+        <Parameter Name="selectTeachingPos" Section="Input" Type="SInt" />
+        <Parameter Name="indexTeachingPos" Section="Input" Type="SInt" />
+        <Parameter Name="configurationSetPositions" Section="InOut" Type="Array[0..15] of &quot;LBC_typeAxis64PosSetPosition&quot;" />
+        <Parameter Name="moduleInterface" Section="InOut" Type="&quot;LBC_typeAxis64PosInterface&quot;" />
+        <Parameter Name="hmiInterface" Section="InOut" Type="Array[0..48] of &quot;LER_TypeTeachingPosInterface&quot;" />
+      </CallInfo>
+    </Call>
+    <Call UId="145">
+      <CallInfo Name="LER_TeachingPos_Interface" BlockType="FB">
+        <Instance Scope="GlobalVariable" UId="146">
+          <Component Name="InstTeachingPos_JROutPnPRightAxisX" />
+        </Instance>
+        <Parameter Name="enable" Section="Input" Type="Bool" />
+        <Parameter Name="selectTeachingPos" Section="Input" Type="SInt" />
+        <Parameter Name="indexTeachingPos" Section="Input" Type="SInt" />
+        <Parameter Name="configurationSetPositions" Section="InOut" Type="Array[0..15] of &quot;LBC_typeAxis64PosSetPosition&quot;" />
+        <Parameter Name="moduleInterface" Section="InOut" Type="&quot;LBC_typeAxis64PosInterface&quot;" />
+        <Parameter Name="hmiInterface" Section="InOut" Type="Array[0..48] of &quot;LER_TypeTeachingPosInterface&quot;" />
+      </CallInfo>
+    </Call>
+    <Call UId="147">
+      <CallInfo Name="LER_TeachingPos_Interface" BlockType="FB">
+        <Instance Scope="GlobalVariable" UId="148">
+          <Component Name="InstTeachingPos_JROutPnPRightAxisZ" />
+        </Instance>
+        <Parameter Name="enable" Section="Input" Type="Bool" />
+        <Parameter Name="selectTeachingPos" Section="Input" Type="SInt" />
+        <Parameter Name="indexTeachingPos" Section="Input" Type="SInt" />
+        <Parameter Name="configurationSetPositions" Section="InOut" Type="Array[0..15] of &quot;LBC_typeAxis64PosSetPosition&quot;" />
+        <Parameter Name="moduleInterface" Section="InOut" Type="&quot;LBC_typeAxis64PosInterface&quot;" />
+        <Parameter Name="hmiInterface" Section="InOut" Type="Array[0..48] of &quot;LER_TypeTeachingPosInterface&quot;" />
+      </CallInfo>
+    </Call>
+    <Call UId="149">
+      <CallInfo Name="LER_TeachingPos_Interface" BlockType="FB">
+        <Instance Scope="GlobalVariable" UId="150">
+          <Component Name="InstTeachingPos_TopTapeAxisX" />
+        </Instance>
+        <Parameter Name="enable" Section="Input" Type="Bool" />
+        <Parameter Name="selectTeachingPos" Section="Input" Type="SInt" />
+        <Parameter Name="indexTeachingPos" Section="Input" Type="SInt" />
+        <Parameter Name="configurationSetPositions" Section="InOut" Type="Array[0..15] of &quot;LBC_typeAxis64PosSetPosition&quot;" />
+        <Parameter Name="moduleInterface" Section="InOut" Type="&quot;LBC_typeAxis64PosInterface&quot;" />
+        <Parameter Name="hmiInterface" Section="InOut" Type="Array[0..48] of &quot;LER_TypeTeachingPosInterface&quot;" />
+      </CallInfo>
+    </Call>
+    <Call UId="151">
+      <CallInfo Name="LER_TeachingPos_Interface" BlockType="FB">
+        <Instance Scope="GlobalVariable" UId="152">
+          <Component Name="InstTeachingPos_TopTapeAxisY" />
+        </Instance>
+        <Parameter Name="enable" Section="Input" Type="Bool" />
+        <Parameter Name="selectTeachingPos" Section="Input" Type="SInt" />
+        <Parameter Name="indexTeachingPos" Section="Input" Type="SInt" />
+        <Parameter Name="configurationSetPositions" Section="InOut" Type="Array[0..15] of &quot;LBC_typeAxis64PosSetPosition&quot;" />
+        <Parameter Name="moduleInterface" Section="InOut" Type="&quot;LBC_typeAxis64PosInterface&quot;" />
+        <Parameter Name="hmiInterface" Section="InOut" Type="Array[0..48] of &quot;LER_TypeTeachingPosInterface&quot;" />
+      </CallInfo>
+    </Call>
+    <Call UId="153">
+      <CallInfo Name="LER_TeachingPos_Interface" BlockType="FB">
+        <Instance Scope="GlobalVariable" UId="154">
+          <Component Name="InstTeachingPos_SideTapeFixStageAxisX" />
+        </Instance>
+        <Parameter Name="enable" Section="Input" Type="Bool" />
+        <Parameter Name="selectTeachingPos" Section="Input" Type="SInt" />
+        <Parameter Name="indexTeachingPos" Section="Input" Type="SInt" />
+        <Parameter Name="configurationSetPositions" Section="InOut" Type="Array[0..15] of &quot;LBC_typeAxis64PosSetPosition&quot;" />
+        <Parameter Name="moduleInterface" Section="InOut" Type="&quot;LBC_typeAxis64PosInterface&quot;" />
+        <Parameter Name="hmiInterface" Section="InOut" Type="Array[0..48] of &quot;LER_TypeTeachingPosInterface&quot;" />
+      </CallInfo>
+    </Call>
+    <Call UId="155">
+      <CallInfo Name="LER_TeachingPos_Interface" BlockType="FB">
+        <Instance Scope="GlobalVariable" UId="156">
+          <Component Name="InstTeachingPos_SideTapeFixStageAxisC" />
+        </Instance>
+        <Parameter Name="enable" Section="Input" Type="Bool" />
+        <Parameter Name="selectTeachingPos" Section="Input" Type="SInt" />
+        <Parameter Name="indexTeachingPos" Section="Input" Type="SInt" />
+        <Parameter Name="configurationSetPositions" Section="InOut" Type="Array[0..15] of &quot;LBC_typeAxis64PosSetPosition&quot;" />
+        <Parameter Name="moduleInterface" Section="InOut" Type="&quot;LBC_typeAxis64PosInterface&quot;" />
+        <Parameter Name="hmiInterface" Section="InOut" Type="Array[0..48] of &quot;LER_TypeTeachingPosInterface&quot;" />
+      </CallInfo>
+    </Call>
+    <Call UId="157">
+      <CallInfo Name="LER_TeachingPos_Interface" BlockType="FB">
+        <Instance Scope="GlobalVariable" UId="158">
+          <Component Name="InstTeachingPos_SideTapeAttachmentAxisX" />
+        </Instance>
+        <Parameter Name="enable" Section="Input" Type="Bool" />
+        <Parameter Name="selectTeachingPos" Section="Input" Type="SInt" />
+        <Parameter Name="indexTeachingPos" Section="Input" Type="SInt" />
+        <Parameter Name="configurationSetPositions" Section="InOut" Type="Array[0..15] of &quot;LBC_typeAxis64PosSetPosition&quot;" />
+        <Parameter Name="moduleInterface" Section="InOut" Type="&quot;LBC_typeAxis64PosInterface&quot;" />
+        <Parameter Name="hmiInterface" Section="InOut" Type="Array[0..48] of &quot;LER_TypeTeachingPosInterface&quot;" />
+      </CallInfo>
+    </Call>
+    <Call UId="159">
+      <CallInfo Name="LER_TeachingPos_Interface" BlockType="FB">
+        <Instance Scope="GlobalVariable" UId="160">
+          <Component Name="InstTeachingPos_SideTapeAttachmentAxisY" />
+        </Instance>
+        <Parameter Name="enable" Section="Input" Type="Bool" />
+        <Parameter Name="selectTeachingPos" Section="Input" Type="SInt" />
+        <Parameter Name="indexTeachingPos" Section="Input" Type="SInt" />
+        <Parameter Name="configurationSetPositions" Section="InOut" Type="Array[0..15] of &quot;LBC_typeAxis64PosSetPosition&quot;" />
+        <Parameter Name="moduleInterface" Section="InOut" Type="&quot;LBC_typeAxis64PosInterface&quot;" />
+        <Parameter Name="hmiInterface" Section="InOut" Type="Array[0..48] of &quot;LER_TypeTeachingPosInterface&quot;" />
+      </CallInfo>
+    </Call>
+    <Call UId="161">
+      <CallInfo Name="LER_TeachingPos_Interface" BlockType="FB">
+        <Instance Scope="GlobalVariable" UId="162">
+          <Component Name="InstTeachingPos_TransferPnPLeftAxisX" />
+        </Instance>
+        <Parameter Name="enable" Section="Input" Type="Bool" />
+        <Parameter Name="selectTeachingPos" Section="Input" Type="SInt" />
+        <Parameter Name="indexTeachingPos" Section="Input" Type="SInt" />
+        <Parameter Name="configurationSetPositions" Section="InOut" Type="Array[0..15] of &quot;LBC_typeAxis64PosSetPosition&quot;" />
+        <Parameter Name="moduleInterface" Section="InOut" Type="&quot;LBC_typeAxis64PosInterface&quot;" />
+        <Parameter Name="hmiInterface" Section="InOut" Type="Array[0..48] of &quot;LER_TypeTeachingPosInterface&quot;" />
+      </CallInfo>
+    </Call>
+    <Call UId="163">
+      <CallInfo Name="LER_TeachingPos_Interface" BlockType="FB">
+        <Instance Scope="GlobalVariable" UId="164">
+          <Component Name="InstTeachingPos_TransferPnPLeftAxisY" />
+        </Instance>
+        <Parameter Name="enable" Section="Input" Type="Bool" />
+        <Parameter Name="selectTeachingPos" Section="Input" Type="SInt" />
+        <Parameter Name="indexTeachingPos" Section="Input" Type="SInt" />
+        <Parameter Name="configurationSetPositions" Section="InOut" Type="Array[0..15] of &quot;LBC_typeAxis64PosSetPosition&quot;" />
+        <Parameter Name="moduleInterface" Section="InOut" Type="&quot;LBC_typeAxis64PosInterface&quot;" />
+        <Parameter Name="hmiInterface" Section="InOut" Type="Array[0..48] of &quot;LER_TypeTeachingPosInterface&quot;" />
+      </CallInfo>
+    </Call>
+    <Call UId="165">
+      <CallInfo Name="LER_TeachingPos_Interface" BlockType="FB">
+        <Instance Scope="GlobalVariable" UId="166">
+          <Component Name="InstTeachingPos_TransferPnPLeftAxisZ" />
+        </Instance>
+        <Parameter Name="enable" Section="Input" Type="Bool" />
+        <Parameter Name="selectTeachingPos" Section="Input" Type="SInt" />
+        <Parameter Name="indexTeachingPos" Section="Input" Type="SInt" />
+        <Parameter Name="configurationSetPositions" Section="InOut" Type="Array[0..15] of &quot;LBC_typeAxis64PosSetPosition&quot;" />
+        <Parameter Name="moduleInterface" Section="InOut" Type="&quot;LBC_typeAxis64PosInterface&quot;" />
+        <Parameter Name="hmiInterface" Section="InOut" Type="Array[0..48] of &quot;LER_TypeTeachingPosInterface&quot;" />
+      </CallInfo>
+    </Call>
+    <Call UId="167">
+      <CallInfo Name="LER_TeachingPos_Interface" BlockType="FB">
+        <Instance Scope="GlobalVariable" UId="168">
+          <Component Name="InstTeachingPos_TransferPnPRightAxisX" />
+        </Instance>
+        <Parameter Name="enable" Section="Input" Type="Bool" />
+        <Parameter Name="selectTeachingPos" Section="Input" Type="SInt" />
+        <Parameter Name="indexTeachingPos" Section="Input" Type="SInt" />
+        <Parameter Name="configurationSetPositions" Section="InOut" Type="Array[0..15] of &quot;LBC_typeAxis64PosSetPosition&quot;" />
+        <Parameter Name="moduleInterface" Section="InOut" Type="&quot;LBC_typeAxis64PosInterface&quot;" />
+        <Parameter Name="hmiInterface" Section="InOut" Type="Array[0..48] of &quot;LER_TypeTeachingPosInterface&quot;" />
+      </CallInfo>
+    </Call>
+    <Call UId="169">
+      <CallInfo Name="LER_TeachingPos_Interface" BlockType="FB">
+        <Instance Scope="GlobalVariable" UId="170">
+          <Component Name="InstTeachingPos_TransferPnPRightAxisY" />
+        </Instance>
+        <Parameter Name="enable" Section="Input" Type="Bool" />
+        <Parameter Name="selectTeachingPos" Section="Input" Type="SInt" />
+        <Parameter Name="indexTeachingPos" Section="Input" Type="SInt" />
+        <Parameter Name="configurationSetPositions" Section="InOut" Type="Array[0..15] of &quot;LBC_typeAxis64PosSetPosition&quot;" />
+        <Parameter Name="moduleInterface" Section="InOut" Type="&quot;LBC_typeAxis64PosInterface&quot;" />
+        <Parameter Name="hmiInterface" Section="InOut" Type="Array[0..48] of &quot;LER_TypeTeachingPosInterface&quot;" />
+      </CallInfo>
+    </Call>
+    <Call UId="171">
+      <CallInfo Name="LER_TeachingPos_Interface" BlockType="FB">
+        <Instance Scope="GlobalVariable" UId="172">
+          <Component Name="InstTeachingPos_TransferPnPRightAxisZ" />
+        </Instance>
+        <Parameter Name="enable" Section="Input" Type="Bool" />
+        <Parameter Name="selectTeachingPos" Section="Input" Type="SInt" />
+        <Parameter Name="indexTeachingPos" Section="Input" Type="SInt" />
+        <Parameter Name="configurationSetPositions" Section="InOut" Type="Array[0..15] of &quot;LBC_typeAxis64PosSetPosition&quot;" />
+        <Parameter Name="moduleInterface" Section="InOut" Type="&quot;LBC_typeAxis64PosInterface&quot;" />
+        <Parameter Name="hmiInterface" Section="InOut" Type="Array[0..48] of &quot;LER_TypeTeachingPosInterface&quot;" />
+      </CallInfo>
+    </Call>
+    <Call UId="173">
+      <CallInfo Name="LER_TeachingPos_Interface" BlockType="FB">
+        <Instance Scope="GlobalVariable" UId="174">
+          <Component Name="InstTeachingPos_ThicknessAxisZ" />
+        </Instance>
+        <Parameter Name="enable" Section="Input" Type="Bool" />
+        <Parameter Name="selectTeachingPos" Section="Input" Type="SInt" />
+        <Parameter Name="indexTeachingPos" Section="Input" Type="SInt" />
+        <Parameter Name="configurationSetPositions" Section="InOut" Type="Array[0..15] of &quot;LBC_typeAxis64PosSetPosition&quot;" />
+        <Parameter Name="moduleInterface" Section="InOut" Type="&quot;LBC_typeAxis64PosInterface&quot;" />
+        <Parameter Name="hmiInterface" Section="InOut" Type="Array[0..48] of &quot;LER_TypeTeachingPosInterface&quot;" />
+      </CallInfo>
+    </Call>
+    <Call UId="175">
+      <CallInfo Name="LER_TeachingPos_Interface" BlockType="FB">
+        <Instance Scope="GlobalVariable" UId="176">
+          <Component Name="InstTeachingPos_JRUnloadingPnPAxisX" />
+        </Instance>
+        <Parameter Name="enable" Section="Input" Type="Bool" />
+        <Parameter Name="selectTeachingPos" Section="Input" Type="SInt" />
+        <Parameter Name="indexTeachingPos" Section="Input" Type="SInt" />
+        <Parameter Name="configurationSetPositions" Section="InOut" Type="Array[0..15] of &quot;LBC_typeAxis64PosSetPosition&quot;" />
+        <Parameter Name="moduleInterface" Section="InOut" Type="&quot;LBC_typeAxis64PosInterface&quot;" />
+        <Parameter Name="hmiInterface" Section="InOut" Type="Array[0..48] of &quot;LER_TypeTeachingPosInterface&quot;" />
+      </CallInfo>
+    </Call>
+    <Call UId="177">
+      <CallInfo Name="LER_TeachingPos_Interface" BlockType="FB">
+        <Instance Scope="GlobalVariable" UId="178">
+          <Component Name="InstTeachingPos_JRUnloadingPnPAxisZ" />
+        </Instance>
+        <Parameter Name="enable" Section="Input" Type="Bool" />
+        <Parameter Name="selectTeachingPos" Section="Input" Type="SInt" />
+        <Parameter Name="indexTeachingPos" Section="Input" Type="SInt" />
+        <Parameter Name="configurationSetPositions" Section="InOut" Type="Array[0..15] of &quot;LBC_typeAxis64PosSetPosition&quot;" />
+        <Parameter Name="moduleInterface" Section="InOut" Type="&quot;LBC_typeAxis64PosInterface&quot;" />
+        <Parameter Name="hmiInterface" Section="InOut" Type="Array[0..48] of &quot;LER_TypeTeachingPosInterface&quot;" />
+      </CallInfo>
+    </Call>
+    <Call UId="179">
+      <CallInfo Name="LER_TeachingPos_Interface" BlockType="FB">
+        <Instance Scope="GlobalVariable" UId="180">
+          <Component Name="InstTeachingPos_JRUnloadingPnPAxisC" />
+        </Instance>
+        <Parameter Name="enable" Section="Input" Type="Bool" />
+        <Parameter Name="selectTeachingPos" Section="Input" Type="SInt" />
+        <Parameter Name="indexTeachingPos" Section="Input" Type="SInt" />
+        <Parameter Name="configurationSetPositions" Section="InOut" Type="Array[0..15] of &quot;LBC_typeAxis64PosSetPosition&quot;" />
+        <Parameter Name="moduleInterface" Section="InOut" Type="&quot;LBC_typeAxis64PosInterface&quot;" />
+        <Parameter Name="hmiInterface" Section="InOut" Type="Array[0..48] of &quot;LER_TypeTeachingPosInterface&quot;" />
+      </CallInfo>
+    </Call>
+  </Parts>
+  <Wires>
+    <Wire UId="181">
+      <Powerrail />
+      <NameCon UId="141" Name="en" />
+      <NameCon UId="149" Name="en" />
+      <NameCon UId="153" Name="en" />
+      <NameCon UId="161" Name="en" />
+      <NameCon UId="173" Name="en" />
+      <NameCon UId="175" Name="en" />
+    </Wire>
+    <Wire UId="182">
+      <IdentCon UId="21" />
+      <NameCon UId="141" Name="enable" />
+    </Wire>
+    <Wire UId="183">
+      <IdentCon UId="22" />
+      <NameCon UId="141" Name="selectTeachingPos" />
+    </Wire>
+    <Wire UId="184">
+      <IdentCon UId="23" />
+      <NameCon UId="141" Name="indexTeachingPos" />
+    </Wire>
+    <Wire UId="185">
+      <IdentCon UId="24" />
+      <NameCon UId="141" Name="configurationSetPositions" />
+    </Wire>
+    <Wire UId="186">
+      <IdentCon UId="25" />
+      <NameCon UId="141" Name="moduleInterface" />
+    </Wire>
+    <Wire UId="187">
+      <IdentCon UId="26" />
+      <NameCon UId="141" Name="hmiInterface" />
+    </Wire>
+    <Wire UId="188">
+      <NameCon UId="141" Name="eno" />
+      <NameCon UId="143" Name="en" />
+    </Wire>
+    <Wire UId="189">
+      <IdentCon UId="27" />
+      <NameCon UId="143" Name="enable" />
+    </Wire>
+    <Wire UId="190">
+      <IdentCon UId="28" />
+      <NameCon UId="143" Name="selectTeachingPos" />
+    </Wire>
+    <Wire UId="191">
+      <IdentCon UId="29" />
+      <NameCon UId="143" Name="indexTeachingPos" />
+    </Wire>
+    <Wire UId="192">
+      <IdentCon UId="30" />
+      <NameCon UId="143" Name="configurationSetPositions" />
+    </Wire>
+    <Wire UId="193">
+      <IdentCon UId="31" />
+      <NameCon UId="143" Name="moduleInterface" />
+    </Wire>
+    <Wire UId="194">
+      <IdentCon UId="32" />
+      <NameCon UId="143" Name="hmiInterface" />
+    </Wire>
+    <Wire UId="195">
+      <NameCon UId="143" Name="eno" />
+      <NameCon UId="145" Name="en" />
+    </Wire>
+    <Wire UId="196">
+      <IdentCon UId="33" />
+      <NameCon UId="145" Name="enable" />
+    </Wire>
+    <Wire UId="197">
+      <IdentCon UId="34" />
+      <NameCon UId="145" Name="selectTeachingPos" />
+    </Wire>
+    <Wire UId="198">
+      <IdentCon UId="35" />
+      <NameCon UId="145" Name="indexTeachingPos" />
+    </Wire>
+    <Wire UId="199">
+      <IdentCon UId="36" />
+      <NameCon UId="145" Name="configurationSetPositions" />
+    </Wire>
+    <Wire UId="200">
+      <IdentCon UId="37" />
+      <NameCon UId="145" Name="moduleInterface" />
+    </Wire>
+    <Wire UId="201">
+      <IdentCon UId="38" />
+      <NameCon UId="145" Name="hmiInterface" />
+    </Wire>
+    <Wire UId="202">
+      <NameCon UId="145" Name="eno" />
+      <NameCon UId="147" Name="en" />
+    </Wire>
+    <Wire UId="203">
+      <IdentCon UId="39" />
+      <NameCon UId="147" Name="enable" />
+    </Wire>
+    <Wire UId="204">
+      <IdentCon UId="40" />
+      <NameCon UId="147" Name="selectTeachingPos" />
+    </Wire>
+    <Wire UId="205">
+      <IdentCon UId="41" />
+      <NameCon UId="147" Name="indexTeachingPos" />
+    </Wire>
+    <Wire UId="206">
+      <IdentCon UId="42" />
+      <NameCon UId="147" Name="configurationSetPositions" />
+    </Wire>
+    <Wire UId="207">
+      <IdentCon UId="43" />
+      <NameCon UId="147" Name="moduleInterface" />
+    </Wire>
+    <Wire UId="208">
+      <IdentCon UId="44" />
+      <NameCon UId="147" Name="hmiInterface" />
+    </Wire>
+    <Wire UId="209">
+      <IdentCon UId="45" />
+      <NameCon UId="149" Name="enable" />
+    </Wire>
+    <Wire UId="210">
+      <IdentCon UId="46" />
+      <NameCon UId="149" Name="selectTeachingPos" />
+    </Wire>
+    <Wire UId="211">
+      <IdentCon UId="47" />
+      <NameCon UId="149" Name="indexTeachingPos" />
+    </Wire>
+    <Wire UId="212">
+      <IdentCon UId="48" />
+      <NameCon UId="149" Name="configurationSetPositions" />
+    </Wire>
+    <Wire UId="213">
+      <IdentCon UId="49" />
+      <NameCon UId="149" Name="moduleInterface" />
+    </Wire>
+    <Wire UId="214">
+      <IdentCon UId="50" />
+      <NameCon UId="149" Name="hmiInterface" />
+    </Wire>
+    <Wire UId="215">
+      <NameCon UId="149" Name="eno" />
+      <NameCon UId="151" Name="en" />
+    </Wire>
+    <Wire UId="216">
+      <IdentCon UId="51" />
+      <NameCon UId="151" Name="enable" />
+    </Wire>
+    <Wire UId="217">
+      <IdentCon UId="52" />
+      <NameCon UId="151" Name="selectTeachingPos" />
+    </Wire>
+    <Wire UId="218">
+      <IdentCon UId="53" />
+      <NameCon UId="151" Name="indexTeachingPos" />
+    </Wire>
+    <Wire UId="219">
+      <IdentCon UId="54" />
+      <NameCon UId="151" Name="configurationSetPositions" />
+    </Wire>
+    <Wire UId="220">
+      <IdentCon UId="55" />
+      <NameCon UId="151" Name="moduleInterface" />
+    </Wire>
+    <Wire UId="221">
+      <IdentCon UId="56" />
+      <NameCon UId="151" Name="hmiInterface" />
+    </Wire>
+    <Wire UId="222">
+      <IdentCon UId="57" />
+      <NameCon UId="153" Name="enable" />
+    </Wire>
+    <Wire UId="223">
+      <IdentCon UId="58" />
+      <NameCon UId="153" Name="selectTeachingPos" />
+    </Wire>
+    <Wire UId="224">
+      <IdentCon UId="59" />
+      <NameCon UId="153" Name="indexTeachingPos" />
+    </Wire>
+    <Wire UId="225">
+      <IdentCon UId="60" />
+      <NameCon UId="153" Name="configurationSetPositions" />
+    </Wire>
+    <Wire UId="226">
+      <IdentCon UId="61" />
+      <NameCon UId="153" Name="moduleInterface" />
+    </Wire>
+    <Wire UId="227">
+      <IdentCon UId="62" />
+      <NameCon UId="153" Name="hmiInterface" />
+    </Wire>
+    <Wire UId="228">
+      <NameCon UId="153" Name="eno" />
+      <NameCon UId="155" Name="en" />
+    </Wire>
+    <Wire UId="229">
+      <IdentCon UId="63" />
+      <NameCon UId="155" Name="enable" />
+    </Wire>
+    <Wire UId="230">
+      <IdentCon UId="64" />
+      <NameCon UId="155" Name="selectTeachingPos" />
+    </Wire>
+    <Wire UId="231">
+      <IdentCon UId="65" />
+      <NameCon UId="155" Name="indexTeachingPos" />
+    </Wire>
+    <Wire UId="232">
+      <IdentCon UId="66" />
+      <NameCon UId="155" Name="configurationSetPositions" />
+    </Wire>
+    <Wire UId="233">
+      <IdentCon UId="67" />
+      <NameCon UId="155" Name="moduleInterface" />
+    </Wire>
+    <Wire UId="234">
+      <IdentCon UId="68" />
+      <NameCon UId="155" Name="hmiInterface" />
+    </Wire>
+    <Wire UId="235">
+      <NameCon UId="155" Name="eno" />
+      <NameCon UId="157" Name="en" />
+    </Wire>
+    <Wire UId="236">
+      <IdentCon UId="69" />
+      <NameCon UId="157" Name="enable" />
+    </Wire>
+    <Wire UId="237">
+      <IdentCon UId="70" />
+      <NameCon UId="157" Name="selectTeachingPos" />
+    </Wire>
+    <Wire UId="238">
+      <IdentCon UId="71" />
+      <NameCon UId="157" Name="indexTeachingPos" />
+    </Wire>
+    <Wire UId="239">
+      <IdentCon UId="72" />
+      <NameCon UId="157" Name="configurationSetPositions" />
+    </Wire>
+    <Wire UId="240">
+      <IdentCon UId="73" />
+      <NameCon UId="157" Name="moduleInterface" />
+    </Wire>
+    <Wire UId="241">
+      <IdentCon UId="74" />
+      <NameCon UId="157" Name="hmiInterface" />
+    </Wire>
+    <Wire UId="242">
+      <NameCon UId="157" Name="eno" />
+      <NameCon UId="159" Name="en" />
+    </Wire>
+    <Wire UId="243">
+      <IdentCon UId="75" />
+      <NameCon UId="159" Name="enable" />
+    </Wire>
+    <Wire UId="244">
+      <IdentCon UId="76" />
+      <NameCon UId="159" Name="selectTeachingPos" />
+    </Wire>
+    <Wire UId="245">
+      <IdentCon UId="77" />
+      <NameCon UId="159" Name="indexTeachingPos" />
+    </Wire>
+    <Wire UId="246">
+      <IdentCon UId="78" />
+      <NameCon UId="159" Name="configurationSetPositions" />
+    </Wire>
+    <Wire UId="247">
+      <IdentCon UId="79" />
+      <NameCon UId="159" Name="moduleInterface" />
+    </Wire>
+    <Wire UId="248">
+      <IdentCon UId="80" />
+      <NameCon UId="159" Name="hmiInterface" />
+    </Wire>
+    <Wire UId="249">
+      <IdentCon UId="81" />
+      <NameCon UId="161" Name="enable" />
+    </Wire>
+    <Wire UId="250">
+      <IdentCon UId="82" />
+      <NameCon UId="161" Name="selectTeachingPos" />
+    </Wire>
+    <Wire UId="251">
+      <IdentCon UId="83" />
+      <NameCon UId="161" Name="indexTeachingPos" />
+    </Wire>
+    <Wire UId="252">
+      <IdentCon UId="84" />
+      <NameCon UId="161" Name="configurationSetPositions" />
+    </Wire>
+    <Wire UId="253">
+      <IdentCon UId="85" />
+      <NameCon UId="161" Name="moduleInterface" />
+    </Wire>
+    <Wire UId="254">
+      <IdentCon UId="86" />
+      <NameCon UId="161" Name="hmiInterface" />
+    </Wire>
+    <Wire UId="255">
+      <NameCon UId="161" Name="eno" />
+      <NameCon UId="163" Name="en" />
+    </Wire>
+    <Wire UId="256">
+      <IdentCon UId="87" />
+      <NameCon UId="163" Name="enable" />
+    </Wire>
+    <Wire UId="257">
+      <IdentCon UId="88" />
+      <NameCon UId="163" Name="selectTeachingPos" />
+    </Wire>
+    <Wire UId="258">
+      <IdentCon UId="89" />
+      <NameCon UId="163" Name="indexTeachingPos" />
+    </Wire>
+    <Wire UId="259">
+      <IdentCon UId="90" />
+      <NameCon UId="163" Name="configurationSetPositions" />
+    </Wire>
+    <Wire UId="260">
+      <IdentCon UId="91" />
+      <NameCon UId="163" Name="moduleInterface" />
+    </Wire>
+    <Wire UId="261">
+      <IdentCon UId="92" />
+      <NameCon UId="163" Name="hmiInterface" />
+    </Wire>
+    <Wire UId="262">
+      <NameCon UId="163" Name="eno" />
+      <NameCon UId="165" Name="en" />
+    </Wire>
+    <Wire UId="263">
+      <IdentCon UId="93" />
+      <NameCon UId="165" Name="enable" />
+    </Wire>
+    <Wire UId="264">
+      <IdentCon UId="94" />
+      <NameCon UId="165" Name="selectTeachingPos" />
+    </Wire>
+    <Wire UId="265">
+      <IdentCon UId="95" />
+      <NameCon UId="165" Name="indexTeachingPos" />
+    </Wire>
+    <Wire UId="266">
+      <IdentCon UId="96" />
+      <NameCon UId="165" Name="configurationSetPositions" />
+    </Wire>
+    <Wire UId="267">
+      <IdentCon UId="97" />
+      <NameCon UId="165" Name="moduleInterface" />
+    </Wire>
+    <Wire UId="268">
+      <IdentCon UId="98" />
+      <NameCon UId="165" Name="hmiInterface" />
+    </Wire>
+    <Wire UId="269">
+      <NameCon UId="165" Name="eno" />
+      <NameCon UId="167" Name="en" />
+    </Wire>
+    <Wire UId="270">
+      <IdentCon UId="99" />
+      <NameCon UId="167" Name="enable" />
+    </Wire>
+    <Wire UId="271">
+      <IdentCon UId="100" />
+      <NameCon UId="167" Name="selectTeachingPos" />
+    </Wire>
+    <Wire UId="272">
+      <IdentCon UId="101" />
+      <NameCon UId="167" Name="indexTeachingPos" />
+    </Wire>
+    <Wire UId="273">
+      <IdentCon UId="102" />
+      <NameCon UId="167" Name="configurationSetPositions" />
+    </Wire>
+    <Wire UId="274">
+      <IdentCon UId="103" />
+      <NameCon UId="167" Name="moduleInterface" />
+    </Wire>
+    <Wire UId="275">
+      <IdentCon UId="104" />
+      <NameCon UId="167" Name="hmiInterface" />
+    </Wire>
+    <Wire UId="276">
+      <NameCon UId="167" Name="eno" />
+      <NameCon UId="169" Name="en" />
+    </Wire>
+    <Wire UId="277">
+      <IdentCon UId="105" />
+      <NameCon UId="169" Name="enable" />
+    </Wire>
+    <Wire UId="278">
+      <IdentCon UId="106" />
+      <NameCon UId="169" Name="selectTeachingPos" />
+    </Wire>
+    <Wire UId="279">
+      <IdentCon UId="107" />
+      <NameCon UId="169" Name="indexTeachingPos" />
+    </Wire>
+    <Wire UId="280">
+      <IdentCon UId="108" />
+      <NameCon UId="169" Name="configurationSetPositions" />
+    </Wire>
+    <Wire UId="281">
+      <IdentCon UId="109" />
+      <NameCon UId="169" Name="moduleInterface" />
+    </Wire>
+    <Wire UId="282">
+      <IdentCon UId="110" />
+      <NameCon UId="169" Name="hmiInterface" />
+    </Wire>
+    <Wire UId="283">
+      <NameCon UId="169" Name="eno" />
+      <NameCon UId="171" Name="en" />
+    </Wire>
+    <Wire UId="284">
+      <IdentCon UId="111" />
+      <NameCon UId="171" Name="enable" />
+    </Wire>
+    <Wire UId="285">
+      <IdentCon UId="112" />
+      <NameCon UId="171" Name="selectTeachingPos" />
+    </Wire>
+    <Wire UId="286">
+      <IdentCon UId="113" />
+      <NameCon UId="171" Name="indexTeachingPos" />
+    </Wire>
+    <Wire UId="287">
+      <IdentCon UId="114" />
+      <NameCon UId="171" Name="configurationSetPositions" />
+    </Wire>
+    <Wire UId="288">
+      <IdentCon UId="115" />
+      <NameCon UId="171" Name="moduleInterface" />
+    </Wire>
+    <Wire UId="289">
+      <IdentCon UId="116" />
+      <NameCon UId="171" Name="hmiInterface" />
+    </Wire>
+    <Wire UId="290">
+      <IdentCon UId="117" />
+      <NameCon UId="173" Name="enable" />
+    </Wire>
+    <Wire UId="291">
+      <IdentCon UId="118" />
+      <NameCon UId="173" Name="selectTeachingPos" />
+    </Wire>
+    <Wire UId="292">
+      <IdentCon UId="119" />
+      <NameCon UId="173" Name="indexTeachingPos" />
+    </Wire>
+    <Wire UId="293">
+      <IdentCon UId="120" />
+      <NameCon UId="173" Name="configurationSetPositions" />
+    </Wire>
+    <Wire UId="294">
+      <IdentCon UId="121" />
+      <NameCon UId="173" Name="moduleInterface" />
+    </Wire>
+    <Wire UId="295">
+      <IdentCon UId="122" />
+      <NameCon UId="173" Name="hmiInterface" />
+    </Wire>
+    <Wire UId="296">
+      <IdentCon UId="123" />
+      <NameCon UId="175" Name="enable" />
+    </Wire>
+    <Wire UId="297">
+      <IdentCon UId="124" />
+      <NameCon UId="175" Name="selectTeachingPos" />
+    </Wire>
+    <Wire UId="298">
+      <IdentCon UId="125" />
+      <NameCon UId="175" Name="indexTeachingPos" />
+    </Wire>
+    <Wire UId="299">
+      <IdentCon UId="126" />
+      <NameCon UId="175" Name="configurationSetPositions" />
+    </Wire>
+    <Wire UId="300">
+      <IdentCon UId="127" />
+      <NameCon UId="175" Name="moduleInterface" />
+    </Wire>
+    <Wire UId="301">
+      <IdentCon UId="128" />
+      <NameCon UId="175" Name="hmiInterface" />
+    </Wire>
+    <Wire UId="302">
+      <NameCon UId="175" Name="eno" />
+      <NameCon UId="177" Name="en" />
+    </Wire>
+    <Wire UId="303">
+      <IdentCon UId="129" />
+      <NameCon UId="177" Name="enable" />
+    </Wire>
+    <Wire UId="304">
+      <IdentCon UId="130" />
+      <NameCon UId="177" Name="selectTeachingPos" />
+    </Wire>
+    <Wire UId="305">
+      <IdentCon UId="131" />
+      <NameCon UId="177" Name="indexTeachingPos" />
+    </Wire>
+    <Wire UId="306">
+      <IdentCon UId="132" />
+      <NameCon UId="177" Name="configurationSetPositions" />
+    </Wire>
+    <Wire UId="307">
+      <IdentCon UId="133" />
+      <NameCon UId="177" Name="moduleInterface" />
+    </Wire>
+    <Wire UId="308">
+      <IdentCon UId="134" />
+      <NameCon UId="177" Name="hmiInterface" />
+    </Wire>
+    <Wire UId="309">
+      <NameCon UId="177" Name="eno" />
+      <NameCon UId="179" Name="en" />
+    </Wire>
+    <Wire UId="310">
+      <IdentCon UId="135" />
+      <NameCon UId="179" Name="enable" />
+    </Wire>
+    <Wire UId="311">
+      <IdentCon UId="136" />
+      <NameCon UId="179" Name="selectTeachingPos" />
+    </Wire>
+    <Wire UId="312">
+      <IdentCon UId="137" />
+      <NameCon UId="179" Name="indexTeachingPos" />
+    </Wire>
+    <Wire UId="313">
+      <IdentCon UId="138" />
+      <NameCon UId="179" Name="configurationSetPositions" />
+    </Wire>
+    <Wire UId="314">
+      <IdentCon UId="139" />
+      <NameCon UId="179" Name="moduleInterface" />
+    </Wire>
+    <Wire UId="315">
+      <IdentCon UId="140" />
+      <NameCon UId="179" Name="hmiInterface" />
+    </Wire>
+  </Wires>
+</FlgNet></NetworkSource>
+          <ProgrammingLanguage>LAD</ProgrammingLanguage>
+        </AttributeList>
+        <ObjectList>
+          <MultilingualText ID="44" CompositionName="Comment">
+            <ObjectList>
+              <MultilingualTextItem ID="45" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="46" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+          <MultilingualText ID="47" CompositionName="Title">
+            <ObjectList>
+              <MultilingualTextItem ID="48" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="49" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text>Call Teaching Position</Text>
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+        </ObjectList>
+      </SW.Blocks.CompileUnit>
+      <SW.Blocks.CompileUnit ID="4A" CompositionName="CompileUnits">
+        <AttributeList>
+          <NetworkSource><FlgNet xmlns="http://www.siemens.com/automation/Openness/SW/NetworkSource/FlgNet/v5">
+  <Parts>
+    <Access Scope="GlobalVariable" UId="21">
+      <Symbol>
+        <Component Name="BA060AZSIDR1_JROutPnPLeftAxisX" />
+        <Component Name="ActualPosition" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="22">
+      <Symbol>
+        <Component Name="BA060AZSIDR3_JROutPnPRightAxisX" />
+        <Component Name="ActualPosition" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="23">
+      <Symbol>
+        <Component Name="Unit1.Em2.HmiInterface" />
+        <Component Name="cm" />
+        <Component Name="distance" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="24">
+      <Symbol>
+        <Component Name="BA060AZSIDR12_TransferPnPLeftAxisX" />
+        <Component Name="ActualPosition" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="25">
+      <Symbol>
+        <Component Name="BA060AZSIDR15_TransferPnPRightAxisX" />
+        <Component Name="ActualPosition" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="26">
+      <Symbol>
+        <Component Name="Unit1.Em5.HmiInterface" />
+        <Component Name="cm" />
+        <Component Name="distance" />
+      </Symbol>
+    </Access>
+    <Call UId="27">
+      <CallInfo Name="LER_Distance_FC" BlockType="FC">
+        <Parameter Name="actualPosA" Section="Input" Type="LReal" />
+        <Parameter Name="actualPosB" Section="Input" Type="LReal" />
+        <Parameter Name="posDistance" Section="InOut" Type="&quot;LER_typeDistanceInterface&quot;" />
+      </CallInfo>
+    </Call>
+    <Call UId="28">
+      <CallInfo Name="LER_Distance_FC" BlockType="FC">
+        <Parameter Name="actualPosA" Section="Input" Type="LReal" />
+        <Parameter Name="actualPosB" Section="Input" Type="LReal" />
+        <Parameter Name="posDistance" Section="InOut" Type="&quot;LER_typeDistanceInterface&quot;" />
+      </CallInfo>
+    </Call>
+  </Parts>
+  <Wires>
+    <Wire UId="29">
+      <Powerrail />
+      <NameCon UId="27" Name="en" />
+    </Wire>
+    <Wire UId="30">
+      <IdentCon UId="21" />
+      <NameCon UId="27" Name="actualPosA" />
+    </Wire>
+    <Wire UId="31">
+      <IdentCon UId="22" />
+      <NameCon UId="27" Name="actualPosB" />
+    </Wire>
+    <Wire UId="32">
+      <IdentCon UId="23" />
+      <NameCon UId="27" Name="posDistance" />
+    </Wire>
+    <Wire UId="33">
+      <NameCon UId="27" Name="eno" />
+      <NameCon UId="28" Name="en" />
+    </Wire>
+    <Wire UId="34">
+      <IdentCon UId="24" />
+      <NameCon UId="28" Name="actualPosA" />
+    </Wire>
+    <Wire UId="35">
+      <IdentCon UId="25" />
+      <NameCon UId="28" Name="actualPosB" />
+    </Wire>
+    <Wire UId="36">
+      <IdentCon UId="26" />
+      <NameCon UId="28" Name="posDistance" />
+    </Wire>
+  </Wires>
+</FlgNet></NetworkSource>
+          <ProgrammingLanguage>LAD</ProgrammingLanguage>
+        </AttributeList>
+        <ObjectList>
+          <MultilingualText ID="4B" CompositionName="Comment">
+            <ObjectList>
+              <MultilingualTextItem ID="4C" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="4D" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+          <MultilingualText ID="4E" CompositionName="Title">
+            <ObjectList>
+              <MultilingualTextItem ID="4F" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="50" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text>Call Distance</Text>
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+        </ObjectList>
+      </SW.Blocks.CompileUnit>
+      <MultilingualText ID="51" CompositionName="Title">
+        <ObjectList>
+          <MultilingualTextItem ID="52" CompositionName="Items">
+            <AttributeList>
+              <Culture>de-DE</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="53" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-US</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+        </ObjectList>
+      </MultilingualText>
+    </ObjectList>
+  </SW.Blocks.FC>
+</Document>

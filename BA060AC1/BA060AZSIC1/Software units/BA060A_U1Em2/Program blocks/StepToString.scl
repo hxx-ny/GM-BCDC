@@ -1,0 +1,147 @@
+﻿NAMESPACE Unit1.Em2
+FUNCTION "StepToString" : String
+{ S7_Optimized_Access := 'TRUE' ; Published := 'FALSE' }
+VERSION : 0.1
+   VAR_INPUT 
+      StepDINT : DInt;   // DINT value of the step
+      sequenceNumber : Int;
+   END_VAR
+
+
+BEGIN
+	// Translates the sequence step number to the step name
+	// This is an example and needs to be adjusted for the real use case
+	
+	// Sequence_1_JROutPnPLeft
+	IF #sequenceNumber = 1 THEN
+	    CASE #StepDINT OF
+	        1:
+	            #StepToString := 'Idle';
+	        101:
+	            #StepToString := 'JOB[1] Condition';
+	        110:
+	            #StepToString := 'JR PP Left Clamp Open';
+	        130:
+	            #StepToString := 'JR PP Left Clamp Close';
+	        170:
+	            #StepToString := 'JR PP Left Z-Axis Wait Pos';
+	        180:
+	            #StepToString := 'JR PP Left X-Axis Wait Pos';
+	        190:
+	            #StepToString := 'JOB[1] Step End';
+	        201:
+	            #StepToString := 'JOB[2] Condition';
+	        210:
+	            #StepToString := 'JR PP Left X-Axis Loading Pos[Stack-1]';
+	        211:
+	            #StepToString := 'JR PP Left Z-Axis Loading Pos[Stack-1]';
+	        220:
+	            #StepToString := 'JR PP Left [OnPosition Unloading] => Stack #1';
+	        221:
+	            #StepToString := 'JR PP Left Clamp Close';
+	        222:
+	            #StepToString := 'JR PP Left [Request Unclamp] => Stack #1';
+	        280:
+	            #StepToString := 'JR PP Left X/Z-Axis Wait Pos';
+	        290:
+	            #StepToString := 'JOB[2] Step End';
+	        301:
+	            #StepToString := 'JOB[3] Condition';
+	        310:
+	            #StepToString := 'JR PP Left X-Axis Loading Pos[Stack-2]';
+	        311:
+	            #StepToString := 'JR PP left Z-Axis Loading Pos[Stack-2]';
+	        320:
+	            #StepToString := 'JR PP Left [OnPosition Unloading] => Stack #2';
+	        321:
+	            #StepToString := 'JR PP Left Clamp Close';
+	        322:
+	            #StepToString := 'JR PP Left [Request Unclamp] => Stack #2';
+	        380:
+	            #StepToString := 'JR PP Left X/Z-Axis Wait Pos';
+	        390:
+	            #StepToString := 'JOB[3] Step End';
+	        401:
+	            #StepToString := 'JOB[4] Condition';
+	        410:
+	            #StepToString := 'JR PP Left X-Axis Put Pos';
+	        411:
+	            #StepToString := 'JR PP Left Z-Axis Put Pos';
+	        420:
+	            #StepToString := 'JR PP Left [Unloading Ready] => Top Tape Fix Stage';
+	        421:
+	            #StepToString := 'JR PP Left Clamp Open';
+	        422:
+	            #StepToString := 'JR PP Left [Unclamp Done] => Top Tape Fix Stage';
+	        480:
+	            #StepToString := 'JR PP Left X/Z-Axis Wait Pos';
+	        490:
+	            #StepToString := 'JOB[4] Step End';
+	        9001:
+	            #StepToString := 'Immediate Stop';
+	            
+	        ELSE
+	            #StepToString := 'N/A';
+	    END_CASE;
+	    
+	    // Sequence_2_JROutPnPRight
+	ELSIF #sequenceNumber = 2 THEN
+	    CASE #StepDINT OF
+	        1:
+	            #StepToString := 'Idle';
+	        101:
+	            #StepToString := 'JOB[1] Condition';
+	        110:
+	            #StepToString := 'JR PP Right Clamp Open';
+	        130:
+	            #StepToString := 'JR PP Right Clamp Close';
+	        170:
+	            #StepToString := 'JR PP Right Z-Axis Wait Pos';
+	        180:
+	            #StepToString := 'JR PP Right X-Axis Wait Pos';
+	        190:
+	            #StepToString := 'JOB[1] Step End';
+	        201:
+	            #StepToString := 'JOB[2] Condition';
+	        210:
+	            #StepToString := 'JR PP Right X-Axis Loading Pos[Top Tape Fix Stage]';
+	        211:
+	            #StepToString := 'JR PP Right Z-Axis Loading Pos[Top Tape Fix Stage]';
+	        220:
+	            #StepToString := 'JR PP Right [Loading Ready] => Top Tape Fix Stage';
+	        221:
+	            #StepToString := 'JR PP Right Clamp Close';
+	        222:
+	            #StepToString := 'JR PP Right [Clamp Done] => Top Tape Fix Stage';
+	        280:
+	            #StepToString := 'JR PP Right X/Z-Axis Wait Pos';
+	        290:
+	            #StepToString := 'JOB[2] Step End';
+	        301:
+	            #StepToString := 'JOB[3] Condition';
+	        310:
+	            #StepToString := 'JR PP Right X-Axis Put Pos';
+	        311:
+	            #StepToString := 'JR PP Right Z-Axis Put Pos';
+	        320:
+	            #StepToString := 'JR PP Right [Unloading Ready] => Side Tape Fix Stage';
+	        321:
+	            #StepToString := 'JR PP Right Clamp Open';
+	        322:
+	            #StepToString := 'JR PP Right [Unclamp Done] => Side Tape Fix Stage';
+	        380:
+	            #StepToString := 'JR PP Right X/Z-Axis Wait Pos';
+	        390:
+	            #StepToString := 'JOB[3] Step End';
+	        9001:
+	            #StepToString := 'Immediate Stop';
+	            
+	        ELSE
+	            #StepToString := 'N/A';
+	    END_CASE;
+	ELSE
+	    #StepToString := 'N/A';
+	END_IF;
+END_FUNCTION
+END_NAMESPACE
+

@@ -1,0 +1,75 @@
+﻿NAMESPACE Unit1.Em0
+FUNCTION "StepToString" : String
+{ S7_Optimized_Access := 'TRUE' ; Published := 'FALSE' }
+VERSION : 0.1
+   VAR_INPUT 
+      StepDINT : DInt;   // DINT value of the step
+      sequenceNumber : Int;
+   END_VAR
+
+
+BEGIN
+	// Translates the sequence step number to the step name
+	// This is an example and needs to be adjusted for the real use case
+	
+	// Sequence 1
+	IF #sequenceNumber = 1 THEN
+	    CASE #StepDINT OF
+	        1:
+	            #StepToString := 'Idle';
+	        101:
+	            #StepToString := 'JOB[1] Condition';
+	        110:
+	            #StepToString := 'Clamp Z Up';
+	        120:
+	            #StepToString := 'Clamp Unit Mover Backward';
+	        130:
+	            #StepToString := 'Clamp Left, Right Open';
+	        140:
+	            #StepToString := 'Clamp Mover Open';
+	        180:
+	            #StepToString := 'Lift Down';
+	        190:
+	            #StepToString := 'JOB[1] Step End';
+	        201:
+	            #StepToString := 'JOB[2] Condition';
+	        210:
+	            #StepToString := 'Clamp Unit Mover Forward';
+	        220:
+	            #StepToString := 'Clamp Mover Close';
+	        230:
+	            #StepToString := 'Clamp Left, Right Close';
+	        231:
+	            #StepToString := 'Stacker #1 NG Box [Unclamp Request] => Stack #1';
+	        240:
+	            #StepToString := 'Clamp Unit Mover Backward';
+	        290:
+	            #StepToString := 'JOB[2] Step End';
+	        301:
+	            #StepToString := 'JOB[3] Condition';
+	        310:
+	            #StepToString := 'Clamp Unit Mover Forward';
+	        320:
+	            #StepToString := 'Clamp Z Down';
+	        330:
+	            #StepToString := 'Clamp Left, Right Open';
+	        340:
+	            #StepToString := 'Clamp Mover Open';
+	        350:
+	            #StepToString := 'Clamp Z Up';
+	        360:
+	            #StepToString := 'Clamp Unit Mover Backward';
+	        390:
+	            #StepToString := 'JOB[3] Step End';
+	        9001:
+	            #StepToString := 'Immediate Stop';
+	            
+	        ELSE
+	            #StepToString := 'N/A';
+	    END_CASE;
+	ELSE
+	    #StepToString := 'N/A';
+	END_IF;
+END_FUNCTION
+END_NAMESPACE
+
