@@ -1,0 +1,738 @@
+﻿FUNCTION "LConSMC_Description" : Void
+{ S7_Optimized_Access := 'TRUE' ; Published := 'TRUE' }
+VERSION : 0.1
+
+BEGIN
+	REGION INFO
+	(/*
+	title: SIMATIC Winder and Tension Control
+	subTitle: Manual 
+	fileName: Manual_LConSMC
+	projectId: 58565043
+	link: https://support.industry.siemens.com/cs/ww/en/view/58565043
+	version: V3.5.0
+	date: 03/2024
+	classification: Unrestricted
+	*/)
+	END_REGION INFO
+	
+	REGION CHANGELOG
+	(*
+	Version  | Date       | Expert in charge      | Changes applied
+	---------|------------|-----------------------|------------------------------
+	03.05.00 | 13.03.2024 | APC Erlangen          | Upgraded library to TIA V18
+	                                                PLC FW 3.0 with MC V7.0 or higher is mandatory
+	*)
+	END_REGION
+	
+	
+	REGION PREAMBLE
+	(/*
+	# Overview
+	
+	## SIMATIC Converting Toolbox
+	
+	The following library for realizing a winder/ tension control is part of the SIMATIC Converting Toolbox:  
+	
+	https://support.industry.siemens.com/cs/ww/en/view/109744606  
+	
+	The SIMATIC Converting Toolbox was developed with the objective to provide a collection of common standard functions which are necessary for any kind of converting machines.
+	Converting describes the process of processing/finishing any kind of material. In most cases this starts with unwinding a material web which then is processed in one or several steps in machine types like  
+	  
+	* Printing machines
+	* Coating lines
+	* Laminating machines
+	* Slitters
+	* Web Inspection machines
+	* Wire drawing machines
+	* Extrusion lines
+	* Textile machines
+	* Diaper machines
+	* …
+	
+	The open source library contains tested and well-documented functions to provide support to the user during development, programming and commissioning.
+	Well-structured interfaces as well as documented program code provide the possibility to make customer-specific adaptations.
+	
+	## Core functions
+	
+	The core functions of the SIMATIC Converting Toolbox are functions and functions blocks to control a winding axis respectively tension control axis.
+	This includes mainly speed and torque setpoint calculations which are necessary for different selectable control modes.
+	Further on the Toolbox provides sub-functions used typically in winding and tension control systems, such as  
+	  
+	* Diameter calculation
+	* Torque pre-control
+	* Gain adaption 
+	* Tension taper characteristic
+	* … 
+	
+	#### Diameter calculation
+	
+	Six different techniques are available to calculate the diameter of the roll being wound:  
+	  
+	* Thickness addition: The diameter is calculated by adding the material thickness 
+	* Web length calculation: The diameter is calculated using the length of the winded material and the material thickness
+	* v/n calculation: The diameter is calculated using the ratio between the velocity of the material web and the winder speed 
+	* v/n integral: The diameter is calculated from the ratio between the material length and the revolutions of the winder (integration) 
+	* s/alpha position: Ratio between web position and winder position
+	* External diameter: The diameter comes from extern (sensor)
+	
+	#### Torque pre-control
+	
+	The main component of course, is the motor torque which is necessary to build up the desired web tension.
+	Beside of that friction torque, acceleration torque and the torque resulting from a changing roll diameter can be pre-controlled.
+	This pre-control signal is transferred to the drive as additive torque, being calculated inside the Toolbox function blocks.
+	
+	#### Controller Adaptation
+	
+	The gain of the technology controller can be adapted using a free adaption signal (e.g., diameter, web velocity etc.)
+	The speed controller gain in the drive can be adapted as a function of the moment of inertia or the actual diameter of the roll being wound.
+	This is necessary to guaranty a well optimized and dynamic speed controller even the diameter ratio (full roll to empty roll) is big.
+	
+	
+	#### Tension taper characteristic
+	
+	A tension taper characteristic might be required at rewinding systems in order to decrease the rewinding tension as a function of the increasing roll diameter.
+	5 different techniques are available to calculate the tension taper characteristic:  
+	  
+	* No characteristic 
+	* Linear characteristic – the tension is linearly reduced as a function of the actual diameter 
+	* Hyperbolic characteristic type 1 – the tension decreases according to a hyperbolic function/characteristic 
+	* Hyperbolic characteristic type 2 – the tension decreases according to a hyperbolic function/characteristic 
+	* Interpolated characteristic using a table of points – 10 points can be entered to define the characteristic 
+	
+	## Additional functions
+	
+	Beside the core functions – winding and tension control – the SIMATIC Converting Toolbox provides many useful functions and function blocks which are necessary in converting applications.
+	The following list shows a short overview about some of them:  
+	  
+	* PID controller
+	* Ramp function generator
+	* Stop distance calculation
+	* PT1/DT1 filter
+	* Integrator/Differentiator
+	* …
+	*/)
+	(/*
+	# Basic information
+	
+	## Winder drives
+	
+	The function of a winder is to rewind or unwind a material web with a defined tension.
+	During the winding process the diameter of the roll changes.
+	The diameter needs to be detected or calculated to adjust the motor speed to keep the tension of the material constant.
+	If the winding system must fulfill higher demands regarding the performance and tension accuracy, the actual web tension can be detected my measuring devices
+	(dancer system or load cell) to use the feedback signal as input of a controller – here named “technology controller” (TPID).  
+	  
+	There are two general possibilities to detect the web tension:  
+	  
+	The **dancer roll** is a position-controlled measuring system. The material web is threaded through this dancer roll system.
+	A cylinder with a deflection roll presses, with an adjustable counterforce against the material web.
+	If tension is established in the material web, then this acts against the pressure from the dancer roll.
+	The dancer roll is at its center position, if pulling force of the material web and counterforce of the dancer system is in balance. 
+	In order to control (closed-loop) the tension in the material web, the technology controller must ensure that the dancer roll remains at its center position.
+	If the tension in the system changes, then the position of the dancer roll also changes – that is in turn coupled with the technology controller.
+	Web tension variations – detected by dancer position variations - can either be compensated by changing the motor speed or by adapting the motor torque.
+	
+	---
+	
+	![Dancer roll](DancerRoll.png)
+	
+	---
+	
+	The **load cell** directly measures the tension in the material web and transfers this signal to the technology controller.
+	Tension variations can either be compensated by changing the motor speed or by adapting the motor torque.
+	
+	---
+	
+	![Load cell](LoadCell.png)
+	
+	---
+	
+	In general, there are two types of winding techniques:  
+	
+	#### Center winder
+	
+	With a center winder, the roll is driven by a central shaft. The diameter range is an important factor when designing this winder type.
+	The reason for this is that for a constant web velocity and constant tension, the speed is inversely proportional to the diameter.
+	This means that the maximum required drive speed is defined by the minimum roll diameter – whereby the maximum required torque is defined by the maximum diameter. 
+	The center winder is more complicated and from control perspective more difficult to handle than the surface winder; however, it is still more widely established of the two winder types.
+	
+	---
+	
+	![Center Winder](CenterWinder.png)
+	
+	---
+	
+	#### Surface winder
+	
+	For a surface winder, the roll is driven through one or several rolls that are in contact with the roll being wound.
+	The drive speed and power depend on the diameter of the roll being wound. From a mechanical design perspective, this winder technique is more complicated than that of a center winder.
+	The contact winder (surface winder) is essentially used if there are no special requirements placed on the surface quality of the material being wound.
+	
+	---
+	
+	![Surface Winder](SurfaceWinder.png)
+	
+	---
+	
+	## Tension control drives (Sectional drives) 
+	
+	The functionality of a tension control axis is identical to a winder axis (Same possibilities of web tension detection, tension control modes etc.).
+	The only difference is the missing dependencies of a chaning diameter.
+	
+	NOTE
+	:    For more information see description on winder drives
+	
+	---
+	
+	## Winding/Tension control modes
+	
+	The following tension control concepts are available for winding and sectional drive functionality:  
+	  
+	* Open-loop control modes:
+	   * Draw control      (sectional drive only)
+	   * Indirect Tension Control via torque adaption
+	   * Indirect tension control via speed adaption
+	   * V-Constant Control    (winder only)
+	* Closed-loop control modes:
+	   * Tension Control Torque Adaption using Load-cell
+	   * Tension Control Speed Adaption using Load-cell
+	   * Dancer Control Speed Adaption  
+	  
+	These control concepts will be briefly explained in the following.
+	
+	### Draw control
+	
+	This method is used for simple tension regulation, especially when any additional measuring system is not available. It does not offer high level tension accuracy.
+	It can’t be used for center driven winders.
+	Using this method, the web tension is set by the segment’s velocity ratio, means that the velocity of the transport rolls at the segment start is slower than at the segment end.
+	The velocity difference causes material strain which defines the web tension. The resulting tension depends on the material type, the friction between the material and the transport roll (slip) and the transport system itself.
+	
+	---
+	
+	{.pageWidth}
+	![Draw control diagram](DrawControlMode_Diagram.png)
+	
+	---
+	
+	### Indirect Tension Control via torque limits
+	
+	The indirect tension control is very frequently used if a user does not want to use expensive sensor systems as there is no higher-level tension control necessary.
+	There is no measuring system necessary, as there is no feedback used to control the tension - the technology controller is not used.
+	To set the web tension, the tension setpoint is computed into a torque value which is based on the roll diameter and the gear ratio.
+	The speed controller in the drive is overdriven to operate the motor at the torque limit.
+	This torque limit is being adapted as a function of the diameter of the roll being wound or the fix diameter of the roll in case of sectional drive axis.
+	To reach an accurate web tension with this control method it is important that the friction and accelerating torque are precisely compensated in order the pre-controlled tension torque results in the best possible approximation to the required material tension.
+	In this control mode the mechanical losses should be kept as small as possible.
+	This includes an appropriate motor selection and the selection of a highly efficient gearbox with low friction losses.
+	
+	---
+	
+	{.pageWidth}
+	![Draw control diagram](IndirecTensionControl.png)
+	
+	---
+	
+	### Indirect Tension Control via speed adaption
+	
+	This method is a mixture of the tension control with load cell and of the indirect
+	tension control methods. In this case the actual tension is not measured but
+	calculated from the actual motor torque value. The friction and acceleration
+	compensation is absolutely necessary to reach an as accurate web tension as
+	possible.
+	Using this method the technology controller is activated to control the actual
+	tension value. The calculated tension actual value is taken as feedback signal for
+	the control loop, this will get compared with the ramped tension setpoint and the
+	controllers output is then interppreted as additional velocity setpoint. The accuracy
+	of this method is comparable with the accuracy of indirect tension control
+	
+	---
+	
+	{.pageWidth}
+	![IndirecTensionControlSpeedAdapt](IndirecTensionControlSpeedAdapt.png)
+	
+	---
+	
+	### V-constant control
+	
+	This method is used for simple tension regulation, especially when any additional measuring system is not available. It does not offer high level tension accuracy.
+	In this control mode the winder is controlled to run with constant web speed (web speed command value). No tension control is active.
+	
+	---
+	
+	{.pageWidth}
+	![V constant](VConstant.png)
+	
+	---
+	
+	### Tension Control Torque Adaption using Load-cell
+	
+	In this control mode the web tension is directly detect by a measuring device – a load cell. Its output signal is used inside the technology controller as actual value signal. The tension control is used if the precision of the open-loop torque control is no longer sufficient or there are disturbances in the system which needs to be eliminated.
+	Just as the same as for indirect tension control, the speed controller in the drive is overdriven to operate the motor at the torque limit. This torque limit is being adapted by the technology controller.
+	Supplementary torque setpoints – e.g., from the acceleration torque pre-control or friction torque pre-control are connected-up so they act additively to the torque limits.  
+	Using a load cell, it is not necessary to interfere the web path, however there is not the advantage of having a buffer like a dancer provides. 
+	
+	---
+	
+	{.pageWidth}
+	![TensionTorqueAdapt](TensionTorqueAdapt.png)
+	
+	---
+	
+	### Tension Control Speed Adaption using Load-cell
+	
+	In this control mode the web tension is directly detect by a measuring device – a load cell. Its output signal is used inside the technology controller as actual value signal. The tension control is used if the precision of the open-loop torque control is no longer sufficient or there are disturbances in the system which needs to be eliminated.
+	Contrary to the control modes with torque adaption, the output signal of the technology controller is an additional speed value. The speed controller in the drive gets the accurate speed setpoint to achieve the desired web tension. The motor is not operating at the torque limits.
+	Supplementary torque setpoints – e.g., from the acceleration torque pre-control or friction torque pre-control are connected-up to the drive.
+	Using a load cell, it is not necessary to interfere the web path, however there is not the advantage of having a buffer like a dancer provides. 
+	
+	---
+	
+	{.pageWidth}
+	![TensionSpeedAdapt](TensionSpeedAdapt.png)
+	
+	---
+	
+	### Dancer Control Speed Adaption
+	
+	In this control mode – contrary to the load cell – it is not the web tension that is controlled by the technology controller directly, but the dancer position.
+	If the web tension changes, also the dancer position changes. The position of the dancer roll is determined using a suitable position encoder, which is then compared with the position setpoint in the technology controller.
+	The controller output is an additive velocity setpoint (weighted with the actual diameter) to maintain the setpoint position of the dancer.
+	The dancer roll attempts to deflect the material web with a defined force. The final web tension is a result of the pulling force to the dancer and its counterforce.
+	The counterforce of the dancer – in consequence the web tension can be defined in different ways, dependent on the mechanical construction of the dancer system. 
+	An easy way is a counterforce generated with spring power. However, the spring force and due to this the web tension can only be adjusted by the dancer angle.
+	More flexible adjustable counterforce can be achieved with pneumatic or hydraulic dancer system.
+	These systems can keep the counterforce constant even the dancer angle changes.
+	To do this, the tension setpoint signal is connected to an analog output and is used as setpoint for the dancer force.
+	Often, there are additional factors that influence the tension actual value because of the geometrical arrangement
+	(distance to reversing rollers that may be used) and the weight of the dancer roll itself.
+	However, with a careful mechanical design, these effects can be eliminated or sufficiently minimized.
+	The dancer position control has the advantage that brief fluctuations in the web tension – caused by disturbances - can be absorbed due to the material buffer function of the dancer roll. 
+	Another advantage of the dancer system is the damping effect on  
+	  
+	* Non-round material rolls
+	* Jumps between layers – e.g., when winding cables
+	* Influences during flying roll changes (splice)  
+	  
+	However, an intervention must be made in the material web routing as a result of the mechanical arrangement.
+	Even though closed-loop dancer roll controls are quite complex, they offer the best control technique.
+	
+	---
+	
+	{.pageWidth}
+	![DancerSpeedAdapt](DancerSpeedAdapt.png)
+	
+	---
+	
+	*/)
+	(/*
+	# Working with the library
+	
+	## Integrating the library into TIA Portal
+	
+	The table below lists the steps for integrating the LConSMC library into your STEP 7
+	project. Subsequently, you can use the blocks of the LConSMC library.
+	
+	
+	---
+	
+	| No.    | Action                                                                     |
+	| ------ | -------------------------------------------------------------------------- |
+	| 1      | Extract the library LConSMC_Vx_x_x.zip to a local folder.                  |
+	| 2      | In TIA Portal select “Options” -> “Global libraries” -> “Open library…”.   |
+	| 3      | Browse to the file LConSMC.al17.                                           |
+	| 4      | It can be found in the subfolder LConSMC of the extracted zip file         |
+	| 5      | Open the global library in read-only mode.                                 |
+	
+	## Integrating the library blocks into TIA Portal
+	
+	The required function blocks of the library can be found in the "Master copies" folder. Integrate the following folders via Drag&Drop into your project:  
+	* LConSMC_Blocks into Program blocks folder
+	* LConSMC_Tags into PLC Tags folder
+	* LConSMC_Types into PLC Types folder
+	
+	---
+	
+	![Integration of the library blocks](IntegrateLibrary.png " Integration of the library blocks ")  
+	
+	---
+	
+	NOTE
+	:    It is recommended to copy the blocks, tags and types with the appropriate higher-level folder "LConSMC_..."
+	
+	---
+	
+	## Calling the function blocks
+	
+	The winder/ sectional drive function block must be called in a cyclic organization block.
+	For dynamic applications or if torque precontrol is activated it is recommended to call the function blocks in the MC-PreInterpolator [OB68].
+	Otherwise, it is also possible to call the function blocks in a cyclic interrupt OB.
+	
+	---
+	
+	NOTE
+	:    The cycle time in which the function block is called must be connected to the function block input “cycleTime” in milliseconds.
+	
+	---
+	
+	## Configuration of the technology objects
+	
+	#### Axis type
+	
+	For winder and sectional drive applications all kind of axes technology objects are possible:
+	
+	* TO_SpeedAxis
+	* TO_PositioningAxis
+	* TO_synchronousAxis  
+	
+	---
+	
+	NOTE
+	:    For winder only rotatory axes are possible
+	:    For sectional drives rotatory and linear drives are allowed
+	
+	---
+	
+	####  Torque data
+	
+	If the winder/ sectional drive is controlled in a torque-controlled mode, or if the torque pre-control is used,
+	the additional torque data must be activated at the technology object and telegram 750 must be selected:  
+	
+	---
+	
+	![TO Torque Data](TO_TorqueData.png)
+	
+	---
+	
+	#### Kp-Adaption (Only SINAMICS S120)
+	
+	If it is necessary to activate a Kp-Adaption of the speed controller gain (see description LConSMC_KpAdaption), the adaption value must be sent to the drive using a free telegram:
+	
+	* Combined with the torque values (Length 1/4)
+	* Telegram 750 for the torque values and free telegram of the length of one word for the adaption value  
+	  
+	If torque and Kp values are sent to the drive using two telegrams the parameter connection for the telegram 750 is done automatically in StartDrive.
+	The additional Word for the Kp-Adaption must be connected to parameter p1455 in the SINAMICS S120.
+	
+	---
+	
+	![Free telegram connection](FreeTelegramKpAdaption.png)
+	
+	---
+	
+	If only one free telegram is used to forward the Kp-Adaption together with further data (e.g. torque data) the connection must be done manually according to the following table:  
+	  
+	| Element            | Offset (Byte)      | SINAMICS parameter     |
+	| ------------------ | ------------------ | ---------------------- |
+	| Additional torque  | 0                  | p1511 (as telegram 750)|
+	| Upper torque limit | 2                  | p1522 (as telegram 750)|
+	| Lower torque limit | 4                  | p1523 (as telegram 750)|
+	| Kp-Adaption        | 6                  | p1455 (only S120)      |
+	
+	---
+	
+	  
+	| Element            | Offset (Byte)      | SINAMICS parameter     |
+	| ------------------ | ------------------ | ---------------------- |
+	| Actual torque      | 0                  | p80   (as telegram 750)|
+	
+	---
+	
+	NOTE
+	:    The hardware-ID of the free telegram and the byte offset of the Kp-Adaption with the telegram (6 Bytes) must be connected to the function block  LConSMC_KpAdaption.
+	
+	---
+	
+	If the connection has been done according to the upper table (similar with telegram 750), the additionl torque data of the TO can still be used
+	
+	---
+	
+	![Torque data](TO_TorqueDataFreeTelegram.png)
+	
+	---
+	
+	## Configuration of the SINAMICS
+	
+	---
+	
+	{.pageWidth}
+	+-----------+---------------------------------------------------------------------------------------------------+----------------------------------------------------------+--------+
+	|Parameter  | Description                                                                                       | Effect                                                   | Value  |
+	+===========+===================================================================================================+==========================================================+========+
+	|p1227      |Setting the monitoring time of the standstill detection.                                           |Deactivation of the standstill monitoring of              |300s
+	|           |Slowing down with AUS1 or AUS3, the standstill is detected                                         |the setpoint -> no run out of the motor                   |
+	|           |after this time and after the set rotation speed has fallen                                        |                                                          |
+	|           |below the speed limit (p1226).After that, the brake control is                                     |                                                          |
+	|           |started, the closing time in p1217 is awaited and then the pulses are deleted                      |                                                          |
+	+-----------+---------------------------------------------------------------------------------------------------+----------------------------------------------------------+--------+
+	|p1135      |Setting the ramp return runtime from the maximum speed to                                          |Slowing down at torque limit                              |0s
+	|           |the standstill for the AUS3 command.                                                               |                                                          |
+	+-----------+---------------------------------------------------------------------------------------------------+----------------------------------------------------------+--------+
+	|p1551      |Setting the signal source for switching the torque limits between variable and fix torque limits.  |With AUS3 active(r0899.5), the torque limits are switched |r0899.5
+	+-----------+---------------------------------------------------------------------------------------------------+----------------------------------------------------------+--------+
+	|r0899.5    |No quick stop active (state AUS3)                                                                  |                                                          |p1551
+	+-----------+---------------------------------------------------------------------------------------------------+----------------------------------------------------------+--------+
+	|p1520      |Setting the fix upper or the motor torque limit                                                    |Parameterizable upper torque value for AUS3               |-
+	+-----------+---------------------------------------------------------------------------------------------------+----------------------------------------------------------+--------+
+	|p1521      |Setting the fix lower or the dynamic torque limit                                                  |Parameterizable lower torque value for AUS3               |-
+	+-----------+---------------------------------------------------------------------------------------------------+----------------------------------------------------------+--------+
+	|p1082      |Setting the highest possible speed                                                                 |Speed limit for torque control                            |max.
+	+-----------+---------------------------------------------------------------------------------------------------+----------------------------------------------------------+--------+
+	|p1145      |Setting the ramp function generator tracking. The initial value of the ramp function generator is  |Only with extended setpoint channel:                      |0.0
+	|           |tracked according to the maximum possible drive acceleration. Reference value is the difference    |Ramp flattening at ramp function generator is deactivated |
+	|           |at the speed / velocity control input, which is necessary to ensure a run-up at the                |                                                          |
+	|           |torque / force limit of the drive.                                                                 |                                                          |
+	+-----------+---------------------------------------------------------------------------------------------------+----------------------------------------------------------+--------+
+	|p1400.14   |Setting the configuration of the speed control. Torque pre-control VECTOR                          |In vector mode: No deactivation of the torque             |Always
+	|           |                                                                                                   |pre-control with overdriven speed controller              |active
+	+-----------+---------------------------------------------------------------------------------------------------+----------------------------------------------------------+--------+
+	|p1580      |Efficiency optimization (Flux setpoint adaption) VECTOR                                            |Drive speed is more stable at low speeds                  |50%-100%
+	+-----------+---------------------------------------------------------------------------------------------------+----------------------------------------------------------+--------+
+	|p1821      |Inversion of the direction of the rotating field:                                                  |Changes the direction of the motor with                   |0
+	|           |0: no inversion of direction                                                                       |retention of the sign of the setpoint                     |
+	|           |1: inversion of direction                                                                          |                                                          |
+	+-----------+---------------------------------------------------------------------------------------------------+----------------------------------------------------------+--------+
+	|p505       |Selecting the system of units                                                                      |With this parameter the system of units can be chosen     |
+	|           |                                                                                                   |for the drive object, it must be consistent               |
+	|           |                                                                                                   |with the winder application                               |
+	+-----------+---------------------------------------------------------------------------------------------------+----------------------------------------------------------+--------+
+	
+	---
+	
+	#### Behavior OFF3 / Braking at torque limit
+	
+	The pulse enable of the winder axis is controlled by the observation of the standstill threshold besides the control signals. This observation provides an analysis of the actual speed value as well as of the setpoint. If the one of these values falls below the speed threshold, this causes a pulse disable after a delay time (FP2701).
+	In the case of an activation of the OFF3 function, it may cause the braking of the drive with the maximal torque, but the drive torque doesn’t suffice to decelerate the winder according to the ramp. If the setpoint falls below the speed threshold of the standstill detection, the pulses are inhibited activated after the parameterized delay time (p1227) and the motor runs down slowly.
+	To avoid this behavior the standstill observation of the setpoint may be deactivated by setting the parameter p1227 = 300s.
+	In the parameter p1135 the ramp down time from the maximum speed to the standstill in case of an activation of OFF3 is parameterized. For a winder axis it may be useful to set the value to 0, to achieve a braking at the torque limit, because the ramp down time does not fit in all operating points to the speed of the winder axis and rapid braking not warranted.
+	If in the case of tension control by torque limits the function OFF3 is activated, the limits must be reset to the maximum torque, if necessary, to be able to brake with the adequate deceleration. This may be parameterized in SINAMICS by connecting the parameter p1551 to the binector r0899.5. In the case of a fast stop the active torque limits are configurable with the parameter p1520 and p1521.
+	Using the extended set-point channel and the torque control by override of the speed controller, the speed controller is given a velocity setpoint that cannot be reached. If the torque limit is switched with the activation of the AUS3 function, the speed controller makes up the velocity difference between the actual (overridden) setpoint and the actual value and can accelerate the motor before shutting down at the AUS3 ramp. To avoid this behavior, either the AUS3 ramp may be set to 0 or the ramp function generator is to be set with the activation of the AUS3 command.
+	
+	#### Setting the maximum speed
+	
+	Using a torque-controlled winder control mode it is recommended to limit the maximum motor speed with parameter p1082. E.g. machine speed + offset or maximum speed of the motor gear.
+	
+	#### Ramp flattening
+	
+	Using overdriven speed controller and extended setpoint channel, the default setting of the ramp flattening leads to the speed setpoint values is not being transferred from SIMOTION to the drive speed controller. In cause of that the speed controller is not overridden. This behavior can be switched off setting p1145 to 0.
+	
+	#### Interconnection additional torque using overdriven speed controller
+	
+	Using a drive with vector mode the additional torque is only added if the speed controller is active. If the speed controller is overridden, this signal goes to FALSE and so no more additional torque is added. To prevent this behavior and adding the addition torque always, the parameter p1400.14 need to be set to 1.
+	
+	#### Speed inversion
+	
+	To invert the direction of rotation the parameter p1821 (inversion of the direction of the rotating field) can be used. The encoder will be inverted automatically. In that way the sign of the setpoint remains.
+	
+	## Unit settings
+	
+	The winder/ sectional drive function block can be operated in the metric or the Anglo-American system.
+	The setting is done in the corresponding configuration structure *winderConfig/sectionalDriveConfig.unitConfiguration.metricUnits*
+	The following table shows the mandatory units the function blocks are working with:
+	
+	---
+	
+	|Inputs            |Metric    |Anglo-American |
+	|------------------|----------|---------------|
+	|Length unit [LU]  |m         |ft
+	|Line velocity     |m/min     |ft/min
+	|Line acceleration |m/s^2     |ft/s^2
+	|Diameter          |m         |inch
+	|Inertia           |kgm^2     |lbft^2
+	|Density           |kg/m^3    |lb/ft^3
+	|Tension           |N         |Lbf
+	
+	---
+	
+	NOTE
+	:    The winder/ sectional drive function block automatically converts the setpoints (Speed, Torque) into the necessary axis units
+	:    The parameterizable dynamics of the winder or sectional drive must be specified in the unit of the respective TO at *WinderConfig.winderDynamics* or *SectionalConfig.SectionalDriveDynamics*!
+	
+	---
+	
+	If the units of the line axis are in a different, the values can be converted using the function block LConSMC_LineUnitConversion.
+	
+	*/)
+	(/*
+	# Example program
+	
+	## Structure of the example
+	
+	To demonstrate the usage of the application an example project is provided consisting of the following components:  
+	* Unwinder in dancer control mode (winder top)
+	* Rewinder in indirect tension control (winder down)
+	* Line axis (Leading value for winders)
+	
+	---
+	
+	![Example project strcture](ExampleProject_Structure.png)
+	
+	---
+	
+	Within the example project the basic functions to control a winder are demonstrated:  
+	* Resetting and enabling the axes
+	* Enable/Disable the winder function blocks (e.g., set starting diameter, enable tension control)
+	* Start and stop the line axis
+	
+	---
+	
+	NOTE
+	:    The project is a simple example program on how to control the winder function block.
+	It must be adapted/extended according to the machine project (e.g., error handling, further winder functions etc.)
+	
+	---
+	
+	![Example project FBCall](ExampleProject_FBCall.png)
+	
+	---
+	
+	1. Example program
+	   * Example_CallsForXXX   Wrapping FCs that are called in the Startup OB, OB1 and MC_PreInterpolator OB and contain the necessary FB calls
+	   * LConSMC_Dat  Global data block with the necessary data types (winder configuration/diagnostic data etc.)
+	   * Blocks   Contains the FBs/FCs with the example program to control/ initialize the winder/sectional drives
+	2. LConSMC library blocks
+	3. Used technology axes within the example project
+	   * Line = Positioning axis (Leading value)
+	   * WinderDown = Speed axis (Indirect tension control)
+	   * WinderTop = Positioning axis (Dancer control mode)  
+	  
+	#### Winder/Sectional drive control
+	
+	An example to set the winder/sectional drive function block inputs correct is provided with the function block Example_WinderControl/ SectionalDriveControl:  
+	* Program blocks -> Example_Blocks -> Blocks
+	
+	It is called in the OB1 (Example_CallsForMain) once for each winder drive. The REGIONS should indicate the user the necessary inputs and order of the inputs that need to be set.
+	
+	---
+	
+	![Winder control example](ExampleProject_WinderControl.png)
+	
+	---
+	
+	NOTE
+	:    The FB is just an example and covers not all available inputs of the winder function block. It must be adapted by the user to the final use case (e.g., holdDiameter, jogPos, jogNeg etc.).
+	
+	---
+	
+	
+	## Operation of the example
+	
+	With the help of the provided watch table “Example_Control” the example project can be controlled and monitored:
+	
+	---
+	
+	![Winder watchtable](ExampleProject_Watchtable.png)
+	
+	---
+	
+	With the help of the control bits the example project can be operated.
+	All variables are connected to the example program in the sequence folder, called in the OB1.
+	A description of the variables can be found in the comment of the variable.
+	To run the program the variables must be set from top to bottom, for disabling the other way around.
+	
+	## SIMIT Converting library 
+	
+	The example project can be simulated with S7-PLCSIM Advanced and the SIMIT Converting model for continuous web.
+	A SIMIT project is provided which can be used without any further modifications.
+	On SIOS you can download the project and the manual in addition to other useful information:  
+	  
+	https://support.industry.siemens.com/cs/ww/en/view/109801697
+	
+	---
+	
+	![SIMIT](SIMIT.png)
+	
+	---
+	
+	*/)
+	END_REGION PREAMBLE
+	
+	REGION APPENDIX
+	  (/*
+	# Appendix
+	
+	## Service and support
+	
+	#### Industry Online Support
+	
+	Do you have any questions or need assistance?  
+	Siemens Industry Online Support offers round the clock access to our entire service and support know-how and portfolio.
+	
+	The Industry Online Support is the central address for information about our products, solutions and services.
+	
+	Product information, manuals, downloads, FAQs, application examples and videos - all information is accessible with just a few mouse clicks:
+	
+	[support.industry.siemens.com](https://support.industry.siemens.com)
+	
+	#### Technical Support
+	
+	The Technical Support of Siemens Industry provides you fast and competent support regarding all technical queries with numerous tailor-made offers  
+	\- ranging from basic support to individual support contracts. Please send queries to Technical Support via Web form:  
+	
+	[siemens.com/supportrequest](https://www.siemens.com/supportrequest)
+	
+	#### SITRAIN - Digital Industry Academy
+	
+	We support you with our globally available training courses for industry with practical experience, innovative learning methods and a concept that's tailored to the customer's specific needs.
+	
+	For more information on our offered trainings and courses, as well as their locations and dates, refer to our web page:
+	
+	[siemens.de/sitrain](https://www.siemens.de/sitrain)
+	
+	#### Service offer
+	
+	Our range of services includes the following:
+	* Plant data services
+	* Spare parts services
+	* Repair services
+	* On-site and maintenance services
+	* Retrofitting and modernization services
+	* Service programs and contract's
+	
+	You can find detailed information on our range of services in the service catalog web page:
+	
+	[support.industry.siemens.com/cs/sc](https://support.industry.siemens.com/cs/sc)  
+	
+	#### Industry Online Support app
+	
+	You will receive optimum support wherever you are with the "Siemens Industry Online Support" app. The app is available for iOS and Android:
+	
+	[support.industry.siemens.com/cs/ww/de/sc/2067](https://support.industry.siemens.com/cs/ww/de/sc/2067)
+	
+	## Industry Mall
+	 
+	![Siemens Industry Mall](SiemensIndustryMall.png)
+	
+	The Siemens Industry Mall is the platform on which the entire Siemens Industry product portfolio is accessible. From the selection of products to the order and the delivery tracking, the Industry Mall enables the complete purchasing processing – directly and independently of time and location:  
+	[mall.industry.siemens.com](https://mall.industry.siemens.com) 
+	
+	## Application Support
+	
+	Siemens AG  
+	Digital Industry Division  
+	Factory Automation  
+	DI FA PMA APC  
+	Frauenauracher Str. 80  
+	91056 Erlangen, Germany  
+	mailto: printing.converting.team.automation@siemens.com
+	
+	## Links and references
+	
+	+-----+--------------------------------------------------------------------+
+	|No.  | Topic                                                              |
+	+=====+====================================================================|
+	|\1\  |Siemens Industry Online Support
+	|     |[support.industry.siemens.com](https://support.industry.siemens.com)
+	+-----+---------------------------------------------------------------------
+	|\2\  |Link to the SIMATIC winder and tension control
+	|     |[support.industry.siemens.com/cs/ww/en/view/58565043](https://support.industry.siemens.com/cs/ww/en/view/58565043)
+	+-----+---------------------------------------------------------------------
+	|\3\  |Link to the SIMOTION/SIMATIC/SINAMICS Converting Toolbox 
+	|     |[support.industry.siemens.com/cs/ww/en/view/109744606](https://support.industry.siemens.com/cs/ww/en/view/109744606)
+	+-----+---------------------------------------------------------------------
+	|\4\  |Link to the SIMIT Converting model for continuous web simulation
+	|     |[https://support.industry.siemens.com/cs/ww/en/view/109801697](https://support.industry.siemens.com/cs/ww/en/view/109801697)
+	*/)
+	END_REGION APPENDIX
+END_FUNCTION
+

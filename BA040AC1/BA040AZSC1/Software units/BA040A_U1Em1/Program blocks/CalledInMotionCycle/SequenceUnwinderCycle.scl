@@ -1,0 +1,221 @@
+﻿NAMESPACE Unit1.Em1
+FUNCTION_BLOCK "SequenceUnwinderCycle"
+TITLE = EquipmentC_StateActions
+{ S7_Optimized_Access := 'TRUE' ; Published := 'FALSE' }
+VERSION : 0.1
+//State model of equipment module following the OMAC standard.
+   VAR_INPUT 
+      enableHpMotion { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;   // Enable High performance motion program
+      diameter : LReal;
+      dancer : LReal;
+   END_VAR
+
+   VAR_OUTPUT 
+      busy { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;   // Placeholder status for feedback from sync cycle
+      error { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;   // Error
+   END_VAR
+
+   VAR_IN_OUT 
+      WinderInput : _.LConSMC_typeWinderInput;
+      WinderOutput : _.LConSMC_typeWinderOutput;
+      WinderConfig : _.LConSMC_typeWinderConfig;
+      WinderDiag : _.LConSMC_typeWinderDiag;
+      slave { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : DB_ANY;   // Array of axes
+      master : DB_ANY;   // Reference to leading axis technology object for synchronous motion
+   END_VAR
+
+   VAR 
+      statFirstCall { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := true;   // First cycle call flag
+      statDiameter : LReal;
+      statFrictionMeasurement : _.LConSMC_typeFrictionMeasurement_V2 := (((), (), (), (), (), (), (), ([20(0.0)]), ()), ((), (), (), (), (), (), ()));
+      statMaxAcceleration : LReal;
+      statMaxDeceleration : LReal;
+      statUnitsLengthUnit { S7_SetPoint := 'True'} : UDInt;
+      statUnitsVelocityUnit { S7_SetPoint := 'True'} : UDInt;
+      statMechanicsLeadScrew { S7_SetPoint := 'True'} : LReal;
+      statLengthConversion { S7_SetPoint := 'True'} : LReal;
+      statVelocityConversion : LReal;
+      statAccelerationConversion : LReal;
+      instLConSMC_Winder : _.LConSMC_Winder;
+      instLConSMC_LineUnitConversion : _.LConSMC_LineUnitConversion;
+   END_VAR
+
+   VAR_TEMP 
+      tempLinePosition : LReal;
+      tempLineVelocity : LReal;
+      tempLineAcceleration : LReal;
+      tempLineActPos : LReal;
+      tempLineActVel : LReal;
+      tempRefSpeedAxis {InstructionName := 'TO_SpeedAxis'; LibVersion := '9.0'} : REF_TO TO_SpeedAxis;   // Temporary reference of the technology object type TO_SpeedAxis
+      tempRefPosAxis {InstructionName := 'TO_PositioningAxis'; LibVersion := '9.0'} : REF_TO TO_PositioningAxis;   // Temporary reference of the technology object type TO_PositioningAxis
+      tempRefSyncAxis {InstructionName := 'TO_SynchronousAxis'; LibVersion := '9.0'} : REF_TO TO_SynchronousAxis;   // Temporary reference of the technology object type TO_SyncAxis
+      tempRefSpeedMaster {InstructionName := 'TO_SpeedAxis'; LibVersion := '9.0'} : REF_TO TO_SpeedAxis;   // Temporary reference of the technology object type TO_SpeedAxis
+      tempRefPosMaster {InstructionName := 'TO_PositioningAxis'; LibVersion := '9.0'} : REF_TO TO_PositioningAxis;   // Temporary reference of the technology object type TO_PositioningAxis
+      tempRefSyncMaster {InstructionName := 'TO_SynchronousAxis'; LibVersion := '9.0'} : REF_TO TO_SynchronousAxis;   // Temporary reference of the technology object type TO_SyncAxis
+   END_VAR
+
+   VAR CONSTANT 
+      LCONSMC_PI : LReal := 3.14159265358979;
+   END_VAR
+
+
+BEGIN
+	REGION LConSMC_Winder
+	    //-------------------------------------------
+	    // The code is called ine the OB Servo cycle of the CPU.
+	    //-------------------------------------------
+	    
+	        REGION INIT Axis CONFIG
+	            // Check the axis type
+	            #tempRefSyncAxis ?= #slave;
+	            #tempRefPosAxis ?= #slave;
+	            #tempRefSpeedAxis ?= #slave;
+	            
+	            #tempRefSyncMaster ?= #master;
+	            #tempRefPosMaster ?= #master;
+	            #tempRefSpeedMaster ?= #master;
+	            
+	            IF #statFirstCall OR #WinderInput.winderAxis = 0 THEN
+	                
+	                IF (#tempRefSyncAxis <> NULL) THEN
+	                    //Axis type TOSynch. Axis
+	                    #statMaxAcceleration := #tempRefSyncAxis^.DynamicLimits.MaxAcceleration;
+	                    #statMaxDeceleration := #tempRefSyncAxis^.DynamicLimits.MaxDeceleration;
+	                    
+	                ELSIF (#tempRefPosAxis <> NULL) THEN
+	                    //Axis type is TO_PositioningAxis 
+	                    #statMaxAcceleration := #tempRefPosAxis^.DynamicLimits.MaxAcceleration;
+	                    #statMaxDeceleration := #tempRefPosAxis^.DynamicLimits.MaxDeceleration;
+	                    
+	                ELSIF (#tempRefSpeedAxis <> NULL) THEN
+	                    //Axis type TO_Speed. Axis
+	                    #statMaxAcceleration := #tempRefSpeedAxis^.DynamicLimits.MaxAcceleration;
+	                    #statMaxDeceleration := #tempRefSpeedAxis^.DynamicLimits.MaxDeceleration;
+	                    
+	                END_IF;
+	                
+	                IF (#tempRefSyncMaster <> NULL) THEN
+	                    //Axis type TOSynch. Axis
+	                    #statUnitsLengthUnit := #tempRefSyncMaster^.Units.LengthUnit;
+	                    #statUnitsVelocityUnit := #tempRefSyncMaster^.Units.VelocityUnit;
+	                    #statMechanicsLeadScrew := #tempRefSyncMaster^.Mechanics.LeadScrew;
+	                    
+	                ELSIF (#tempRefPosMaster <> NULL) THEN
+	                    //Axis type is TO_PositioningAxis 
+	                    #statUnitsLengthUnit := #tempRefPosMaster^.Units.LengthUnit;
+	                    #statUnitsVelocityUnit := #tempRefPosMaster^.Units.VelocityUnit;
+	                    #statMechanicsLeadScrew := #tempRefPosMaster^.Mechanics.LeadScrew;
+	                    
+	                ELSIF (#tempRefSpeedMaster <> NULL) THEN
+	                    //Axis type TO_Speed. Axis
+	                    #statUnitsVelocityUnit := #tempRefSpeedMaster^.Units.VelocityUnit;
+	                    
+	                END_IF;
+	                
+	                // Initialize top winder in dancer control mode
+	                _.InitSMC_WinderDancerSpeedAdapt(Axis := #slave,
+	                                                 MaxAcceleration := #statMaxAcceleration,
+	                                                 MaxDeceleration := #statMaxDeceleration,
+	                                                 winderConfig => #WinderConfig,
+	                                                 winderInput => #WinderInput);
+	                
+	                // Initialize friction measurement configuration (*optional if measurement is used*)
+	                _.InitSMC_FrictionMeasurement(#statFrictionMeasurement.in);
+	                
+	                // In case of different unit of leading axis (not [m/min] or [ft/min]) the leading value motion vector (s,v,a) must be adapted before
+	                // forwarding to the winder function block
+	                // *Note* In this projects only for demonstration, not necessary as line axis is already in correct unit 
+	                #instLConSMC_LineUnitConversion(lengthUnitInput := #statUnitsLengthUnit,
+	                                                velocityUnitInput := #statUnitsVelocityUnit,
+	                                                formatLength := #statMechanicsLeadScrew / 1.0e3, // only needed for rotatory units
+	                                                lengthConversionFactor => #statLengthConversion, // factor --> [m] or [ft]
+	                                                velocityConversionFactor => #statVelocityConversion, // factor --> [m/min] or [ft/min]
+	                                                accelerationConversionFactor => #statAccelerationConversion); // factor --> [m/s^2] or [ft/s^2]
+	                
+	                #statFirstCall := FALSE;
+	            END_IF;
+	        END_REGION INIT Axis CONFIG
+	        
+	        REGION LEADING VALUE
+	            // Leading value interconnection
+	            // Copy to local temp variables
+	            // Line setpoint values
+	            IF (#tempRefSyncMaster <> NULL) THEN
+	                //Axis type TOSynch. Axis
+	                #tempLinePosition := #tempRefSyncMaster^.Position * #statLengthConversion;               // Convert unit to [m]
+	                #tempLineVelocity := #tempRefSyncMaster^.Velocity * #statVelocityConversion;             // Convert unit to [m/min]
+	                #tempLineAcceleration := #tempRefSyncMaster^.Acceleration * #statAccelerationConversion; // Convert unit to [m/s^2]
+	                // Line actual values (used for diameter calculation)
+	                #tempLineActPos := #tempRefSyncMaster^.ActualPosition * #statLengthConversion;           // Convert unit to [m]
+	                #tempLineActVel := #tempRefSyncMaster^.ActualVelocity * #statVelocityConversion;         // Convert unit to [m/min]
+	                
+	            ELSIF (#tempRefPosMaster <> NULL) THEN
+	                //Axis type is TO_PositioningAxis 
+	                #tempLinePosition := #tempRefPosMaster^.Position * #statLengthConversion;               // Convert unit to [m]
+	                #tempLineVelocity := #tempRefPosMaster^.Velocity * #statVelocityConversion;             // Convert unit to [m/min]
+	                #tempLineAcceleration := #tempRefPosMaster^.Acceleration * #statAccelerationConversion; // Convert unit to [m/s^2]
+	                // Line actual values (used for diameter calculation)
+	                #tempLineActPos := #tempRefPosMaster^.ActualPosition * #statLengthConversion;           // Convert unit to [m]
+	                #tempLineActVel := #tempRefPosMaster^.ActualVelocity * #statVelocityConversion;         // Convert unit to [m/min]
+	                
+	            ELSIF (#tempRefSpeedMaster <> NULL) THEN
+	                //Axis type TO_Speed. Axis
+	                #tempLineVelocity := #tempRefSpeedMaster^.Velocity * #statVelocityConversion;             // Convert unit to [m/min]
+	                #tempLineAcceleration := #tempRefSpeedMaster^.Acceleration * #statAccelerationConversion; // Convert unit to [m/s^2]
+	                
+	            END_IF;
+	            
+	            REGION WINDER
+	                // Forward temporary variables to winder interface
+	                #WinderInput.lineAxisMotionVector.s := #tempLinePosition;
+	                #WinderInput.lineAxisMotionVector.v := #tempLineVelocity;
+	                #WinderInput.lineAxisMotionVector.a := #tempLineAcceleration;
+	                
+	                #WinderInput.lineAxisActualValues.s := #tempLineActPos;
+	                #WinderInput.lineAxisActualValues.v := #tempLineActVel;
+	            END_REGION WINDER
+	            
+	            REGION FEEDBACK TENSION CONTROL
+	                #WinderInput.CntrlActual := #dancer;
+	                #WinderConfig.diamConfig.diameterSetValue := #diameter * 0.001;
+	            END_REGION
+	            
+	        END_REGION LEADING VALUE
+	        
+	        REGION WINDER CALL
+	            // winder control - Dancer control
+	            #instLConSMC_Winder(enable := #WinderInput.enable,
+	                                speedMatch := #WinderInput.speedMatch,
+	                                cntrlEnable := #WinderInput.cntrlEnable,
+	                                jogPos := #WinderInput.jogPos,
+	                                jogNeg := #WinderInput.jogNeg,
+	                                lineAxisMotionVector := #WinderInput.lineAxisMotionVector,
+	                                lineAxisActualValues := #WinderInput.lineAxisActualValues,
+	                                additionalVelocity := #WinderInput.additionalVelocity,
+	                                typeOfWinder := #WinderInput.typeOfWinder,
+	                                controlMode := #WinderInput.controlMode,
+	                                typeOfDiameterCalc := #WinderInput.typeOfDiameterCalc,
+	                                holdDiameter := #WinderInput.holdDiameter,
+	                                setDiameter := #WinderInput.setDiameter,
+	                                CntrlSetpoint := #WinderInput.CntrlSetpoint,
+	                                CntrlActual := #WinderInput.CntrlActual,
+	                                tCycle := #WinderInput.tCycle,
+	                                winderAxis := #WinderInput.winderAxis,
+	                                busy => #WinderOutput.busy,
+	                                active => #WinderOutput.active,
+	                                ctrlBusy => #WinderOutput.ctrlBusy,
+	                                inSync => #WinderOutput.inSync,
+	                                error => #WinderOutput.error,
+	                                errorID => #WinderOutput.errorID,
+	                                diameter := #statDiameter,
+	                                winderConfig := #WinderConfig,
+	                                winderDiag := #WinderDiag);
+	        END_REGION WINDER CALL
+	        
+	        #busy := #WinderOutput.busy;
+	        #error := #WinderOutput.error;
+	        
+	    END_REGION LConSMC_Winder
+END_FUNCTION_BLOCK
+END_NAMESPACE
+

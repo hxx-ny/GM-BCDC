@@ -1,0 +1,70 @@
+﻿FUNCTION "LConSMC_RestLengthCalc" : LReal
+{ S7_Optimized_Access := 'TRUE' ; Published := 'TRUE' }
+VERSION : 0.1
+//Calculation of the rest length of the coil. The function can be called in any task.  Function ID: 4001
+   VAR_INPUT 
+      webThickness : LReal;   // [m or inch] Material thickness
+      actualDiameter : LReal;   // [m or inch] Current diameter
+      targetDiameter : LReal;   // [m or inch] Target diameter
+      offset : LReal;   // [m or inch] Offset rest length on the coil
+   END_VAR
+
+   VAR CONSTANT 
+      Pi : LReal := 3.141592;
+      MIN_THICKNESS : LReal := 1.0E-06;
+      MAX_THICKNESS : LReal := 1000000000.0;
+   END_VAR
+
+
+BEGIN
+	REGION BLOCK INFO HEADER
+	  //===============================================================================
+	  // SIEMENS AG / (c)Copyright 2023
+	  //-------------------------------------------------------------------------------
+	  // Title:            LConSMC_RestLengthCalc
+	  // Comment/Function: Rest length calculation
+	  // Library/Family:   LConSMC
+	  // Author:           APC Erlangen
+	  // Tested with:      FW 2.8
+	  // Engineering:      TIA Portal V16
+	  // Restrictions:     -
+	  // Requirements:     -
+	  //-------------------------------------------------------------------------------
+	  // Change log table:
+	  // Version  | Date       | Expert in charge       | Changes applied
+	  //----------|------------|------------------------|------------------------------
+	  // 01.00.00 | 2012-07-10 | APC Erlangen           | Creation
+	  //===============================================================================
+	END_REGION BLOCK INFO HEADER
+	
+	REGION DESCRIPTION
+	(/*
+	Depending on the roll parameters that have been entered, the function calculates the residual length of the material.
+	To do this, the following data is required – the thickness of the material on the roll (webThickness), the actual diameter (actualDiameter) and the
+	diameter to be reached (targetDiameter). In this case, the target diameter represents the end of the roll or the diameter to be reached.
+	Depending on whether the target diameter is greater than or less than the actual diameter, the length of the material on the roll or the length
+	of the material still to be wound is output. The thickness of the material web (webThickness) is limited using the internal constants MIN_THICKNESS and MAX_THICKNESS.  
+	  
+	
+	$ ReturnValue = \frac{\pi}{4 \cdot webThickness}\ \cdot (actualDiameter^2 - targetDiameter^2) + offset $
+	
+	---
+	
+	![Rest length](RestDiameterCalc_Diagram.png)
+	
+	---
+	
+	|Winder mode|Actual diameter|Target diameter                |
+	|-----------|---------------|-------------------------------|
+	|Rewinder   | d1 < d2       | d2 (full roll, max. diameter) |
+	|Uwinder    | d2 < d1       | d1 (empty roll, min. diameter |
+	
+	*/)
+	END_REGION
+	
+	#LConSMC_RestLengthCalc := ABS(#Pi * (#targetDiameter * #targetDiameter - #actualDiameter * #actualDiameter)) /
+	(4.0 * LIMIT(MN := #MIN_THICKNESS, IN := ABS(#webThickness), MX := #MAX_THICKNESS))
+	+ #offset;
+	
+END_FUNCTION
+

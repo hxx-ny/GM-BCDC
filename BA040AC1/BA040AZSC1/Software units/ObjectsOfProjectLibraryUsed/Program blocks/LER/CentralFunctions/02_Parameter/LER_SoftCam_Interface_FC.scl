@@ -1,0 +1,77 @@
+﻿FUNCTION "LER_SoftCam_Interface_FC" : Void
+{ S7_Optimized_Access := 'TRUE' ; Published := 'TRUE' }
+VERSION : 0.1
+   VAR_INPUT 
+      actualPosition : LReal;
+      selectSetPosition : SInt;
+      softCam : "LER_typeSoftCamInterface";
+      position : Array[0..15] of "LBC_typeAxis64PosSetPosition";
+      range : LReal;
+   END_VAR
+
+   VAR_OUTPUT 
+      softCamPos : "LER_typeSoftCam";
+   END_VAR
+
+   VAR_TEMP 
+      tempLoopCount : Int;
+      statActualPosition : LReal;
+      statPostivePosition : LReal;
+      statNegativePosition : LReal;
+      Postive : LReal;
+      Negative : LReal;
+      statSelectSetPosition : Int;
+      statInpos : Array[0..15] of "LER_typeSoftcamControlNodes";
+   END_VAR
+
+
+BEGIN
+	REGION Call_SoftCam
+	    // Target & Actual Position Mapping
+	    #statActualPosition := #actualPosition;
+	    #statSelectSetPosition := INT_TO_SINT(#selectSetPosition);
+	    
+	    FOR #tempLoopCount := 0 TO 15 DO
+	        // Set Pos Mapping
+	        //#unitInPos.cam[#tempLoopCount].processValue.setPos := #position[#tempLoopCount].position;
+	        // Postive PV & Negative PV Mapping
+	        #statInpos[#tempLoopCount].inPos := FALSE;
+	        #statInpos[#tempLoopCount].isAfter := FALSE;
+	        #statInpos[#tempLoopCount].isBefore := FALSE;
+	        
+	        #statPostivePosition := #softCam.position[#tempLoopCount].ProcessValue.Postive;
+	        #statNegativePosition := #softCam.position[#tempLoopCount].ProcessValue.Negative;
+	        #Postive := #position[#tempLoopCount].position + #range;
+	        #Negative := #position[#tempLoopCount].position - #range;
+	        
+	        IF (* #statSelectSetPosition = #tempLoopCount AND *) #Negative <= #statActualPosition AND #Postive >= #statActualPosition THEN
+	            #statInpos[#tempLoopCount].inPos := TRUE;
+	        ELSIF #Negative > #statActualPosition THEN
+	            #statInpos[#tempLoopCount].isBefore := TRUE;
+	        ELSIF #Postive < #statActualPosition THEN
+	            #statInpos[#tempLoopCount].isAfter := TRUE;
+	        END_IF;
+	    END_FOR;
+	    
+	    #softCamPos.Pos0 := #statInpos[0];
+	    #softCamPos.Pos1 := #statInpos[1];
+	    #softCamPos.Pos2 := #statInpos[2];
+	    #softCamPos.Pos3 := #statInpos[3];
+	    #softCamPos.Pos4 := #statInpos[4];
+	    #softCamPos.Pos5 := #statInpos[5];
+	    #softCamPos.Pos6 := #statInpos[6];
+	    #softCamPos.Pos7 := #statInpos[7];
+	    #softCamPos.Pos8 := #statInpos[8];
+	    #softCamPos.Pos9 := #statInpos[9];
+	    #softCamPos.Pos10 := #statInpos[10];
+	    #softCamPos.Pos11 := #statInpos[11];
+	    #softCamPos.Pos12 := #statInpos[12];
+	    #softCamPos.Pos13 := #statInpos[13];
+	    #softCamPos.Pos14 := #statInpos[14];
+	    #softCamPos.Pos15 := #statInpos[15];
+	    
+	END_REGION
+	
+	
+END_FUNCTION
+

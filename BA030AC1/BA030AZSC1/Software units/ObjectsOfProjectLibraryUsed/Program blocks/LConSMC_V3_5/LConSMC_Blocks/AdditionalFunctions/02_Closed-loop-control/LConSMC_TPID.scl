@@ -1,0 +1,313 @@
+﻿FUNCTION_BLOCK "LConSMC_TPID"
+{ S7_Optimized_Access := 'TRUE' ; Published := 'TRUE' }
+VERSION : 0.1
+//Technology controller based on a PID controller for use as tension or dancer roll position controller in closed-loop winder or material web controls The function block has to be called in a cyclic interrupt, e.g. OB30.  Function block ID: 1108
+   VAR_INPUT 
+      enable { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := FALSE;   // TRUE: Enable function block
+      openLoopCtrl { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := FALSE;   // TRUE: PID-controller is deactivated. Ramp function generator is used to ramp the setpoint (see output "RFGSetpointValue", output "outValue" = 0.0).  FALSE: PID controller and ramp function generator is active
+      setpointValue { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 0.0;   // [-] Setpoint
+      actualValue { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 0.0;   // [-] Actual value
+      preControl { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 0.0;   // Controler pre control value
+      adaptionValue { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 0.0;   // Adaption value for P-Gain adaption of the controller
+      holdIntChannel { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := FALSE;   // TRUE: The output of the integrator is hold  FALSE: The output is integrated
+      setIntChannel { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := FALSE;   // TRUE: The output of the integrator is set to "intSetValue"
+      x1 { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 0.0;   // Breakpoint 1 x-axis for P-adaption (if x1=x2 the adaption is deactivated)
+      Kp1 { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 1.0;   // Breakpoint 1 P-gain for P-adaption (if x1=x2 the adaption is deactivated)
+      x2 { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;   // Breakpoint 2 x-axis for P-adaption (if x1=x2 the adaption is deactivated)
+      Kp2 { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 1.0;   // Breakpoint 2 P-gain for P-adaption (if x1=x2 the adaption is deactivated)
+      limRampTime { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 1000.0;   // [ms] Ramp time for output value limitation
+      setNominalValue { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 100.0;   // Reference value for ramp time of setpoint channel (Ramp from 0 to "setNominalValue" in "setRampTime")
+      setRampTime { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 1000.0;   // [ms] Ramp time for setpoint ramp generator
+      integTime { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 2000.0;   // [ms] Time constant for integrator. A value of 0 disables the I-part
+      derivTime { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 0.0;   // [ms] Time constant for differentiator. A value of 0 disables the D-part
+      filterTime { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 10.0;   // [ms] PT1- Filter for actual value. A value of 0 disables the filter
+      intSetValue { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 0.0;   // Integrator set value (if "setIntChannel" = TRUE)
+      controlMode { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := FALSE;   // TRUE: D component active in actual value branch  FALSE: D component in controller deviation
+      deadBand { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 0.0;   // Value of the dead band (symmetrical). A value of 0 disables the deadband
+      outValueFactor { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 1.0;   // Multiplicative scaling of the controller output
+      upperLimit { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 20.0;   // Upper limit of the controller output
+      lowerLimit { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := -20.0;   // Lower limit of the controller output
+      tCycle { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Real;   // [ms] Cycle time the function block is called
+   END_VAR
+
+   VAR_OUTPUT 
+      busy { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := FALSE;   // TRUE: Function block is active
+      error { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := FALSE;   // TRUE: An error occured
+      errorId { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : DWord := 16#0000_0000;   // Detailed error description
+      upperLimReached { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := FALSE;   // TRUE: Upper limit reached
+      lowerLimReached { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := FALSE;   // TRUE: Lower limit reached
+      RFGLimReached { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := FALSE;   // TRUE: Setpoint is limited internally
+      RFGSetpointReached { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := FALSE;   // TRUE: Ramped internal setpoint has reached the setpoint
+      RFGSetpointValue { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 0.0;   // Ramped internal setpoint
+      outValue { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;   // Controller output after limitation and scaling. Only relevant if input "openLoopCtrl" = FALSE.
+      effectiveKp { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;   // Effective p-gain if P-gain adaption is active
+   END_VAR
+
+   VAR 
+      statEnableOld { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      instRFGLim { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'; S7_SetPoint := 'False'} : "LConSMC_RFG";
+      instRFGSet { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'; S7_SetPoint := 'False'} : "LConSMC_RFG";
+      instPidController { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'; S7_SetPoint := 'False'} : "LConSMC_PID";
+      statEffSetPoint { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statEffLimit { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statLimRFGSetVal { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statOutValue { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 0.0;
+      statEffectiveKp { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 0.0;
+   END_VAR
+
+   VAR CONSTANT 
+      NO_ERROR : DWord := 16#0000_0000;
+   END_VAR
+
+
+BEGIN
+	REGION BLOCK INFO HEADER
+	  //===============================================================================
+	  // SIEMENS AG / (c)Copyright 2023
+	  //-------------------------------------------------------------------------------
+	  // Title:            LConSMC_TPID
+	  // Comment/Function: Technology controller
+	  // Library/Family:   LConSMC
+	  // Author:           APC Erlangen
+	  // Tested with:      FW 2.8
+	  // Engineering:      TIA Portal V16
+	  // Restrictions:     Needs to be called in a cyclic task
+	  // Requirements:     -
+	  //-------------------------------------------------------------------------------
+	  // Change log table:
+	  // Version  | Date       | Expert in charge       | Changes applied
+	  //----------|------------|------------------------|------------------------------
+	  // 01.01.00 | 2016-11-17 | APC Erlangen           | adapted to styleguide; warning "variable might not be initialized" removed
+	  // 01.00.00 | 2012-07-24 | APC Erlangen           | Creation
+	  //===============================================================================
+	  //
+	END_REGION BLOCK INFO HEADER
+	
+	REGION DESCRIPTION
+	(/*
+	The block is enabled using the enable input; therefore, the setpoint ramp-function generator and the limiting ramp-function
+	generator are started with their respective ramp-up times and the PID controller is activated.
+	In addition, for a rising edge, the setpoint ramp-function generator is set to the actual value that is present (actualValue).
+	This guarantees a jerk-free and smooth transition into the controlled mode.
+	When the edge at the enable input falls, the limiting ramp-function generator is ramped back to zero and therefore the controller output is limited.
+	This results in a bumpless controller shutdown.
+	As soon as the outValue output is zero and enable = FALSE, the block is deactivated and the output busy is set to FALSE.
+	The setpoint is internally ramped to the actual value during the switch-off phase.
+	If input openLoopCtrl = TRUE, then the block operates in the open control circuit mode.
+	As a consequence, the setpoint channel remains active and the controller or the output limits remain inactive.
+	The output busy stays TRUE as long as the setpoint ramp output is not zero. The input actualValue is 0.0.
+	
+	#### Setpoint ramping
+	
+	The setpoint ramp-function generator is used to avoid setpoint steps in the setpoint channel.
+	The setpoint ramp-function generator is configured using the parameters setRampTime and setNominalValue, whereby setNominalValue
+	defines the reference value for the ramp-up or ramp-down time. The function is always active, if enable = TRUE.
+	If openLoopCtrl = FALSE, enable = FALSE and busy = TRUE (switch-off phase), then the setpoint is internally set to the actual value. 
+	The ramp times are internally limited to the cycle time.
+	
+	#### Controller functionality
+	
+	The controller setpoint is provided via the input setValue, the actual value via the actValue input.
+	The setpoint channel includes a settable setpoint ramp-function generator, via which the setpoint is routed; the effective setpoint can be monitored at output RFGSetpointValue. 
+	The control algorithm used corresponds to that described in function block LConSMC_PID.
+	
+	#### Kp adaption
+	
+	A linear adaptation is carried out as Kp adaptation. The interpolation line is defined by the value (x1, Kp1) and (x2, Kp2):
+	  
+	* adaptionValue < x1 or x1 = x2
+	
+	$ effectiveKp = Kp1 $
+	
+	* x1 <= adaptionValue <= x2
+	
+	$ effectiveKp = Kp1 + \frac{(adaptionValue - x1) \cdot (Kp2-Kp2)}{x2-x1}\ $
+	
+	* adaptionValue > x2
+	
+	$ effectiveKp = Kp2 $
+	
+	The value Kp1 is used as effective Kp if the Kp adaptation is deactivated (x1=x2).
+	
+	{.pageWidth}
+	![TPID Block diagram](TPID_Diagram.png)
+	
+	*/)
+	END_REGION
+	
+	#busy := (#enable) OR (#instPidController.outValue <> 0.0)
+	OR (#instRFGSet.y <> 0.0 AND #openLoopCtrl);
+	
+	IF #enable AND NOT #statEnableOld THEN                                     //Enable at rising edge
+	    #error := FALSE;
+	    #errorId := #NO_ERROR;
+	    #upperLimReached := FALSE;
+	    #lowerLimReached := FALSE;
+	    #RFGLimReached := FALSE;
+	    #RFGSetpointReached := FALSE;
+	END_IF;
+	IF (#busy) THEN
+	    
+	    // ERROR HANDLING
+	    IF (#setNominalValue <= 0.0)
+	    THEN
+	        #error := TRUE;
+	        #errorId := "LCON_ERROR_TPID_INVALID_CONFIGURATION";
+	        RETURN;
+	    ELSE
+	        #error := FALSE;
+	        #errorId := #NO_ERROR;
+	    END_IF;
+	    
+	    // MAP ERROR FROM FBPIDController
+	    #error := #instPidController.error;
+	    IF (#instPidController.errorID <> #NO_ERROR) THEN
+	        #errorId := #instPidController.errorID;
+	    END_IF;
+	    IF (#error) THEN
+	        RETURN;
+	    END_IF;
+	    
+	    
+	    IF (#x1 = #x2) THEN                                                       // No Adaption, Kp1 active
+	        #statEffectiveKp := #Kp1;
+	    ELSE
+	        #statEffectiveKp := "LConSMC_Linear"(x := #adaptionValue,
+	                                             x1 := #x1,
+	                                             y1 := #Kp1,
+	                                             x2 := #x2,
+	                                             y2 := #Kp2);
+	    END_IF;
+	    IF #enable THEN
+	        #statEffSetPoint := #setpointValue;                                      // Follow setpoint if enabled
+	        #statEffLimit := 1.0;
+	    ELSE
+	        #statEffSetPoint := #actualValue;                                        // Switch to actual
+	        #statEffLimit := 0.0;
+	    END_IF;
+	    
+	    // RFG SETPOINT
+	    #instRFGSet(x := #statEffSetPoint,
+	                nominalValue := #setNominalValue,
+	                upperLimit := +3.402822E+38,
+	                lowerLimit := -3.402822E+38,
+	                setValue := #actualValue,                                     //TO PROVIDE JERK-FREE START OF CONTROLLER
+	                rampupTime := #setRampTime,
+	                rampdownTime := #setRampTime,
+	                set := #enable AND NOT #statEnableOld,                            //TO PROVIDE JERK-FREE START OF CONTROLLER
+	                followup := TRUE,                                             // FOLLOW SETPOINT MODE
+	                increase := FALSE,
+	                decrease := FALSE,
+	                tCycle := #tCycle);
+	    
+	    #RFGSetpointValue := #instRFGSet.y;
+	    #RFGSetpointReached := #instRFGSet.SetpointReached;
+	    
+	    IF NOT (#openLoopCtrl) THEN
+	        IF NOT #enable AND #statEnableOld THEN
+	            IF #statOutValue < 0.0 THEN
+	                #statLimRFGSetVal := ABS(#statOutValue / #lowerLimit);
+	            ELSIF #statOutValue > 0.0 THEN
+	                #statLimRFGSetVal := ABS(#statOutValue / #upperLimit);
+	            ELSE
+	                #statLimRFGSetVal := 0.0;
+	            END_IF;
+	        ELSE
+	            #statLimRFGSetVal := 0.0;
+	        END_IF;
+	        
+	        // RFG LIMIT
+	        #instRFGLim(x := #statEffLimit,
+	                    nominalValue := 1.0,
+	                    upperLimit := 1.0,
+	                    lowerLimit := 0.0,
+	                    setValue := #statLimRFGSetVal,
+	                    rampupTime := #limRampTime,
+	                    rampdownTime := #limRampTime,
+	                    set := #enable XOR #statEnableOld,
+	                    followup := TRUE,
+	                    increase := FALSE,
+	                    decrease := FALSE,
+	                    tCycle := #tCycle);
+	        
+	        
+	        
+	        //PID
+	        
+	        #instPidController(enable := #busy,
+	                           reset := #enable AND NOT #statEnableOld,
+	                           setpointValue := #instRFGSet.y,
+	                           actualValue := #actualValue,
+	                           preControl := #preControl,
+	                           propGain := #statEffectiveKp,
+	                           integTime := #integTime,
+	                           derivTime := #derivTime,
+	                           filterTime := #filterTime,
+	                           upperLimit := #instRFGLim.y * #upperLimit,
+	                           lowerLimit := #instRFGLim.y * #lowerLimit,
+	                           intSetValue := #intSetValue,
+	                           holdIntChannel := #holdIntChannel,
+	                           setIntChannel := #setIntChannel,
+	                           controlMode := #controlMode,
+	                           deadBand := #deadBand,
+	                           actualValueFactor := 1.0,
+	                           actualValueOffset := 0.0,
+	                           outValueFactor := #outValueFactor,
+	                           outValueOffset := 0.0,
+	                           tCycle := #tCycle);
+	        
+	        #upperLimReached := #instPidController.upperLimitReached;
+	        #lowerLimReached := #instPidController.lowerLimitReached;
+	        #RFGLimReached := #instRFGLim.SetpointReached;
+	        #statOutValue := #instPidController.outValue;
+	    ELSE // in open loop mode only setpoint RFG is used
+	        #upperLimReached := FALSE;
+	        #lowerLimReached := FALSE;
+	        #RFGLimReached := FALSE;
+	        #statOutValue := 0.0;
+	    END_IF;
+	ELSE   //busy IS FALSE
+	    #error := FALSE;
+	    #errorId := #NO_ERROR;
+	    #upperLimReached := FALSE;
+	    #lowerLimReached := FALSE;
+	    #RFGLimReached := FALSE;
+	    #RFGSetpointReached := FALSE;
+	    #RFGSetpointValue := 0.0;
+	    #statOutValue := 0.0;
+	    
+	    #instPidController(enable := TRUE,
+	                       reset := TRUE,
+	                       setpointValue := #instRFGSet.y,
+	                       actualValue := #actualValue,
+	                       preControl := #preControl,
+	                       propGain := #statEffectiveKp,
+	                       integTime := #integTime,
+	                       derivTime := #derivTime,
+	                       filterTime := #filterTime,
+	                       upperLimit := #instRFGLim.y * #upperLimit,
+	                       lowerLimit := #instRFGLim.y * #lowerLimit,
+	                       intSetValue := #intSetValue,
+	                       holdIntChannel := #holdIntChannel,
+	                       setIntChannel := #setIntChannel,
+	                       controlMode := #controlMode,
+	                       deadBand := #deadBand,
+	                       actualValueFactor := 1.0,
+	                       actualValueOffset := 0.0,
+	                       outValueFactor := #outValueFactor,
+	                       outValueOffset := 0.0,
+	                       tCycle := #tCycle);
+	    
+	END_IF;
+	
+	// set outputs
+	#outValue := #statOutValue;
+	#effectiveKp := #statEffectiveKp;
+	
+	
+	#statEnableOld := #enable;
+	
+	
+	
+END_FUNCTION_BLOCK
+

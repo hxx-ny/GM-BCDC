@@ -1,0 +1,184 @@
+﻿FUNCTION_BLOCK "LConSMC_Integrator"
+{ S7_Optimized_Access := 'TRUE' ; Published := 'TRUE' }
+VERSION : 0.1
+//Numerical integrator function block has to be called in a cyclic interrupt, e.g. OB30.  Function block ID: 1102
+   VAR_INPUT 
+      set { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := FALSE;   // TRUE: Set output = "setValue"
+      x { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 0.0;   // Input value
+      setValue { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 0.0;   // Set value (if "set" = TRUE)
+      upperLimit { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 1.0;   // Upper limit
+      lowerLimit { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 0.0;   // Lower limit
+      integralTime { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 5.0;   // [ms] Time constant for integrator
+      tCycle { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Real;   // [ms] Cycle time the function block is called
+   END_VAR
+
+   VAR_OUTPUT 
+      error { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;   // TRUE: An error occured
+      errorID { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : DWord := 16#0000_0000;   // Detailed error description
+      upperLimitReached { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := FALSE;   // TRUE: Upper limit reached
+      lowerLimitReached { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := FALSE;   // TRUE: Lower limit reached
+      y { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;   // Output value 
+   END_VAR
+
+   VAR 
+      statTmax { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statXkm1 { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statYkm1 { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statXFactor { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statFirstRun { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := TRUE;
+      statUpperLimit { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statLowerLimit { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statLimiter { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statXlim { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statError { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := FALSE;
+      statY { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 0.0;
+   END_VAR
+
+   VAR CONSTANT 
+      MAX_INT_TIME : Real := 60000.0;
+      NO_ERROR : DWord := 16#0000_0000;
+   END_VAR
+
+
+BEGIN
+	REGION BLOCK INFO HEADER
+	  //===============================================================================
+	  // SIEMENS AG / (c)Copyright 2023
+	  //-------------------------------------------------------------------------------
+	  // Title:            LConSMC_Integrator
+	  // Comment/Function: Numerical integrator
+	  // Library/Family:   LConSMC
+	  // Author:           APC Erlangen
+	  // Tested with:      FW 2.8
+	  // Engineering:      TIA Portal V16
+	  // Restrictions:     Needs to be called in a cyclic task
+	  // Requirements:     -
+	  //-------------------------------------------------------------------------------
+	  // Change log table:
+	  // Version  | Date       | Expert in charge       | Changes applied
+	  //----------|------------|------------------------|------------------------------
+	  // 01.02.00 | 2017-10-23 | APC Erlangen           | Increas integration constant MAX_INT_TIME to 60000
+	  // 01.01.00 | 2016-11-17 | APC Erlangen           | Removed warning "Parameter might not be initialized"
+	  // 01.00.00 | 2012-07-12 | APC Erlangen           | Creation
+	  //===============================================================================
+	  //
+	END_REGION BLOCK INFO HEADER
+	
+	REGION DESCRIPTION
+	(/*
+	The function block integrates the input value x with integration time integralTime.
+	The result is output at y. The integrator is limited by the upper limit upperLimit and the lower limit lowerLimit.
+	If the integrator reaches one of the limits, then this is connected to the output.
+	Further, when the particular limit at the output is reached, this is indicated using
+	upperLimitReached and lowerLimitReached.
+	Using the setting function, which is activated with set =True, the output can be set to a pre-defined value (setValue).
+	If *set* input is FALSE, then starting from the set value the integrator continues to integrate in the direction specified using input value x.  
+	The input integralTime is internally limited: cycleTime ≤ integralTime ≤ 60000  
+	The discrete values are calculated using the following algorithm:
+	
+	$ yn = y_{n-1} + \frac{cycleTime}{integralTime}\ \cdot x_n $
+	
+	#### Truth Table for lowerlimit < upperlimit
+	
+	{.pageWidth}
+	+-----+----------------------------------------------+------------+-------------+-------------+------------------------------+
+	| Set | Condition                                    | Y          | Upper limit | Lower limit | Mode                         |
+	|     |                                              |            | reached     | reached     |                              |
+	+=====+==============================================+============+=============+=============+==============================+
+	| 0   | lowerLimit < integration result <upperLimit  | yn         | 0           | 0           | Integrating
+	+-----+----------------------------------------------+------------+-------------+-------------+------------------------------+
+	| 0   | integration result >= upperLimit             | UpperLimit | 1           | 0           | Integrator at the upper limit
+	+-----+----------------------------------------------+------------+-------------+-------------+------------------------------+
+	| 0   | integration result <= lowerLimit             | LowerLimit | 0           | 1           | Integrator at the lower limit
+	+-----+----------------------------------------------+------------+-------------+-------------+------------------------------+
+	| 1   | lowerLimit < setValue < upperLimit           | setValue   | 0           | 0           | Setting
+	+-----+----------------------------------------------+------------+-------------+-------------+------------------------------+
+	| 1   | setValue >= upperLimit                       | upperLimit | 1           | 0           | Integrator at the upper limit
+	+-----+----------------------------------------------+------------+-------------+-------------+------------------------------+
+	| 2   | setValue =< lowerLimit                       | lowerLimit | 0           | 1           | Integrator at the lower limit
+	+-----+----------------------------------------------+------------+-------------+-------------+------------------------------+
+	
+	#### Truth Table for lowerlimit > upperlimit
+	
+	{.pageWidth}
+	+-----+----------------------------------------------+------------+-------------+-------------+------------------------------+
+	| Set | Condition                                    | Y          | Upper limit | Lower limit | Mode                         |
+	|     |                                              |            | reached     | reached     |                              |
+	+=====+==============================================+============+=============+=============+==============================+
+	| any | lowerLimit < integration result <upperLimit  | yn         | 0           | 0           | Integrator limited by upper Limit
+	+-----+----------------------------------------------+------------+-------------+-------------+------------------------------+
+	
+	![Integrator timing diagram](Integrator_Diagram.png)
+	
+	*/)
+	END_REGION
+	
+	IF #statFirstRun THEN                                                            //Only at First Run
+	    #statFirstRun := FALSE;
+	    #statXkm1 := 0.0;
+	END_IF;
+	
+	
+	#statError := #statError OR (#tCycle = 0.0);                                         // Cycle time identified as zero
+	
+	
+	IF (#statError) THEN
+	  #errorID := "LCON_ERROR_INTEGRATOR_INVALID_CYCLE_TIME";                                       // FB NOT running IN cyclic task (81)
+	ELSE
+	    #errorID := #NO_ERROR;
+	END_IF;
+	
+	IF (NOT #statError) THEN                                                         // execute code if below error priority 1
+	    #statTmax := LIMIT(MN := #tCycle, IN := #integralTime, MX := #MAX_INT_TIME);            // Limit IntTimeConst
+	    IF (#set) THEN                                                             // Check for active s: if active, set y to SV.
+	        #statY := #setValue;
+	    ELSE                                                                      // Implement algorythm: ix, trapezoid integration ("Tustin")
+	        #statXFactor := #tCycle / (2.0 * #statTmax);
+	        #statY := #statYkm1 + #statXFactor * (#x + #statXkm1);
+	    END_IF;
+	    
+	    #statUpperLimit := #upperLimit;                                 //Values passed for limiting the outputs
+	    #statLowerLimit := #lowerLimit;
+	    #statXlim := #statY;
+	    
+	    IF (#statLowerLimit >= #statUpperLimit) THEN
+	        #statLimiter := #statUpperLimit;
+	        #upperLimitReached := TRUE;
+	        #lowerLimitReached := TRUE;
+	        #statY := #statLimiter;
+	        
+	    ELSIF (#statXlim >= #statUpperLimit) THEN
+	        #statLimiter := #statUpperLimit;
+	        #upperLimitReached := TRUE;
+	        #lowerLimitReached := FALSE;
+	        #statY := #statLimiter;
+	        
+	        
+	    ELSIF (#statXlim <= #statLowerLimit) THEN
+	        #statLimiter := #statLowerLimit;
+	        #upperLimitReached := FALSE;
+	        #lowerLimitReached := TRUE;
+	        #statY := #statLimiter;
+	    ELSE
+	        #statLimiter := #statXlim;
+	        #upperLimitReached := FALSE;
+	        #lowerLimitReached := FALSE;
+	        #statY := #statLimiter;
+	        
+	    END_IF;
+	    
+	    
+	    #statXkm1 := #x;                                                              //  set present value as previous value for next cycle
+	    #statYkm1 := #statY;
+	ELSE
+	    #upperLimitReached := FALSE;
+	    #lowerLimitReached := FALSE;
+	    #statY := 0.0;
+	END_IF;
+	
+	// set outputs
+	#error := #statError;
+	#y := #statY;
+	
+END_FUNCTION_BLOCK
+

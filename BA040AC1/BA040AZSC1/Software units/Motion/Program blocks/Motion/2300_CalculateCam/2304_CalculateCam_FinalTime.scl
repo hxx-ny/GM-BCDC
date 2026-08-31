@@ -1,0 +1,525 @@
+﻿FUNCTION_BLOCK "2304_CalculateCam_FinalTime"
+{ S7_Optimized_Access := 'TRUE' ; Published := 'FALSE' }
+VERSION : 0.1
+   VAR_INPUT 
+      execute : Bool;
+      cpm : LReal;
+      distance : LReal;
+      lineSpeed : LReal;
+      ratioOption : Bool;
+      startRatio : LReal;
+      endRatio : LReal;
+      timeOption : Bool;
+      startTime : LReal;
+      endTime : LReal;
+      accRatio { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LInt := 2;
+      targetPos : LReal;
+   END_VAR
+
+   VAR_OUTPUT 
+      done : Bool;
+      busy : Bool;
+      error : Bool;
+      errorID : Word;
+      targetTime : LReal;
+   END_VAR
+
+   VAR 
+      statBusy : Bool;
+      statDone : Bool;
+      statCalculateCamState { S7_SetPoint := 'True'} : DInt;
+      statTimeTable : Array[1..50] of Time;
+      statStartTime : Time;
+      statEndTime : Time;
+      CalCulateTrigger {InstructionName := 'R_TRIG'; LibVersion := '1.0'; S7_SetPoint := 'False'} : R_TRIG;
+   END_VAR
+
+   VAR_TEMP 
+      tempFCount : DInt;
+      tempFullTime : LReal;
+      tempCycleTime : LReal;
+      tempStartTime : LReal;
+      tempRestTime : LReal;
+      tempTime : Array[1..50] of LReal;
+      tempPos : Array[1..50] of LReal;
+      tempVel : Array[1..50] of LReal;
+      tempAcc : Array[1..50] of LReal;
+      tempJerk : Array[1..50] of LReal;
+      tempX : Array[1..50] of LReal;
+      tempCalAcc : Array[1..50] of LReal;
+      tempCalVel : Array[1..50] of LReal;
+      tempCalPos : Array[1..50] of LReal;
+      tempA3 : Array[1..50] of LReal;
+      tempA2 : Array[1..50] of LReal;
+      tempA1 : Array[1..50] of LReal;
+      tempA0 : Array[1..50] of LReal;
+      tempPCount : DInt;
+      tempTCount : DInt;
+      tempNResult : LReal;
+      tempResult : LReal;
+   END_VAR
+
+   VAR CONSTANT 
+      PI : LReal := 3.14159265358979;
+      CC_IDLE : DInt;
+      CC_CALCULATE : DInt := 2;
+      CC_DONE : DInt := 4;
+      CC_ERROR : DInt := 99;
+   END_VAR
+
+
+BEGIN
+	REGION Error Check
+	    REGION ACC RATIO
+	        IF #accRatio < 2
+	        THEN
+	            #statCalculateCamState := #CC_ERROR;
+	            #errorID := 16#1000;
+	        END_IF;
+	    END_REGION
+	    
+	    REGION BIT PARAMETER
+	        IF NOT #ratioOption AND NOT #timeOption THEN
+	            #statCalculateCamState := #CC_ERROR;
+	            #errorID := 16#1001;
+	        END_IF;
+	    END_REGION
+	    
+	    REGION RATIO PARAMETER CHECK
+	        IF #ratioOption THEN
+	            IF #startRatio < 0.0
+	                OR #startRatio > 50.0
+	                OR #endRatio > 100.0
+	                OR #endRatio < 0.0
+	                OR #endRatio - #startRatio <= 50.0
+	            THEN
+	                #statCalculateCamState := #CC_ERROR;
+	                #errorID := 16#1002;
+	            END_IF;
+	        END_IF;
+	    END_REGION
+	    REGION TIME PARAMETER CHECK
+	        IF #timeOption THEN
+	            #tempFullTime := 60000.0 / #cpm;
+	            IF #startTime < 0.0
+	                OR #startTime > #tempFullTime / 2.0
+	                OR #endTime > #tempFullTime
+	                OR #endTime < 0.0
+	                OR #endTime - #startTime <= #tempFullTime / 2.0
+	            THEN
+	                #statCalculateCamState := #CC_ERROR;
+	                #errorID := 16#1003;
+	            END_IF;
+	        END_IF;
+	    END_REGION
+	    
+	    REGION BASIC PARAMETER CHECK
+	        IF #cpm <= 0.0
+	            OR #lineSpeed <= 0.0
+	            OR ABS_LREAL(#distance) = 0.0
+	        THEN
+	            #statCalculateCamState := #CC_ERROR;
+	            #errorID := 16#1004;
+	        END_IF;
+	    END_REGION
+	END_REGION
+	
+	REGION Execute
+	    IF NOT #execute
+	    THEN
+	        #statCalculateCamState := #CC_IDLE;
+	    END_IF;
+	    IF #statCalculateCamState <> #CC_ERROR
+	    THEN
+	        #CalCulateTrigger(CLK := #execute);
+	    END_IF;
+	    IF #CalCulateTrigger.Q THEN
+	        #statStartTime := TIME_TCK();
+	        #statCalculateCamState := #CC_CALCULATE;
+	    END_IF;
+	END_REGION
+	
+	REGION State Machine
+	    CASE #statCalculateCamState OF
+	        #CC_IDLE:
+	            REGION READY
+	                ;
+	            END_REGION
+	            
+	        #CC_CALCULATE:
+	            REGION CALCULATE
+	                IF #ratioOption THEN
+	                    REGION RATIO
+	                        #tempStartTime := 60000.0 / #cpm * #startRatio / 100.0;
+	                        #tempCycleTime := 60000.0 / #cpm * (#endRatio - #startRatio) / 100.0;
+	                        #tempRestTime := 60000.0 / #cpm * (100.0 - #endRatio) / 100.0;
+	                    END_REGION
+	                ELSE
+	                    REGION TIME
+	                        IF #timeOption THEN
+	                            #tempStartTime := #startTime;
+	                            #tempCycleTime := #endTime - #startTime;
+	                            #tempRestTime := 60000.0 / #cpm - #endTime;
+	                        END_IF;
+	                    END_REGION
+	                END_IF;
+	                
+	                REGION DIVIDE
+	                    // Calculate Time
+	                    #tempTime[1] := 0.0;
+	                    #tempTime[2] := #lineSpeed * #tempStartTime / 1000.0;
+	                    #tempTime[3] := #lineSpeed * #tempCycleTime / 1000.0;
+	                    #tempTime[4] := #lineSpeed * #tempRestTime / 1000.0;
+	                    #tempTime[5] := 0.0;
+	                    
+	                    // Calculate Pos
+	                    #tempPos[1] := 0.0;
+	                    #tempPos[2] := 0.0;
+	                    #tempPos[3] := #distance;
+	                    #tempPos[4] := 0.0;
+	                    #tempPos[5] := 0.0;
+	                    
+	                    // Calculate New Vel
+	                    #tempVel[1] := 0.0;
+	                    #tempVel[2] := 0.0;
+	                    #tempVel[3] := 2.0 * #tempPos[3] / (#tempTime[3] * (2.0 - 2.0 / LINT_TO_LREAL(#accRatio)));
+	                    #tempVel[4] := 0.0;
+	                    #tempVel[5] := 0.0;
+	                    
+	                    // Calculate Acc
+	                    #tempAcc[1] := 0.0;
+	                    #tempAcc[2] := 0.0;
+	                    #tempAcc[3] := LINT_TO_LREAL(#accRatio) * 2.0 * #tempVel[3] / #tempTime[3];
+	                    #tempAcc[4] := 0.0;
+	                    #tempAcc[5] := 0.0;
+	                    
+	                    // Calculate Jerk
+	                    #tempJerk[1] := 0.0;
+	                    #tempJerk[2] := 0.0;
+	                    #tempJerk[3] := LINT_TO_LREAL(#accRatio) * 2.0 * #tempAcc[3] / #tempTime[3];
+	                    #tempJerk[4] := - LINT_TO_LREAL(#accRatio) * 2.0 * #tempAcc[3] / #tempTime[3];
+	                    #tempJerk[5] := 0.0;
+	                    #tempJerk[6] := - LINT_TO_LREAL(#accRatio) * 2.0 * #tempAcc[3] / #tempTime[3];
+	                    #tempJerk[7] := LINT_TO_LREAL(#accRatio) * 2.0 * #tempAcc[3] / #tempTime[3];
+	                    #tempJerk[8] := 0.0;
+	                    #tempJerk[9] := 0.0;
+	                    #tempJerk[10] := - LINT_TO_LREAL(#accRatio) * 2.0 * #tempAcc[3] / #tempTime[3];
+	                    #tempJerk[11] := LINT_TO_LREAL(#accRatio) * 2.0 * #tempAcc[3] / #tempTime[3];
+	                    #tempJerk[12] := 0.0;
+	                    #tempJerk[13] := LINT_TO_LREAL(#accRatio) * 2.0 * #tempAcc[3] / #tempTime[3];
+	                    #tempJerk[14] := - LINT_TO_LREAL(#accRatio) * 2.0 * #tempAcc[3] / #tempTime[3];
+	                    #tempJerk[15] := 0.0;
+	                    
+	                    // Calculate X
+	                    #tempX[1] := #tempTime[1];
+	                    #tempX[2] := #tempTime[2];
+	                    #tempX[3] := #tempTime[3] / (LINT_TO_LREAL(#accRatio) * 2.0);
+	                    #tempX[4] := #tempTime[3] / (LINT_TO_LREAL(#accRatio) * 2.0);
+	                    #tempX[5] := #tempTime[3] * (1.0 - 2.0 / LINT_TO_LREAL(#accRatio));
+	                    #tempX[6] := #tempTime[3] / (LINT_TO_LREAL(#accRatio) * 2.0);
+	                    #tempX[7] := #tempTime[3] / (LINT_TO_LREAL(#accRatio) * 2.0);
+	                    #tempX[8] := #tempTime[4];
+	                    #tempX[9] := #tempTime[2];
+	                    #tempX[10] := #tempTime[3] / (LINT_TO_LREAL(#accRatio) * 2.0);
+	                    #tempX[11] := #tempTime[3] / (LINT_TO_LREAL(#accRatio) * 2.0);
+	                    #tempX[12] := #tempTime[3] * (1.0 - 2.0 / LINT_TO_LREAL(#accRatio));
+	                    #tempX[13] := #tempTime[3] / (LINT_TO_LREAL(#accRatio) * 2.0);
+	                    #tempX[14] := #tempTime[3] / (LINT_TO_LREAL(#accRatio) * 2.0);
+	                    #tempX[15] := #tempTime[4];
+	                    
+	                    // ==============================================================================
+	                    // Segment [1]
+	                    // ==============================================================================                           
+	                    #tempCalAcc[1] := 0.0;
+	                    #tempCalVel[1] := 0.0;
+	                    #tempCalPos[1] := 0.0;
+	                    #tempA3[1] := #tempJerk[1] / 6.0;
+	                    #tempA2[1] := #tempCalAcc[1] / 2.0;
+	                    #tempA1[1] := #tempCalVel[1];
+	                    #tempA0[1] := #tempCalPos[1];
+	                    
+	                    // ==============================================================================
+	                    // Segment [2]
+	                    // ==============================================================================  
+	                    #tempCalAcc[2] := #tempJerk[2 - 1] * #tempX[2 - 1] + #tempCalAcc[2 - 1];
+	                    #tempCalVel[2] := #tempJerk[2 - 1] * #tempX[2 - 1] * #tempX[2 - 1] / 2.0 + #tempCalAcc[2 - 1] * #tempX[2 - 1] + #tempCalVel[2 - 1];
+	                    #tempCalPos[2] := #tempJerk[2 - 1] * #tempX[2 - 1] * #tempX[2 - 1] * #tempX[2 - 1] / 6.0 + #tempCalAcc[2 - 1] * #tempX[2 - 1] * #tempX[2 - 1] / 2.0 + #tempCalVel[2 - 1] * #tempX[2 - 1] + #tempCalPos[2 - 1];
+	                    IF ABS_LREAL(#tempCalVel[2]) < 0.000000001 THEN
+	                        #tempCalVel[2] := 0.0;
+	                    END_IF;
+	                    IF ABS_LREAL(#tempCalPos[2]) < 0.000000001 THEN
+	                        #tempCalPos[2] := 0.0;
+	                    END_IF;
+	                    #tempA3[2] := #tempJerk[2] / 6.0;
+	                    #tempA2[2] := #tempCalAcc[2] / 2.0;
+	                    #tempA1[2] := #tempCalVel[2];
+	                    #tempA0[2] := #tempCalPos[2];
+	                    
+	                    // ==============================================================================
+	                    // Segment [3]
+	                    // ==============================================================================  
+	                    #tempCalAcc[3] := #tempJerk[3 - 1] * #tempX[3 - 1] + #tempCalAcc[3 - 1];
+	                    #tempCalVel[3] := #tempJerk[3 - 1] * #tempX[3 - 1] * #tempX[3 - 1] / 2.0 + #tempCalAcc[3 - 1] * #tempX[3 - 1] + #tempCalVel[3 - 1];
+	                    #tempCalPos[3] := #tempJerk[3 - 1] * #tempX[3 - 1] * #tempX[3 - 1] * #tempX[3 - 1] / 6.0 + #tempCalAcc[3 - 1] * #tempX[3 - 1] * #tempX[3 - 1] / 2.0 + #tempCalVel[3 - 1] * #tempX[3 - 1] + #tempCalPos[3 - 1];
+	                    IF ABS_LREAL(#tempCalVel[3]) < 0.000000001 THEN
+	                        #tempCalVel[3] := 0.0;
+	                    END_IF;
+	                    IF ABS_LREAL(#tempCalPos[3]) < 0.000000001 THEN
+	                        #tempCalPos[3] := 0.0;
+	                    END_IF;
+	                    #tempA3[3] := #tempJerk[3] / 6.0;
+	                    #tempA2[3] := #tempCalAcc[3] / 2.0;
+	                    #tempA1[3] := #tempCalVel[3];
+	                    #tempA0[3] := #tempCalPos[3];
+	                    
+	                    // ==============================================================================
+	                    // Segment [4]
+	                    // ==============================================================================  
+	                    #tempCalAcc[4] := #tempJerk[4 - 1] * #tempX[4 - 1] + #tempCalAcc[4 - 1];
+	                    #tempCalVel[4] := #tempJerk[4 - 1] * #tempX[4 - 1] * #tempX[4 - 1] / 2.0 + #tempCalAcc[4 - 1] * #tempX[4 - 1] + #tempCalVel[4 - 1];
+	                    #tempCalPos[4] := #tempJerk[4 - 1] * #tempX[4 - 1] * #tempX[4 - 1] * #tempX[4 - 1] / 6.0 + #tempCalAcc[4 - 1] * #tempX[4 - 1] * #tempX[4 - 1] / 2.0 + #tempCalVel[4 - 1] * #tempX[4 - 1] + #tempCalPos[4 - 1];
+	                    IF ABS_LREAL(#tempCalVel[4]) < 0.000000001 THEN
+	                        #tempCalVel[4] := 0.0;
+	                    END_IF;
+	                    IF ABS_LREAL(#tempCalPos[4]) < 0.000000001 THEN
+	                        #tempCalPos[4] := 0.0;
+	                    END_IF;
+	                    #tempA3[4] := #tempJerk[4] / 6.0;
+	                    #tempA2[4] := #tempCalAcc[4] / 2.0;
+	                    #tempA1[4] := #tempCalVel[4];
+	                    #tempA0[4] := #tempCalPos[4];
+	                    
+	                    // ==============================================================================
+	                    // Segment [5]
+	                    // ==============================================================================  
+	                    #tempCalAcc[5] := #tempJerk[5 - 1] * #tempX[5 - 1] + #tempCalAcc[5 - 1];
+	                    #tempCalVel[5] := #tempJerk[5 - 1] * #tempX[5 - 1] * #tempX[5 - 1] / 2.0 + #tempCalAcc[5 - 1] * #tempX[5 - 1] + #tempCalVel[5 - 1];
+	                    #tempCalPos[5] := #tempJerk[5 - 1] * #tempX[5 - 1] * #tempX[5 - 1] * #tempX[5 - 1] / 6.0 + #tempCalAcc[5 - 1] * #tempX[5 - 1] * #tempX[5 - 1] / 2.0 + #tempCalVel[5 - 1] * #tempX[5 - 1] + #tempCalPos[5 - 1];
+	                    IF ABS_LREAL(#tempCalVel[5]) < 0.000000001 THEN
+	                        #tempCalVel[5] := 0.0;
+	                    END_IF;
+	                    IF ABS_LREAL(#tempCalPos[5]) < 0.000000001 THEN
+	                        #tempCalPos[5] := 0.0;
+	                    END_IF;
+	                    #tempA3[5] := #tempJerk[5] / 6.0;
+	                    #tempA2[5] := #tempCalAcc[5] / 2.0;
+	                    #tempA1[5] := #tempCalVel[5];
+	                    #tempA0[5] := #tempCalPos[5];
+	                    
+	                    // ==============================================================================
+	                    // Segment [6]
+	                    // ==============================================================================  
+	                    #tempCalAcc[6] := #tempJerk[6 - 1] * #tempX[6 - 1] + #tempCalAcc[6 - 1];
+	                    #tempCalVel[6] := #tempJerk[6 - 1] * #tempX[6 - 1] * #tempX[6 - 1] / 2.0 + #tempCalAcc[6 - 1] * #tempX[6 - 1] + #tempCalVel[6 - 1];
+	                    #tempCalPos[6] := #tempJerk[6 - 1] * #tempX[6 - 1] * #tempX[6 - 1] * #tempX[6 - 1] / 6.0 + #tempCalAcc[6 - 1] * #tempX[6 - 1] * #tempX[6 - 1] / 2.0 + #tempCalVel[6 - 1] * #tempX[6 - 1] + #tempCalPos[6 - 1];
+	                    IF ABS_LREAL(#tempCalVel[6]) < 0.000000001 THEN
+	                        #tempCalVel[6] := 0.0;
+	                    END_IF;
+	                    IF ABS_LREAL(#tempCalPos[6]) < 0.000000001 THEN
+	                        #tempCalPos[6] := 0.0;
+	                    END_IF;
+	                    #tempA3[6] := #tempJerk[6] / 6.0;
+	                    #tempA2[6] := #tempCalAcc[6] / 2.0;
+	                    #tempA1[6] := #tempCalVel[6];
+	                    #tempA0[6] := #tempCalPos[6];
+	                    
+	                    // ==============================================================================
+	                    // Segment [7]
+	                    // ==============================================================================  
+	                    #tempCalAcc[7] := #tempJerk[7 - 1] * #tempX[7 - 1] + #tempCalAcc[7 - 1];
+	                    #tempCalVel[7] := #tempJerk[7 - 1] * #tempX[7 - 1] * #tempX[7 - 1] / 2.0 + #tempCalAcc[7 - 1] * #tempX[7 - 1] + #tempCalVel[7 - 1];
+	                    #tempCalPos[7] := #tempJerk[7 - 1] * #tempX[7 - 1] * #tempX[7 - 1] * #tempX[7 - 1] / 6.0 + #tempCalAcc[7 - 1] * #tempX[7 - 1] * #tempX[7 - 1] / 2.0 + #tempCalVel[7 - 1] * #tempX[7 - 1] + #tempCalPos[7 - 1];
+	                    IF ABS_LREAL(#tempCalVel[7]) < 0.000000001 THEN
+	                        #tempCalVel[7] := 0.0;
+	                    END_IF;
+	                    IF ABS_LREAL(#tempCalPos[7]) < 0.000000001 THEN
+	                        #tempCalPos[7] := 0.0;
+	                    END_IF;
+	                    #tempA3[7] := #tempJerk[7] / 6.0;
+	                    #tempA2[7] := #tempCalAcc[7] / 2.0;
+	                    #tempA1[7] := #tempCalVel[7];
+	                    #tempA0[7] := #tempCalPos[7];
+	                    
+	                    // ==============================================================================
+	                    // Segment [8]
+	                    // ==============================================================================  
+	                    #tempCalAcc[8] := #tempJerk[8 - 1] * #tempX[8 - 1] + #tempCalAcc[8 - 1];
+	                    #tempCalVel[8] := #tempJerk[8 - 1] * #tempX[8 - 1] * #tempX[8 - 1] / 2.0 + #tempCalAcc[8 - 1] * #tempX[8 - 1] + #tempCalVel[8 - 1];
+	                    #tempCalPos[8] := #tempJerk[8 - 1] * #tempX[8 - 1] * #tempX[8 - 1] * #tempX[8 - 1] / 6.0 + #tempCalAcc[8 - 1] * #tempX[8 - 1] * #tempX[8 - 1] / 2.0 + #tempCalVel[8 - 1] * #tempX[8 - 1] + #tempCalPos[8 - 1];
+	                    IF ABS_LREAL(#tempCalVel[8]) < 0.000000001 THEN
+	                        #tempCalVel[8] := 0.0;
+	                    END_IF;
+	                    IF ABS_LREAL(#tempCalPos[8]) < 0.000000001 THEN
+	                        #tempCalPos[8] := 0.0;
+	                    END_IF;
+	                    #tempA3[8] := #tempJerk[8] / 6.0;
+	                    #tempA2[8] := #tempCalAcc[8] / 2.0;
+	                    #tempA1[8] := #tempCalVel[8];
+	                    #tempA0[8] := #tempCalPos[8];
+	                    
+	                    // ==============================================================================
+	                    // Segment [9]
+	                    // ==============================================================================  
+	                    #tempCalAcc[9] := #tempJerk[9 - 1] * #tempX[9 - 1] + #tempCalAcc[9 - 1];
+	                    #tempCalVel[9] := #tempJerk[9 - 1] * #tempX[9 - 1] * #tempX[9 - 1] / 2.0 + #tempCalAcc[9 - 1] * #tempX[9 - 1] + #tempCalVel[9 - 1];
+	                    #tempCalPos[9] := #tempJerk[9 - 1] * #tempX[9 - 1] * #tempX[9 - 1] * #tempX[9 - 1] / 6.0 + #tempCalAcc[9 - 1] * #tempX[9 - 1] * #tempX[9 - 1] / 2.0 + #tempCalVel[9 - 1] * #tempX[9 - 1] + #tempCalPos[9 - 1];
+	                    IF ABS_LREAL(#tempCalVel[9]) < 0.000000001 THEN
+	                        #tempCalVel[9] := 0.0;
+	                    END_IF;
+	                    IF ABS_LREAL(#tempCalPos[9]) < 0.000000001 THEN
+	                        #tempCalPos[9] := 0.0;
+	                    END_IF;
+	                    #tempA3[9] := #tempJerk[9] / 6.0;
+	                    #tempA2[9] := #tempCalAcc[9] / 2.0;
+	                    #tempA1[9] := #tempCalVel[9];
+	                    #tempA0[9] := #tempCalPos[9];
+	                    
+	                    // ==============================================================================
+	                    // Segment [10]
+	                    // ==============================================================================  
+	                    #tempCalAcc[10] := #tempJerk[10 - 1] * #tempX[10 - 1] + #tempCalAcc[10 - 1];
+	                    #tempCalVel[10] := #tempJerk[10 - 1] * #tempX[10 - 1] * #tempX[10 - 1] / 2.0 + #tempCalAcc[10 - 1] * #tempX[10 - 1] + #tempCalVel[10 - 1];
+	                    #tempCalPos[10] := #tempJerk[10 - 1] * #tempX[10 - 1] * #tempX[10 - 1] * #tempX[10 - 1] / 6.0 + #tempCalAcc[10 - 1] * #tempX[10 - 1] * #tempX[10 - 1] / 2.0 + #tempCalVel[10 - 1] * #tempX[10 - 1] + #tempCalPos[10 - 1];
+	                    IF ABS_LREAL(#tempCalVel[10]) < 0.000000001 THEN
+	                        #tempCalVel[10] := 0.0;
+	                    END_IF;
+	                    IF ABS_LREAL(#tempCalPos[10]) < 0.000000001 THEN
+	                        #tempCalPos[10] := 0.0;
+	                    END_IF;
+	                    #tempA3[10] := #tempJerk[10] / 6.0;
+	                    #tempA2[10] := #tempCalAcc[10] / 2.0;
+	                    #tempA1[10] := #tempCalVel[10];
+	                    #tempA0[10] := #tempCalPos[10];
+	                    
+	                    // ==============================================================================
+	                    // Segment [11]
+	                    // ==============================================================================  
+	                    #tempCalAcc[11] := #tempJerk[11 - 1] * #tempX[11 - 1] + #tempCalAcc[11 - 1];
+	                    #tempCalVel[11] := #tempJerk[11 - 1] * #tempX[11 - 1] * #tempX[11 - 1] / 2.0 + #tempCalAcc[11 - 1] * #tempX[11 - 1] + #tempCalVel[11 - 1];
+	                    #tempCalPos[11] := #tempJerk[11 - 1] * #tempX[11 - 1] * #tempX[11 - 1] * #tempX[11 - 1] / 6.0 + #tempCalAcc[11 - 1] * #tempX[11 - 1] * #tempX[11 - 1] / 2.0 + #tempCalVel[11 - 1] * #tempX[11 - 1] + #tempCalPos[11 - 1];
+	                    IF ABS_LREAL(#tempCalVel[11]) < 0.000000001 THEN
+	                        #tempCalVel[11] := 0.0;
+	                    END_IF;
+	                    IF ABS_LREAL(#tempCalPos[11]) < 0.000000001 THEN
+	                        #tempCalPos[11] := 0.0;
+	                    END_IF;
+	                    #tempA3[11] := #tempJerk[11] / 6.0;
+	                    #tempA2[11] := #tempCalAcc[11] / 2.0;
+	                    #tempA1[11] := #tempCalVel[11];
+	                    #tempA0[11] := #tempCalPos[11];
+	                    
+	                    // ==============================================================================
+	                    // Segment [12]
+	                    // ==============================================================================  
+	                    #tempCalAcc[12] := #tempJerk[12 - 1] * #tempX[12 - 1] + #tempCalAcc[12 - 1];
+	                    #tempCalVel[12] := #tempJerk[12 - 1] * #tempX[12 - 1] * #tempX[12 - 1] / 2.0 + #tempCalAcc[12 - 1] * #tempX[12 - 1] + #tempCalVel[12 - 1];
+	                    #tempCalPos[12] := #tempJerk[12 - 1] * #tempX[12 - 1] * #tempX[12 - 1] * #tempX[12 - 1] / 6.0 + #tempCalAcc[12 - 1] * #tempX[12 - 1] * #tempX[12 - 1] / 2.0 + #tempCalVel[12 - 1] * #tempX[12 - 1] + #tempCalPos[12 - 1];
+	                    IF ABS_LREAL(#tempCalVel[12]) < 0.000000001 THEN
+	                        #tempCalVel[12] := 0.0;
+	                    END_IF;
+	                    IF ABS_LREAL(#tempCalPos[12]) < 0.000000001 THEN
+	                        #tempCalPos[12] := 0.0;
+	                    END_IF;
+	                    #tempA3[12] := #tempJerk[12] / 6.0;
+	                    #tempA2[12] := #tempCalAcc[12] / 2.0;
+	                    #tempA1[12] := #tempCalVel[12];
+	                    #tempA0[12] := #tempCalPos[12];
+	                    
+	                    // ==============================================================================
+	                    // Segment [13]
+	                    // ==============================================================================  
+	                    #tempCalAcc[13] := #tempJerk[13 - 1] * #tempX[13 - 1] + #tempCalAcc[13 - 1];
+	                    #tempCalVel[13] := #tempJerk[13 - 1] * #tempX[13 - 1] * #tempX[13 - 1] / 2.0 + #tempCalAcc[13 - 1] * #tempX[13 - 1] + #tempCalVel[13 - 1];
+	                    #tempCalPos[13] := #tempJerk[13 - 1] * #tempX[13 - 1] * #tempX[13 - 1] * #tempX[13 - 1] / 6.0 + #tempCalAcc[13 - 1] * #tempX[13 - 1] * #tempX[13 - 1] / 2.0 + #tempCalVel[13 - 1] * #tempX[13 - 1] + #tempCalPos[13 - 1];
+	                    IF ABS_LREAL(#tempCalVel[13]) < 0.000000001 THEN
+	                        #tempCalVel[13] := 0.0;
+	                    END_IF;
+	                    IF ABS_LREAL(#tempCalPos[13]) < 0.000000001 THEN
+	                        #tempCalPos[13] := 0.0;
+	                    END_IF;
+	                    #tempA3[13] := #tempJerk[13] / 6.0;
+	                    #tempA2[13] := #tempCalAcc[13] / 2.0;
+	                    #tempA1[13] := #tempCalVel[13];
+	                    #tempA0[13] := #tempCalPos[13];
+	                    
+	                    // ==============================================================================
+	                    // Segment [14]
+	                    // ==============================================================================  
+	                    #tempCalAcc[14] := #tempJerk[14 - 1] * #tempX[14 - 1] + #tempCalAcc[14 - 1];
+	                    #tempCalVel[14] := #tempJerk[14 - 1] * #tempX[14 - 1] * #tempX[14 - 1] / 2.0 + #tempCalAcc[14 - 1] * #tempX[14 - 1] + #tempCalVel[14 - 1];
+	                    #tempCalPos[14] := #tempJerk[14 - 1] * #tempX[14 - 1] * #tempX[14 - 1] * #tempX[14 - 1] / 6.0 + #tempCalAcc[14 - 1] * #tempX[14 - 1] * #tempX[14 - 1] / 2.0 + #tempCalVel[14 - 1] * #tempX[14 - 1] + #tempCalPos[14 - 1];
+	                    IF ABS_LREAL(#tempCalVel[14]) < 0.000000001 THEN
+	                        #tempCalVel[14] := 0.0;
+	                    END_IF;
+	                    IF ABS_LREAL(#tempCalPos[14]) < 0.000000001 THEN
+	                        #tempCalPos[14] := 0.0;
+	                    END_IF;
+	                    #tempA3[14] := #tempJerk[14] / 6.0;
+	                    #tempA2[14] := #tempCalAcc[14] / 2.0;
+	                    #tempA1[14] := #tempCalVel[14];
+	                    #tempA0[14] := #tempCalPos[14];
+	                    
+	                    // ==============================================================================
+	                    // Segment [15]
+	                    // ==============================================================================  
+	                    #tempCalAcc[15] := #tempJerk[15 - 1] * #tempX[15 - 1] + #tempCalAcc[15 - 1];
+	                    #tempCalVel[15] := #tempJerk[15 - 1] * #tempX[15 - 1] * #tempX[15 - 1] / 2.0 + #tempCalAcc[15 - 1] * #tempX[15 - 1] + #tempCalVel[15 - 1];
+	                    #tempCalPos[15] := #tempJerk[15 - 1] * #tempX[15 - 1] * #tempX[15 - 1] * #tempX[15 - 1] / 6.0 + #tempCalAcc[15 - 1] * #tempX[15 - 1] * #tempX[15 - 1] / 2.0 + #tempCalVel[15 - 1] * #tempX[15 - 1] + #tempCalPos[15 - 1];
+	                    IF ABS_LREAL(#tempCalVel[15]) < 0.000000001 THEN
+	                        #tempCalVel[15] := 0.0;
+	                    END_IF;
+	                    IF ABS_LREAL(#tempCalPos[15]) < 0.000000001 THEN
+	                        #tempCalPos[15] := 0.0;
+	                    END_IF;
+	                    #tempA3[15] := #tempJerk[15] / 6.0;
+	                    #tempA2[15] := #tempCalAcc[15] / 2.0;
+	                    #tempA1[15] := #tempCalVel[15];
+	                    #tempA0[15] := #tempCalPos[15];
+	                    
+	                    #tempPCount := 0;
+	                    FOR #tempPCount := 1 TO 15 DO
+	                        IF #tempCalPos[#tempPCount] >= #targetPos THEN
+	                            #tempTCount := #tempPCount;
+	                            EXIT;
+	                        END_IF;
+	                    END_FOR;
+	                    #tempNResult := "2351_NewtonRaphson"(a3 := #tempA3[#tempTCount],
+	                                                         a2 := #tempA2[#tempTCount],
+	                                                         a1 := #tempA1[#tempTCount],
+	                                                         a0 := #tempA0[#tempTCount],
+	                                                         target := #targetPos,
+	                                                         initial := #tempX[#tempTCount] / 2.0);
+	                    #tempPCount := 0;
+	                    #tempResult := 0.0;
+	                    FOR #tempPCount := 1 TO #tempTCount - 1 DO
+	                        #tempResult := #tempResult + #tempX[#tempPCount];
+	                    END_FOR;
+	                    #tempResult := #tempResult + #tempNResult;
+	                END_REGION
+	                
+	                #targetTime := #tempResult / #lineSpeed;
+	                #statEndTime := TIME_TCK();
+	                #statTimeTable[#CC_CALCULATE] := #statEndTime - #statStartTime;
+	                #statStartTime := TIME_TCK();
+	                #statCalculateCamState := #CC_DONE;
+	            END_REGION
+	            
+	        #CC_DONE:
+	            REGION DONE
+	                ;
+	            END_REGION
+	            
+	        #CC_ERROR:
+	            REGION ERROR
+	                ;
+	            END_REGION
+	    END_CASE;
+	END_REGION
+	
+	REGION Outputs
+	    #busy := #statCalculateCamState = #CC_CALCULATE;
+	    #error := #statCalculateCamState = #CC_ERROR;
+	    #done := #statCalculateCamState = #CC_DONE;
+	END_REGION
+END_FUNCTION_BLOCK
+

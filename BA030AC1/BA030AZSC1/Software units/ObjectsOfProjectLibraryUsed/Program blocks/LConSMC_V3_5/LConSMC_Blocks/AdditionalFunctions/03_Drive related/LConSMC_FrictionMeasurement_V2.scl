@@ -1,0 +1,546 @@
+﻿FUNCTION_BLOCK "LConSMC_FrictionMeasurement_V2"
+{ S7_Optimized_Access := 'TRUE' ; Published := 'TRUE' }
+FAMILY : '(family)'
+VERSION : 0.1
+//The function block is used to record a friction characteristic of the drive. The characteristic can then be used as a component of torque precontrol. This function should be calles in a program cycle OB.  Function block ID: 3113
+   VAR_INPUT 
+      execute { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;   // TRUE: Start friction measurement with rising edge
+      abort { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;   // TRUE: Rising edge stops measurement and axis
+      warmUpTime { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Time;   // Warm up time  Before the measurement starts the drive rotates with maximum measurement speed for the parameterized time
+      rampTime { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Real := 1000.0;   // [ms] Time to ramp up to maximum speed
+      noOfMeasurementPoints { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Int := 50;   // Number measurement points per speed step (limited between 50-500)
+      sizeOfArray { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Int := 20;   // maxSpeed = 0:  Number of breakpoints (from "speedValues")  maxSpeed <> 0:  Number of measuring points between 0 and "maxSpeed"
+      maxSpeed { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 0.0;   // [RPM] Maximim speed at which the friction should be recorded
+      speedValues { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : "LConSMC_typeBreakPointTable" := ([20(0.0)]);   // [RPM] Breakpoints of speed values for which the friction should be measured. Only if "maxSpeed" = 0.
+      measurementDelayTime { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Time := T#1S;   // Settling time after which the friction is measured at each speed setpoint
+   END_VAR
+
+   VAR_OUTPUT 
+      done { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;   // TRUE: Measurement is finished
+      valid { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;   // TRUE: Measurement values are valid
+      aborted { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;   // TRUE: Measuremetn was aborted
+      busy { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;   // TRUE: Measurement is active
+      error { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;   // TRUE: An error has occured
+      subfunctionState { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Word;   // Error identification
+      status { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Word := #STATUS_NO_CALL;   // Current status of function block
+   END_VAR
+
+   VAR_IN_OUT 
+      torqueOutValues : "LConSMC_typeBreakPointTable";   // Friction torque values
+      speedOutValues : "LConSMC_typeBreakPointTable";   // Friction speed values
+      axis {InstructionName := 'TO_SpeedAxis'; LibVersion := '9.0'} : TO_SpeedAxis;   // Axis
+   END_VAR
+
+   VAR 
+      statMeasurementValid { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statValid { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statExecuteOld { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statDone { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statAborted { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statAbortMeasurement { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statAbortOld { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statBusy { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statError { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statFirstCycle { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statConfigError { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statStatus { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Word := #STATUS_NO_CALL;
+      statSubfunctionState { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Word;
+      axisVelocityUnit { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : UDInt;
+      statFBState { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : DInt := #FB_STATE_NO_PROCESSING;
+      statSizeOfArray { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Int;
+      statValueNumber { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Int;
+      statPointIndex { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Int;
+      statValueIndex { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Int;
+      statMaxValue { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statTotalValue { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statAcceleration { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statDenominator { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statNumerator { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statVelocityConversionFactor { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statAccelerationConversion { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statSpeedValues { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'; S7_SetPoint := 'False'} : "LConSMC_typeBreakPointTable" := ([20(0.0)]);
+      statTorqueValues { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'; S7_SetPoint := 'False'} : "LConSMC_typeBreakPointTable" := ([20(0.0)]);
+      instMoveVelocity {InstructionName := 'MC_MOVEVELOCITY'; LibVersion := '9.0'; ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'; S7_SetPoint := 'False'} : MC_MOVEVELOCITY;
+      instTOnWarmUp {InstructionName := 'TON_TIME'; LibVersion := '1.0'; ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'; S7_SetPoint := 'False'} : TON_TIME;
+      instTOnDelay {InstructionName := 'TON_TIME'; LibVersion := '1.0'; ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'; S7_SetPoint := 'False'} : TON_TIME;
+   END_VAR
+
+   VAR_TEMP 
+      tempExecute : Bool;
+      tempAbort : Bool;
+      tempVelocity : LReal;
+      tempIndex : DInt;
+   END_VAR
+
+   VAR CONSTANT 
+      FB_ID : DWord := 16#3113_0000;
+      MIN_MEASUREMENT_POINTS : Int := 50;
+      MAX_MEASUREMENT_POINTS : Int := 500;
+      FB_STATE_NO_PROCESSING : DInt := 0;
+      FB_STATE_VALIDATE_CONFIG : DInt := 1;
+      FB_STATE_WARM_UP : DInt := 2;
+      FB_STATE_MEASUREMENT_ACTIVE : DInt := 3;
+      FB_STATE_STOP_AXIS : DInt := 4;
+      FB_STATE_MEASUREMENT_DONE : DInt := 5;
+      FB_STATE_ABORT_MEASUREMENT : DInt := 100;
+      FB_STATE_ERROR_DURING_MOVEMENT : DInt := 900;
+      STATUS_EXECUTION_FINISHED : Word := 16#0000;
+      STATUS_NO_CALL : Word := 16#7000;
+      STATUS_FIRST_CALL : Word := 16#7001;
+      STATUS_SUBSEQUENT_CALL : Word := 16#7002;
+      STATUS_ABORTED : Word := 16#7003;
+      ERR_UNDEFINED_STATE : Word := 16#8600;
+      LCONSMC_PI : LReal := 3.14159265358979;
+      LCONSMC_1_PER_HOUR : UInt := 1528;
+      LCONSMC_1_PER_MINUTE : UInt := 1083;
+      LCONSMC_1_PER_SECOND : UInt := 1082;
+      LCONSMC_DEGREE_PER_MINUTE : UInt := 1522;
+      LCONSMC_DEGREE_PER_SECOND : UInt := 1521;
+      LCONSMC_RAD_PER_MINUTE : UInt := 1523;
+      LCONSMC_RAD_PER_SECOND : UInt := 1086;
+   END_VAR
+
+
+BEGIN
+	REGION BLOCK INFO HEADER
+	    //===============================================================================
+	    // (Siemens AG) / (c)Copyright (2023)
+	    //-------------------------------------------------------------------------------
+	    // Title:            LConSMC_FrictionMeasurement_V2
+	    // Comment/Function: This function block can be used to measure the friction characteristic
+	    // Library/Family:   LConSMC
+	    // Author:           APC Erlangen
+	    // Tested with:      FW 2.8
+	    // Engineering:      TIA Portal V16
+	    // Restrictions:     Call in cyclic organization block (e.g. OB1)
+	    // Requirements:     -
+	    //-------------------------------------------------------------------------------
+	    // Change log table:
+	    // Version  | Date       | Expert in charge       | Changes applied
+	    //----------|------------|------------------------|------------------------------
+	    // 01.00.01 | 2023-07-18 | APC Erlangen           | Updated input parameter description
+	    // 01.00.00 | 2021-01-27 | APC Erlangen           | First released version
+	    //===============================================================================
+	END_REGION
+	
+	REGION DESCRIPTION
+	(/*
+	The function block measures the friction characteristic (speed / torque breakpoints) of a specific mechanical system.
+	Speed setpoints are taken and torque values are saved in the specified data area referenced by an array.
+	The data structure contains breakpoints of the characteristic (x value: speed, y value: torque), while the speed setpoint value has to be specified before starting the function block.
+	The user has the possibility to let the function block preassign the speed values into an array. For this the input parameter maxSpeed must be unequal to zero.
+	The speed values will be distributed evenly according to the length of the data block.
+	The first entry will always be zero speed with zero torque.
+	The function block is started using the input execute. Once started, speedSetpoint outputs the drives speed based on the values of the breakpoint table.
+	If the input warmupTime > 0.0, the drive is moving for this defined period of time at the maximum speed before starting the measurement of the corresponding torque values.
+	The torque values are averaged with defined number of samplings specified by input valueNumber. The ramp times for changing the speed setpoint are specified using the input ramptime.
+	If the sequence is active, done = FALSE and busy = TRUE. If finished, done = TRUE and busy = FALSE.
+	If an error occurs during the sequence, this is displayed at the error output and the associated errorID.
+	If, at the input, the abort signal abort is set to TRUE, the measurement is interrupted and the setpoint ramped to zero.
+	
+	NOTE
+	:    The entered speed setpoints are on drive side in the unit 1/min.
+	The setpoint is converted automatically considering the unit of the technology object and the entered gear ratio
+	
+	---
+	
+	Restrictions of the function block:  
+	  
+	* Only rotatory axes are supported
+	* The axis must be enabled via the user program  
+	  
+	
+	DANGER
+	:    **Rotating machine parts**
+	:    Before starting the measurement it must be ensured that the drive can rotate freely without causing any damage. During the measurement high speed setpoints can occur.
+	
+	---
+	
+	![Friction measurement](FrictionMeasurement_Diagram.png)
+	
+	*/)
+	END_REGION
+	
+	#tempExecute := #execute; // Work with temporary value / create process image
+	#tempAbort := #abort;
+	REGION TRIGGERING
+	    IF (#tempExecute = TRUE) AND (#statExecuteOld = FALSE) // Check if FB is triggered
+	        // TODO(optional): delete next line and comment line if FB shall finish current job before new job can be started with rising edge of execute
+	        AND (#statStatus = #STATUS_NO_CALL)
+	        AND NOT #tempAbort
+	    THEN // First call; initialize FB
+	        #statDone := FALSE;
+	        #statAborted := false;
+	        #statAbortMeasurement := FALSE;
+	        #statBusy := TRUE;
+	        #statError := FALSE;
+	        #statValid := FALSE;
+	        #statStatus := #STATUS_FIRST_CALL;
+	        // State machine - start processing
+	        #statFBState := #FB_STATE_VALIDATE_CONFIG;
+	        
+	        // TODO: Initialize functionality: reset of variables, diagnostics, etc.
+	        #statConfigError := FALSE;
+	        #statVelocityConversionFactor := 0.0;
+	        #statAccelerationConversion := 0.0;
+	        #statMeasurementValid := FALSE;
+	        FOR #tempIndex := 0 TO "LCON_MAX_VALUE_BREAK_POINT_TABLE" DO
+	            #statSpeedValues.values[#tempIndex] := 0.0;
+	            #statTorqueValues.values[#tempIndex] := 0.0;
+	        END_FOR;
+	        // TODO: Initialize functionality: call subsidiary FBs with FALSE
+	        #instMoveVelocity.Execute := false;
+	        #instTOnWarmUp(IN := FALSE,
+	                       PT := #warmUpTime);
+	        
+	        #instTOnDelay(IN := FALSE,
+	                      PT := #measurementDelayTime);
+	        
+	        
+	    ELSIF (#statStatus = #STATUS_FIRST_CALL) THEN
+	        #statStatus := #STATUS_SUBSEQUENT_CALL;
+	    END_IF;
+	    
+	    // Abort measurement
+	    IF #tempAbort AND NOT #statAbortOld
+	        AND #statStatus <> #STATUS_NO_CALL
+	        AND #statFBState <> #FB_STATE_MEASUREMENT_DONE
+	    THEN
+	        #statAbortMeasurement := TRUE;
+	        // Reset move command
+	        #instMoveVelocity(Axis := #axis,
+	                          Execute := FALSE,
+	                          PositionControlled := FALSE);
+	        
+	        IF #statFBState = #FB_STATE_WARM_UP
+	            OR #statFBState = #FB_STATE_MEASUREMENT_ACTIVE
+	        THEN
+	            #statFBState := #FB_STATE_STOP_AXIS;
+	        ELSE
+	            #statFBState := #FB_STATE_ABORT_MEASUREMENT;
+	        END_IF;
+	    END_IF;
+	    
+	    // Edge detection 'execute' input
+	    #statExecuteOld := #tempExecute;
+	    #statAbortOld := #tempAbort;
+	END_REGION TRIGGERING
+	
+	IF (#statStatus = #STATUS_NO_CALL) THEN // Nothing to do -> End here to reduce "system load"
+	    RETURN;
+	END_IF;
+	
+	REGION STATE_MACHINE
+	    CASE #statFBState OF // State machine of FB
+	        #FB_STATE_NO_PROCESSING:
+	            REGION NO Processing
+	                // No processing active (Note: this state must always be present and left empty)
+	                ;
+	            END_REGION NO Processing
+	            
+	        #FB_STATE_VALIDATE_CONFIG: // Processing active
+	            REGION VALIDATE_CONFIG
+	                // Copy to local variables
+	                #statSizeOfArray := LIMIT(MN := 0, IN := #sizeOfArray, MX := "LCON_MAX_VALUE_BREAK_POINT_TABLE" + 1);
+	                #statValueNumber := LIMIT(MN := #MIN_MEASUREMENT_POINTS, IN := #noOfMeasurementPoints, MX := #MAX_MEASUREMENT_POINTS);
+	                IF (#statSizeOfArray < 1)
+	                    OR NOT (#axis.Actor.Interface.EnableTorqueData)
+	                THEN
+	                    #statConfigError := true;
+	                ELSE
+	                    #statConfigError := FALSE;
+	                    IF #maxSpeed <> 0.0 THEN //use max speed to fill speed values
+	                        #statMaxValue := #maxSpeed;
+	                        FOR #statPointIndex := 0 TO #statSizeOfArray - 1 BY 1 DO
+	                            #statSpeedValues.values[#statPointIndex] := (ABS(#maxSpeed) / (#statSizeOfArray - 1) * #statPointIndex);
+	                        END_FOR;
+	                        #statPointIndex := #statSizeOfArray; // Proceed to warmup phase, select highest x value
+	                    ELSE
+	                        #statPointIndex := 0;
+	                        #statMaxValue := 0.0;
+	                        #statSpeedValues := #speedValues; // Copy inputs to local variable
+	                        
+	                        REPEAT
+	                            // Find maximum value
+	                            #statMaxValue := MAX(IN1 := #statMaxValue, IN2 := #statSpeedValues.values[#statPointIndex]);
+	                            // Check if values are strict monotonic increasing
+	                            IF #statPointIndex > 0 THEN
+	                                IF (#statSpeedValues.values[#statPointIndex] <= #statSpeedValues.values[#statPointIndex - 1])
+	                                THEN
+	                                    #statConfigError := TRUE;
+	                                    EXIT;
+	                                END_IF;
+	                            END_IF;
+	                            #statPointIndex := #statPointIndex + 1;
+	                        UNTIL #statPointIndex = (#statSizeOfArray)
+	                        END_REPEAT;
+	                    END_IF;
+	                    
+	                    // Read to values to local variables
+	                    #axisVelocityUnit := #axis.Units.VelocityUnit;
+	                    #statNumerator := UDINT_TO_LREAL(#axis.LoadGear.Numerator);    // Motor side
+	                    #statDenominator := UDINT_TO_LREAL(#axis.LoadGear.Denominator);  // Load side
+	                    
+	                    // Calculate conversion factor for velocity
+	                    CASE #axisVelocityUnit OF
+	                        #LCONSMC_DEGREE_PER_SECOND:
+	                            #statVelocityConversionFactor := 360.0 / 60.0;
+	                            #statAccelerationConversion := 360.0 / 60.0;
+	                        #LCONSMC_DEGREE_PER_MINUTE:
+	                            #statVelocityConversionFactor := 360.0;
+	                            #statAccelerationConversion := 360.0 / 60.0;
+	                        #LCONSMC_RAD_PER_SECOND:
+	                            #statVelocityConversionFactor := 2.0 * #LCONSMC_PI / 60.0;
+	                            #statAccelerationConversion := 2.0 * #LCONSMC_PI / 60.0;
+	                        #LCONSMC_RAD_PER_MINUTE:
+	                            #statVelocityConversionFactor := 2.0 * #LCONSMC_PI;
+	                            #statAccelerationConversion := 2.0 * #LCONSMC_PI / 60.0;
+	                            (*
+	                            LCONSMC_MM_PER_SECOND:
+	                                
+	                            LCONSMC_M_PER_SECOND:
+	                                
+	                            LCONSMC_MM_PER_MINUTE:
+	                                
+	                            LCONSMC_MM_PER_HOUR:
+	                                
+	                            LCONSMC_M_PER_HOUR:
+	                                
+	                            LCONSMC_KM_PER_MINUTE:
+	                                
+	                            LCONSMC_KM_PER_HOUR:
+	                               
+	                            LCONSMC_INCH_PER_SECOND:
+	                                
+	                            LCONSMC_INCH_PER_MINUTE:
+	                               
+	                            LCONSMC_FEET_PER_SECOND:
+	                                
+	                            LCONSMC_MILES_PER_HOUR:
+	                            *)
+	                        #LCONSMC_1_PER_HOUR:
+	                            #statVelocityConversionFactor := 60.0;
+	                            #statAccelerationConversion := 1.0 / 60.0;
+	                        #LCONSMC_1_PER_MINUTE:
+	                            #statVelocityConversionFactor := 1.0;
+	                            #statAccelerationConversion := 1.0 / 60.0;
+	                        #LCONSMC_1_PER_SECOND:
+	                            #statVelocityConversionFactor := 1.0 / 60.0;
+	                            #statAccelerationConversion := 1.0 / 60.0;
+	                        ELSE
+	                            // Invalid input unit
+	                            #statConfigError := TRUE;
+	                    END_CASE;
+	                    
+	                    #statVelocityConversionFactor /= (#statNumerator / #statDenominator);
+	                    #statAccelerationConversion /= (#statNumerator / #statDenominator);
+	                    IF (#rampTime > 0.0) THEN
+	                        #statAcceleration := (#statMaxValue * #statAccelerationConversion) / (#rampTime / 1000.0);  // [RPM] --> in [Unit/s^2]
+	                    ELSE
+	                        #statAcceleration := -1;
+	                    END_IF;
+	                    
+	                    
+	                    IF NOT #statConfigError THEN
+	                        #statFBState := #FB_STATE_WARM_UP;
+	                        #statFirstCycle := true;
+	                    ELSE
+	                      #statStatus := DWORD_TO_WORD("LCON_ERROR_FRICTION_V2_INVALID_CONFIGURATION");
+	                    END_IF;
+	                END_IF;
+	            END_REGION VALIDATE_CONFIG
+	            
+	        #FB_STATE_WARM_UP: // Further processing state
+	            REGION WARM_UP
+	                IF #statFirstCycle THEN
+	                    #statFirstCycle := FALSE;
+	                    #instMoveVelocity.Velocity := #statSpeedValues.values[#statPointIndex - 1] * #statVelocityConversionFactor; // Start with highest speed
+	                    #instMoveVelocity.Execute := true;
+	                ELSE
+	                    // TODO: Use this state for further application specific code
+	                    #instTOnWarmUp(IN := #instMoveVelocity.InVelocity,
+	                                   PT := #warmUpTime);
+	                    
+	                    IF #instTOnWarmUp.Q THEN
+	                        #statFBState := #FB_STATE_MEASUREMENT_ACTIVE;
+	                        #statFirstCycle := TRUE;
+	                        #instTOnWarmUp(IN := FALSE,
+	                                       PT := #warmUpTime);
+	                        #statTotalValue := 0.0;
+	                        #statValueIndex := 0;
+	                        #instMoveVelocity.Execute := FALSE;
+	                    ELSIF ((#instMoveVelocity.Error)
+	                        OR (#instMoveVelocity.CommandAborted))
+	                    THEN
+	                        #statFBState := #FB_STATE_ERROR_DURING_MOVEMENT;
+	                    END_IF;
+	                END_IF;
+	            END_REGION WARM_UP
+	            
+	        #FB_STATE_MEASUREMENT_ACTIVE:
+	            REGION MEASUREMENT_ACTIVE
+	                IF #statFirstCycle THEN
+	                    #statMeasurementValid := TRUE;
+	                    #statFirstCycle := FALSE;
+	                END_IF;
+	                IF #instMoveVelocity.InVelocity THEN // Reached setpoint
+	                    #instMoveVelocity.Execute := FALSE; // reset MC command
+	                    //Start delay time
+	                    #instTOnDelay(IN := TRUE,
+	                                  PT := #measurementDelayTime);
+	                    IF #instTOnDelay.Q THEN
+	                        #statTotalValue := #statTotalValue + #axis.StatusTorqueData.ActualTorque;
+	                        #statValueIndex := #statValueIndex + 1;
+	                        #tempVelocity := #axis.Velocity;
+	                        IF (#statValueIndex = #statValueNumber) OR (#tempVelocity = 0.0) THEN  // Number of values reached
+	                            IF (#tempVelocity = 0.0) THEN
+	                                #statTotalValue := 0.0;
+	                            END_IF;
+	                            #statTorqueValues.values[#statPointIndex - 1] := (#statTotalValue / INT_TO_REAL(#statValueIndex));
+	                            IF (#tempVelocity <> (#statSpeedValues.values[#statPointIndex - 1] * #statVelocityConversionFactor)) THEN
+	                                //Speed setpoint is limited (e.g. maximim speed limit at TO)
+	                                //Enter active speed setpoint 
+	                                #statSpeedValues.values[#statPointIndex - 1] := #tempVelocity / #statVelocityConversionFactor;
+	                                #statStatus := DWORD_TO_WORD("LCON_WARNING_FRICTION_V2_OUTPUT_LIMITED");
+	                                #statMeasurementValid := FALSE;
+	                            END_IF;
+	                            #statTotalValue := 0.0;
+	                            #statValueIndex := 0;
+	                            #statPointIndex -= 1;
+	                            IF #statPointIndex > 0 THEN
+	                                #instMoveVelocity.Velocity := #statSpeedValues.values[#statPointIndex - 1] * #statVelocityConversionFactor;
+	                            ELSE
+	                                #statFBState := #FB_STATE_STOP_AXIS;
+	                                #instMoveVelocity.Velocity := 0.0;
+	                            END_IF;
+	                            #instMoveVelocity.Execute := true;
+	                            #instTOnDelay(IN := false,
+	                                          PT := #measurementDelayTime);
+	                        END_IF;
+	                    END_IF;
+	                ELSIF (#instMoveVelocity.Error)
+	                    OR (#instMoveVelocity.CommandAborted)
+	                THEN
+	                    #statMeasurementValid := FALSE;
+	                    #statFBState := #FB_STATE_ERROR_DURING_MOVEMENT;
+	                END_IF;
+	            END_REGION MEASUREMENT_ACTIVE
+	            
+	        #FB_STATE_STOP_AXIS:
+	            REGION STOP_AXIS
+	                #instMoveVelocity.Velocity := 0.0;
+	                #instMoveVelocity.Execute := true;
+	                
+	                IF #axis.Velocity = 0.0 THEN
+	                    #instMoveVelocity.Execute := FALSE;
+	                    IF #statAbortMeasurement THEN
+	                        #statFBState := #FB_STATE_ABORT_MEASUREMENT;
+	                    ELSE
+	                        #statFBState := #FB_STATE_MEASUREMENT_DONE;
+	                    END_IF;
+	                ELSIF (#instMoveVelocity.Error)
+	                    OR (#instMoveVelocity.CommandAborted)
+	                THEN
+	                    #statFBState := #FB_STATE_ERROR_DURING_MOVEMENT;
+	                END_IF;
+	            END_REGION STOP_AXIS    
+	            
+	        #FB_STATE_MEASUREMENT_DONE:
+	            REGION MEASUREMENT_DONE
+	                #statStatus := #STATUS_EXECUTION_FINISHED;
+	            END_REGION
+	            
+	        #FB_STATE_ABORT_MEASUREMENT:
+	            REGION ABORT MEASUREMENT
+	                #statStatus := #STATUS_ABORTED;
+	                #statValid := FALSE;
+	                // Reset measured torque values
+	                FOR #tempIndex := 0 TO #sizeOfArray - 1 DO
+	                    #statTorqueValues.values[#tempIndex] := 0.0;
+	                END_FOR;
+	                
+	            END_REGION ABORT MEASUREMENT
+	            
+	        #FB_STATE_ERROR_DURING_MOVEMENT:
+	            REGION ERROR
+	              #statStatus := DWORD_TO_WORD("LCON_ERROR_FRICTION_V2_MOVE_VELOCITY");
+	                #statSubfunctionState := #instMoveVelocity.ErrorId;
+	            END_REGION
+	        ELSE // Undefined state in state machine reached
+	            REGION undefined state
+	                #statStatus := #ERR_UNDEFINED_STATE;
+	            END_REGION undefined state
+	    END_CASE;
+	END_REGION STATE_MACHINE
+	
+	REGION MC_MoveVelocity
+	    #instMoveVelocity(Axis := #axis,
+	                      //Velocity:=#statSpeedValues.values[#statPointIndex - 1],
+	                      Acceleration := #statAcceleration,
+	                      Deceleration := #statAcceleration,
+	                      Jerk := 0.0,
+	                      Direction := 0,
+	                      PositionControlled := FALSE);
+	END_REGION
+	
+	REGION OUTPUTS
+	    // Write outputs
+	    IF (#statStatus = #STATUS_EXECUTION_FINISHED) AND (#statDone = FALSE) THEN // Execution finished without errors
+	        REGION execution finished
+	            #statDone := TRUE;
+	            #statBusy := FALSE;
+	            #statError := FALSE;
+	            #statValid := #statMeasurementValid;
+	            // execution aborted --> set state no processing
+	            #statFBState := #FB_STATE_NO_PROCESSING;
+	        END_REGION execution finished
+	        
+	    ELSIF (#statStatus.%X15 = TRUE) AND (#statError = FALSE) THEN // Error occurred (#statStatus is 16#8000 to 16#FFFF)
+	        REGION error occured
+	            #statDone := FALSE;
+	            #statBusy := FALSE;
+	            #statError := TRUE;
+	            #statValid := FALSE;
+	            // execution aborted --> set state no processing
+	            #statFBState := #FB_STATE_NO_PROCESSING;
+	        END_REGION error occured
+	    ELSIF (#statStatus = #STATUS_ABORTED) AND (#statAborted = FALSE) THEN   // Measurement has been aborted
+	        #statDone := FALSE;
+	        #statBusy := FALSE;
+	        #statError := FALSE;
+	        #statAborted := TRUE;
+	        #statValid := FALSE;
+	        // execution aborted --> set state no processing
+	        #statFBState := #FB_STATE_NO_PROCESSING;
+	    ELSIF (#tempExecute = FALSE) AND ((#statDone = TRUE) OR (#statError = TRUE) OR (#statAborted = TRUE)) THEN // Reset outputs
+	        REGION execute reseted
+	            #statDone := FALSE;
+	            #statBusy := FALSE;
+	            #statError := FALSE;
+	            #statStatus := #STATUS_NO_CALL;
+	            // TODO: Reset application specific outputs
+	            #statAborted := FALSE;
+	            #statValid := FALSE;
+	            #statSubfunctionState := 16#0;
+	        END_REGION execute reseted
+	    END_IF;
+	    
+	    REGION Write static values to outputs
+	        #done := #statDone;
+	        #busy := #statBusy;
+	        #error := #statError;
+	        #status := #statStatus;
+	        #valid := #statValid;
+	        // if ENO mechanism is not used / not wanted replace the following line by --> ENO := TRUE;
+	        ENO := NOT #statError;
+	        // TODO: Write application specific static values to outputs
+	        #speedOutValues := #statSpeedValues;
+	        #torqueOutValues := #statTorqueValues;
+	        #aborted := #statAborted;
+	        #subfunctionState := #statSubfunctionState;
+	        
+	    END_REGION Write static values TO outputs
+	END_REGION OUTPUTS
+	
+END_FUNCTION_BLOCK
+

@@ -1,0 +1,45 @@
+﻿FUNCTION "2351_NewtonRaphson" : LReal
+{ S7_Optimized_Access := 'TRUE' ; Published := 'FALSE' }
+VERSION : 0.1
+   VAR_INPUT 
+      a3 : LReal;
+      a2 : LReal;
+      a1 : LReal;
+      a0 : LReal;
+      target : LReal;
+      initial : LReal;
+   END_VAR
+
+   VAR_TEMP 
+      tempICount : DInt;
+      temp_X_now : LReal;
+      temp_X_next : LReal;
+      temp_Fx : LReal;
+      temp_dFx : LReal;
+   END_VAR
+
+   VAR CONSTANT 
+      maxInt : DInt := 50;
+      tolerance : LReal := 1.0E-06;
+   END_VAR
+
+
+BEGIN
+	#temp_X_now := #initial;
+	
+	FOR #tempICount := 1 TO #maxInt DO
+	    #temp_Fx := #a3 * (#temp_X_now * #temp_X_now * #temp_X_now) + #a2 * (#temp_X_now * #temp_X_now) + #a1 * (#temp_X_now) + #a0;
+	    #temp_dFx := 3.0 * #a3 * (#temp_X_now * #temp_X_now) + 2.0 * #a2 * (#temp_X_now) + #a1;
+	    
+	    #temp_X_next := #temp_X_now - (#temp_Fx - #target) / #temp_dFx;
+	    
+	    IF ABS_LREAL(#temp_X_next - #temp_X_now) <= #tolerance THEN
+	        EXIT;
+	    END_IF;
+	    
+	    #temp_X_now := #temp_X_next;
+	END_FOR;
+	
+	#"2351_NewtonRaphson" := #temp_X_next;
+END_FUNCTION
+

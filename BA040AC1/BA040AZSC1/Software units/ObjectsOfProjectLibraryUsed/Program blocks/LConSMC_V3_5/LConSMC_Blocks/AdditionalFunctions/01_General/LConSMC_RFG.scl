@@ -1,0 +1,345 @@
+﻿FUNCTION_BLOCK "LConSMC_RFG"
+TITLE = LConSMC_RFG
+{ S7_Optimized_Access := 'TRUE' ; Published := 'TRUE' }
+VERSION : 0.1
+//RFG with MOP and follow-up operation – without rounding. The function block must be called in a cyclic interrupt, e.g. OB30.  Function block ID: 1106
+   VAR_INPUT 
+      x { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 0.0;   // Input value
+      nominalValue { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 1.0;   // Reference value for ramping times
+      upperLimit { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 0.0;   // Upper limit for output value
+      lowerLimit { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 0.0;   // Lower limit for output value
+      setValue { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 0.0;   // Set value (if "set" = TRUE, output "y" is set to this value)
+      rampupTime { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 0.0;   // [ms] Ramp up time (at least the cycle time)
+      rampdownTime { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 0.0;   // [ms] Ramp down time (at least the cycle time)
+      rampTimeMode { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Int := #DIFF_TO_ZERO;   // Select ramping time mode  0: Ramp up time if target value moves away from zero  1: Ramp up time if target value is bigger than start value
+      set { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := FALSE;   // TRUE: Set output to the value of the input "setValue"
+      followup { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := FALSE;   // TRUE: Integrate output y to setpoint x
+      increase { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := FALSE;   // TRUE: Increase output y until upper limit is reached
+      decrease { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := FALSE;   // TRUE: Decrease output y until lower limit is reached with ramp down time
+      tCycle { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Real;   // [ms] Cycle time the FB is called
+   END_VAR
+
+   VAR_OUTPUT 
+      error { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;   // TRUE:   An error has occurred, refer to error identification
+      errorID { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : DWord := 16#0000_0000;   // Error identification, refer to error messages
+      y { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;   // Ramped output value (Same unit as input value "x)
+      ya { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 0.0;   // [Input unit from "x" / tCycle] Changing rate of output "y"
+      SetpointReached { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := FALSE;   // TRUE: Output value is Input Value
+      upperLimitReached { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := FALSE;   // TRUE: upper limit reached
+      lowerLimitReached { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := FALSE;   // TRUE: lower limit reached
+   END_VAR
+
+   VAR 
+      statTUs { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statTDs { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statYkm1 { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statLLs { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statXs { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      stat1 { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statError { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := FALSE;
+      statY { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 0.0;
+   END_VAR
+
+   VAR CONSTANT 
+      MAX_RAMP_TIME_MS : Real := 1000000.0;
+      NO_ERROR : DWord := 16#0000_0000;
+      DIFF_TO_ZERO : Int := 0;
+      DIFF_OF_CHANGE : Int := 1;
+   END_VAR
+
+
+BEGIN
+	REGION BLOCK INFO HEADER
+	  //===============================================================================
+	  // SIEMENS AG / (c)Copyright 2023
+	  //-------------------------------------------------------------------------------
+	  // Title:            LConSMC_RFG
+	  // Comment/Function: Ramp function generator
+	  // Library/Family:   LConSMC
+	  // Author:           APC Erlangen
+	  // Tested with:      FW 2.8
+	  // Engineering:      TIA Portal V16
+	  // Restrictions:     Needs to be called in a cyclic OB (e.g. OB3x, OB6x)
+	  // Requirements:     -
+	  //-------------------------------------------------------------------------------
+	  // Change log table:
+	  // Version  | Date       | Expert in charge       | Changes applied
+	  //----------|------------|------------------------|------------------------------
+	  // 01.04.01 | 2023-10-12 | APC Erlangen           | Updated output parameter description
+	  // 01.04.00 | 2018-08-23 | APC Erlangen           | Bugfix for mode increase&decrease if x = upper/lower limit (*c_00012*)
+	  // 01.03.00 | 2017-05-15 | APC Erlangen           | Additional input "rampTimeMode" to define the use of rampup and rampdown Time
+	  // 01.02.00 | 2016-11-17 | APC Erlangen           | adapted to styleguide; warning "variable might not be initialized" removed
+	  // 01.01.00 | 2013-11-21 | APC Erlangen           | Bugfix respect of ramp while change of limit value
+	  // 01.00.00 | 2012-07-12 | APC Erlangen           | Creation
+	  //===============================================================================
+	END_REGION BLOCK INFO HEADER
+	
+	REGION DESCRIPTION
+	(/*
+	The function block includes an integrator with two integration time constants that can be set independently of one another. Output *y* changes according to the following algorithm:
+	
+	$ y_n  = y_{n-1}  + ya_n $
+	
+	The acceleration value $ ya $ are separately calculated for the up ramp and down ramp. Dependent on the input parameter *rampTimeMode*, the *rampUpTime* and *rampDownTime* will be used differently:
+	
+	* rampTimeMode = DIFF_TO_ZERO:  
+	An up ramp is when the output value y moves away from zero. A down ramp is when the output value y approaches zero. By this the used ramp time will be switched if the output y crosses zero.
+	
+	* rampTimeMode = DIFF_OF_CHANGE:  
+	An up ramp is when the target value is bigger than the output value y. A down ramp is when the target value is smaller than the output value y.
+	By this there is no change between rampUpTime and rampDownTime when the output value y moves through zero.  
+	  
+	For the acceleration value during ramping-up the following applies:
+	
+	$ ya = \frac{CycleTime}{rampUpTime}\ \cdot nominalValue $ (For y > 0)  
+	
+	$ ya = -\frac{CycleTime}{rampUpTime}\ \cdot nominalValue $ (For y < 0)  
+	
+	For the acceleration value when ramping-down the following applies:
+	
+	$ ya = -\frac{CycleTime}{rampDownTime}\ \cdot nominalValue $ (For y > 0)  
+	
+	$ ya = -\frac{CycleTime}{rampDownTime}\ \cdot nominalValue $ (For y < 0)  
+	
+	*CycleTime* is the sampling time in which the function block is processed.The changeover between ramp-up time and ramp-down time is realized
+	when the direction changes or at the zero crossover of the transfer function.
+	Depending on the logical states of control inputs set, followup, increase and decrease, the operating mode is specified by the control logic.
+	The output quantity can be limited using inputs upperLimit and lowerLimit.
+	When the set limits are reached, through y, binary outputs upperLimitReached or lowerLimitReached are set to TRUE.
+	Binary output setpointReached goes TRUE, if y=x.
+	*/)
+	(/*
+	#### Ramp-up time and ramp-down times
+	
+	The ramp-up time *rampupTime* is the time in which the absolute value of the output quantity increases by *nominalValue*.
+	The ramp-down *rampdownTime* is the time in which the absolute value of the output quantity decreases by nominalValue.
+	The ramp-up time and ramp-down time can be selected to be different.
+	The lower $ \frac{T_A}{rampupTime}\ $ or $ \frac{T_A}{rampDownTime}\ $, the lower the amplitude change at $y$ from one sampling instant to the next.
+	*/)
+	(/*
+	#### Priority of the control inputs
+	
+	For the control inputs, the following sequence of priority applies:  
+	*set* before *followup* before *increase* and *decrease*
+	
+	+---------+----------------+---------------------------------------------------------------------+
+	|Priority |Control input   |Description                                                          |
+	+=========+================+=====================================================================+
+	|1        |set =1          |Setting value setValue is loaded into the integrator, non-integrating|
+	+---------+----------------+---------------------------------------------------------------------+
+	|2        |followUp=1      |Output y integrating to setpoint X, tracking                         |
+	+---------+----------------+---------------------------------------------------------------------+
+	|3        |increase=1      |Output y integrating torques upperLimit, tracking                    |
+	+---------+----------------+---------------------------------------------------------------------+
+	|4        |decrease=1      |Output y integrating torques lowerLimit, tracking                    |
+	+---------+----------------+---------------------------------------------------------------------+
+	
+	*/)
+	(/*
+	#### Operating modes and control of the ramp-function generator
+	
+	The combination of commands at the control inputs and the possible operating modes can be taken from the truth tables.
+	Standard ramp-function generator operation involves lowerLimit ≤ 0 ≤ upperLimit and lowerLimit < y_n < upperLimit.
+	However, other settings are also possible that are explained in the following.
+	For the setting with lowerLimit ≥ upperLimit, the following applies: Limit upperLimit is dominant with respect to limit lowerLimit.
+	If output y reaches one of the set limits lowerLimit or upperLimit, during the control sequence, the integrator value is held.
+	Output value y is then kept constant until the integrator value leaves the limit due to a change of the input quantities.
+	If the integrator is at the limit and the limit value is changed the integrator behaves differently depending on the direction in which the limit value was changed.
+	If the absolute value of a limit value is increased, and if the control logic specifies that the ramp-function generator should run in the same direction,
+	then the integrator integrates from the previously defined value according to the selected ramp-up time until the output again reaches the limit value.
+	If the absolute value of a limit value is reduced, the integrator integrates from the previously held value – according to the selected ramp-down time – until
+	the output again reaches the limit value.
+	The integrator operates internally with an increased accuracy so that even for small setpoint-actual value differences it still integrates.
+	However, it should be carefully noted that the sampling time is sufficiently low referred to the ramp-up or ramp-down time. rampupTime and rampdownTime are internally limited: 
+	rampupTime ≥ cycleTime, rampdownTime ≥ cycleTime
+	
+	
+	{.pagewidth}
+	+---------+---------+---------+---------+----------------------------------+------------- +--------------------------+----------------------------------------+
+	|set      |follow up|inc.     |dec.     | ya_n                             | y_n          |mode                      |Comment                                 
+	+=========+=========+=========+=========+==================================+==============+==========================+========================================+
+	|0        |0        |0        |0        |0                                 |$y_{n+1}$     |Stop                      |Y is constant                           
+	+---------+---------+---------+---------+----------------------------------+------------- +--------------------------+----------------------------------------+
+	|1        |1        |1        |1        |Step                              |$setValue_n$  |Sets output to setValue   |setValue is any value, fixed or variable setValue is any value, fixed or variable
+	+---------+---------+---------+---------+----------------------------------+------------- +--------------------------+----------------------------------------+
+	|0        |1        |1        |1        |cycleTime/rampupTime              |$y_{n+1}+ya_n$|Normal operation          |rampupTime for:
+	|         |         |         |         |cycleTime/rampdownTime            |              |$y \rightarrow x$         |x>y & y >= 0
+	|         |         |         |         |                                  |              |                          |x<y & y <= 0
+	|         |         |         |         |                                  |              |                          |rampdownTime for:
+	|         |         |         |         |                                  |              |                          |x>y & y <= 0
+	|         |         |         |         |                                  |              |                          |x<y & y >= 0
+	+---------+---------+---------+---------+----------------------------------+------------- +--------------------------+----------------------------------------+
+	|0        |0        |1        |0        |cycleTime/rampupTime              |$y_{n+1}+ya_n$|Approach the upper limit  |rampupTime, rampdownTime as before, dependent on the starting (initial) position
+	|         |         |         |         |cycleTime/rampdownTime            |              |value                     |
+	|         |         |         |         |                                  |              |$y \rightarrow upperLimit$|
+	+---------+---------+---------+---------+----------------------------------+------------- +--------------------------+----------------------------------------+
+	|0        |0        |0        |0        |cycleTime/rampdownTime            |$y_{n+1}+ya_n$|Approach the lower limit  |rampupTime, rampdownTime as before, dependent on the starting (initial) position
+	|         |         |         |         |cycleTime/rampupTime              |              |value                     |
+	|         |         |         |         |                                  |              |$y \rightarrow lowerLimit$|
+	
+	#### Timing Diagram - Potentiometer 
+	
+	![RFG Motor potentiometer](RFG_DiagramMotorPoti.png)
+	
+	#### Timing Diagram - Normal Operation
+	
+	![RFG Normal operation](RFG_DiagramNormalOperation.png)
+	
+	*/)
+	END_REGION DESCRIPTION
+	
+	IF #tCycle = 0.0 THEN
+	    #statError := TRUE;
+	    #errorID := "LCON_ERROR_RFG_INVALID_CYCLE_TIME";              // FB NOT running IN cyclic task
+	ELSIF #rampTimeMode < 0 OR #rampTimeMode > 1 THEN
+	    #statError := TRUE;
+	    #errorID := "LCON_ERROR_RFG_INVALID_CONFIGURATION";
+	ELSE
+	    #statError := FALSE;
+	    #errorID := #NO_ERROR;
+	END_IF;
+	
+	IF (NOT #statError) THEN
+	    #statTUs := LIMIT(MN := #tCycle,
+	                      IN := #rampupTime,
+	                      MX := #MAX_RAMP_TIME_MS);
+	    #statTDs := LIMIT(MN := #tCycle,
+	                      IN := #rampdownTime,
+	                      MX := #MAX_RAMP_TIME_MS);
+	    #statLLs := MIN(IN1 := #lowerLimit, IN2 := #upperLimit);
+	    
+	    #SetpointReached := FALSE;                                     // reset EQUAL-flag
+	    #statYkm1 := #statY;                                        // evaluate the acceleration value Ya for incrementing Y after the command part.
+	    #ya := 0.0;
+	    
+	    IF (#set) THEN                                                // Check for active SET-command: if active, set Ya and Y. (set has highest priority)        
+	        #ya := LIMIT(MN := #lowerLimit,                           // ya takes nature of step command 
+	                     IN := #setValue,
+	                     MX := #upperLimit) - #statYkm1;
+	        
+	    ELSIF (#followup) THEN                                          // Check for active FOLLOW-command:follow has 2nd priority
+	        #statXs := LIMIT(MN := #lowerLimit,
+	                         IN := #x,
+	                         MX := #upperLimit);
+	        
+	        IF (#statXs = #statY) THEN
+	            #ya := 0.0;
+	        ELSE
+	            #stat1 := #tCycle * #nominalValue;
+	            IF (#statXs > #statY) THEN
+	                CASE #rampTimeMode OF
+	                    #DIFF_TO_ZERO:
+	                        IF (#statY >= 0.0) THEN                                                       // Direction of rotation positive
+	                            #ya := MIN(IN1 := (#stat1 / #statTUs), IN2 := (#statXs - #statY));                //UP with pos. increment:   0 --- Y ---> TARGET=Xs
+	                        ELSE                                                                    //for Y < 0.0 direction of rotation opposite,
+	                            #ya := MIN(IN1 := (#stat1 / #statTDs), IN2 := (#statXs - #statY));               //change in direction,hence ramp down from negative value and thenramp up to positive Xs: Y ---> TARGET --- 0
+	                        END_IF;
+	                    #DIFF_OF_CHANGE:
+	                        #ya := MIN(IN1 := (#stat1 / #statTUs), IN2 := (#statXs - #statY));            // target > start --> always use ramp up time
+	                    ELSE
+	                        ;                                                                         // Invalid case
+	                END_CASE;
+	            ELSE                                                              //for Xs < Y
+	                CASE #rampTimeMode OF
+	                    #DIFF_TO_ZERO:
+	                        IF (#statY > 0.0) THEN                                                    // direction of rotation positive      
+	                            #ya := - MIN(IN1 := (#stat1 / #statTDs), IN2 := (#statY - #statXs));          // DOWN with neg. increment: 0 --- TARGET <--- Y
+	                        ELSE                                                                  // Y <= 0  direction o rotation opposite    
+	                            #ya := - MIN(IN1 := (#stat1 / #statTUs), IN2 := (#statY - #statXs));          // UP with neg. increment:   TARGET <--- Y --- 0(Ramp up in negative direction) 
+	                        END_IF;
+	                    #DIFF_OF_CHANGE:
+	                        #ya := - MIN(IN1 := (#stat1 / #statTDs), IN2 := (#statY - #statXs));        // target < start --> always use ramp down time
+	                    ELSE
+	                        ;
+	                END_CASE;
+	            END_IF;
+	        END_IF;
+	        
+	    ELSIF (#increase) AND (NOT #decrease) THEN                                // Check for active UP-command "cu" // As "cu" targets at the dominant lu, there's no need to check ll  // cu, cd are 3rd priority
+	        IF (#upperLimit = #statY) THEN                                              // TARGET is an online preprocessed value with respect to lu being // dominant to ll, and the command (cf, cu, cd) currently in use.    
+	            #ya := 0.0;
+	        ELSE
+	            #stat1 := #tCycle * #nominalValue;
+	            IF (#upperLimit > #statY) THEN
+	                CASE #rampTimeMode OF
+	                    #DIFF_TO_ZERO:
+	                        IF (#statY >= 0.0) THEN                                                //direction OF rotation positive       
+	                            #ya := MIN(IN1 := (#stat1 / #statTUs), IN2 := (#upperLimit - #statY));    // UP with pos. increment:   0 --- Y ---> TARGET        
+	                        ELSE                                                               // Y < 0 direction of rotation opposite         
+	                            #ya := MIN(IN1 := (#stat1 / #statTDs), IN2 := (#upperLimit - #statY));    //DOWN with pos. increment: Y ---> TARGET --- 0   Target can also
+	                        END_IF;
+	                    #DIFF_OF_CHANGE:
+	                        #ya := MIN(IN1 := (#stat1 / #statTUs), IN2 := (#upperLimit - #statY));
+	                    ELSE
+	                        ;
+	                END_CASE;
+	            ELSE                                                                   // TARGET < Y  //here Target= upperlimit
+	                CASE #rampTimeMode OF
+	                    #DIFF_TO_ZERO:
+	                        IF (#statY > 0.0) THEN                                                   //direction OF rotation positive   
+	                            #ya := - MIN(IN1 := (#stat1 / #statTDs), IN2 := (#statY - #upperLimit));   // DOWN with neg. increment: 0 --- TARGET <--- Y
+	                        ELSE                                                                 // Y <= 0 direction OF rotation opposite
+	                            #ya := - MIN(IN1 := (#stat1 / #statTUs), IN2 := (#statY - #upperLimit));   // UP with neg. increment: TARGET <--- Y --- 0(Ramp up in negative direction) 
+	                        END_IF;
+	                    #DIFF_OF_CHANGE:
+	                        #ya := - MIN(IN1 := (#stat1 / #statTUs), IN2 := (#statY - #upperLimit));
+	                    ELSE
+	                        ;
+	                END_CASE;
+	            END_IF;
+	        END_IF;
+	        
+	    ELSIF (#decrease) AND (NOT #increase) THEN                                // Check for active DOWN-command "cd"
+	        IF (#statLLs = #statY) THEN                                                     // TARGET is an online preprocessed value                                                                                       
+	            #ya := 0.0;                                                          // dominant to ll, and the command (cf, cu, cd) currently in use.  
+	        ELSE
+	            #stat1 := #tCycle * #nominalValue;
+	            IF (#statLLs > #statY) THEN
+	                CASE #rampTimeMode OF
+	                    #DIFF_TO_ZERO:
+	                        IF (#statY >= 0.0) THEN                                                //direction OF rotation positive 
+	                            #ya := MIN(IN1 := (#stat1 / #statTUs), IN2 := (#statLLs - #statY));         // (1) UP with pos. increment:   0 --- Y ---> TARGET (Ramp up in positive direction)
+	                        ELSE                                                              // Y < 0 direction OF rotation opposite      
+	                            #ya := MIN(IN1 := (#stat1 / #statTDs), IN2 := (#statLLs - #statY));         //(4) DOWN with pos. increment: Y ---> TARGET --- 0  (Rampdown in positive direction)    
+	                        END_IF;
+	                    #DIFF_OF_CHANGE:
+	                        #ya := MIN(IN1 := (#stat1 / #statTUs), IN2 := (#statLLs - #statY));
+	                    ELSE
+	                        ;
+	                END_CASE;
+	            ELSE                                                                // TARGET < Y
+	                CASE #rampTimeMode OF
+	                    #DIFF_TO_ZERO:
+	                        IF (#statY > 0.0) THEN                                                //direction OF rotation positive   DOWN with neg. increment: 0 --- TARGET <--- Y        
+	                            #ya := - MIN(IN1 := (#stat1 / #statTDs), IN2 := (#statY - #statLLs));     //DOWN with neg. increment: 0 --- TARGET <--- Y     (Ramp down in negative direction)    
+	                        ELSE                                                              // Y <= 0  direction OF rotation opposite        
+	                            #ya := - MIN(IN1 := (#stat1 / #statTUs), IN2 := (#statY - #statLLs));     //UP with neg. increment:   TARGET <--- Y --- 0     (Ramp up in negative direction)
+	                        END_IF;
+	                    #DIFF_OF_CHANGE:
+	                        #ya := - MIN(IN1 := (#stat1 / #statTDs), IN2 := (#statY - #statLLs));
+	                    ELSE
+	                        ;
+	                END_CASE;
+	            END_IF;
+	        END_IF;
+	    END_IF;                  // The previous code has computed the acceleration value Ya     
+	    IF (((#statY = #upperLimit)
+	        AND (#x > #statY))
+	        OR ((#statY = #lowerLimit)
+	        AND (#x < #statY)))
+	        AND NOT (#increase OR #decrease)  // (*c_00012)*
+	    THEN
+	        #ya := 0.0;
+	    END_IF;
+	    #statY := #statYkm1 + #ya;                                    // Now we are going to increment our output Y by this value:
+	    #SetpointReached := (#x = #statY);                                      // set EQUAL-flag
+	    #upperLimitReached := (#upperLimit <= #statY);                            // set upperLimit-flag
+	    #lowerLimitReached := (#lowerLimit >= #statY);                            // set lowerLimit-flag
+	END_IF;
+	
+	// set outputs
+	#error := #statError;
+	#y := #statY;
+	
+END_FUNCTION_BLOCK
+

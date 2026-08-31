@@ -1,0 +1,435 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Document>
+  <Engineering version="V20" />
+  <SW.Blocks.InstanceDB ID="0">
+    <AttributeList>
+      <DBAccessibleFromOPCUA>false</DBAccessibleFromOPCUA>
+      <HeaderAuthor>SICAR</HeaderAuthor>
+      <HeaderFamily>Shift</HeaderFamily>
+      <InstanceOfName>LSicar_ShiftProductionTimes</InstanceOfName>
+      <InstanceOfType>FB</InstanceOfType>
+      <Interface><Sections xmlns="http://www.siemens.com/automation/Openness/SW/Interface/v5">
+  <Section Name="Input" />
+  <Section Name="Output">
+    <Member Name="shiftProdTimeTarget" Datatype="Time">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <StartValue>T#0MS</StartValue>
+    </Member>
+    <Member Name="shiftProdTimeExpired" Datatype="Time">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <StartValue>T#0MS</StartValue>
+    </Member>
+    <Member Name="shiftActive" Datatype="Bool">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <StartValue>FALSE</StartValue>
+    </Member>
+    <Member Name="shiftFinishedPulse" Datatype="Bool">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <StartValue>FALSE</StartValue>
+    </Member>
+  </Section>
+  <Section Name="InOut">
+    <Member Name="dateAndTime" Datatype="&quot;LSicar_typeGlobalDateTime&quot;" />
+    <Member Name="prodTimesHmi" Datatype="&quot;LSicar_typeProdTimesHmi&quot;" />
+  </Section>
+  <Section Name="Static">
+    <Member Name="statCurrShiftTimes" Datatype="&quot;LSicar_typeShiftTimes1Shift&quot;">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <Sections>
+        <Section Name="None">
+          <Member Name="start" Datatype="Time_Of_Day">
+            <StartValue>TOD#00:00:00</StartValue>
+          </Member>
+          <Member Name="break" Datatype="Array[0..4] of &quot;LSicar_typeShiftmodTimeBreak&quot;">
+            <Sections>
+              <Section Name="None">
+                <Member Name="start" Datatype="Time_Of_Day">
+                  <Subelement Path="0">
+                    <StartValue>TOD#00:00:00</StartValue>
+                  </Subelement>
+                  <Subelement Path="1">
+                    <StartValue>TOD#00:00:00</StartValue>
+                  </Subelement>
+                  <Subelement Path="2">
+                    <StartValue>TOD#00:00:00</StartValue>
+                  </Subelement>
+                  <Subelement Path="3">
+                    <StartValue>TOD#00:00:00</StartValue>
+                  </Subelement>
+                  <Subelement Path="4">
+                    <StartValue>TOD#00:00:00</StartValue>
+                  </Subelement>
+                </Member>
+                <Member Name="startCircuitTime" Datatype="Time_Of_Day">
+                  <Subelement Path="0">
+                    <StartValue>TOD#00:00:00</StartValue>
+                  </Subelement>
+                  <Subelement Path="1">
+                    <StartValue>TOD#00:00:00</StartValue>
+                  </Subelement>
+                  <Subelement Path="2">
+                    <StartValue>TOD#00:00:00</StartValue>
+                  </Subelement>
+                  <Subelement Path="3">
+                    <StartValue>TOD#00:00:00</StartValue>
+                  </Subelement>
+                  <Subelement Path="4">
+                    <StartValue>TOD#00:00:00</StartValue>
+                  </Subelement>
+                </Member>
+                <Member Name="endCircuitTime" Datatype="Time_Of_Day">
+                  <Subelement Path="0">
+                    <StartValue>TOD#00:00:00</StartValue>
+                  </Subelement>
+                  <Subelement Path="1">
+                    <StartValue>TOD#00:00:00</StartValue>
+                  </Subelement>
+                  <Subelement Path="2">
+                    <StartValue>TOD#00:00:00</StartValue>
+                  </Subelement>
+                  <Subelement Path="3">
+                    <StartValue>TOD#00:00:00</StartValue>
+                  </Subelement>
+                  <Subelement Path="4">
+                    <StartValue>TOD#00:00:00</StartValue>
+                  </Subelement>
+                </Member>
+                <Member Name="end" Datatype="Time_Of_Day">
+                  <Subelement Path="0">
+                    <StartValue>TOD#00:00:00</StartValue>
+                  </Subelement>
+                  <Subelement Path="1">
+                    <StartValue>TOD#00:00:00</StartValue>
+                  </Subelement>
+                  <Subelement Path="2">
+                    <StartValue>TOD#00:00:00</StartValue>
+                  </Subelement>
+                  <Subelement Path="3">
+                    <StartValue>TOD#00:00:00</StartValue>
+                  </Subelement>
+                  <Subelement Path="4">
+                    <StartValue>TOD#00:00:00</StartValue>
+                  </Subelement>
+                </Member>
+              </Section>
+            </Sections>
+          </Member>
+          <Member Name="end" Datatype="Time_Of_Day">
+            <StartValue>TOD#00:00:00</StartValue>
+          </Member>
+        </Section>
+      </Sections>
+    </Member>
+    <Member Name="statActual" Datatype="Time_Of_Day">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <StartValue>TOD#00:00:00</StartValue>
+    </Member>
+    <Member Name="statBefore" Datatype="Time_Of_Day">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <StartValue>TOD#00:00:00</StartValue>
+    </Member>
+    <Member Name="statDayChange" Datatype="Bool">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <StartValue>FALSE</StartValue>
+    </Member>
+    <Member Name="statDayChangeSet" Datatype="Bool">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <StartValue>FALSE</StartValue>
+    </Member>
+    <Member Name="statShift" Datatype="&quot;LSicar_typeShiftmodelInfo&quot;">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <Sections>
+        <Section Name="None">
+          <Member Name="configured" Datatype="Bool">
+            <StartValue>FALSE</StartValue>
+          </Member>
+          <Member Name="active" Datatype="Bool">
+            <StartValue>FALSE</StartValue>
+          </Member>
+          <Member Name="duration" Datatype="Time">
+            <StartValue>T#0MS</StartValue>
+          </Member>
+        </Section>
+      </Sections>
+    </Member>
+    <Member Name="statProdTimeExpired" Datatype="Time">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <StartValue>T#0MS</StartValue>
+    </Member>
+    <Member Name="statBreak" Datatype="Array[0..4] of &quot;LSicar_typeShiftmodelInfo&quot;">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <Sections>
+        <Section Name="None">
+          <Member Name="configured" Datatype="Bool">
+            <Subelement Path="0">
+              <StartValue>FALSE</StartValue>
+            </Subelement>
+            <Subelement Path="1">
+              <StartValue>FALSE</StartValue>
+            </Subelement>
+            <Subelement Path="2">
+              <StartValue>FALSE</StartValue>
+            </Subelement>
+            <Subelement Path="3">
+              <StartValue>FALSE</StartValue>
+            </Subelement>
+            <Subelement Path="4">
+              <StartValue>FALSE</StartValue>
+            </Subelement>
+          </Member>
+          <Member Name="active" Datatype="Bool">
+            <Subelement Path="0">
+              <StartValue>FALSE</StartValue>
+            </Subelement>
+            <Subelement Path="1">
+              <StartValue>FALSE</StartValue>
+            </Subelement>
+            <Subelement Path="2">
+              <StartValue>FALSE</StartValue>
+            </Subelement>
+            <Subelement Path="3">
+              <StartValue>FALSE</StartValue>
+            </Subelement>
+            <Subelement Path="4">
+              <StartValue>FALSE</StartValue>
+            </Subelement>
+          </Member>
+          <Member Name="duration" Datatype="Time">
+            <Subelement Path="0">
+              <StartValue>T#0MS</StartValue>
+            </Subelement>
+            <Subelement Path="1">
+              <StartValue>T#0MS</StartValue>
+            </Subelement>
+            <Subelement Path="2">
+              <StartValue>T#0MS</StartValue>
+            </Subelement>
+            <Subelement Path="3">
+              <StartValue>T#0MS</StartValue>
+            </Subelement>
+            <Subelement Path="4">
+              <StartValue>T#0MS</StartValue>
+            </Subelement>
+          </Member>
+        </Section>
+      </Sections>
+    </Member>
+    <Member Name="statBreakDurationSummary" Datatype="Time">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <StartValue>T#0MS</StartValue>
+    </Member>
+    <Member Name="statBreakActiveSummary" Datatype="Bool">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <StartValue>FALSE</StartValue>
+    </Member>
+    <Member Name="statBreakCount" Datatype="USInt">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <StartValue>0</StartValue>
+    </Member>
+    <Member Name="statProdTimeExpired1" Datatype="Time">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <StartValue>T#0MS</StartValue>
+    </Member>
+    <Member Name="statProdTimeExpired2" Datatype="Time">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <StartValue>T#0MS</StartValue>
+    </Member>
+    <Member Name="statFalEdgeShiftActive" Datatype="Bool">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <StartValue>FALSE</StartValue>
+    </Member>
+    <Member Name="statNegPulseShiftActive" Datatype="Bool">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <StartValue>FALSE</StartValue>
+    </Member>
+  </Section>
+</Sections></Interface>
+      <Name>InstShiftProductionTimes</Name>
+      <Namespace />
+      <Number>113</Number>
+      <ProgrammingLanguage>DB</ProgrammingLanguage>
+    </AttributeList>
+    <ObjectList>
+      <MultilingualText ID="1" CompositionName="Comment">
+        <ObjectList>
+          <MultilingualTextItem ID="2" CompositionName="Items">
+            <AttributeList>
+              <Culture>de-DE</Culture>
+              <Text>Instance DB</Text>
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="3" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-GB</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="4" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-US</Culture>
+              <Text>Instance DB</Text>
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="5" CompositionName="Items">
+            <AttributeList>
+              <Culture>es-ES</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="6" CompositionName="Items">
+            <AttributeList>
+              <Culture>fr-FR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="7" CompositionName="Items">
+            <AttributeList>
+              <Culture>it-IT</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="8" CompositionName="Items">
+            <AttributeList>
+              <Culture>ko-KR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="9" CompositionName="Items">
+            <AttributeList>
+              <Culture>zh-CN</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+        </ObjectList>
+      </MultilingualText>
+      <MultilingualText ID="A" CompositionName="Title">
+        <ObjectList>
+          <MultilingualTextItem ID="B" CompositionName="Items">
+            <AttributeList>
+              <Culture>de-DE</Culture>
+              <Text>Instance ShiftProductionTimes</Text>
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="C" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-GB</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="D" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-US</Culture>
+              <Text>Instance ShiftProductionTimes</Text>
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="E" CompositionName="Items">
+            <AttributeList>
+              <Culture>es-ES</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="F" CompositionName="Items">
+            <AttributeList>
+              <Culture>fr-FR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="10" CompositionName="Items">
+            <AttributeList>
+              <Culture>it-IT</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="11" CompositionName="Items">
+            <AttributeList>
+              <Culture>ko-KR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="12" CompositionName="Items">
+            <AttributeList>
+              <Culture>zh-CN</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+        </ObjectList>
+      </MultilingualText>
+    </ObjectList>
+  </SW.Blocks.InstanceDB>
+</Document>

@@ -1,0 +1,70 @@
+﻿FUNCTION "CallManualOperationLineStartup" : Void
+{ S7_Optimized_Access := 'TRUE' ; Published := 'FALSE' }
+VERSION : 0.1
+
+BEGIN
+	REGION Description
+	(*
+	    Startup call to set the configuration of the Manual Operation Line for the Equipment modules
+	*)
+	    
+	END_REGION
+	
+	"LAF_InternalManual".emsWithManualOpConfigured.maxNoOfEms := "NO_OF_EM";
+	
+	REGION Unit 1 Equipment Module 0 configuration
+	    "ManualOperationControl_U1Em0".manualOperationEm.equipmentModuleNum := 1010;
+	    "ManualOperationControl_U1Em0".manualOperationEmArea[2].displayedLines := '6;';
+	    "ManualOperationControl_U1Em0".manualOperationEmArea[1].displayedLines := '21;';
+	END_REGION
+	
+	REGION Unit 1 Equipment Module 1 configuration
+	    "ManualOperationControl_U1Em1".manualOperationEm.equipmentModuleNum := 1020;
+	    "ManualOperationControl_U1Em1".manualOperationEmArea[2].displayedLines := '6;';
+	    "ManualOperationControl_U1Em1".manualOperationEmArea[1].displayedLines := '21;';
+	END_REGION
+	
+	REGION Unit 1 Equipment Module 2 configuration
+	    "ManualOperationControl_U1Em2".manualOperationEm.equipmentModuleNum := 1030;
+	    "ManualOperationControl_U1Em2".manualOperationEmArea[2].displayedLines := '1;';
+	    "ManualOperationControl_U1Em2".manualOperationEmArea[1].displayedLines := '21-33;';
+	END_REGION
+	
+	REGION Unit 1 Equipment Module 3 configuration
+	    "ManualOperationControl_U1Em3".manualOperationEm.equipmentModuleNum := 1040;
+	    "ManualOperationControl_U1Em3".manualOperationEmArea[2].displayedLines := '6-7;';
+	    "ManualOperationControl_U1Em3".manualOperationEmArea[1].displayedLines := '21-24;';
+	END_REGION
+	
+	REGION Unit 1 Equipment Module 4 configuration
+	    "ManualOperationControl_U1Em4".manualOperationEm.equipmentModuleNum := 1050;
+	    "ManualOperationControl_U1Em4".manualOperationEmArea[2].displayedLines := '6-13;';
+	    "ManualOperationControl_U1Em4".manualOperationEmArea[1].displayedLines := '21-33;';
+	END_REGION
+	
+	REGION Unit 1 Equipment Module 5 configuration
+	    "ManualOperationControl_U1Em5".manualOperationEm.equipmentModuleNum := 1060;
+	    "ManualOperationControl_U1Em5".manualOperationEmArea[2].displayedLines := '6-13;';
+	    "ManualOperationControl_U1Em5".manualOperationEmArea[1].displayedLines := '21-33;';
+	END_REGION
+	
+	REGION Unit 1 Equipment Module 6 configuration
+	    "ManualOperationControl_U1Em6".manualOperationEm.equipmentModuleNum := 1070;
+	    "ManualOperationControl_U1Em6".manualOperationEmArea[2].displayedLines := '6-18;';
+	    "ManualOperationControl_U1Em6".manualOperationEmArea[1].displayedLines := '21-26;';
+	END_REGION
+	
+	REGION Unit 1 Equipment Module 7 configuration
+	    "ManualOperationControl_U1Em7".manualOperationEm.equipmentModuleNum := 1080;
+	    "ManualOperationControl_U1Em7".manualOperationEmArea[2].displayedLines := '6-14;';
+	    "ManualOperationControl_U1Em7".manualOperationEmArea[1].displayedLines := '21-30;';
+	END_REGION
+	
+	REGION CITI EM1 configuration
+	    // Statement section REGION
+	    "ManualOperationControl_CITIEm1".manualOperationEm.equipmentModuleNum := 5010;
+	    "ManualOperationControl_CITIEm1".manualOperationEmArea[1].displayedLines := '1-5;';
+	END_REGION
+	
+END_FUNCTION
+

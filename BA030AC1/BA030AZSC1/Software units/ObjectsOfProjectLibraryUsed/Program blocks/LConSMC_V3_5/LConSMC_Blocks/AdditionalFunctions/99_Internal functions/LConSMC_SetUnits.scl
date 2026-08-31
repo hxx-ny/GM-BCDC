@@ -1,0 +1,142 @@
+﻿FUNCTION "LConSMC_SetUnits" : Void
+TITLE = LConSMC_SetUnits
+{ S7_Optimized_Access := 'TRUE' ; Published := 'TRUE' }
+VERSION : 2.0
+//Calculate conversin factor for velocity unit into RPM
+   VAR_INPUT 
+      lengthUnit : UDInt;   // Length unit from TO
+      velocityUnit : UDInt;   // Velocity unit from TO
+      unitForSectionalDrive : Bool;   // TRUE: Unit selection for a sectional drive
+      leadScrew : LReal;   // [TO unit] Axis lead screw pitch value (only used for linear axis units)
+   END_VAR
+
+   VAR_OUTPUT 
+      axisVeloIntoRPM : Real;   // Multiplicative conversion factor for the velocity unit into RPM
+      error : Bool;   // TRUE: Invalid input unit selected  Return value for conversion factor is 1.0
+   END_VAR
+
+   VAR_TEMP 
+      tempLeadScrewConversion : Real;   // Convertion factor from TO unit to [mm] or [ft]
+      tempLeadScrew : Real;
+   END_VAR
+
+   VAR CONSTANT 
+      PI : Real := 3.141593;
+   END_VAR
+
+
+BEGIN
+	REGION BLOCK INFO HEADER
+	  //===============================================================================
+	  // SIEMENS AG / (c)Copyright 2023
+	  //-------------------------------------------------------------------------------
+	  // Title:            LConSMC_SetUnits
+	  // Comment/Function: This function calculates a conversion factor from the used velcoity unit into [RPM]
+	  // Library/Family:   LConSMC
+	  // Author:           APC Erlangen
+	  // Tested with:      FW 2.8
+	  // Engineering:      TIA Portal V16
+	  // Restrictions:     -
+	  // Requirements:     -
+	  //-------------------------------------------------------------------------------
+	  // Change log table:
+	  // Version  | Date       | Expert in charge       | Changes applied
+	  //----------|------------|------------------------|------------------------------
+	  // 02.00.00 | 2023-09-12 | APC Erlangen           | Added calculation factor for linear units in case of sectional drives
+	  //                                                  Additional input "unitForSectionalDrive", "lengthUnit" and "leadScrew"
+	  // 01.01.00 | 2022-03-25 | APC Erlangen           | Added unit of [°/s] with higher resolution (=1539)
+	  // 01.00.00 | 2019-03-19 | APC Erlangen           | First version
+	  //===============================================================================
+	END_REGION BLOCK INFO HEADER
+	
+	REGION DESCRIPTION
+	(/*
+	This function block calculates a conversion factor from the used velcoity unit into [RPM].  For winders only rotatory units are valid, for Sectional drives also linear axes are possible.
+	If the selected unit is invalid ther output *error* is TRUE.
+	*/)
+	END_REGION DESCRIPTION
+	
+	#error := FALSE;
+	#axisVeloIntoRPM := 1.0;
+	
+	CASE #velocityUnit OF
+	  1082: // [1/s] -> [1/min]
+	    #axisVeloIntoRPM := real#60.0;
+	  1083: // [1/min] -> [1/min]
+	    #axisVeloIntoRPM := real#1.0;
+	  1062: // [1/s] -> [1/s]
+	    #axisVeloIntoRPM := real#1.0;
+	  1521, 1539: // [°/s] -> [1/min]  (*c_00044*)
+	    #axisVeloIntoRPM := real#60.0 / 360.0;
+	  1522: // [°/min] -> [1/min]
+	    #axisVeloIntoRPM := Real#1.0 / 360.0;
+	  1528: // [1/h] -> [1/min]
+	    #axisVeloIntoRPM := real#1.0 / 60.0;
+	  1086: // [rad/s] -> [1/min]
+	    #axisVeloIntoRPM := 60.0 / (2.0 * #PI);
+	  1523: // [rad/min] -> [1/min]
+	    #axisVeloIntoRPM := 1.0 / (2.0 * #PI);
+	  ELSE
+	    IF #unitForSectionalDrive THEN
+	      // Calculate conversion factor for leadScrew value
+	      CASE #lengthUnit OF
+	        1010, 1013, 1536: // [m],[mm],[mm high resolution]
+	          // Unit of lead screw value is [mm/rev]
+	          #tempLeadScrewConversion := 1.0;
+	        1014: // [um]
+	          // Unit of lead screw value is [um/rev]
+	          #tempLeadScrewConversion := 1.0e-3;
+	        1015: // [nm]
+	          // Unit of lead screw value is [nm/rev]
+	          #tempLeadScrewConversion := 1.0e-6;
+	        1011: // [km]
+	          // Unit of lead screw value is [m/rev]
+	          #tempLeadScrewConversion := 1.0e3;
+	        1018, 1019, 1021: // [ft],[in],[mi]
+	          // Unit of lead screw value is [in/rev]
+	          #tempLeadScrewConversion := 1.0;
+	        ELSE
+	          // Invalid configuration
+	          #error := TRUE;
+	      END_CASE;
+	      #tempLeadScrew := LREAL_TO_REAL(IN := #leadScrew) * #tempLeadScrewConversion; // Convert from [TO_Unit/Rev] into [mm/rev]
+	      IF NOT #error THEN
+	        CASE #velocityUnit OF
+	          1062, 1538: //[mm/s] -> [1/min]
+	            #axisVeloIntoRPM := real#1.0 / #tempLeadScrew * 60.0;
+	          1061: //[m/s] -> [1/min]
+	            #axisVeloIntoRPM := real#1.0 / (#tempLeadScrew/1.0e3) * 60.0;
+	          1524: //[mm/min] -> [1/min]
+	            #axisVeloIntoRPM := real#1.0 / #tempLeadScrew;
+	          1525://[m/min] -> [1/min]
+	            #axisVeloIntoRPM := real#1.0 / (#tempLeadScrew/1.0e3);
+	          1526: //[mm/h] -> [1/min]
+	            #axisVeloIntoRPM := real#1.0 / #tempLeadScrew * 60.0;
+	          1063: //[m/h] -> [1/min]
+	            #axisVeloIntoRPM := real#1.0 / (#tempLeadScrew/1.0e3) * 60.0;
+	          1527: //[km/min] -> [1/min]
+	            #axisVeloIntoRPM := real#1.0 / (#tempLeadScrew / 1.0e6);
+	          1064: //[km/h] -> [1/min]
+	            #axisVeloIntoRPM := real#1.0 / (#tempLeadScrew / 1.0e6) * 60.0;
+	          1066: //[in/s] -> [1/min]
+	            #axisVeloIntoRPM := real#1.0 / #tempLeadScrew * 60.0;
+	          1069: //[in/min] -> [1/min]
+	            #axisVeloIntoRPM := real#1.0 / #tempLeadScrew;
+	          1067: //[ft/s] -> [1/min]
+	            #axisVeloIntoRPM := real#1.0 / (#tempLeadScrew/12.0) * 60.0;
+	          1070: //[ft/min] -> [1/min]
+	            #axisVeloIntoRPM := real#1.0 / (#tempLeadScrew / 12.0);
+	          1075: //[mi/h]   -> [1/min]
+	            #axisVeloIntoRPM := real#1.0 / (#tempLeadScrew / 63360.0) * 60.0;
+	          ELSE
+	            // Invalid unit selected
+	            #error := TRUE;
+	        END_CASE;
+	      END_IF;
+	    ELSE
+	      // Invalid unit selected
+	      #error := TRUE;
+	    END_IF;
+	END_CASE;
+END_FUNCTION
+

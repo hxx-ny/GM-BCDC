@@ -1,0 +1,1369 @@
+﻿FUNCTION_BLOCK "E2MenergyMeterDrv"
+TITLE = E2M_1500_AIEnergyMeter_DRV
+{ S7_Optimized_Access := 'TRUE' ; Published := 'TRUE' }
+AUTHOR : SICAR
+FAMILY : E2M
+NAME : E2M_AIEM
+VERSION : 2.0
+//Energy efficency monitor
+   VAR_INPUT 
+      id : HW_IO;   // The hardware identifier of the Energy Meter.
+      firstByteData : Int;   // The number of the first byte of the input data of the Energy Meter.
+      connectionType : Int := 1;   // The connection type of the Energy Meter: 1 = single phase, 3 = 3 phase
+      commResourceLimit : Int := 4;   // The limit of resources, which can be used by the drviers.
+      automaticUpdate : Bool := FALSE;   // TRUE = Always update the measurement values as fast as possible.
+      resetMinMax : Bool := FALSE;   // FALSE ==> TRUE = Reset the minimum and maximum values.
+      resetEnergyCounter : Bool := FALSE;   // FALSE ==> TRUE = Reset the energy counter of the Energy Meter.
+      bitsConnectedHmi : Bool := FALSE;   // TRUE = Structure HMI_Bits is connected; FALSE = Structure HMI_Bits is not connected
+      backupCycleEnCount : Time := T#5S;   // The time, after which the energy counter of the Energy Meter are stored in the driver.
+   END_VAR
+
+   VAR_OUTPUT 
+      timeBetweenUpdate : Time;   // The time between the current and the last update of the measurement values.
+      timeBetweenUpdateMax : Time;   // The maximum time between two measurement value updates.
+      timeStampMeasValues {InstructionName := 'DTL'; LibVersion := '1.0'} : DTL;   // The time stamp of the currently available measurement values.
+      driverData { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : "LSicar_typeEnMeterVisuStruct";   // The structure including all measurement values. Used for the visualization and the connection to the E2M_Visu block.
+      energyCounter { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : "typeEnCounter";   // The structure with all energy counter as 64-Bit float values.
+      errorCode : DWord;   // The error code in case of an error of the block, otherwise 0. Detailed information in the manual.
+      errorLocation : Word;   // The error location or the status of the block. Detailed information in the manual.
+      timeStampEnCount {InstructionName := 'DTL'; LibVersion := '1.0'} : DTL;   // The time stamp of the currently available energy counter.
+   END_VAR
+
+   VAR_IN_OUT 
+      bitsHmi : "typeEnMeterBits";   // The structure with the feedback of the HMI. Used for the visualization and the connection to the E2M_Visu block.
+      commResourceCounter : Int;   // The counter of the currently used resources from all E2M drivers.
+   END_VAR
+
+   VAR 
+      instReadDataRecord {InstructionName := 'RDREC'; LibVersion := '1.0'} : RDREC;   // Read record
+      instWriteDataRecord {InstructionName := 'WRREC'; LibVersion := '1.1'} : WRREC;   // Write record
+      instEnCountUpdateTimer {InstructionName := 'TON_TIME'; LibVersion := '1.0'} : TON_TIME;   // IEC timer
+      instTimeMeasurement {InstructionName := 'TON_TIME'; LibVersion := '1.0'} : TON_TIME;   // IEC timer
+      instWatchdog {InstructionName := 'TON_TIME'; LibVersion := '1.0'} : TON_TIME;   // IEC timer
+      statInputVariablesOk : Bool;   // InputVariablesOk
+      statResetEnCountRequest : Bool;   // ResetEnCountRequest
+      statReadDataRecRequest : Bool;   // ReadDataRecRequest
+      statWriteDataRecRequest : Bool;   // WriteDataRecRequest
+      statRestoreEnergy : Bool;   // RestoreEnergy
+      statStartAcyclicHmiOld : Bool;   // StartAcyclicHmiOld
+      statResetEnergyHmiOld : Bool;   // ResetEnergyHmiOld
+      statResetEnergyOld : Bool;   // ResetEnergyOld
+      statResetMinMaxHmiOld : Bool;   // ResetMinMaxHmiOld
+      statResetMinMaxOld : Bool;   // ResetMinMaxOld
+      statRunUpdateTimer : Bool;   // RunUpdateTimer
+      statWatchdogRun : Bool;   // WatchdogRun
+      statUserDataVariant : Byte;   // UserDataVariant
+      statSmState : Int;   // SmState
+      statSmStateNext : Int;   // SmStateNext
+      statReadRecIndex : Int;   // ReadRecIndex
+      statReadRecMaxLength : UInt;   // ReadRecMaxLength
+      statTimetoUpdate : Time;   // TimetoUpdate
+      statVmeasurementValues { S7_SetPoint := 'False'} : "typeEnMeterValues";   // VmeasurementValues
+      statVenergyCounter { S7_SetPoint := 'False'} : "typeEnMeterCounter";   // VenergyCounter
+      statBitsInternalHmi { S7_SetPoint := 'False'} : "typeEnMeterBits";   // BitsInternalHmi
+   END_VAR
+   VAR RETAIN
+      statRestoreEnCountValues { S7_SetPoint := 'False'} : "typeEnMeterRestore";   // RestoreEnCountValues
+   END_VAR
+   VAR 
+      statAuxTimeBetweenUpdateMax { S7_SetPoint := 'True'} : Time;   // Static variable for reading output value
+      statErrorCode { ExternalVisible := 'False'} : DWord;   // The error code in case of an error of the block, otherwise 0. Detailed information in the manual.
+   END_VAR
+
+   VAR_TEMP 
+      tempGeneralRetVal : Int;   // General Ret_Val
+   END_VAR
+
+   VAR CONSTANT 
+      CONNECTION_SINGLE_PHASE : Int := 1;   // Constant
+      CONNECTION_THREE_PHASE : Int := 3;   // Constant
+      RECORD_143_INDEX : Int := 143;   // Constant
+      RECORD_142_INDEX : Int := 142;   // Constant
+      RECORD_143_LENGTH : UInt := 128;   // Constant
+      RECORD_142_LENGTH : UInt := 210;   // Constant
+      ERR_LOC_1311 : Word := 16#1311;   // ERR_LOC_WRITE_ENERGY_COUNTER
+      ERR_LOC_1321 : Word := 16#1321;   // ERR_LOC_READ_MEASUREMENT_VALUES
+      ERR_LOC_1322 : Word := 16#1322;   // ERR_LOC_READ_ENERGY_COUNTER
+      ERR_LOC_1371 : Word := 16#1371;   // ERR_LOC_INVALID_ID
+      ERR_LOC_1372 : Word := 16#1372;   // ERR_LOC_INVALID_CONNECTION_TYPE
+      ERR_LOC_1373 : Word := 16#1373;   // ERR_LOC_INVALID_COMM_LIMIT
+      ERR_LOC_1374 : Word := 16#1374;   // ERR_LOC_INVALID_IO_BYTE
+      ERR_LOC_1375 : Word := 16#1375;   // ERR_LOC_INVALID_BACKUP_TIME
+      ERR_LOC_1381 : Word := 16#1381;   // ERR_LOC_NO_POWER
+      STATE_IDLE : Word := 16#0000;   // STATE_IDLE
+      STATE_7001 : Word := 16#7001;   // STATE_WAIT_FOR_RESOURCE
+      STATE_7002 : Word := 16#7002;   // STATE_READ_MEASURE_VALUES
+      STATE_7003 : Word := 16#7003;   // STATE_RESET_MIN_MAX_VALUES
+      STATE_7004 : Word := 16#7004;   // STATE_RESET_ENERGY_COUNTER
+      STATE_7005 : Word := 16#7005;   // STATE_RESTORE_ENERGY_COUNTER
+      STATE_7006 : Word := 16#7006;   // STATE_STORE_ENERGY_COUNTER
+      ERR_CODE_GENERAL : DWord := 16#0000_0001;   // ERR_CODE_GENERAL
+      INPUT_AREA : Byte := 16#81;   // INPUT_AREA
+      OUTPUT_AREA : Byte := 16#83;   // OUTPUT_AREA
+      TIME_WATCHDOG : Time := T#2S;   // TIME_WATCHDOG
+      SM_IDLE : Int := 0;   // SM_IDLE
+      SM_READ_CODE_11 : Int := 11;   // SM_READ_MEASUREMENT_VALUES_WAIT_RESOURCE
+      SM_READ_CODE_12 : Int := 12;   // SM_READ_MEASUREMENT_VALUES_WAIT_RESPONSE
+      SM_READ_CODE_21 : Int := 21;   // SM_READ_ENERGY_COUNTER_WAIT_RESOURCE
+      SM_READ_CODE_22 : Int := 22;   // SM_READ_ENERGY_COUNTER_WAIT_RESPONSE
+      SM_WRITE_CODE_31 : Int := 31;   // SM_WRITE_ENERGY_COUNTER_WAIT_RESOURCE
+      SM_WRITE_CODE_32 : Int := 32;   // SM_WRITE_ENERGY_COUNTER_WAIT_RESPONSE
+   END_VAR
+
+
+BEGIN
+	// Only check the input variables during the first configuration or
+	// until they are correct
+	IF (#statInputVariablesOk = FALSE) THEN
+	  
+	  // Check each input value for the correct value range
+	  // The ID of the Energy Meter has to be something bigger than 0
+	  // as the input bytes can't be negativ
+	  IF (#id < 0) THEN
+	    
+	    // Set the error location and the error code for this error
+	    #errorLocation := #ERR_LOC_1371;
+	    #statErrorCode := #ERR_CODE_GENERAL;
+	    
+	    // The First_Byte_I_O_Data of the Energy Meter has to be something bigger than 0
+	    // as the input bytes can't be negativ
+	  ELSIF (#firstByteData < 0) THEN
+	    
+	    // Set the error location and the error code for this error
+	    #errorLocation := #ERR_LOC_1374;
+	    #statErrorCode := #ERR_CODE_GENERAL;
+	    
+	    // The available measurement types are only 1 phase measurement with
+	    // neutral (1) and 3 phase measurement without neutral (3)
+	  ELSIF ((#connectionType <> #CONNECTION_SINGLE_PHASE)
+	    AND (#connectionType <> #CONNECTION_THREE_PHASE)) THEN
+	    
+	    // Set the error location and the error code for this error
+	    #errorLocation := #ERR_LOC_1372;
+	    #statErrorCode := #ERR_CODE_GENERAL;
+	    
+	    // The communication resource limit has to be somehting bigger than 0.
+	    // Otherwise, there will never be an update of the data
+	  ELSIF (#commResourceLimit <= 0) THEN
+	    
+	    // Set the error location and the error code for this error
+	    #errorLocation := #ERR_LOC_1373;
+	    #statErrorCode := #ERR_CODE_GENERAL;
+	    
+	    // The minimum cyclic update time for the energy counter is 5 seconds.
+	    // This limit has been chosen by the developer.
+	  ELSIF (#backupCycleEnCount < T#5s) THEN
+	    
+	    // Set the error location and the error code for this error
+	    #errorLocation := #ERR_LOC_1375;
+	    #statErrorCode := #ERR_CODE_GENERAL;
+	    
+	    // No error in the input variables
+	  ELSE
+	    // Set the signal, that all input variables are OK
+	    #statInputVariablesOk := TRUE;
+	  END_IF;
+	  
+	  // The input variables are checked and are OK
+	ELSE
+	  
+	  // If a structure is connected to the HMI_Bits input structure
+	  // copy the values to the internal structure.
+	  // Otherwise use the initial values of the internal structure.
+	  IF (#bitsConnectedHmi = TRUE) THEN
+	    
+	    // Copy the variable to an internal structure
+	    #statBitsInternalHmi := #bitsHmi;
+	  ELSE
+	    ; // Use the initial values of the structure variables
+	  END_IF;
+	  
+	  // Get the user data variant
+	  #statUserDataVariant := PEEK_BYTE(area := #INPUT_AREA,
+	                                  dbNumber := 0,
+	                                  byteOffset := #firstByteData);
+	  
+	  // Call the instance of the SFB once at the beginning at the code and set its signal during the program
+	  #instWriteDataRecord(REQ := #statWriteDataRecRequest,
+	                     ID := #id,
+	                     INDEX := #RECORD_143_INDEX,
+	                     LEN := #RECORD_143_LENGTH,
+	                     RECORD := #statRestoreEnCountValues);
+	  
+	  // Call the instance of the SFB once at the beginning at the code and check and set its signals during the program
+	  #instEnCountUpdateTimer(IN := #statRunUpdateTimer,
+	                         PT := #backupCycleEnCount);
+	  
+	  // Keep the timer always running to get the time between two updates and during one update
+	  #instTimeMeasurement(IN := (#firstByteData <> 0),
+	                    PT := T#21d);
+	  
+	  // Only call the the timer once at the beginning
+	  #instWatchdog(IN := #statWatchdogRun,
+	            PT := #TIME_WATCHDOG);
+	  
+	  //===========================================================================
+	  //====== Set the values for the faceplate for E2M ===========================
+	  //===========================================================================
+	  
+	  // Set the values for the faceplate, to know which values should be displayed
+	  // First divide by the different measurement types, as different values
+	  // are activated in the faceplate for different measurement values
+	  CASE #connectionType OF
+	      
+	      // 1 phase measurement with only L1 and neutral
+	    #CONNECTION_SINGLE_PHASE:
+	      
+	      // The values are coded as bit arrays and can be checked in the manual
+	      #driverData.uPhNmod := W#16#1180;
+	      #driverData.uPhPhMod := W#16#0000;
+	      #driverData.iMod := W#16#1180;
+	      #driverData.sMod := W#16#1180;
+	      #driverData.pMod := W#16#1180;
+	      #driverData.qMod := W#16#1180;
+	      #driverData.eMod := W#16#3381;
+	      #driverData.fMod := W#16#0380;
+	      #driverData.cosMod := W#16#1180;
+	      
+	      // 3 phase measurement with neutral
+	    #CONNECTION_THREE_PHASE:
+	      
+	      // The values are coded as bit arrays and can be checked in the manual
+	      #driverData.uPhNmod := W#16#FF80;
+	      #driverData.uPhPhMod := W#16#FF80;
+	      #driverData.iMod := W#16#FF80;
+	      #driverData.sMod := W#16#FF80;
+	      #driverData.pMod := W#16#FF80;
+	      #driverData.qMod := W#16#FF80;
+	      #driverData.eMod := W#16#3381;
+	      #driverData.fMod := W#16#0380;
+	      #driverData.cosMod := W#16#FF80;
+	      
+	    ELSE
+	      ; // Not possible, no other measurement type possible
+	  END_CASE;
+	  
+	  // Set the signals, which values are calculated
+	  #driverData.calculateValue1 := W#16#FF0F;
+	  #driverData.calculateValue2 := W#16#FF7F;
+	  #driverData.calculateValue3 := W#16#B60D;
+	  #driverData.calculateValue4 := W#16#B60D;
+	  #driverData.calculateValue5 := W#16#B60D;
+	  #driverData.calculateValue6 := W#16#BF07;
+	  
+	  //===========================================================================
+	  //====== Reset the minimum and maximum values ===============================
+	  //===========================================================================
+	  
+	  // With a request from the faceplate, reset all minimum and maximum values
+	  IF (((#statBitsInternalHmi.resetMinMaxData = TRUE)
+	    AND (#statResetMinMaxHmiOld = FALSE))
+	    OR ((#resetMinMax = TRUE)
+	    AND (#statResetMinMaxOld = FALSE))) THEN
+	    
+	    // With a positive request, reset all min and max values which are stored
+	    #driverData.uL1Min := #driverData.uL1;
+	    #driverData.uL1Max := #driverData.uL1;
+	    #driverData.uL2Min := #driverData.uL2;
+	    #driverData.uL2Max := #driverData.uL2;
+	    #driverData.uL3Min := #driverData.uL3;
+	    #driverData.uL3Max := #driverData.uL3;
+	    #driverData.uL1L2Min := #driverData.uL1L2;
+	    #driverData.uL1L2Max := #driverData.uL1L2;
+	    #driverData.uL2L3Min := #driverData.uL2L3;
+	    #driverData.uL2L3Max := #driverData.uL2L3;
+	    #driverData.uL3L1Min := #driverData.uL3L1;
+	    #driverData.uL3L1Max := #driverData.uL3L1;
+	    #driverData.uPhNaverageMin := #driverData.uPhNaverage;
+	    #driverData.uPhNaverageMax := #driverData.uPhNaverage;
+	    #driverData.uPhPhAverageMin := #driverData.uPhPhAverage;
+	    #driverData.uPhPhAverageMax := #driverData.uPhPhAverage;
+	    #driverData.iL1Min := #driverData.iL1;
+	    #driverData.iL1Max := #driverData.iL1;
+	    #driverData.iL2Min := #driverData.iL2;
+	    #driverData.iL2Max := #driverData.iL2;
+	    #driverData.iL3Min := #driverData.iL3;
+	    #driverData.iL3Max := #driverData.iL3;
+	    #driverData.iAverageMin := #driverData.iAverage;
+	    #driverData.iAverageMax := #driverData.iAverage;
+	    #driverData.fMin := #driverData.f;
+	    #driverData.fMax := #driverData.f;
+	    #driverData.sL1Min := #driverData.sL1;
+	    #driverData.sL1Max := #driverData.sL1;
+	    #driverData.sL2Min := #driverData.sL2;
+	    #driverData.sL2Max := #driverData.sL2;
+	    #driverData.sL3Min := #driverData.sL3;
+	    #driverData.sL3Max := #driverData.sL3;
+	    #driverData.sTotalMin := #driverData.sTotal;
+	    #driverData.sTotalMax := #driverData.sTotal;
+	    #driverData.qL1Min := #driverData.qL1;
+	    #driverData.qL1Max := #driverData.qL1;
+	    #driverData.qL2Min := #driverData.qL2;
+	    #driverData.qL2Max := #driverData.qL2;
+	    #driverData.qL3Min := #driverData.qL3;
+	    #driverData.qL3Max := #driverData.qL3;
+	    #driverData.qTotalMin := #driverData.qTotal;
+	    #driverData.qTotalMax := #driverData.qTotal;
+	    #driverData.pL1Min := #driverData.pL1;
+	    #driverData.pL1Max := #driverData.pL1;
+	    #driverData.pL2Min := #driverData.pL2;
+	    #driverData.pL2Max := #driverData.pL2;
+	    #driverData.pL3Min := #driverData.pL3;
+	    #driverData.pL3Max := #driverData.pL3;
+	    #driverData.pTotalMin := #driverData.pTotal;
+	    #driverData.pTotalMax := #driverData.pTotal;
+	    #driverData.cosL1Min := #driverData.cosL1;
+	    #driverData.cosL1Max := #driverData.cosL1;
+	    #driverData.cosL2Min := #driverData.cosL2;
+	    #driverData.cosL2Max := #driverData.cosL2;
+	    #driverData.cosL3Min := #driverData.cosL3;
+	    #driverData.cosL3Max := #driverData.cosL3;
+	    #driverData.cosAverageMin := #driverData.cosAverage;
+	    #driverData.cosAverageMax := #driverData.cosAverage;
+	    
+	    // Reset also the maximum time between two updates
+	    #statAuxTimeBetweenUpdateMax :=  T#0s;
+	    
+	    // Set the time, when the min and max values have been reseted
+	    #tempGeneralRetVal := RD_SYS_T(#driverData.rTimeDataValue);
+	  ELSE
+	    ; // No request for a reset
+	  END_IF;
+	  
+	  //===========================================================================
+	  //====== Check for a request to reset the energy counter ====================
+	  //===========================================================================
+	  
+	  // The energy counter reset can either be triggered from the input of
+	  // the driver or from the faceplate
+	  IF (((#resetEnergyCounter = TRUE)
+	    AND (#statResetEnergyOld = FALSE))
+	    OR ((#statBitsInternalHmi.resetEnergyMeter = TRUE)
+	    AND (#statResetEnergyHmiOld = FALSE))) THEN
+	    
+	    // Set the request to reset the energy counter
+	    #statResetEnCountRequest := TRUE;
+	  ELSE
+	    ; // No request detected
+	  END_IF;
+	  
+	  //===========================================================================
+	  //====== Check for the power supply of the Energy Meter =====================
+	  //===========================================================================
+	  
+	  // Check if the power supply of the Energy Meter is disconnected respectively the the module is disconnected
+	  // ==> If the user data variant is zero, the module is not connected. Otherwise, this variable always has a value bigger than zero
+	  // If the Energy Meter has been disconnected, check if the energy counter has been reset and has to be restored
+	  IF (#statUserDataVariant = B#16#00) THEN
+	    
+	    // Set the signal to restore the energy data, as soon as the Energy Meter
+	    // is reconnected
+	    #statRestoreEnergy := TRUE;
+	  ELSE
+	    ; // Power supply still connected
+	  END_IF;
+	  
+	  // Set the state for the state machine
+	  #statSmState := #statSmStateNext;
+	  
+	  //===========================================================================
+	  //====== Wait for a request to update values or restore energy counter ======
+	  //===========================================================================
+	  
+	  // Start the state machine for the real functionality of the block
+	  CASE #statSmState OF
+	      
+	      // Wait for the request to update the energy counter or the measurement values
+	    #SM_IDLE:
+	      
+	      // Set the status as default value to idle
+	      #errorLocation := #STATE_IDLE;
+	      
+	      // Check if the power supply of the Energy Meter is disconnected respectively the the module is disconnected
+	      // ==> If the user data variant is zero, the module is not connected. Otherwise, this variable always has a value bigger than zero
+	      // If the Energy Meter has been disconnected, check if the energy counter has been reset and has to be restored
+	      IF (#statUserDataVariant = B#16#00) THEN
+	        
+	        // Set the error location and the error code for this error
+	        #errorLocation := #ERR_LOC_1381;
+	        #statErrorCode := #ERR_CODE_GENERAL;
+	        
+	        // Check if the update timer is elapsed ==> then start to update the energy counter
+	      ELSIF (((#instEnCountUpdateTimer.Q = TRUE)
+	        OR (#statRestoreEnergy = TRUE))
+	        AND (#commResourceLimit > 0)) THEN
+	        
+	        // Check if currently a communication resource for the update is available
+	        // otherwise go to a wait state to get a new free resource
+	        IF (#commResourceCounter < #commResourceLimit) THEN
+	          
+	          // Check for the task to set the correct status
+	          IF (#statRestoreEnergy = TRUE) THEN
+	            #errorLocation := #STATE_7005;
+	          ELSE
+	            #errorLocation := #STATE_7006;
+	          END_IF;
+	          
+	          // A new resource is used for the update for this block instance
+	          // ==> increse the used resources by 1
+	          #commResourceCounter := #commResourceCounter + 1;
+	          
+	          // Start the reading of the measurement data
+	          #instReadDataRecord(REQ := TRUE,
+	                            ID := #id,
+	                            INDEX := #RECORD_143_INDEX,
+	                            MLEN := #RECORD_143_LENGTH,
+	                            RECORD := #statVenergyCounter);
+	          
+	          // Go to the state for waiting for the answer
+	          #statSmStateNext := #SM_READ_CODE_22;
+	        ELSE
+	          
+	          // Currently, no resource is available
+	          // ==> Go to another state, to wait for a free resource
+	          #statSmStateNext := #SM_READ_CODE_21;
+	        END_IF;
+	        
+	        // Check for a request to reset the energy counter
+	      ELSIF ((#statResetEnCountRequest = TRUE)
+	        AND (#commResourceLimit > 0)) THEN
+	        
+	        // Reset the values of the energy counter data record, which will be transfered to the Energy Meter
+	        #statRestoreEnCountValues.appEnL1 := 0.0;
+	        #statRestoreEnCountValues.appEnL2 := 0.0;
+	        #statRestoreEnCountValues.appEnL3 := 0.0;
+	        #statRestoreEnCountValues.effEnExportL1 := 0.0;
+	        #statRestoreEnCountValues.effEnExportL2 := 0.0;
+	        #statRestoreEnCountValues.effEnExportL3 := 0.0;
+	        #statRestoreEnCountValues.effEnImportL1 := 0.0;
+	        #statRestoreEnCountValues.effEnImportL2 := 0.0;
+	        #statRestoreEnCountValues.effEnImportL3 := 0.0;
+	        #statRestoreEnCountValues.reaEnExportL1 := 0.0;
+	        #statRestoreEnCountValues.reaEnExportL2 := 0.0;
+	        #statRestoreEnCountValues.reaEnExportL3 := 0.0;
+	        #statRestoreEnCountValues.reaEnImportL1 := 0.0;
+	        #statRestoreEnCountValues.reaEnImportL2 := 0.0;
+	        #statRestoreEnCountValues.reaEnImportL3 := 0.0;
+	        
+	        // Reset the request signal
+	        #statResetEnCountRequest := FALSE;
+	        
+	        // Read the current time to set the timestamp of the reset of the energy counter
+	        #tempGeneralRetVal := RD_SYS_T(#driverData.rTimeDataEnergy);
+	        
+	        // Check if currently a communication resource for the update is available
+	        // otherwise go to a wait state to get a new free resource
+	        IF (#commResourceCounter < #commResourceLimit) THEN
+	          
+	          // Set the status to reset energy counter
+	          #errorLocation := #STATE_7004;
+	          
+	          // A new resource is used for the update for this block instance
+	          // ==> increse the used resources by 1
+	          #commResourceCounter := #commResourceCounter + 1;
+	          
+	          // Start the reading of the data record for the measurement values
+	          #statWriteDataRecRequest := TRUE;
+	          
+	          // Go to the state for waiting for the answer
+	          #statSmStateNext := #SM_WRITE_CODE_32;
+	        ELSE
+	          
+	          // Currently, no resource is available
+	          // ==> Go to another state, to wait for a free resource
+	          #statSmStateNext := #SM_WRITE_CODE_31;
+	        END_IF;
+	        
+	        // Check if the update timer is elapsed ==> then start to update the measurement values
+	      ELSIF (((#automaticUpdate = TRUE)
+	        OR (#statBitsInternalHmi.startAuto = TRUE)
+	        OR ((#statBitsInternalHmi.startAcyclic = TRUE)
+	        AND (#statStartAcyclicHmiOld = FALSE)))
+	        AND (#commResourceLimit > 0)) THEN
+	        
+	        // Check if currently a communication resource for the update is available
+	        // otherwise go to a wait state to get a new free resource
+	        IF (#commResourceCounter < #commResourceLimit) THEN
+	          
+	          // Set the status to read measurement values
+	          #errorLocation := #STATE_7002;
+	          
+	          // Store the time between two updates
+	          #timeBetweenUpdate := #instTimeMeasurement.ET;
+	          
+	          // Check if the this is the maximum time between the updates
+	          IF (#timeBetweenUpdate > #statAuxTimeBetweenUpdateMax) THEN
+	            
+	            // Set the new maximum time
+	              #statAuxTimeBetweenUpdateMax := #timeBetweenUpdate;
+	          ELSE
+	            ; // No new maximum detected
+	          END_IF;
+	          
+	          // Reset the timer to restart the time next time
+	          #instTimeMeasurement(IN := FALSE,
+	                            PT := T#21d);
+	          
+	          // A new resource is used for the update for this block instance
+	          // ==> increse the used resources by 1
+	          #commResourceCounter := #commResourceCounter + 1;
+	          
+	          // Start the reading of the measurement data
+	          #instReadDataRecord(REQ := TRUE,
+	                            ID := #id,
+	                            INDEX := #RECORD_142_INDEX,
+	                            MLEN := #RECORD_142_LENGTH,
+	                            RECORD := #statVmeasurementValues);
+	          
+	          // Go to the state for waiting for the answer
+	          #statSmStateNext := #SM_READ_CODE_12;
+	        ELSE
+	          // Currently, no resource is available
+	          // ==> Go to another state, to wait for a free resource
+	          #statSmStateNext := #SM_READ_CODE_11;
+	        END_IF;
+	      ELSE
+	        ; // Timer not elapsed, Energy Meter connected an not request to reset counter
+	      END_IF;
+	      
+	      //===========================================================================
+	      //====== Read measurement values ============================================
+	      //===========================================================================
+	      
+	      // Wait for a free communication resource on the CPU
+	    #SM_READ_CODE_11:
+	      
+	      // Set the state of the block to "Waiting for a free ressource"
+	      #errorLocation := #STATE_7001;
+	      
+	      // Check if a resource is available
+	      // ==> then start the request
+	      IF (#commResourceCounter < #commResourceLimit) THEN
+	        
+	        // Set the status to read measurement values
+	        #errorLocation := #STATE_7002;
+	        
+	        // A new resource is used for the update for this block instance
+	        // ==> increse the used resources by 1
+	        #commResourceCounter := #commResourceCounter + 1;
+	        
+	        // Start the reading of the measurement data
+	        #instReadDataRecord(REQ := TRUE,
+	                          ID := #id,
+	                          INDEX := #RECORD_142_INDEX,
+	                          MLEN := #RECORD_142_LENGTH,
+	                          RECORD := #statVmeasurementValues);
+	        
+	        // Store the time between two updates
+	        #timeBetweenUpdate := #instTimeMeasurement.ET;
+	        
+	        // Check if the this is the maximum time between the updates
+	        IF (#timeBetweenUpdate > #statAuxTimeBetweenUpdateMax) THEN
+	          
+	          // Set the new maximum time
+	            #statAuxTimeBetweenUpdateMax := #timeBetweenUpdate;
+	        ELSE
+	          ; // No new maximum detected
+	        END_IF;
+	        
+	        // Reset the timer to restart the time next time
+	        #instTimeMeasurement(IN := FALSE,
+	                          PT := T#21d);
+	        
+	        // Go to the state for waiting for the answer
+	        #statSmStateNext := #SM_READ_CODE_12;
+	      ELSE
+	        ; // Wait for a free resource
+	      END_IF;
+	      
+	      // Wait for the answer of the Energy Meter
+	    #SM_READ_CODE_12:
+	      
+	      // Start the reading of the measurement data
+	      #instReadDataRecord(REQ := TRUE,
+	                        ID := #id,
+	                        INDEX := #RECORD_142_INDEX,
+	                        MLEN := #RECORD_142_LENGTH,
+	                        RECORD := #statVmeasurementValues);
+	      
+	      // Set the state of the block to "Reading the measurement values"
+	      #errorLocation := #STATE_7002;
+	      
+	      // Start the watchdog, while waiting for a response
+	      #statWatchdogRun := TRUE;
+	      
+	      // The update of the data failed with an error
+	      IF ((#instReadDataRecord.ERROR = TRUE)
+	        OR (#instWatchdog.Q = TRUE)) THEN
+	        
+	        // Reset the watchdog
+	        #statWatchdogRun := FALSE;
+	        
+	        // Save the time to update the values, even with an error
+	        #statTimetoUpdate := #instTimeMeasurement.ET;
+	        
+	        // Reset the timer to restart the time next time
+	        #instTimeMeasurement(IN := FALSE,
+	                          PT := T#21d);
+	        
+	        // Save the error code for the user to display the error reason and location
+	        #errorLocation := #ERR_LOC_1321;
+	        #statErrorCode := #instReadDataRecord.STATUS;
+	        
+	        // Release the communication resource
+	        #commResourceCounter := #commResourceCounter - 1;
+	        
+	        // Reset the function
+	        #instReadDataRecord(REQ := FALSE,
+	                          ID := #id,
+	                          INDEX := #RECORD_142_INDEX,
+	                          MLEN := #RECORD_142_LENGTH,
+	                          RECORD := #statVmeasurementValues);
+	        
+	        // Go back to the main state and wait for a new request
+	        #statSmStateNext := #SM_IDLE;
+	        
+	        // The update of the has been finished with success
+	      ELSIF (#instReadDataRecord.VALID = TRUE) THEN
+	        
+	        // Reset the watchdog
+	        #statWatchdogRun := FALSE;
+	        
+	        // Reset the error code and location
+	        #errorLocation := W#16#0000;
+	        #statErrorCode := DW#16#0000_0000;
+	        
+	        // Release the communication resource
+	        #commResourceCounter := #commResourceCounter - 1;
+	        
+	        // Save the time to update the values
+	        #statTimetoUpdate := #instTimeMeasurement.ET;
+	        
+	        // Reset the timer to restart the time next time
+	        #instTimeMeasurement(IN := FALSE,
+	                          PT := T#21d);
+	        
+	        // Read the current time to set the timestamp of the measurement values
+	        #tempGeneralRetVal := RD_SYS_T(#timeStampMeasValues);
+	        
+	        // Copy the data to the output structure of the measurement values
+	        // but only a view variables can be updated, cause only few of them
+	        // are supported by the Energy Meter
+	        
+	        // ================================================
+	        // Proceed the voltage values for each phase
+	        // ================================================
+	        
+	        // Update voltage for phase L1
+	        #driverData.uL1 := #statVmeasurementValues.voltageL1N;
+	        #driverData.uL2 := #statVmeasurementValues.voltageL2N;
+	        #driverData.uL3 := #statVmeasurementValues.voltageL3N;
+	        
+	        // ================================================
+	        // Proceed the voltage values for phase to phase
+	        // ================================================
+	        #driverData.uL1L2 := #statVmeasurementValues.voltageL1L2;
+	        #driverData.uL2L3 := #statVmeasurementValues.voltageL2L3;
+	        #driverData.uL3L1 := #statVmeasurementValues.voltageL3L1;
+	        
+	        // ================================================
+	        // Proceed the current for each phase
+	        // ================================================
+	        #driverData.iL1 := #statVmeasurementValues.currentL1;
+	        #driverData.iL2 := #statVmeasurementValues.currentL2;
+	        #driverData.iL3 := #statVmeasurementValues.currentL3;
+	        
+	        // ================================================
+	        // Proceed the frequency for the complete net
+	        // ================================================
+	        #driverData.f := #statVmeasurementValues.frequency;
+	        
+	        // ================================================
+	        // Proceed the cos for each phase
+	        // ================================================
+	        #driverData.cosL1 := #statVmeasurementValues.powerFactorL1;
+	        #driverData.cosL2 := #statVmeasurementValues.powerFactorL2;
+	        #driverData.cosL3 := #statVmeasurementValues.powerFactorL3;
+	        #driverData.cosAverage := #statVmeasurementValues.powerFactorOverall;
+	        
+	        // ================================================
+	        // Proceed the apparent power for each phase
+	        // ================================================
+	        #driverData.sL1 := #statVmeasurementValues.apparentPowerL1;
+	        #driverData.sL2 := #statVmeasurementValues.apparentPowerL2;
+	        #driverData.sL3 := #statVmeasurementValues.apparentPowerL3;
+	        #driverData.sTotal := #statVmeasurementValues.apparentPowerOverall;
+	        
+	        // ================================================
+	        // Proceed the reactive power for each phase
+	        // ================================================
+	        #driverData.qL1 := #statVmeasurementValues.reactivePowerL1;
+	        #driverData.qL2 := #statVmeasurementValues.reactivePowerL2;
+	        #driverData.qL3 := #statVmeasurementValues.reactivePowerL3;
+	        #driverData.qTotal := #statVmeasurementValues.reactivePowerOverall;
+	        
+	        // ================================================
+	        // Proceed the effective power for each phase
+	        // ================================================
+	        #driverData.pL1 := #statVmeasurementValues.effectivePowerL1;
+	        #driverData.pL2 := #statVmeasurementValues.effectivePowerL2;
+	        #driverData.pL3 := #statVmeasurementValues.effectivePowerL3;
+	        #driverData.pTotal := #statVmeasurementValues.effectivePowerOverall;
+	        
+	        // ================================================
+	        // Proceed the energy counter overall
+	        // ================================================
+	        #driverData.eActiveRate1Export := #statVmeasurementValues.effEnExport32bit;
+	        #driverData.eActiveRate1Import := #statVmeasurementValues.effEnImport32bit;
+	        #driverData.eReactiveRate1Export := #statVmeasurementValues.reaEnExport32bit;
+	        #driverData.eReactiveRate1Import := #statVmeasurementValues.reaEnImport32bit;
+	        #driverData.eApparentRate1Import := #statVmeasurementValues.appEnOverall32bit;
+	        
+	        // ================================================
+	        // Proceed the energy counter to the energy counter structure
+	        // ================================================
+	        #energyCounter.activeRate1Exp := #statVmeasurementValues.effEnExport64bit;
+	        #energyCounter.activeRate1Imp := #statVmeasurementValues.effEnImport64bit;
+	        #energyCounter.reactiveRate1Exp := #statVmeasurementValues.reaEnExport64bit;
+	        #energyCounter.reactiveRate1Imp := #statVmeasurementValues.reaEnImport64bit;
+	        #energyCounter.apparentRate1Imp := #statVmeasurementValues.appEnOverall64bit;
+	        
+	        // If the connection type is single phase, it doesn't make sense to display the overall
+	        // and average values, so set them to 0
+	        IF (#connectionType = #CONNECTION_SINGLE_PHASE) THEN
+	          #driverData.cosAverage := 0;
+	          #driverData.sTotal := 0;
+	          #driverData.qTotal := 0;
+	          #driverData.pTotal := 0;
+	        ELSE
+	          ; // Else the values can be displayed as they are
+	        END_IF;
+	        
+	        //===========================================================================
+	        //====== Generate the minimum and maximum values ============================
+	        //===========================================================================
+	        
+	        // ================================================
+	        // Proceed the voltage values for each phase
+	        // ================================================
+	        
+	        // Check the voltage values for the phases for a new maximum or minimum
+	        // Phase L1
+	        IF (#driverData.uL1 > #driverData.uL1Max) THEN
+	          #driverData.uL1Max := #driverData.uL1;
+	        ELSIF (#driverData.uL1 < #driverData.uL1Min) THEN
+	          #driverData.uL1Min := #driverData.uL1;
+	        ELSE
+	          ; // No new maximum or minimum value
+	        END_IF;
+	        
+	        // Phase L2
+	        IF (#driverData.uL2 > #driverData.uL2Max) THEN
+	          #driverData.uL2Max := #driverData.uL2;
+	        ELSIF (#driverData.uL2 < #driverData.uL2Min) THEN
+	          #driverData.uL2Min := #driverData.uL2;
+	        ELSE
+	          ; // No new maximum or minimum value
+	        END_IF;
+	        
+	        // Phase L3
+	        IF (#driverData.uL3 > #driverData.uL3Max) THEN
+	          #driverData.uL3Max := #driverData.uL3;
+	        ELSIF (#driverData.uL3 < #driverData.uL3Min) THEN
+	          #driverData.uL3Min := #driverData.uL3;
+	        ELSE
+	          ; // No new maximum or minimum value
+	        END_IF;
+	        
+	        // If the connection type is single phase, it doesn't make sense to display the overall
+	        // and average values, so set them to 0
+	        IF (#connectionType = 1) THEN
+	          #driverData.uPhNaverage := 0;
+	        ELSE
+	          // Average value of all three phases
+	          #driverData.uPhNaverage := (#statVmeasurementValues.voltageL1N
+	          + #statVmeasurementValues.voltageL2N
+	          + #statVmeasurementValues.voltageL3N) / 3;
+	        END_IF;
+	        
+	        // Check the voltage average value of the phases for a new maximum or minimum
+	        // Average value
+	        IF (#driverData.uPhNaverage > #driverData.uPhNaverageMax) THEN
+	          #driverData.uPhNaverageMax := #driverData.uPhNaverage;
+	        ELSIF (#driverData.uPhNaverage < #driverData.uPhNaverageMin) THEN
+	          #driverData.uPhNaverageMin := #driverData.uPhNaverage;
+	        ELSE
+	          ; // No new maximum or minimum value
+	        END_IF;
+	        
+	        // ================================================
+	        // Proceed the voltage values for phase to phase
+	        // ================================================
+	        
+	        // Check the voltage values for the phases for a new maximum or minimum
+	        // Phase L1 - L2
+	        IF (#driverData.uL1L2 > #driverData.uL1L2Max) THEN
+	          #driverData.uL1L2Max := #driverData.uL1L2;
+	        ELSIF (#driverData.uL1L2 < #driverData.uL1L2Min) THEN
+	          #driverData.uL1L2Min := #driverData.uL1L2;
+	        ELSE
+	          ; // No new maximum or minimum value
+	        END_IF;
+	        
+	        // Phase L2 - L3
+	        IF (#driverData.uL2L3 > #driverData.uL2L3Max) THEN
+	          #driverData.uL2L3Max := #driverData.uL2L3;
+	        ELSIF (#driverData.uL2L3 < #driverData.uL2L3Min) THEN
+	          #driverData.uL2L3Min := #driverData.uL2L3;
+	        ELSE
+	          ; // No new maximum or minimum value
+	        END_IF;
+	        
+	        // Phase L3 - L1
+	        IF (#driverData.uL3L1 > #driverData.uL3L1Max) THEN
+	          #driverData.uL3L1Max := #driverData.uL3L1;
+	        ELSIF (#driverData.uL3L1 < #driverData.uL3L1Min) THEN
+	          #driverData.uL3L1Min := #driverData.uL3L1;
+	        ELSE
+	          ; // No new maximum or minimum value
+	        END_IF;
+	        
+	        // If the connection type is single phase, it doesn't make sense to display the overall
+	        // and average values, so set them to 0
+	        IF (#connectionType = 1) THEN
+	          #driverData.uPhPhAverage := 0;
+	        ELSE
+	          // Average value of all three phases
+	          #driverData.uPhPhAverage := (#statVmeasurementValues.voltageL1L2
+	          + #statVmeasurementValues.voltageL2L3
+	          + #statVmeasurementValues.voltageL3L1) / 3;
+	        END_IF;
+	        
+	        // Check the voltage average value of the phases for a new maximum or minimum
+	        // Average value
+	        IF (#driverData.uPhPhAverage > #driverData.uPhPhAverageMax) THEN
+	          #driverData.uPhPhAverageMax := #driverData.uPhPhAverage;
+	        ELSIF (#driverData.uPhPhAverage < #driverData.uPhPhAverageMin) THEN
+	          #driverData.uPhPhAverageMin := #driverData.uPhPhAverage;
+	        ELSE
+	          ; // No new maximum or minimum value
+	        END_IF;
+	        
+	        // ================================================
+	        // Proceed the current for each phase
+	        // ================================================
+	        
+	        // Check the current values for the phases for a new maximum or minimum
+	        // Phase L1
+	        IF (#driverData.iL1 > #driverData.iL1Max) THEN
+	          #driverData.iL1Max := #driverData.iL1;
+	        ELSIF (#driverData.iL1 < #driverData.iL1Min) THEN
+	          #driverData.iL1Min := #driverData.iL1;
+	        ELSE
+	          ; // No new maximum or minimum value
+	        END_IF;
+	        
+	        // Phase L2
+	        IF (#driverData.iL2 > #driverData.iL2Max) THEN
+	          #driverData.iL2Max := #driverData.iL2;
+	        ELSIF (#driverData.iL2 < #driverData.iL2Min) THEN
+	          #driverData.iL2Min := #driverData.iL2;
+	        ELSE
+	          ; // No new maximum or minimum value
+	        END_IF;
+	        
+	        // Phase L3
+	        IF (#driverData.iL3 > #driverData.iL3Max) THEN
+	          #driverData.iL3Max := #driverData.iL3;
+	        ELSIF (#driverData.iL3 < #driverData.iL3Min) THEN
+	          #driverData.iL3Min := #driverData.iL3;
+	        ELSE
+	          ; // No new maximum or minimum value
+	        END_IF;
+	        
+	        // If the connection type is single phase, it doesn't make sense to display the overall
+	        // and average values, so set them to 0
+	        IF (#connectionType = 1) THEN
+	          #driverData.iAverage := 0;
+	        ELSE
+	          // Average value of all three phases
+	          #driverData.iAverage := (#statVmeasurementValues.currentL1
+	          + #statVmeasurementValues.currentL2
+	          + #statVmeasurementValues.currentL3) / 3;
+	        END_IF;
+	        
+	        // Check the voltage average value of the phases for a new maximum or minimum
+	        // Average value
+	        IF (#driverData.iAverage > #driverData.iAverageMax) THEN
+	          #driverData.iAverageMax := #driverData.iAverage;
+	        ELSIF (#driverData.iAverage < #driverData.iAverageMin) THEN
+	          #driverData.iAverageMin := #driverData.iAverage;
+	        ELSE
+	          ; // No new maximum or minimum value
+	        END_IF;
+	        
+	        // ================================================
+	        // Proceed the frequency for the complete net
+	        // ================================================
+	        
+	        // Check the frequency values for the phases for a new maximum or minimum
+	        IF (#driverData.f > #driverData.fMax) THEN
+	          #driverData.fMax := #driverData.f;
+	        ELSIF (#driverData.f < #driverData.fMin) THEN
+	          #driverData.fMin := #driverData.f;
+	        ELSE
+	          ; // No new maximum or minimum value
+	        END_IF;
+	        
+	        // ================================================
+	        // Proceed the cos for each phase
+	        // ================================================
+	        
+	        // Check the power factor values for the phases for a new maximum or minimum
+	        // Phase L1
+	        IF (#driverData.cosL1 > #driverData.cosL1Max) THEN
+	          #driverData.cosL1Max := #driverData.cosL1;
+	        ELSIF (#driverData.cosL1 < #driverData.cosL1Min) THEN
+	          #driverData.cosL1Min := #driverData.cosL1;
+	        ELSE
+	          ; // No new maximum or minimum value
+	        END_IF;
+	        
+	        // Phase L2
+	        IF (#driverData.cosL2 > #driverData.cosL2Max) THEN
+	          #driverData.cosL2Max := #driverData.cosL2;
+	        ELSIF (#driverData.cosL2 < #driverData.cosL2Min) THEN
+	          #driverData.cosL2Min := #driverData.cosL2;
+	        ELSE
+	          ; // No new maximum or minimum value
+	        END_IF;
+	        
+	        // Phase L3
+	        IF (#driverData.cosL3 > #driverData.cosL3Max) THEN
+	          #driverData.cosL3Max := #driverData.cosL3;
+	        ELSIF (#driverData.cosL3 < #driverData.cosL3Min) THEN
+	          #driverData.cosL3Min := #driverData.cosL3;
+	        ELSE
+	          ; // No new maximum or minimum value
+	        END_IF;
+	        
+	        // Overall
+	        IF (#driverData.cosAverage > #driverData.cosAverageMax) THEN
+	          #driverData.cosAverageMax := #driverData.cosAverage;
+	        ELSIF (#driverData.cosAverage < #driverData.cosAverageMin) THEN
+	          #driverData.cosAverageMin := #driverData.cosAverage;
+	        ELSE
+	          ; // No new maximum or minimum value
+	        END_IF;
+	        
+	        // ================================================
+	        // Proceed the apparent power for each phase
+	        // ================================================
+	        
+	        // Check the apparent power values for the phases for a new maximum or minimum
+	        // Phase L1
+	        IF (#driverData.sL1 > #driverData.sL1Max) THEN
+	          #driverData.sL1Max := #driverData.sL1;
+	        ELSIF (#driverData.sL1 < #driverData.sL1Min) THEN
+	          #driverData.sL1Min := #driverData.sL1;
+	        ELSE
+	          ; // No new maximum or minimum value
+	        END_IF;
+	        
+	        // Phase L2
+	        IF (#driverData.sL2 > #driverData.sL2Max) THEN
+	          #driverData.sL2Max := #driverData.sL2;
+	        ELSIF (#driverData.sL2 < #driverData.sL2Min) THEN
+	          #driverData.sL2Min := #driverData.sL2;
+	        ELSE
+	          ; // No new maximum or minimum value
+	        END_IF;
+	        
+	        // Phase L3
+	        IF (#driverData.sL3 > #driverData.sL3Max) THEN
+	          #driverData.sL3Max := #driverData.sL3;
+	        ELSIF (#driverData.sL3 < #driverData.sL3Min) THEN
+	          #driverData.sL3Min := #driverData.sL3;
+	        ELSE
+	          ; // No new maximum or minimum value
+	        END_IF;
+	        
+	        // Overall
+	        IF (#driverData.sTotal > #driverData.sTotalMax) THEN
+	          #driverData.sTotalMax := #driverData.sTotal;
+	        ELSIF (#driverData.sTotal < #driverData.sTotalMin) THEN
+	          #driverData.sTotalMin := #driverData.sTotal;
+	        ELSE
+	          ; // No new maximum or minimum value
+	        END_IF;
+	        
+	        // ================================================
+	        // Proceed the reactive power for each phase
+	        // ================================================
+	        
+	        // Check the reactive power values for the phases for a new maximum or minimum
+	        // Phase L1
+	        IF (#driverData.qL1 > #driverData.qL1Max) THEN
+	          #driverData.qL1Max := #driverData.qL1;
+	        ELSIF (#driverData.qL1 < #driverData.qL1Min) THEN
+	          #driverData.qL1Min := #driverData.qL1;
+	        ELSE
+	          ; // No new maximum or minimum value
+	        END_IF;
+	        
+	        // Phase L2
+	        IF (#driverData.qL2 > #driverData.qL2Max) THEN
+	          #driverData.qL2Max := #driverData.qL2;
+	        ELSIF (#driverData.qL2 < #driverData.qL2Min) THEN
+	          #driverData.qL2Min := #driverData.qL2;
+	        ELSE
+	          ; // No new maximum or minimum value
+	        END_IF;
+	        
+	        // Phase L3
+	        IF (#driverData.qL3 > #driverData.qL3Max) THEN
+	          #driverData.qL3Max := #driverData.qL3;
+	        ELSIF (#driverData.qL3 < #driverData.qL3Min) THEN
+	          #driverData.qL3Min := #driverData.qL3;
+	        ELSE
+	          ; // No new maximum or minimum value
+	        END_IF;
+	        
+	        // Overall
+	        IF (#driverData.qTotal > #driverData.qTotalMax) THEN
+	          #driverData.qTotalMax := #driverData.qTotal;
+	        ELSIF (#driverData.qTotal < #driverData.qTotalMin) THEN
+	          #driverData.qTotalMin := #driverData.qTotal;
+	        ELSE
+	          ; // No new maximum or minimum value
+	        END_IF;
+	        
+	        // ================================================
+	        // Proceed the effective power for each phase
+	        // ================================================
+	        
+	        // Check the effective power values for the phases for a new maximum or minimum
+	        // Phase L1
+	        IF (#driverData.pL1 > #driverData.pL1Max) THEN
+	          #driverData.pL1Max := #driverData.pL1;
+	        ELSIF (#driverData.pL1 < #driverData.pL1Min) THEN
+	          #driverData.pL1Min := #driverData.pL1;
+	        ELSE
+	          ; // No new maximum or minimum value
+	        END_IF;
+	        
+	        // Phase L2
+	        IF (#driverData.pL2 > #driverData.pL2Max) THEN
+	          #driverData.pL2Max := #driverData.pL2;
+	        ELSIF (#driverData.pL2 < #driverData.pL2Min) THEN
+	          #driverData.pL2Min := #driverData.pL2;
+	        ELSE
+	          ; // No new maximum or minimum value
+	        END_IF;
+	        
+	        // Phase L3
+	        IF (#driverData.pL3 > #driverData.pL3Max) THEN
+	          #driverData.pL3Max := #driverData.pL3;
+	        ELSIF (#driverData.pL3 < #driverData.pL3Min) THEN
+	          #driverData.pL3Min := #driverData.pL3;
+	        ELSE
+	          ; // No new maximum or minimum value
+	        END_IF;
+	        
+	        // Overall
+	        IF (#driverData.pTotal > #driverData.pTotalMax) THEN
+	          #driverData.pTotalMax := #driverData.pTotal;
+	        ELSIF (#driverData.pTotal < #driverData.pTotalMin) THEN
+	          #driverData.pTotalMin := #driverData.pTotal;
+	        ELSE
+	          ; // No new maximum or minimum value
+	        END_IF;
+	        
+	        // Reset the function
+	        #instReadDataRecord(REQ := FALSE,
+	                          ID := #id,
+	                          INDEX := #RECORD_142_INDEX,
+	                          MLEN := #RECORD_142_LENGTH,
+	                          RECORD := #statVmeasurementValues);
+	        
+	        // Go back to the main state and wait for a new request
+	        #statSmStateNext := #SM_IDLE;
+	      ELSE
+	        ; // Reading still in progress
+	      END_IF;
+	      
+	      //===========================================================================
+	      //====== Store energy counter ===============================================
+	      //===========================================================================
+	      
+	      // Wait for a free communication resource on the CPU
+	    #SM_READ_CODE_21:
+	      
+	      // Set the state of the block to "Waiting for a free ressource"
+	      #errorLocation := #STATE_7001;
+	      
+	      // Check if a resource is available
+	      // ==> then start the request
+	      IF (#commResourceCounter < #commResourceLimit) THEN
+	        
+	        // Check for the task to set the correct status
+	        IF (#statRestoreEnergy = TRUE) THEN
+	          #errorLocation := #STATE_7005;
+	        ELSE
+	          #errorLocation := #STATE_7006;
+	        END_IF;
+	        
+	        // A new resource is used for the update for this block instance
+	        // ==> increse the used resources by 1
+	        #commResourceCounter := #commResourceCounter + 1;
+	        
+	        // Start the reading of the measurement data
+	        #instReadDataRecord(REQ := TRUE,
+	                          ID := #id,
+	                          INDEX := #RECORD_143_INDEX,
+	                          MLEN := #RECORD_143_LENGTH,
+	                          RECORD := #statVmeasurementValues);
+	        
+	        // Go to the state for waiting for the answer
+	        #statSmStateNext := #SM_READ_CODE_22;
+	      ELSE
+	        ; // Wait for a free resource
+	      END_IF;
+	      
+	      // Wait for the answer of the Energy Meter
+	    #SM_READ_CODE_22:
+	      
+	      // Start the reading of the measurement data
+	      #instReadDataRecord(REQ := TRUE,
+	                        ID := #id,
+	                        INDEX := #RECORD_143_INDEX,
+	                        MLEN := #RECORD_143_LENGTH,
+	                        RECORD := #statVenergyCounter);
+	      
+	      // Start the watchdog, while waiting for a response
+	      #statWatchdogRun := TRUE;
+	      
+	      // The update of the data failed with an error
+	      IF ((#instReadDataRecord.ERROR = TRUE)
+	        OR (#instWatchdog.Q = TRUE)) THEN
+	        
+	        // Reset the watchdog
+	        #statWatchdogRun := FALSE;
+	        
+	        // Save the error code for the user to display the error reason and location
+	        #errorLocation := #ERR_LOC_1322;
+	        #statErrorCode := #instReadDataRecord.STATUS;
+	        
+	        // Release the communication resource
+	        #commResourceCounter := #commResourceCounter - 1;
+	        
+	        // Reset the function
+	        #instReadDataRecord(REQ := FALSE,
+	                          ID := #id,
+	                          INDEX := #RECORD_143_INDEX,
+	                          MLEN := #RECORD_143_LENGTH,
+	                          RECORD := #statVenergyCounter);
+	        
+	        // Go back to the main state and wait for a new request
+	        #statSmStateNext := #SM_IDLE;
+	        
+	        // The update of the has been finished with success
+	      ELSIF (#instReadDataRecord.VALID = TRUE) THEN
+	        
+	        // Reset the watchdog
+	        #statWatchdogRun := FALSE;
+	        
+	        // Reset the error code and location
+	        #errorLocation := W#16#0000;
+	        #statErrorCode := DW#16#0000_0000;
+	        
+	        // Release the communication resource
+	        #commResourceCounter := #commResourceCounter - 1;
+	        
+	        // Read the current time to set the timestamp of the measurement values
+	        #tempGeneralRetVal := RD_SYS_T(#timeStampEnCount);
+	        
+	        // Reset the function
+	        #instReadDataRecord(REQ := FALSE,
+	                          ID := #id,
+	                          INDEX := #RECORD_143_INDEX,
+	                          MLEN := #RECORD_143_LENGTH,
+	                          RECORD := #statVenergyCounter);
+	        
+	        // Check if the energy counter needs to be restored after a loss of power
+	        IF (#statRestoreEnergy = TRUE) THEN
+	          
+	          // Reset the request to restore the energy counter
+	          #statRestoreEnergy := FALSE;
+	          
+	          // Check for a reset of the Energy Counter
+	          // ==> If the power was not disconnected but only the bus adapter has
+	          //     been disconncted, the Energy Meter continued counting and the 
+	          //     counter don't need to be reset. So check every counter if it's
+	          //     lower the last stored value or bigger. Cause then it continued
+	          //     counting the energy.
+	          IF ((#statRestoreEnCountValues.appEnL1 > #statVenergyCounter.appEnL1)
+	            OR (#statRestoreEnCountValues.appEnL2 > #statVenergyCounter.appEnL2)
+	            OR (#statRestoreEnCountValues.appEnL3 > #statVenergyCounter.appEnL3)
+	            OR (#statRestoreEnCountValues.effEnExportL1 > #statVenergyCounter.effEnExportL1)
+	            OR (#statRestoreEnCountValues.effEnExportL2 > #statVenergyCounter.effEnExportL2)
+	            OR (#statRestoreEnCountValues.effEnExportL3 > #statVenergyCounter.effEnExportL3)
+	            OR (#statRestoreEnCountValues.effEnImportL1 > #statVenergyCounter.effEnImportL1)
+	            OR (#statRestoreEnCountValues.effEnImportL2 > #statVenergyCounter.effEnImportL2)
+	            OR (#statRestoreEnCountValues.effEnImportL3 > #statVenergyCounter.effEnImportL3)
+	            OR (#statRestoreEnCountValues.reaEnExportL1 > #statVenergyCounter.reaEnExportL1)
+	            OR (#statRestoreEnCountValues.reaEnExportL2 > #statVenergyCounter.reaEnExportL2)
+	            OR (#statRestoreEnCountValues.reaEnExportL3 > #statVenergyCounter.reaEnExportL3)
+	            OR (#statRestoreEnCountValues.reaEnImportL1 > #statVenergyCounter.reaEnImportL1)
+	            OR (#statRestoreEnCountValues.reaEnImportL2 > #statVenergyCounter.reaEnImportL2)
+	            OR (#statRestoreEnCountValues.reaEnImportL3 > #statVenergyCounter.reaEnImportL3)) THEN
+	            
+	            // Check if currently a communication resource for the update is available
+	            // otherwise go to a wait state to get a new free resource
+	            IF (#commResourceCounter < #commResourceLimit) THEN
+	              
+	              // A new resource is used for the update for this block instance
+	              // ==> increse the used resources by 1
+	              #commResourceCounter := #commResourceCounter + 1;
+	              
+	              // Set the state of the block to "Reset the energy counter"
+	              #errorLocation := #STATE_7005;
+	              
+	              // Start the reading of the data record for the measurement values
+	              #statWriteDataRecRequest := TRUE;
+	              
+	              // Go to the state for waiting for the answer
+	              #statSmStateNext := #SM_WRITE_CODE_32;
+	            ELSE
+	              
+	              // Currently, no resource is available
+	              // ==> Go to another state, to wait for a free resource
+	              #statSmStateNext := #SM_WRITE_CODE_31;
+	            END_IF;
+	          ELSE
+	            // A restoring of the counter is not neccessary
+	            // Copy the data to the structure of the energy counter
+	            // by using the view at the receive buffer
+	            #statRestoreEnCountValues := #statVenergyCounter;
+	            
+	            // Go back to the main state and wait for a new request
+	            #statSmStateNext := #SM_IDLE;
+	          END_IF;
+	          
+	        ELSE
+	          // Copy the data to the structure of the energy counter
+	          // by using the view at the receive buffer
+	          #statRestoreEnCountValues := #statVenergyCounter;
+	          
+	          // Go back to the main state and wait for a new request
+	          #statSmStateNext := #SM_IDLE;
+	        END_IF;
+	      ELSE
+	        ; // Reading still in progress
+	      END_IF;
+	      
+	      //===========================================================================
+	      //====== Restore the energy counter =========================================
+	      //===========================================================================
+	      
+	      // Wait for a free communication resource on the CPU
+	    #SM_WRITE_CODE_31:
+	      
+	      // Set the state of the block to "Waiting for a free ressource"
+	      //#Error_Location := #STATUS_WAIT_FOR_RESOURCE ;
+	      
+	      // Check if a resource is available
+	      // ==> then start the request
+	      IF (#commResourceCounter < #commResourceLimit) THEN
+	        
+	        // A new resource is used for the update for this block instance
+	        // ==> increse the used resources by 1
+	        #commResourceCounter := #commResourceCounter + 1;
+	        
+	        // Start the reading of the data record for the measurement values
+	        #statWriteDataRecRequest := TRUE;
+	        
+	        // Go to the state for waiting for the answer
+	        #statSmStateNext := #SM_WRITE_CODE_32;
+	      ELSE
+	        ; // Wait for a free resource
+	      END_IF;
+	      
+	      // Wait for the answer of the Energy Meter
+	    #SM_WRITE_CODE_32:
+	      
+	      // Start the watchdog, while waiting for a response
+	      #statWatchdogRun := TRUE;
+	      
+	      // The restore of the energy counter failed with an error
+	      IF ((#instWriteDataRecord.ERROR = TRUE)
+	        OR (#instWatchdog.Q = TRUE)) THEN
+	        
+	        // Reset the watchdog
+	        #statWatchdogRun := FALSE;
+	        
+	        // Save the error code for the user to display the error reason and location
+	        #errorLocation := #ERR_LOC_1311;
+	        #statErrorCode := #instWriteDataRecord.STATUS;
+	        
+	        // Reset the request bit to write a record to the Energy Meter for
+	        // generating a positive edge with the next request
+	        #statWriteDataRecRequest := FALSE;
+	        
+	        // Release the communication resource
+	        #commResourceCounter := #commResourceCounter - 1;
+	        
+	        // Go back to the main state and wait for a new request
+	        #statSmStateNext := #SM_IDLE;
+	        
+	        // The restore of the energy counter has been finished with success
+	      ELSIF (#instWriteDataRecord.DONE = TRUE) THEN
+	        
+	        // Reset the watchdog
+	        #statWatchdogRun := FALSE;
+	        
+	        // Reset the error code and location
+	        #errorLocation := W#16#0000;
+	        #statErrorCode := DW#16#0000_0000;
+	        
+	        // Release the communication resource
+	        #commResourceCounter := #commResourceCounter - 1;
+	        
+	        // Reset the request bit to write a record to the Energy Meter for
+	        // generating a positive edge with the next request
+	        #statWriteDataRecRequest := FALSE;
+	        
+	        // Go back to the main state and wait for a new request
+	        #statSmStateNext := #SM_IDLE;
+	      ELSE
+	        ; // Reading still in progress
+	      END_IF;
+	      
+	  END_CASE;
+	  
+	  // Set information for the visualization block
+	  #driverData.readValue := #automaticUpdate;
+	  #driverData.driverError := BOOL_TO_INT(#statErrorCode <> 0);
+	  #driverData.connectionType := #connectionType;
+	  
+	  // Store the value for edge detection
+	  #statStartAcyclicHmiOld := #statBitsInternalHmi.startAcyclic;
+	  #statResetEnergyOld := #resetEnergyCounter;
+	  #statResetEnergyHmiOld := #statBitsInternalHmi.resetEnergyMeter;
+	  #statResetMinMaxOld := #resetMinMax;
+	  #statResetMinMaxHmiOld := #statBitsInternalHmi.resetMinMaxData;
+	  
+	  //Store Output
+	  #timeBetweenUpdateMax := #statAuxTimeBetweenUpdateMax;
+	  #errorCode := #statErrorCode;
+	  
+	  // Set the signal, if the timer to update energy counter should run or not
+	  // The timer should run when the Energy Meter is available (User data variant <> 0)
+	  // and there is currently no update of the values is active.
+	  #statRunUpdateTimer := ((#statUserDataVariant <> B#16#00)
+	  AND (#statSmState <> #SM_READ_CODE_22));
+	END_IF;
+	
+	
+END_FUNCTION_BLOCK
+

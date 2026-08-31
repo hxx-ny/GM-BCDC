@@ -1,0 +1,261 @@
+﻿FUNCTION_BLOCK "2100_DancerMain"
+{ S7_Optimized_Access := 'TRUE' ; Published := 'FALSE' }
+VERSION : 0.1
+   VAR_INPUT 
+      Enable : Bool;
+      Stop : Bool;
+      Reset : Bool;
+      Parameter : Struct
+         DancerDirection : Bool;
+         UnWinderDirection : Bool;
+         UnwinderTopUse : Bool;
+         UnwinderBottomUse : Bool;
+         JogMode : Bool;
+         SetPoint : LReal;
+         Input : LReal;
+         Kp : LReal;
+         Ki : LReal;
+         Radius : LReal;
+      END_STRUCT;
+   END_VAR
+
+   VAR_OUTPUT 
+      Busy : Struct
+         TotalBusy : Bool;
+         EnableBusy : Bool;
+         StopBusy : Bool;
+         ResetBusy : Bool;
+      END_STRUCT;
+      Done : Struct
+         TotalDone : Bool;
+         EnableDone : Bool;
+         StopDone : Bool;
+         ResetDone : Bool;
+      END_STRUCT;
+      Error : Bool;
+      ErrorID : DWord;
+      StatusID : DWord;
+      SubNowStep : DInt;
+      SubBeforeStep : DInt;
+   END_VAR
+
+   VAR_IN_OUT 
+      SlaveUnwinderVirtual : DB_ANY;
+      SlaveUnwinderTop : DB_ANY;
+      SlaveUnwinderBottom : DB_ANY;
+      SepaClampX : DB_ANY;
+   END_VAR
+
+   VAR 
+      statNowCmd : DInt;
+      statBeforeCmd : DInt;
+      statDone : Bool;
+      statTimeTable : Array[1..50] of Time;
+      statStartTime : Time;
+      statEndTime : Time;
+      instTriggerEnable {InstructionName := 'R_TRIG'; LibVersion := '1.0'; S7_SetPoint := 'False'} : R_TRIG;
+      instTriggerStop {InstructionName := 'R_TRIG'; LibVersion := '1.0'} : R_TRIG;
+      instTriggerReset {InstructionName := 'R_TRIG'; LibVersion := '1.0'} : R_TRIG;
+      instDancerEnable : "2101_DancerEnable";
+      instDancerStop : "2102_DancerStop";
+      instDancerReset : "2103_DancerReset";
+   END_VAR
+
+   VAR CONSTANT 
+      STAT_IDLE : DInt := 0;
+      STAT_ENABLE : DInt := 1;
+      STAT_STOP : DInt := 10;
+      STAT_RESET : DInt := 12;
+      STAT_DONE : DInt := 10000;
+      STAT_ERROR : DInt := 99;
+   END_VAR
+
+
+BEGIN
+	REGION INPUT SIGNAL
+	    REGION DONE OFF
+	        IF NOT #Enable AND NOT #Stop AND NOT #Reset THEN
+	            #statDone := FALSE;
+	        END_IF;
+	    END_REGION
+	    
+	    REGION ENABLE
+	        #instTriggerEnable(CLK := #Enable);                          // 상승 에지 검줄
+	        
+	        IF #instTriggerEnable.Q AND #statNowCmd = #STAT_IDLE THEN    // STAT_IDLE 상태에서 상승 에지 검출 시 동작
+	            #statStartTime := TIME_TCK();
+	            #statBeforeCmd := #statNowCmd;                           // 이전 명령 모니터링
+	            #statNowCmd := #STAT_ENABLE;                             // STAT_ENABLE 상태로 이동
+	            #statDone := FALSE;                                      // 동작 완료 신호 초기화
+	        END_IF;
+	    END_REGION
+	    
+	    REGION STOP
+	        #instTriggerStop(CLK := #Stop);                              // 상승 에지 검출
+	        
+	        IF #instTriggerStop.Q AND #statNowCmd <> #STAT_STOP THEN     // STAT_STOP이 아닐 때 상승 에지 검출 시
+	            #statStartTime := TIME_TCK();
+	            #statBeforeCmd := #statNowCmd;                           // 이전 명령 모니터링
+	            #statNowCmd := #STAT_STOP;                               // STAT_STOP 상태로 이동
+	            #statDone := FALSE;                                      // 동작 완료 신호 초기화
+	        END_IF;
+	    END_REGION
+	    
+	    REGION RESET
+	        #instTriggerReset(CLK := #Reset);                            // 상승 에지 검출
+	        
+	        IF #instTriggerReset.Q AND #statNowCmd = #STAT_ERROR THEN    // STAT_ERROR 상태에서 상승 에지 검출 시
+	            #statStartTime := TIME_TCK();
+	            #statBeforeCmd := #statNowCmd;                           // 이전 명령 모니터링
+	            #statNowCmd := #STAT_RESET;                              // STAT_RESET 상태로 이동
+	            #statDone := FALSE;                                      // 동작 완료 신호 초기화
+	        END_IF;
+	    END_REGION
+	END_REGION
+	
+	REGION COMMAND                                                       // 각 커맨드에 따른 Done 및 Error 신호 처리
+	    CASE #statNowCmd OF
+	        #STAT_IDLE:                                                  // STAT_IDLE 상태
+	            REGION IDLE
+	                ;
+	            END_REGION
+	            
+	        #STAT_ENABLE:                                                // STAT_IDLE 상태
+	            REGION ENABLE                                            // Enable 동작 영역
+	                REGION ERROR
+	                    IF #instDancerEnable.Error THEN                  // Dancer Main Enable 동작 중 Error 발생 시
+	                        #statBeforeCmd := #statNowCmd;               // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                  // STAT_ERROR 상태로 이동
+	                        #ErrorID := #instDancerEnable.ErrorID;       // DancerEnable 에러ID 저장
+	                        #StatusID := 16#0000_1100;
+	                    END_IF;
+	                END_REGION
+	                
+	                #statEndTime := TIME_TCK();
+	                #statTimeTable[#STAT_ENABLE] := #statEndTime - #statStartTime;
+	                #statStartTime := TIME_TCK();
+	                
+	                #SubBeforeStep := #instDancerEnable.BeforeCmd;       // 이전 스텝 모니터링
+	                #SubNowStep := #instDancerEnable.NowCmd;             // 현재 스텝 모니터링
+	            END_REGION
+	            
+	        #STAT_STOP:                                                  // STAT_STOP 상태
+	            REGION STOP                                              // Stop 동작 영역
+	                REGION DONE
+	                    IF #instDancerStop.Done THEN                     // Stop 동작 완료 시
+	                        #statEndTime := TIME_TCK();
+	                        #statTimeTable[#STAT_STOP] := #statEndTime - #statStartTime;
+	                        #statStartTime := TIME_TCK();
+	                        #statBeforeCmd := #statNowCmd;               // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_DONE;                   // STAT_IDLE 상태로 이동
+	                        #statDone := TRUE;                           // 동작 완료 신호
+	                    END_IF;
+	                END_REGION
+	                
+	                REGION ERROR
+	                    IF #instDancerStop.Error THEN                    // Stop 동작 중 Error 발생 시
+	                        #statBeforeCmd := #statNowCmd;               // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                  // STAT_ERROR 상태로 이동
+	                        #ErrorID := #instDancerStop.ErrorID;         // DancerStop 에러ID 저장
+	                        #StatusID := 16#0000_1200;
+	                    END_IF;
+	                END_REGION
+	                
+	                #SubBeforeStep := #instDancerStop.BeforeCmd;         // 이전 스텝 모니터링
+	                #SubNowStep := #instDancerStop.NowCmd;               // 현재 스텝 모니터링
+	            END_REGION
+	            
+	        #STAT_RESET:                                                 // STAT_RESET 상태
+	            REGION RESET                                             // Reset 동작 영역
+	                REGION DONE
+	                    IF #instDancerReset.Done THEN                    // Reset 동작 완료 시
+	                        #statEndTime := TIME_TCK();
+	                        #statTimeTable[#STAT_RESET] := #statEndTime - #statStartTime;
+	                        #statStartTime := TIME_TCK();
+	                        #statBeforeCmd := #statNowCmd;               // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_DONE;                   // STAT_IDLE 상태로 이동
+	                        #statDone := TRUE;                           // 동작 완료 신호
+	                    END_IF;
+	                END_REGION
+	                
+	                REGION ERROR
+	                    IF #instDancerReset.Error THEN                   // Reset 동작 중 Error 발생 시
+	                        #statBeforeCmd := #statNowCmd;               // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                  // STAT_ERROR 상태로 이동
+	                        #ErrorID := #instDancerReset.ErrorID;        // DancerReset 에러ID 저장
+	                        #StatusID := 16#0000_1300;
+	                    END_IF;
+	                END_REGION
+	                
+	                #SubBeforeStep := #instDancerReset.BeforeCmd;        // 이전 스텝 모니터링
+	                #SubNowStep := #instDancerReset.NowCmd;              // 현재 스텝 모니터링
+	            END_REGION
+	            
+	        #STAT_DONE:
+	            REGION DONE
+	                IF NOT #Enable
+	                    AND NOT #Stop
+	                    AND NOT #Reset
+	                THEN
+	                    #statEndTime := TIME_TCK();
+	                    #statTimeTable[#STAT_DONE / 200] := #statEndTime - #statStartTime;
+	                    #statStartTime := TIME_TCK();
+	                    #statBeforeCmd := #statNowCmd;               // 이전 명령 모니터링
+	                    #statNowCmd := #STAT_IDLE;                  // STAT_ERROR 상태로 이동
+	                END_IF;
+	            END_REGION
+	    END_CASE;
+	END_REGION
+	
+	REGION INSTANCES                                                     // 각 커맨드의 인스턴스DB 호출 영역
+	    REGION INSTANCE BLOCK
+	        REGION ENABLE
+	            #instDancerEnable(UnWinderDirection:= #Parameter.UnWinderDirection,
+	                              JogMode:= #Parameter.JogMode,
+	                              UnwinderTopUse:=#Parameter.UnwinderTopUse,
+	                              UnwinderBottomUse:=#Parameter.UnwinderBottomUse,
+	                              SlaveUnwinderVirtual := #SlaveUnwinderVirtual,
+	                              SlaveUnwinderTop:=#SlaveUnwinderTop,
+	                              SlaveUnwinderBottom := #SlaveUnwinderBottom,
+	                              Execute := #statNowCmd = #STAT_ENABLE,
+	                              DancerDirection := #Parameter.DancerDirection,
+	                              DancerInput := #Parameter.Input,
+	                              DancerSetPoint := #Parameter.SetPoint,
+	                              DancerKp := #Parameter.Kp,
+	                              DancerKi := #Parameter.Ki,
+	                              UnwinderRadius := #Parameter.Radius,
+	                              SepaClampX:= #SepaClampX);
+	        END_REGION
+	        
+	        REGION STOP1                                                 // 언와인더 정지
+	            #instDancerStop(Execute := #statNowCmd = #STAT_STOP,
+	                            UnwinderTopUse:= #Parameter.UnwinderTopUse,
+	                            UnwinderBottomUse:= #Parameter.UnwinderBottomUse,
+	                            SlaveUnwinderTop:= #SlaveUnwinderTop,
+	                            SlaveUnwinderBottom:= #SlaveUnwinderBottom);
+	        END_REGION
+	        
+	        REGION RESET                                                 // 언와인더 리셋
+	            #instDancerReset(Execute := #statNowCmd = #STAT_RESET,
+	                             UnwinderTopUse:= #Parameter.UnwinderTopUse,
+	                             UnwinderBottomUse:= #Parameter.UnwinderBottomUse,
+	                             SlaveUnwinderTop:= #SlaveUnwinderTop,
+	                             SlaveUnwinderBottom:= #SlaveUnwinderBottom);
+	        END_REGION
+	    END_REGION
+	END_REGION
+	
+	REGION OUTPUT SIGNAL                                                 // 각 커맨드 동작 시 상태 표시 출력
+	    #Busy.TotalBusy := #statNowCmd = #STAT_ENABLE OR #statNowCmd = #STAT_STOP OR #statNowCmd = #STAT_RESET;
+	    #Busy.EnableBusy := #instDancerEnable.Busy;
+	    #Busy.StopBusy := #instDancerStop.Busy;
+	    #Busy.ResetBusy := #instDancerReset.Busy;
+	    
+	    #Done.TotalDone := #statNowCmd = #STAT_DONE;
+	    #Done.EnableDone := #Enable AND #statNowCmd = #STAT_DONE;
+	    #Done.StopDone := #Stop AND #statNowCmd = #STAT_DONE;
+	    #Done.ResetDone := #Reset AND #statNowCmd = #STAT_DONE;
+	    #Error := #statNowCmd = #STAT_ERROR;
+	END_REGION
+END_FUNCTION_BLOCK
+

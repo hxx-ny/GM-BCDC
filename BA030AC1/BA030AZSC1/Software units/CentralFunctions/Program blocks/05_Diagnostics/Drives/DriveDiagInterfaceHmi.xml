@@ -1,0 +1,897 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Document>
+  <Engineering version="V20" />
+  <SW.Blocks.GlobalDB ID="0">
+    <AttributeList>
+      <HeaderAuthor>Siemens Digital Industries</HeaderAuthor>
+      <HeaderFamily>LAF</HeaderFamily>
+      <HeaderName>LAF_DriveDiagInterfaceHmi</HeaderName>
+      <HeaderVersion>1.1</HeaderVersion>
+      <Interface><Sections xmlns="http://www.siemens.com/automation/Openness/SW/Interface/v5">
+  <Section Name="Static">
+    <Member Name="diagStatus" Datatype="&quot;LAF_typeDriveDiagInterfaceHmi&quot;">
+      <Sections>
+        <Section Name="None">
+          <Member Name="hmi" Datatype="&quot;LAF_typeHmiDiagData&quot;">
+            <Sections>
+              <Section Name="None">
+                <Member Name="referenceDesignator" Datatype="WString[128]">
+                  <StartValue>WSTRING#''</StartValue>
+                </Member>
+                <Member Name="driveIndex" Datatype="DInt">
+                  <StartValue>0</StartValue>
+                </Member>
+                <Member Name="axisStatusScreenActive" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="sinaStatusScreenActive" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="sinaAlarmScreenActive" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="sinaEposScreenActive" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="sinaSafetyScreenActive" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+              </Section>
+            </Sections>
+          </Member>
+          <Member Name="axis" Datatype="&quot;LAF_typeAxisDiagData&quot;">
+            <Sections>
+              <Section Name="None">
+                <Member Name="type" Datatype="UDInt">
+                  <StartValue>0</StartValue>
+                </Member>
+                <Member Name="values" Datatype="&quot;LAF_typeAxisDiagValues&quot;">
+                  <Sections>
+                    <Section Name="None">
+                      <Member Name="position" Datatype="LReal">
+                        <StartValue>0.0</StartValue>
+                      </Member>
+                      <Member Name="velocity" Datatype="LReal">
+                        <StartValue>0.0</StartValue>
+                      </Member>
+                      <Member Name="actualPosition" Datatype="LReal">
+                        <StartValue>0.0</StartValue>
+                      </Member>
+                      <Member Name="actualVelocity" Datatype="LReal">
+                        <StartValue>0.0</StartValue>
+                      </Member>
+                      <Member Name="actualSpeed" Datatype="LReal">
+                        <StartValue>0.0</StartValue>
+                      </Member>
+                    </Section>
+                  </Sections>
+                </Member>
+                <Member Name="statusAxis" Datatype="&quot;LAF_typeAxisDiagStatus&quot;">
+                  <Sections>
+                    <Section Name="None">
+                      <Member Name="statusWord" Datatype="DWord">
+                        <StartValue>16#0000_0000</StartValue>
+                      </Member>
+                      <Member Name="statusWord2" Datatype="DWord">
+                        <StartValue>16#0000_0000</StartValue>
+                      </Member>
+                      <Member Name="warningWord" Datatype="DWord">
+                        <StartValue>16#0000_0000</StartValue>
+                      </Member>
+                      <Member Name="errorWord" Datatype="DWord">
+                        <StartValue>16#0000_0000</StartValue>
+                      </Member>
+                      <Member Name="status" Datatype="&quot;LAF_typeAxisDiagStatusWord&quot;">
+                        <Sections>
+                          <Section Name="None">
+                            <Member Name="bit00_Enable" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit01_Error" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit02_RestartActive" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit03_OnlineStartValuesChanged" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit04_ControlPanelActive" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit05_HomingDone" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit06_Done" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit07_Standstill" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit08_PositioningCommand" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit09_JogCommand" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit10_VelocityCommand" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit11_HomingCommand" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit12_ConstantVelocity" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit13_Accelerating" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit14_Decelerating" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit15_SWLimitMinActive" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit16_SWLimitMaxActive" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit17_HWLimitMinActive" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit18_HWLimitMaxActive" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit19_Reserved" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit20_Reserved" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit21_Synchronizing" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit22_Synchronous" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit23_SuperimposedMotionCommand" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit24_PhasingCommand" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit25_AxisSimulation" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit26_TorqueLimitingCommand" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit27_InLimitation" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit28_NonPositionControlled" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit29_KinematicsMotionCommand" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit30_InClamping" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit31_MotionInCommand" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                          </Section>
+                        </Sections>
+                      </Member>
+                      <Member Name="status2" Datatype="&quot;LAF_typeAxisDiagStatusWord2&quot;">
+                        <Sections>
+                          <Section Name="None">
+                            <Member Name="bit00_StopCommand" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit01_DesynchronizingCommand" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit02_PassingBacklash" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit03_PhasingCommandWaiting" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit04_OffsetCommand" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit05_OffsetCommandWaiting" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit06_MotionInSuperimposedCommand" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit07_HaltSuperimposedCommand" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit08_Reserved" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit09_Reserved" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit10_Reserved" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit11_Reserved" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit12_Reserved" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit13_Reserved" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit14_Reserved" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit15_Reserved" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit16_Reserved" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit17_Reserved" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit18_Reserved" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit19_Reserved" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit20_Reserved" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit21_Reserved" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit22_Reserved" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit23_Reserved" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit24_Reserved" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit25_Reserved" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit26_Reserved" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit27_Reserved" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit28_Reserved" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit29_Reserved" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit30_Reserved" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit31_Reserved" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                          </Section>
+                        </Sections>
+                      </Member>
+                      <Member Name="warning" Datatype="&quot;LAF_typeAxisDiagWarningWord&quot;">
+                        <Sections>
+                          <Section Name="None">
+                            <Member Name="bit00_SystemWarning" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit01_ConfigWarning" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit02_UserWarning" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit03_CommandNotAccepted" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit04_DriveWarning" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit05_SensorWarning" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit06_DynamicWarning" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit07_CommunicationWarning" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit08_SWLimitMin" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit09_SWLimitMax" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit10_HomingWarning" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit11_FollowingErrorWarning" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit12_PositioningWarning" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit13_PeripheralWarning" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit14_SynchronousWarning" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit15_AdaptionWarning" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit16_Reserved" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit17_Reserved" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit18_Reserved" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit19_Reserved" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit20_Reserved" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit21_Reserved" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit22_Reserved" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit23_Reserved" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit24_Reserved" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit25_Reserved" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit26_Reserved" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit27_Reserved" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit28_Reserved" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit29_Reserved" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit30_Reserved" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit31_Reserved" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                          </Section>
+                        </Sections>
+                      </Member>
+                      <Member Name="error" Datatype="&quot;LAF_typeAxisDiagErrorWord&quot;">
+                        <Sections>
+                          <Section Name="None">
+                            <Member Name="bit00_SystemFault" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit01_ConfigFault" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit02_UserFault" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit03_CommandNotAccepted" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit04_DriveFault" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit05_SensorFault" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit06_DynamicError" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit07_CommunicationFault" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit08_SWLimit" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit09_HWLimit" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit10_HomingError" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit11_FollowingErrorFault" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit12_PositioningFault" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit13_PeripheralError" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit14_SynchronousError" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit15_AdaptionError" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit16_Reserved" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit17_Reserved" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit18_Reserved" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit19_Reserved" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit20_Reserved" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit21_Reserved" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit22_Reserved" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit23_Reserved" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit24_Reserved" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit25_Reserved" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit26_Reserved" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit27_Reserved" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit28_Reserved" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit29_Reserved" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit30_Reserved" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                            <Member Name="bit31_Reserved" Datatype="Bool">
+                              <StartValue>FALSE</StartValue>
+                            </Member>
+                          </Section>
+                        </Sections>
+                      </Member>
+                      <Member Name="errorDetail" Datatype="&quot;LAF_typeAxisDiagErrorDetail&quot;">
+                        <Sections>
+                          <Section Name="None">
+                            <Member Name="number" Datatype="UDInt">
+                              <StartValue>0</StartValue>
+                            </Member>
+                            <Member Name="reaction" Datatype="DInt">
+                              <StartValue>0</StartValue>
+                            </Member>
+                          </Section>
+                        </Sections>
+                      </Member>
+                    </Section>
+                  </Sections>
+                </Member>
+                <Member Name="statusSensor" Datatype="&quot;LAF_typeAxisDiagStatusSensor&quot;">
+                  <Sections>
+                    <Section Name="None">
+                      <Member Name="operativeSensor" Datatype="UDInt">
+                        <StartValue>1</StartValue>
+                      </Member>
+                      <Member Name="sensor" Datatype="Array[1..4] of &quot;LAF_typeAxisDiagSensor&quot;">
+                        <Sections>
+                          <Section Name="None">
+                            <Member Name="state" Datatype="DInt">
+                              <Subelement Path="1">
+                                <StartValue>0</StartValue>
+                              </Subelement>
+                              <Subelement Path="2">
+                                <StartValue>0</StartValue>
+                              </Subelement>
+                              <Subelement Path="3">
+                                <StartValue>0</StartValue>
+                              </Subelement>
+                              <Subelement Path="4">
+                                <StartValue>0</StartValue>
+                              </Subelement>
+                            </Member>
+                            <Member Name="communicationOK" Datatype="Bool">
+                              <Subelement Path="1">
+                                <StartValue>FALSE</StartValue>
+                              </Subelement>
+                              <Subelement Path="2">
+                                <StartValue>FALSE</StartValue>
+                              </Subelement>
+                              <Subelement Path="3">
+                                <StartValue>FALSE</StartValue>
+                              </Subelement>
+                              <Subelement Path="4">
+                                <StartValue>FALSE</StartValue>
+                              </Subelement>
+                            </Member>
+                            <Member Name="error" Datatype="Bool">
+                              <Subelement Path="1">
+                                <StartValue>FALSE</StartValue>
+                              </Subelement>
+                              <Subelement Path="2">
+                                <StartValue>FALSE</StartValue>
+                              </Subelement>
+                              <Subelement Path="3">
+                                <StartValue>FALSE</StartValue>
+                              </Subelement>
+                              <Subelement Path="4">
+                                <StartValue>FALSE</StartValue>
+                              </Subelement>
+                            </Member>
+                            <Member Name="control" Datatype="Bool">
+                              <Subelement Path="1">
+                                <StartValue>FALSE</StartValue>
+                              </Subelement>
+                              <Subelement Path="2">
+                                <StartValue>FALSE</StartValue>
+                              </Subelement>
+                              <Subelement Path="3">
+                                <StartValue>FALSE</StartValue>
+                              </Subelement>
+                              <Subelement Path="4">
+                                <StartValue>FALSE</StartValue>
+                              </Subelement>
+                            </Member>
+                            <Member Name="position" Datatype="LReal">
+                              <Subelement Path="1">
+                                <StartValue>0.0</StartValue>
+                              </Subelement>
+                              <Subelement Path="2">
+                                <StartValue>0.0</StartValue>
+                              </Subelement>
+                              <Subelement Path="3">
+                                <StartValue>0.0</StartValue>
+                              </Subelement>
+                              <Subelement Path="4">
+                                <StartValue>0.0</StartValue>
+                              </Subelement>
+                            </Member>
+                            <Member Name="velocity" Datatype="LReal">
+                              <Subelement Path="1">
+                                <StartValue>0.0</StartValue>
+                              </Subelement>
+                              <Subelement Path="2">
+                                <StartValue>0.0</StartValue>
+                              </Subelement>
+                              <Subelement Path="3">
+                                <StartValue>0.0</StartValue>
+                              </Subelement>
+                              <Subelement Path="4">
+                                <StartValue>0.0</StartValue>
+                              </Subelement>
+                            </Member>
+                            <Member Name="adaptionState" Datatype="DInt">
+                              <Subelement Path="1">
+                                <StartValue>0</StartValue>
+                              </Subelement>
+                              <Subelement Path="2">
+                                <StartValue>0</StartValue>
+                              </Subelement>
+                              <Subelement Path="3">
+                                <StartValue>0</StartValue>
+                              </Subelement>
+                              <Subelement Path="4">
+                                <StartValue>0</StartValue>
+                              </Subelement>
+                            </Member>
+                            <Member Name="adjusted" Datatype="DInt">
+                              <Subelement Path="1">
+                                <StartValue>0</StartValue>
+                              </Subelement>
+                              <Subelement Path="2">
+                                <StartValue>0</StartValue>
+                              </Subelement>
+                              <Subelement Path="3">
+                                <StartValue>0</StartValue>
+                              </Subelement>
+                              <Subelement Path="4">
+                                <StartValue>0</StartValue>
+                              </Subelement>
+                            </Member>
+                          </Section>
+                        </Sections>
+                      </Member>
+                    </Section>
+                  </Sections>
+                </Member>
+                <Member Name="statusPositioning" Datatype="&quot;LAF_typeAxisDiagStatusPositioning&quot;">
+                  <Sections>
+                    <Section Name="None">
+                      <Member Name="targetPosition" Datatype="LReal">
+                        <StartValue>0.0</StartValue>
+                      </Member>
+                      <Member Name="followingError" Datatype="LReal">
+                        <StartValue>0.0</StartValue>
+                      </Member>
+                    </Section>
+                  </Sections>
+                </Member>
+                <Member Name="units" Datatype="&quot;LAF_typeAxisDiagUnits&quot;">
+                  <Sections>
+                    <Section Name="None">
+                      <Member Name="lengthUnit" Datatype="UDInt">
+                        <StartValue>0</StartValue>
+                      </Member>
+                      <Member Name="velocityUnit" Datatype="UDInt">
+                        <StartValue>0</StartValue>
+                      </Member>
+                    </Section>
+                  </Sections>
+                </Member>
+              </Section>
+            </Sections>
+          </Member>
+          <Member Name="sina" Datatype="&quot;LAF_typeSinaDiagData&quot;">
+            <Sections>
+              <Section Name="None">
+                <Member Name="sinaType" Datatype="UInt">
+                  <StartValue>0</StartValue>
+                </Member>
+                <Member Name="controlWord" Datatype="Word">
+                  <StartValue>16#0000</StartValue>
+                </Member>
+                <Member Name="statusWord" Datatype="Word">
+                  <StartValue>16#0000</StartValue>
+                </Member>
+                <Member Name="telegramNo" Datatype="UInt">
+                  <StartValue>0</StartValue>
+                </Member>
+                <Member Name="eposStatusWord1" Datatype="Word">
+                  <StartValue>16#0000</StartValue>
+                </Member>
+                <Member Name="eposStatusWord2" Datatype="Word">
+                  <StartValue>16#0000</StartValue>
+                </Member>
+                <Member Name="operatingDisplay" Datatype="UInt">
+                  <StartValue>0</StartValue>
+                </Member>
+                <Member Name="override" Datatype="Real">
+                  <StartValue>0.0</StartValue>
+                </Member>
+                <Member Name="posSetValue" Datatype="Real">
+                  <StartValue>0.0</StartValue>
+                </Member>
+                <Member Name="posActValue" Datatype="Real">
+                  <StartValue>0.0</StartValue>
+                </Member>
+                <Member Name="velSetValue" Datatype="Real">
+                  <StartValue>0.0</StartValue>
+                </Member>
+                <Member Name="velActValue" Datatype="Real">
+                  <StartValue>0.0</StartValue>
+                </Member>
+                <Member Name="lengthUnit" Datatype="Int">
+                  <StartValue>0</StartValue>
+                </Member>
+                <Member Name="velocityUnit" Datatype="Int">
+                  <StartValue>0</StartValue>
+                </Member>
+                <Member Name="residualDistance" Datatype="Real">
+                  <StartValue>0.0</StartValue>
+                </Member>
+                <Member Name="followingError" Datatype="Real">
+                  <StartValue>0.0</StartValue>
+                </Member>
+                <Member Name="posControlWord" Datatype="Word">
+                  <StartValue>16#0000</StartValue>
+                </Member>
+                <Member Name="posStatusWord" Datatype="Word">
+                  <StartValue>16#0000</StartValue>
+                </Member>
+                <Member Name="blockSelected" Datatype="Int">
+                  <StartValue>0</StartValue>
+                </Member>
+                <Member Name="blockActive" Datatype="Int">
+                  <StartValue>0</StartValue>
+                </Member>
+                <Member Name="mdiPosSetValue" Datatype="Real">
+                  <StartValue>0.0</StartValue>
+                </Member>
+                <Member Name="faultCode" Datatype="Array[0..7] of Word">
+                  <Subelement Path="0">
+                    <StartValue>16#0000</StartValue>
+                  </Subelement>
+                  <Subelement Path="1">
+                    <StartValue>16#0000</StartValue>
+                  </Subelement>
+                  <Subelement Path="2">
+                    <StartValue>16#0000</StartValue>
+                  </Subelement>
+                  <Subelement Path="3">
+                    <StartValue>16#0000</StartValue>
+                  </Subelement>
+                  <Subelement Path="4">
+                    <StartValue>16#0000</StartValue>
+                  </Subelement>
+                  <Subelement Path="5">
+                    <StartValue>16#0000</StartValue>
+                  </Subelement>
+                  <Subelement Path="6">
+                    <StartValue>16#0000</StartValue>
+                  </Subelement>
+                  <Subelement Path="7">
+                    <StartValue>16#0000</StartValue>
+                  </Subelement>
+                </Member>
+                <Member Name="alarmCode" Datatype="Array[0..3] of Word">
+                  <Subelement Path="0">
+                    <StartValue>16#0000</StartValue>
+                  </Subelement>
+                  <Subelement Path="1">
+                    <StartValue>16#0000</StartValue>
+                  </Subelement>
+                  <Subelement Path="2">
+                    <StartValue>16#0000</StartValue>
+                  </Subelement>
+                  <Subelement Path="3">
+                    <StartValue>16#0000</StartValue>
+                  </Subelement>
+                </Member>
+                <Member Name="speedSetValue" Datatype="Real">
+                  <StartValue>0.0</StartValue>
+                </Member>
+                <Member Name="speedActValue" Datatype="Real">
+                  <StartValue>0.0</StartValue>
+                </Member>
+                <Member Name="safetyStatusWord" Datatype="Word">
+                  <StartValue>16#0000</StartValue>
+                </Member>
+              </Section>
+            </Sections>
+          </Member>
+        </Section>
+      </Sections>
+    </Member>
+  </Section>
+</Sections></Interface>
+      <MemoryReserve>100</MemoryReserve>
+      <Name>DriveDiagInterfaceHmi</Name>
+      <Namespace />
+      <Number>46</Number>
+      <ProgrammingLanguage>DB</ProgrammingLanguage>
+    </AttributeList>
+    <ObjectList>
+      <MultilingualText ID="1" CompositionName="Comment">
+        <ObjectList>
+          <MultilingualTextItem ID="2" CompositionName="Items">
+            <AttributeList>
+              <Culture>de-DE</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="3" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-GB</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="4" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-US</Culture>
+              <Text>HMI interface for drive diagnostic</Text>
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="5" CompositionName="Items">
+            <AttributeList>
+              <Culture>es-ES</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="6" CompositionName="Items">
+            <AttributeList>
+              <Culture>fr-FR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="7" CompositionName="Items">
+            <AttributeList>
+              <Culture>it-IT</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="8" CompositionName="Items">
+            <AttributeList>
+              <Culture>ko-KR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="9" CompositionName="Items">
+            <AttributeList>
+              <Culture>zh-CN</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+        </ObjectList>
+      </MultilingualText>
+      <MultilingualText ID="A" CompositionName="Title">
+        <ObjectList>
+          <MultilingualTextItem ID="B" CompositionName="Items">
+            <AttributeList>
+              <Culture>de-DE</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="C" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-GB</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="D" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-US</Culture>
+              <Text>DriveDiagInterfaceHmi</Text>
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="E" CompositionName="Items">
+            <AttributeList>
+              <Culture>es-ES</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="F" CompositionName="Items">
+            <AttributeList>
+              <Culture>fr-FR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="10" CompositionName="Items">
+            <AttributeList>
+              <Culture>it-IT</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="11" CompositionName="Items">
+            <AttributeList>
+              <Culture>ko-KR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="12" CompositionName="Items">
+            <AttributeList>
+              <Culture>zh-CN</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+        </ObjectList>
+      </MultilingualText>
+    </ObjectList>
+  </SW.Blocks.GlobalDB>
+</Document>

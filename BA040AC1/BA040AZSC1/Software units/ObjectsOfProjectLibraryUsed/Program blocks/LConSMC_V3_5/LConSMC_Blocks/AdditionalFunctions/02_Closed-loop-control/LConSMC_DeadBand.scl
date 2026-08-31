@@ -1,0 +1,63 @@
+﻿FUNCTION "LConSMC_DeadBand" : LReal
+{ S7_Optimized_Access := 'TRUE' ; Published := 'TRUE' }
+VERSION : 0.1
+//Dead band filter within a specified value. The function can be called in any task.  Function ID: 0002
+   VAR_INPUT 
+      x : LReal;   // Input value
+      bandborder : LReal;   // Value of the dead band symmetrical around 0  If "x" is within the deadband the output is 0. If "x" is outside the output is x +- bandborder
+   END_VAR
+
+
+BEGIN
+	REGION BLOCK INFO HEADER
+	  //===============================================================================
+	  // SIEMENS AG / (c)Copyright 2023
+	  //-------------------------------------------------------------------------------
+	  // Title:            LConSMC_DeadBand
+	  // Comment/Function: Dead band filter within a specified value
+	  // Library/Family:   LConSMC
+	  // Author:           APC Erlangen
+	  // Tested with:      FW 2.8
+	  // Engineering:      TIA Portal V16
+	  // Restrictions:     -
+	  // Requirements:     -
+	  //-------------------------------------------------------------------------------
+	  // Change log table:
+	  // Version  | Date       | Expert in charge       | Changes applied
+	  //----------|------------|------------------------|------------------------------
+	  // 01.00.00 | 2012-07-01 | APC Erlangen           | Creation
+	  //===============================================================================
+	  //
+	END_REGION BLOCK INFO HEADER
+	
+	REGION DESCRIPTION
+	(/*
+	If the input value (x) is located in the dead band range (-bandBorder < x < +bandBorder), the output value is set to zero.
+	However, if it is at or below (–bandBorder) the output will be x – bandBorder.
+	If the input value is at or above +bandBorder, x + bandBorder is set as output value.
+	The dead band – symmetrical around the zero point – can be set using the bandBorder parameter.
+	
+	| Input value x                    | Return value   |
+	| -------------------------------- | -------------- |
+	| x <= -bandBorder                 | x + bandBorder |
+	| -bandBorder < x < bandBorder     | 0              |
+	| x >= bandBorder                  | x - bandBorder |
+	
+	![Dead band fitler](DeadBand.png)
+	
+	*/)
+	END_REGION
+	
+	#LConSMC_DeadBand := 0.0;
+	IF #x > (ABS(#bandborder) * -1) THEN                                          // Check lower border        
+	    IF #x < ABS(#bandborder) THEN                                               // Check higher border
+	        #LConSMC_DeadBand := 0.0;                                                      // Output zero if within band
+	    ELSE
+	        #LConSMC_DeadBand := #x - ABS(#bandborder);
+	    END_IF;
+	ELSE
+	    #LConSMC_DeadBand := #x + ABS(#bandborder);
+	END_IF;
+	
+END_FUNCTION
+

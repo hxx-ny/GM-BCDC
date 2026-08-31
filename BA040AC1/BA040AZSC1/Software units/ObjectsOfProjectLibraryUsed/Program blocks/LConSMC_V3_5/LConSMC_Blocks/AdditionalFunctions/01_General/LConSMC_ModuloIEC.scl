@@ -1,0 +1,68 @@
+﻿FUNCTION "LConSMC_ModuloIEC" : LReal
+{ S7_Optimized_Access := 'TRUE' ; Published := 'TRUE' }
+VERSION : 0.1
+//This function calculates the modulo division for an input value oft he data type LREAL.  Function block ID: 000C
+   VAR_INPUT 
+      value : LReal;   // Input value for modulo calculation
+      moduloValue : LReal;   // Modulo length
+   END_VAR
+
+   VAR_TEMP 
+      tempActValue : LReal;
+   END_VAR
+
+
+BEGIN
+	REGION BLOCK INFO HEADER
+	  //===============================================================================
+	  // SIEMENS AG / (c)Copyright 2023
+	  //-------------------------------------------------------------------------------
+	  // Title:            LConSMC_ModuloIEC
+	  // Comment/Function: Modulo division with LREAL values according to IEC 61131-3
+	  // Library/Family:   LConSMC
+	  // Author:           APC Erlangen
+	  // Tested with:      FW 2.8
+	  // Engineering:      TIA Portal V16
+	  // Restrictions:     -
+	  // Requirements:     -
+	  //-------------------------------------------------------------------------------
+	  // Change log table:
+	  // Version  | Date       | Expert in charge       | Changes applied
+	  //----------|------------|------------------------|------------------------------
+	  // 01.00.00 | 2017-08-20 | APC Erlangen           | Creation
+	  //===============================================================================
+	END_REGION BLOCK INFO HEADER
+	
+	REGION DESCRIPTION
+	(/*
+	Modulo calcuation according to IEC 61131-3:
+	* positive input value => positive return value
+	* negative input value => negative return value
+	  
+	If the input parameters are incorrect (moduloValue = 0.0) the return value of the function is zero.  
+	The following table describes the functionality of the function:
+	
+	---
+	
+	| Value          | moduloValue    | Return value   |
+	|:--------------:|:--------------:|:--------------:|
+	| 180            | 360            | 180            |
+	| 362            | 360            | 2              |
+	| -180           | 360            | -180           |
+	| -362           | 360            | -2             |
+	| 180            | 0              | 0              |
+	
+	*/)
+	END_REGION DESCRIPTION
+	
+	#tempActValue := #value;  //copy to local var
+	
+	IF #moduloValue = 0.0 THEN
+	    //invalid parameter
+	    #LConSMC_ModuloIEC := 0;
+	ELSE
+	    //modulo division like IEC 61131-3
+	    #LConSMC_ModuloIEC := ((#value / #moduloValue) - DINT_TO_LREAL(TRUNC(#value / #moduloValue))) * #moduloValue;
+	END_IF;
+END_FUNCTION
+

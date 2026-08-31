@@ -1,0 +1,686 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Document>
+  <Engineering version="V20" />
+  <SW.Blocks.InstanceDB ID="0">
+    <AttributeList>
+      <AssignedProDiagFB>ProDiag</AssignedProDiagFB>
+      <HeaderAuthor>SICAR</HeaderAuthor>
+      <HeaderFamily>Diag</HeaderFamily>
+      <InstanceOfName>LAF_Checksum</InstanceOfName>
+      <InstanceOfType>FB</InstanceOfType>
+      <Interface><Sections xmlns="http://www.siemens.com/automation/Openness/SW/Interface/v5">
+  <Section Name="Input">
+    <Member Name="plantIdentifier" Datatype="WString[24]">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <StartValue>WSTRING#'PLC-Checksum'</StartValue>
+    </Member>
+    <Member Name="textListId" Datatype="Int">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <StartValue>584</StartValue>
+    </Member>
+    <Member Name="dateTime" Datatype="Date_And_Time">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <StartValue>DT#2026-01-06-19:57:41.039</StartValue>
+    </Member>
+    <Member Name="readChecksum" Datatype="Bool">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <StartValue>TRUE</StartValue>
+    </Member>
+    <Member Name="ack" Datatype="Bool">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <StartValue>FALSE</StartValue>
+    </Member>
+    <Member Name="hideMessageStandard" Datatype="Bool">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <StartValue>FALSE</StartValue>
+    </Member>
+    <Member Name="hideMessageSafety" Datatype="Bool">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <StartValue>FALSE</StartValue>
+    </Member>
+    <Member Name="hideMessageTextlist" Datatype="Bool">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <StartValue>FALSE</StartValue>
+    </Member>
+  </Section>
+  <Section Name="Output">
+    <Member Name="generalMessage" Datatype="Bool">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <StartValue>FALSE</StartValue>
+    </Member>
+  </Section>
+  <Section Name="InOut">
+    <Member Name="checksumHmi" Datatype="&quot;LAF_typeChecksum&quot;" />
+  </Section>
+  <Section Name="Static">
+    <Member Name="statReadChecksumStorage" Datatype="Bool">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <StartValue>FALSE</StartValue>
+    </Member>
+    <Member Name="statChecksumStandard" Datatype="Array[0..7] of Byte">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <Subelement Path="0">
+        <StartValue>16#E4</StartValue>
+      </Subelement>
+      <Subelement Path="1">
+        <StartValue>16#AA</StartValue>
+      </Subelement>
+      <Subelement Path="2">
+        <StartValue>16#23</StartValue>
+      </Subelement>
+      <Subelement Path="3">
+        <StartValue>16#DF</StartValue>
+      </Subelement>
+      <Subelement Path="4">
+        <StartValue>16#FD</StartValue>
+      </Subelement>
+      <Subelement Path="5">
+        <StartValue>16#EE</StartValue>
+      </Subelement>
+      <Subelement Path="6">
+        <StartValue>16#A8</StartValue>
+      </Subelement>
+      <Subelement Path="7">
+        <StartValue>16#66</StartValue>
+      </Subelement>
+    </Member>
+    <Member Name="statChecksumStafety" Datatype="Array[0..7] of Byte">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <Subelement Path="0">
+        <StartValue>16#0A</StartValue>
+      </Subelement>
+      <Subelement Path="1">
+        <StartValue>16#6C</StartValue>
+      </Subelement>
+      <Subelement Path="2">
+        <StartValue>16#EC</StartValue>
+      </Subelement>
+      <Subelement Path="3">
+        <StartValue>16#4B</StartValue>
+      </Subelement>
+      <Subelement Path="4">
+        <StartValue>16#00</StartValue>
+      </Subelement>
+      <Subelement Path="5">
+        <StartValue>16#00</StartValue>
+      </Subelement>
+      <Subelement Path="6">
+        <StartValue>16#00</StartValue>
+      </Subelement>
+      <Subelement Path="7">
+        <StartValue>16#00</StartValue>
+      </Subelement>
+    </Member>
+    <Member Name="statChecksumTextlists" Datatype="Array[0..7] of Byte">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <Subelement Path="0">
+        <StartValue>16#67</StartValue>
+      </Subelement>
+      <Subelement Path="1">
+        <StartValue>16#6D</StartValue>
+      </Subelement>
+      <Subelement Path="2">
+        <StartValue>16#C4</StartValue>
+      </Subelement>
+      <Subelement Path="3">
+        <StartValue>16#50</StartValue>
+      </Subelement>
+      <Subelement Path="4">
+        <StartValue>16#55</StartValue>
+      </Subelement>
+      <Subelement Path="5">
+        <StartValue>16#90</StartValue>
+      </Subelement>
+      <Subelement Path="6">
+        <StartValue>16#21</StartValue>
+      </Subelement>
+      <Subelement Path="7">
+        <StartValue>16#79</StartValue>
+      </Subelement>
+    </Member>
+    <Member Name="statChecksumStandOldNull" Datatype="Bool">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <StartValue>FALSE</StartValue>
+    </Member>
+    <Member Name="statChecksumSafeOldNull" Datatype="Bool">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <StartValue>FALSE</StartValue>
+    </Member>
+    <Member Name="statChecksumTextlOldNull" Datatype="Bool">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <StartValue>FALSE</StartValue>
+    </Member>
+    <Member Name="statChecksumStandDiff" Datatype="Bool">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <StartValue>FALSE</StartValue>
+    </Member>
+    <Member Name="statChecksumSafeDiff" Datatype="Bool">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <StartValue>FALSE</StartValue>
+    </Member>
+    <Member Name="statChecksumTextlDiff" Datatype="Bool">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <StartValue>FALSE</StartValue>
+    </Member>
+    <Member Name="instGetChecksum1" Datatype="GetChecksum" Version="1.0">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <Sections>
+        <Section Name="Input">
+          <Member Name="Scope" Datatype="UInt">
+            <StartValue>1</StartValue>
+          </Member>
+        </Section>
+        <Section Name="Output">
+          <Member Name="Done" Datatype="Bool">
+            <StartValue>TRUE</StartValue>
+          </Member>
+          <Member Name="Busy" Datatype="Bool">
+            <StartValue>FALSE</StartValue>
+          </Member>
+          <Member Name="Error" Datatype="Bool">
+            <StartValue>FALSE</StartValue>
+          </Member>
+          <Member Name="Status" Datatype="Word">
+            <StartValue>16#0000</StartValue>
+          </Member>
+        </Section>
+        <Section Name="InOut" />
+        <Section Name="Static">
+          <Member Name="tmpNulled" Datatype="Array[0..7] of Byte">
+            <Subelement Path="0">
+              <StartValue>16#E4</StartValue>
+            </Subelement>
+            <Subelement Path="1">
+              <StartValue>16#AA</StartValue>
+            </Subelement>
+            <Subelement Path="2">
+              <StartValue>16#23</StartValue>
+            </Subelement>
+            <Subelement Path="3">
+              <StartValue>16#DF</StartValue>
+            </Subelement>
+            <Subelement Path="4">
+              <StartValue>16#FD</StartValue>
+            </Subelement>
+            <Subelement Path="5">
+              <StartValue>16#EE</StartValue>
+            </Subelement>
+            <Subelement Path="6">
+              <StartValue>16#A8</StartValue>
+            </Subelement>
+            <Subelement Path="7">
+              <StartValue>16#66</StartValue>
+            </Subelement>
+          </Member>
+          <Member Name="GMACount" Datatype="UInt">
+            <StartValue>1</StartValue>
+          </Member>
+          <Member Name="GMAPathLens" Datatype="Array[0..0] of UInt">
+            <Subelement Path="0">
+              <StartValue>3</StartValue>
+            </Subelement>
+          </Member>
+          <Member Name="GMAPaths" Datatype="Array[0..2] of DWord">
+            <Subelement Path="0">
+              <StartValue>16#89A0_0003</StartValue>
+            </Subelement>
+            <Subelement Path="1">
+              <StartValue>16#0000_1FC9</StartValue>
+            </Subelement>
+            <Subelement Path="2">
+              <StartValue>16#0000_0001</StartValue>
+            </Subelement>
+          </Member>
+          <Member Name="GMAResLens" Datatype="Array[0..0] of UInt">
+            <Subelement Path="0">
+              <StartValue>8</StartValue>
+            </Subelement>
+          </Member>
+        </Section>
+      </Sections>
+    </Member>
+    <Member Name="instGetChecksum2" Datatype="GetChecksum" Version="1.0">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <Sections>
+        <Section Name="Input">
+          <Member Name="Scope" Datatype="UInt">
+            <StartValue>2</StartValue>
+          </Member>
+        </Section>
+        <Section Name="Output">
+          <Member Name="Done" Datatype="Bool">
+            <StartValue>TRUE</StartValue>
+          </Member>
+          <Member Name="Busy" Datatype="Bool">
+            <StartValue>FALSE</StartValue>
+          </Member>
+          <Member Name="Error" Datatype="Bool">
+            <StartValue>FALSE</StartValue>
+          </Member>
+          <Member Name="Status" Datatype="Word">
+            <StartValue>16#0000</StartValue>
+          </Member>
+        </Section>
+        <Section Name="InOut" />
+        <Section Name="Static">
+          <Member Name="tmpNulled" Datatype="Array[0..7] of Byte">
+            <Subelement Path="0">
+              <StartValue>16#0A</StartValue>
+            </Subelement>
+            <Subelement Path="1">
+              <StartValue>16#6C</StartValue>
+            </Subelement>
+            <Subelement Path="2">
+              <StartValue>16#EC</StartValue>
+            </Subelement>
+            <Subelement Path="3">
+              <StartValue>16#4B</StartValue>
+            </Subelement>
+            <Subelement Path="4">
+              <StartValue>16#00</StartValue>
+            </Subelement>
+            <Subelement Path="5">
+              <StartValue>16#00</StartValue>
+            </Subelement>
+            <Subelement Path="6">
+              <StartValue>16#00</StartValue>
+            </Subelement>
+            <Subelement Path="7">
+              <StartValue>16#00</StartValue>
+            </Subelement>
+          </Member>
+          <Member Name="GMACount" Datatype="UInt">
+            <StartValue>1</StartValue>
+          </Member>
+          <Member Name="GMAPathLens" Datatype="Array[0..0] of UInt">
+            <Subelement Path="0">
+              <StartValue>2</StartValue>
+            </Subelement>
+          </Member>
+          <Member Name="GMAPaths" Datatype="Array[0..2] of DWord">
+            <Subelement Path="0">
+              <StartValue>16#89F9_0000</StartValue>
+            </Subelement>
+            <Subelement Path="1">
+              <StartValue>16#0000_1E37</StartValue>
+            </Subelement>
+            <Subelement Path="2">
+              <StartValue>16#0000_0000</StartValue>
+            </Subelement>
+          </Member>
+          <Member Name="GMAResLens" Datatype="Array[0..0] of UInt">
+            <Subelement Path="0">
+              <StartValue>4</StartValue>
+            </Subelement>
+          </Member>
+        </Section>
+      </Sections>
+    </Member>
+    <Member Name="instGetChecksum3" Datatype="GetChecksum" Version="1.0">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <Sections>
+        <Section Name="Input">
+          <Member Name="Scope" Datatype="UInt">
+            <StartValue>3</StartValue>
+          </Member>
+        </Section>
+        <Section Name="Output">
+          <Member Name="Done" Datatype="Bool">
+            <StartValue>TRUE</StartValue>
+          </Member>
+          <Member Name="Busy" Datatype="Bool">
+            <StartValue>FALSE</StartValue>
+          </Member>
+          <Member Name="Error" Datatype="Bool">
+            <StartValue>FALSE</StartValue>
+          </Member>
+          <Member Name="Status" Datatype="Word">
+            <StartValue>16#0000</StartValue>
+          </Member>
+        </Section>
+        <Section Name="InOut" />
+        <Section Name="Static">
+          <Member Name="tmpNulled" Datatype="Array[0..7] of Byte">
+            <Subelement Path="0">
+              <StartValue>16#67</StartValue>
+            </Subelement>
+            <Subelement Path="1">
+              <StartValue>16#6D</StartValue>
+            </Subelement>
+            <Subelement Path="2">
+              <StartValue>16#C4</StartValue>
+            </Subelement>
+            <Subelement Path="3">
+              <StartValue>16#50</StartValue>
+            </Subelement>
+            <Subelement Path="4">
+              <StartValue>16#55</StartValue>
+            </Subelement>
+            <Subelement Path="5">
+              <StartValue>16#90</StartValue>
+            </Subelement>
+            <Subelement Path="6">
+              <StartValue>16#21</StartValue>
+            </Subelement>
+            <Subelement Path="7">
+              <StartValue>16#79</StartValue>
+            </Subelement>
+          </Member>
+          <Member Name="GMACount" Datatype="UInt">
+            <StartValue>1</StartValue>
+          </Member>
+          <Member Name="GMAPathLens" Datatype="Array[0..0] of UInt">
+            <Subelement Path="0">
+              <StartValue>3</StartValue>
+            </Subelement>
+          </Member>
+          <Member Name="GMAPaths" Datatype="Array[0..2] of DWord">
+            <Subelement Path="0">
+              <StartValue>16#89A0_0072</StartValue>
+            </Subelement>
+            <Subelement Path="1">
+              <StartValue>16#0000_1FC9</StartValue>
+            </Subelement>
+            <Subelement Path="2">
+              <StartValue>16#0000_0001</StartValue>
+            </Subelement>
+          </Member>
+          <Member Name="GMAResLens" Datatype="Array[0..0] of UInt">
+            <Subelement Path="0">
+              <StartValue>8</StartValue>
+            </Subelement>
+          </Member>
+        </Section>
+      </Sections>
+    </Member>
+    <Member Name="statRetValHta" Datatype="&quot;LAF_typeChecksumCatWord&quot;">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <Sections>
+        <Section Name="None">
+          <Member Name="standard" Datatype="Word">
+            <StartValue>16#0000</StartValue>
+          </Member>
+          <Member Name="safety" Datatype="Word">
+            <StartValue>16#0000</StartValue>
+          </Member>
+          <Member Name="textlists" Datatype="Word">
+            <StartValue>16#0000</StartValue>
+          </Member>
+        </Section>
+      </Sections>
+    </Member>
+    <Member Name="statRisEdgeDiff" Datatype="&quot;LAF_typeChecksumCatBool&quot;">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <Sections>
+        <Section Name="None">
+          <Member Name="standard" Datatype="Bool">
+            <StartValue>FALSE</StartValue>
+          </Member>
+          <Member Name="safety" Datatype="Bool">
+            <StartValue>FALSE</StartValue>
+          </Member>
+          <Member Name="textlists" Datatype="Bool">
+            <StartValue>FALSE</StartValue>
+          </Member>
+        </Section>
+      </Sections>
+    </Member>
+    <Member Name="statMessageStandModified" Datatype="Bool">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <StartValue>FALSE</StartValue>
+    </Member>
+    <Member Name="statMessageSafeModified" Datatype="Bool">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <StartValue>FALSE</StartValue>
+    </Member>
+    <Member Name="statMessageTextlModified" Datatype="Bool">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <StartValue>FALSE</StartValue>
+    </Member>
+    <Member Name="statWarnNoStandard" Datatype="UInt">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <StartValue>99</StartValue>
+    </Member>
+    <Member Name="statWarnNoSafety" Datatype="UInt">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <StartValue>99</StartValue>
+    </Member>
+    <Member Name="statWarnNoTextlist" Datatype="UInt">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <StartValue>99</StartValue>
+    </Member>
+  </Section>
+</Sections></Interface>
+      <Name>InstChecksum</Name>
+      <Namespace />
+      <Number>50</Number>
+      <ProgrammingLanguage>DB</ProgrammingLanguage>
+    </AttributeList>
+    <ObjectList>
+      <MultilingualText ID="1" CompositionName="Comment">
+        <ObjectList>
+          <MultilingualTextItem ID="2" CompositionName="Items">
+            <AttributeList>
+              <Culture>de-DE</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="3" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-GB</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="4" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-US</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="5" CompositionName="Items">
+            <AttributeList>
+              <Culture>es-ES</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="6" CompositionName="Items">
+            <AttributeList>
+              <Culture>fr-FR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="7" CompositionName="Items">
+            <AttributeList>
+              <Culture>it-IT</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="8" CompositionName="Items">
+            <AttributeList>
+              <Culture>ko-KR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="9" CompositionName="Items">
+            <AttributeList>
+              <Culture>zh-CN</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+        </ObjectList>
+      </MultilingualText>
+      <MultilingualText ID="A" CompositionName="Title">
+        <ObjectList>
+          <MultilingualTextItem ID="B" CompositionName="Items">
+            <AttributeList>
+              <Culture>de-DE</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="C" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-GB</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="D" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-US</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="E" CompositionName="Items">
+            <AttributeList>
+              <Culture>es-ES</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="F" CompositionName="Items">
+            <AttributeList>
+              <Culture>fr-FR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="10" CompositionName="Items">
+            <AttributeList>
+              <Culture>it-IT</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="11" CompositionName="Items">
+            <AttributeList>
+              <Culture>ko-KR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="12" CompositionName="Items">
+            <AttributeList>
+              <Culture>zh-CN</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+        </ObjectList>
+      </MultilingualText>
+    </ObjectList>
+  </SW.Blocks.InstanceDB>
+</Document>

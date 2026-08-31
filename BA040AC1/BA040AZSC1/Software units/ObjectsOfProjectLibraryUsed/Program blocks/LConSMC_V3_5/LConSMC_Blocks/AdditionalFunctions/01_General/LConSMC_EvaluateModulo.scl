@@ -1,0 +1,106 @@
+﻿FUNCTION "LConSMC_EvaluateModulo" : LReal
+{ S7_Optimized_Access := 'TRUE' ; Published := 'TRUE' }
+VERSION : 0.1
+//Calculates the difference between two sampling values of a signal with respect to 
+//modulo value.  Function block ID: 000B
+   VAR_INPUT 
+      valueAct : LReal;   // Actual value
+      valueLast : LReal;   // Last value
+      moduloLength : LReal;   // Modulo length
+   END_VAR
+
+   VAR_TEMP 
+      tmpDeltaPos : LReal;
+      tmpDeltaNeg : LReal;
+   END_VAR
+
+
+BEGIN
+	REGION BLOCK INFO HEADER
+	  //===============================================================================
+	  // SIEMENS AG / (c)Copyright 2023
+	  //-------------------------------------------------------------------------------
+	  // Title:            LConSMC_EvaluateModulo
+	  // Comment/Function: Calculates difference between values with respect to modulo
+	  // Library/Family:   LConSMC
+	  // Author:           APC Erlangen
+	  // Tested with:      FW 2.8
+	  // Engineering:      TIA Portal V16
+	  // Restrictions:     -
+	  // Requirements:     -
+	  //-------------------------------------------------------------------------------
+	  // Change log table:
+	  // Version  | Date       | Expert in charge       | Changes applied
+	  //----------|------------|------------------------|------------------------------
+	  // 01.00.00 | 2017-08-18 | APC Erlangen           | Creation
+	  //===============================================================================
+	END_REGION BLOCK INFO HEADER
+	
+	REGION DESCRIPTION
+	(/*
+	The block calculates the position difference between two block calls and corrects the calculated value taking into account the modulo length.
+	The evaluation is realized by comparing the actual and last position value referred to the modulo length.
+	In order that the block correctly operates, it must be ensured that a modulo length is run through in not less than 2 sampling cycles – as otherwise,
+	reliable detection is not possible.
+	
+	---
+	
+	![Evaluate Modulo](EvaluateModulo.png)
+	
+	---
+	
+	#### Case#1
+	Value [ n ] > Value [ n – 1 ], no modulo overflow, no modulo correction.  
+	FCLConSMCEvaluateModulo = Value [ n ] – Value [ n – 1 ]
+	#### Case#2
+	Value [ n ] < Value [ n - 1 ], modulo overflow in positive direction  
+	FCLConSMCEvaluateModulo = Value [ n ] – Value [ n – 1 ] + moduloLength
+	#### Case#3
+	Value [ n ] > Value [ n – 1 ], modulo overflow in negative direction  
+	FCLConSMCEvaluateModulo = Value [ n ] – Value [ n – 1 ] - moduloLength
+	
+	In the examples, the modulo length is 360:
+	
+	---
+	
+	| valueLast | valuleAct | Raw value | deltaPos  | deltaNeg  | Result  |
+	|:---------:|:---------:|:---------:|:---------:|:---------:|:-------:|
+	| 130       | 330       | 200       | 200       | -160      | -160    |
+	| 330       | 130       | -200      | 160       | -200      | 160     |
+	| 330       | 150       | -180      | 180       | -180      | 180     |
+	| 330       | 330       | 0         | 0         | 0         | 0       |
+	| 150       | 330       | 180       | 180       | -180      | 180     |
+	| 330       | 170       | -160      | 200       | -160      | -160    |
+	| 170       | 330       | 160       | 160       | -200      | 160     |
+	*/)
+	END_REGION DESCRIPTION
+	
+	#tmpDeltaPos := #valueAct - #valueLast;
+	#tmpDeltaNeg := #tmpDeltaPos;
+	
+	IF (#moduloLength <= 0.0) THEN                                       // Invalid length, no correction
+	    #LConSMC_EvaluateModulo := #tmpDeltaPos;
+	    RETURN;
+	END_IF;
+	
+	WHILE (#tmpDeltaPos < 0.0) DO
+	    #tmpDeltaPos := #tmpDeltaPos + #moduloLength;
+	END_WHILE;
+	
+	WHILE (#tmpDeltaNeg > 0.0) DO
+	    #tmpDeltaNeg := #tmpDeltaNeg - #moduloLength;
+	END_WHILE;
+	
+	IF ABS(#tmpDeltaPos) < ABS(#tmpDeltaNeg) THEN                         // Positive change magnitude is smaller
+	    #LConSMC_EvaluateModulo := #tmpDeltaPos;
+	ELSIF ABS(#tmpDeltaPos) > ABS(#tmpDeltaNeg) THEN                      // Negative change magnitude is smaller
+	    #LConSMC_EvaluateModulo := #tmpDeltaNeg;
+	ELSE                                                                // Change identical
+	    IF (#tmpDeltaPos = 0.0) THEN                                     // No change
+	        #LConSMC_EvaluateModulo := 0.0;
+	    ELSE
+	        #LConSMC_EvaluateModulo := #tmpDeltaPos;                            // Change is half of modulo length, positive
+	    END_IF;
+	END_IF;
+END_FUNCTION
+

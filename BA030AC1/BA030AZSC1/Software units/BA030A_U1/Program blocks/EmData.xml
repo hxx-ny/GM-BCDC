@@ -1,0 +1,228 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Document>
+  <Engineering version="V20" />
+  <SW.Blocks.GlobalDB ID="0">
+    <AttributeList>
+      <Access>Published</Access>
+      <Interface><Sections xmlns="http://www.siemens.com/automation/Openness/SW/Interface/v5">
+  <Section Name="Static">
+    <Member Name="anodeElectrode" Datatype="DInt" />
+    <Member Name="cathodeElectrode" Datatype="DInt" />
+    <Member Name="currentTotalElectrode" Datatype="DInt" />
+    <Member Name="targetTotalElectrode" Datatype="DInt">
+      <StartValue>39</StartValue>
+    </Member>
+    <Member Name="oldTotalElectrode" Datatype="DInt" />
+    <Member Name="remainValue" Datatype="DInt">
+      <Comment>
+        <MultiLanguageText Lang="en-US">Return reminder of divison.</MultiLanguageText>
+      </Comment>
+    </Member>
+    <Member Name="cpm" Datatype="DInt">
+      <StartValue>80</StartValue>
+    </Member>
+    <Member Name="homing" Datatype="Bool" />
+    <Member Name="ReelCutStackCellCount" Datatype="LReal" />
+    <Member Name="PartData" Datatype="Struct">
+      <Member Name="EM4" Datatype="&quot;LER_typePartDataEm4&quot;" />
+      <Member Name="EM5" Datatype="&quot;LER_typePartDataEm5&quot;" />
+      <Member Name="EM6" Datatype="&quot;LER_typePartDataEm6&quot;" />
+      <Member Name="EM7" Datatype="&quot;LER_typePartDataEm7&quot;" />
+      <Member Name="clearPartData" Datatype="&quot;LER_typePartData&quot;" />
+      <Member Name="clearTableBuffer" Datatype="Array[0..59] of &quot;LER_typeUnitData&quot;" />
+    </Member>
+    <Member Name="calculateResult" Datatype="Struct">
+      <Member Name="sepaClampCutterAxisX" Datatype="&quot;LBC_typeAxis64PosConfiguration&quot;">
+        <AttributeList>
+          <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+        </AttributeList>
+      </Member>
+      <Member Name="sepaClampCutterAxisZ" Datatype="&quot;LBC_typeAxis64PosConfiguration&quot;">
+        <AttributeList>
+          <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+        </AttributeList>
+      </Member>
+      <Member Name="sepaGripperAxisX" Datatype="&quot;LBC_typeAxis64PosConfiguration&quot;">
+        <AttributeList>
+          <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+        </AttributeList>
+      </Member>
+      <Member Name="pusherAxisZ" Datatype="&quot;LBC_typeAxis64PosConfiguration&quot;">
+        <AttributeList>
+          <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+        </AttributeList>
+      </Member>
+    </Member>
+    <Member Name="RunOutModeControl" Datatype="Struct">
+      <Comment>
+        <MultiLanguageText Lang="en-US">Run Out Mode Start</MultiLanguageText>
+      </Comment>
+      <Member Name="RunOutStart" Datatype="Bool" />
+      <Member Name="RunOutComplete" Datatype="Bool" />
+    </Member>
+    <Member Name="UnitRecipe" Datatype="Struct">
+      <Member Name="size" Datatype="&quot;LER.Size&quot;">
+        <Sections>
+          <Section Name="None">
+            <Member Name="Anode" Datatype="Struct">
+              <Member Name="thickness" Datatype="LReal">
+                <StartValue>0.5</StartValue>
+              </Member>
+              <Member Name="length" Datatype="LReal">
+                <StartValue>200.0</StartValue>
+              </Member>
+            </Member>
+            <Member Name="Cathode" Datatype="Struct">
+              <Member Name="thickness" Datatype="LReal">
+                <StartValue>0.5</StartValue>
+              </Member>
+              <Member Name="length" Datatype="LReal">
+                <StartValue>200.0</StartValue>
+              </Member>
+            </Member>
+          </Section>
+        </Sections>
+      </Member>
+      <Member Name="SepaThickness" Datatype="LReal">
+        <AttributeList>
+          <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+        </AttributeList>
+        <StartValue>0.25</StartValue>
+      </Member>
+      <Member Name="JellyRollWidth" Datatype="LReal" />
+      <Member Name="StackCount" Datatype="DInt">
+        <StartValue>39</StartValue>
+      </Member>
+      <Member Name="DancerRegulator" Datatype="LReal" />
+      <Member Name="AutoSpliceRemainingLength" Datatype="LReal" />
+      <Member Name="TotalSepaWebLenth" Datatype="LReal" />
+    </Member>
+    <Member Name="DataBit" Datatype="Struct" Remanence="Retain">
+      <Member Name="AnodePnP1" Datatype="Bool" />
+      <Member Name="AnodePnP2" Datatype="Bool" />
+      <Member Name="AnodeTable" Datatype="Bool" />
+      <Member Name="CathodePnP1" Datatype="Bool" />
+      <Member Name="CathodePnP2" Datatype="Bool" />
+      <Member Name="CathodeTable" Datatype="Bool" />
+    </Member>
+    <Member Name="sepaCleanData" Datatype="Struct">
+      <Member Name="currentTotalSepa" Datatype="DInt" />
+      <Member Name="targetTotalSepa" Datatype="DInt" />
+      <Member Name="oldTotalSepa" Datatype="DInt" />
+    </Member>
+  </Section>
+</Sections></Interface>
+      <MemoryReserve>100</MemoryReserve>
+      <Name>EmData</Name>
+      <Namespace>Unit1</Namespace>
+      <Number>92</Number>
+      <ProgrammingLanguage>DB</ProgrammingLanguage>
+    </AttributeList>
+    <ObjectList>
+      <MultilingualText ID="1" CompositionName="Comment">
+        <ObjectList>
+          <MultilingualTextItem ID="2" CompositionName="Items">
+            <AttributeList>
+              <Culture>de-DE</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="3" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-GB</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="4" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-US</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="5" CompositionName="Items">
+            <AttributeList>
+              <Culture>es-ES</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="6" CompositionName="Items">
+            <AttributeList>
+              <Culture>fr-FR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="7" CompositionName="Items">
+            <AttributeList>
+              <Culture>it-IT</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="8" CompositionName="Items">
+            <AttributeList>
+              <Culture>ko-KR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="9" CompositionName="Items">
+            <AttributeList>
+              <Culture>zh-CN</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+        </ObjectList>
+      </MultilingualText>
+      <MultilingualText ID="A" CompositionName="Title">
+        <ObjectList>
+          <MultilingualTextItem ID="B" CompositionName="Items">
+            <AttributeList>
+              <Culture>de-DE</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="C" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-GB</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="D" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-US</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="E" CompositionName="Items">
+            <AttributeList>
+              <Culture>es-ES</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="F" CompositionName="Items">
+            <AttributeList>
+              <Culture>fr-FR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="10" CompositionName="Items">
+            <AttributeList>
+              <Culture>it-IT</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="11" CompositionName="Items">
+            <AttributeList>
+              <Culture>ko-KR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="12" CompositionName="Items">
+            <AttributeList>
+              <Culture>zh-CN</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+        </ObjectList>
+      </MultilingualText>
+    </ObjectList>
+  </SW.Blocks.GlobalDB>
+</Document>

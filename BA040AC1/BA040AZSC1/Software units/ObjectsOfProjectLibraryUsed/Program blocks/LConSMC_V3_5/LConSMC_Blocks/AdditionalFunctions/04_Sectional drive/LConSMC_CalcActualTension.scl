@@ -1,0 +1,229 @@
+﻿FUNCTION_BLOCK "LConSMC_CalcActualTension"
+TITLE = LConSMC_CalcActualTension
+{ S7_Optimized_Access := 'TRUE' ; Published := 'TRUE' }
+VERSION : 1.0
+//Calculates the actual tension based on the drive torque
+   VAR_INPUT 
+      enable : Bool;   // TRUE: Enable functionality of FB
+      positiveTensionTorque { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := true;   // TRUE: Tension is generated with a positive torque value
+      preCtrlMotor { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;   // [Nm] Sum of acceleration torque and friction torque precontrol value
+      diameter { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;   // [m or inch] Diameter of sectional drive axis
+      actualTorque { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;   // [Nm] Actual torque value
+      gearRatio { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 1.0;   // [-] Gear ratio
+   END_VAR
+
+   VAR_OUTPUT 
+      valid { ExternalWritable := 'False'} : Bool;   // TRUE: Valid set of output values available at the FB
+      busy { ExternalWritable := 'False'} : Bool;   // TRUE: FB is not finished and new output values can be expected
+      error { ExternalWritable := 'False'} : Bool;   // TRUE: An error occurred during the execution of the FB
+      status { ExternalWritable := 'False'} : Word := #STATUS_NO_CALL;   // 16#0000 - 16#7FFF: Status of the FB, 16#8000 - 16#FFFF: Error identification
+      tensionActual { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;   // [N] Actual tension
+   END_VAR
+
+   VAR 
+      statEnableOld { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;   // Old value of 'enable' input for edge detection
+      statValid { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;   // Static value for output 'valid'
+      statBusy { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;   // Static value for output 'busy'
+      statError { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;   // Static value for output 'error'
+      statErrorUserCleared { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;   // Error occurred that can only be solved by user; rising edge at enable input necessary
+      statErrorAutoCleared { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;   // Error occurred that can be acknowledged by FB
+      statStatus { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Word := #STATUS_NO_CALL;   // Static value for output 'status'
+      statFBState { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : DInt := #FB_STATE_NO_PROCESSING;   // State in the state machine of the FB
+      statDisablingCompleted { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;   // TRUE: Disabling has been completed
+      statTensionActual { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;   // [N] Actual tension value
+      statTensionTorque { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;   // [Nm] Tension torque value
+   END_VAR
+
+   VAR_TEMP 
+      tempEnable : Bool;   // Temporary value for input 'enable'
+   END_VAR
+
+   VAR CONSTANT 
+      FB_STATE_NO_PROCESSING : DInt := 0;   // FB state: No processing
+      FB_STATE_ENABLING : DInt := 10;   // FB state: Enabling
+      FB_STATE_PROCESSING : DInt := 50;   // FB state: Processing
+      FB_STATE_DISABLING : DInt := 90;   // FB state: Disabling
+      STATUS_NO_CALL : Word := 16#7000;   // No job being currently processed
+      STATUS_FIRST_CALL : Word := 16#7001;   // First call after incoming new job (rising edge 'enable')
+      STATUS_SUBSEQUENT_CALL : Word := 16#7002;   // Subsequent call during active processing without further details
+   END_VAR
+
+
+BEGIN
+	REGION BLOCK INFO HEADER
+	  //===============================================================================
+	  // SIEMENS AG / (c)Copyright 2023
+	  //-------------------------------------------------------------------------------
+	  // Title:            LConSMC_CalcActualTension
+	  // Comment/Function: This function blocks calculates the actual web tension based on the actual torque of the drive
+	  // Library/Family:   LConSMC
+	  // Author:           APC Erlangen
+	  // Tested with:      FW 2.8
+	  // Engineering:      TIA Portal V16
+	  // Restrictions:     -
+	  // Requirements:     -
+	  //-------------------------------------------------------------------------------
+	  // Change log table:
+	  // Version  | Date       | Expert in charge       | Changes applied
+	  //----------|------------|------------------------|------------------------------
+	  // 01.00.00 | 2023-09-12 | APC Erlangen           | First released version
+	  //===============================================================================
+	END_REGION BLOCK INFO HEADER
+	
+	REGION DESCRIPTION
+	(/*
+	The function block calculates the current web tension based on the actual torque of the drive, the gear ratio and the current diameter.
+	For the best calculation results, the disturbances comming from acceleration and friction effects must be pre controlled and the torque pre control value must be 
+	forwarded to the function block. The funtion block calculates the tension torque based on the following formula:  
+	
+	$ TensionTorque = (actualTorque - torquePreControl) * \frac{gearRatio}{radius}\ $
+	*/)
+	END_REGION DESCRIPTION
+	
+	#tempEnable := #enable; // Work with temporary value / create process image
+	
+	REGION ENABLING/DISABLING
+	  IF (#tempEnable = TRUE) AND (#statStatus = #STATUS_NO_CALL) THEN // Enable FB
+	    // First call; initialize FB
+	    #statValid := TRUE;
+	    #statBusy := TRUE;
+	    #statError := FALSE;
+	    #statStatus := #STATUS_FIRST_CALL;
+	    #statErrorUserCleared := FALSE;
+	    #statErrorAutoCleared := FALSE;
+	    #statDisablingCompleted := FALSE;
+	    // State machine - start functionality
+	    #statFBState := #FB_STATE_ENABLING;
+	    
+	    // TODO: Initialize functionality: reset of variables, diagnostics, etc.
+	    #statTensionActual := 0.0;
+	    #statTensionTorque := 0.0;
+	    // TODO: Initialize functionality: call subsidiary FBs with FALSE
+	    //      #instFB(execute := FALSE);
+	    
+	  ELSIF (#tempEnable = FALSE) AND (#statEnableOld = TRUE) THEN // Disable FB 
+	    #statFBState := #FB_STATE_DISABLING;
+	    
+	  ELSIF (#statStatus = #STATUS_FIRST_CALL) THEN // Set status identifier of subsequent call
+	    #statStatus := #STATUS_SUBSEQUENT_CALL;
+	  END_IF;
+	  
+	  // Edge detection 'enable' input
+	  #statEnableOld := #tempEnable;
+	END_REGION ENABLING/DISABLING
+	
+	IF (#statStatus = #STATUS_NO_CALL) THEN // Nothing to do -> End here to reduce "system load"
+	  RETURN;
+	END_IF;
+	
+	REGION STATE MACHINE
+	  CASE #statFBState OF // State machine of FB
+	    #FB_STATE_NO_PROCESSING:
+	      REGION No Processing
+	        // No processing active (Note: this state must always be present and left empty)
+	        ;
+	      END_REGION No Processing
+	      
+	    #FB_STATE_ENABLING: // Enabling active
+	      REGION enabling
+	        // Validate configuration data
+	        IF #gearRatio <= 0.0
+	          OR #diameter <= 0.0
+	        THEN
+	          #statStatus := "LCON_ERROR_CALC_TENSION_INVALID_INPUTS";
+	          #statErrorUserCleared := TRUE;
+	        ELSE
+	          #statFBState := #FB_STATE_PROCESSING;
+	        END_IF;
+	        ;
+	      END_REGION enabling
+	      
+	    #FB_STATE_PROCESSING: // Processing active
+	      REGION Processing
+	        // Further processing state
+	        #statTensionTorque := #actualTorque - #preCtrlMotor;
+	        IF #positiveTensionTorque THEN
+	          #statTensionActual := #statTensionTorque * #gearRatio / (#diameter / 2.0);
+	        ELSE
+	          #statTensionActual := - #statTensionTorque * #gearRatio / (#diameter / 2.0);
+	        END_IF;
+	        // Limit actual tension value to 0.0 N
+	        #statTensionActual := MAX(IN1 := 0.0, IN2 := #statTensionActual);
+	      END_REGION Processing
+	      
+	    #FB_STATE_DISABLING: // Disabling active
+	      REGION Disabling
+	        // TODO: Disabling, e.g. closing connections, etc.
+	        // When disabling is complete the bit #statDisablingCompleted must be set
+	        #statDisablingCompleted := TRUE;
+	      END_REGION Disabling
+	      
+	    ELSE // Undefined state in state machine reached
+	      REGION Undefined state
+	        #statStatus := "LCON_ERROR_CALC_TENSION_INVALID_STATE";
+	        #statErrorUserCleared := TRUE;
+	      END_REGION Undefined state
+	  END_CASE;
+	END_REGION STATE MACHINE
+	
+	REGION OUTPUTS
+	  // Write outputs
+	  IF (#statDisablingCompleted = TRUE) THEN
+	    REGION Disabling
+	      // Reset outputs if disabling completed
+	      #statValid := FALSE;
+	      #statBusy := FALSE;
+	      #statError := FALSE;
+	      #statErrorUserCleared := FALSE;
+	      #statErrorAutoCleared := FALSE;
+	      #statStatus := #STATUS_NO_CALL;
+	      // TODO: Reset application specific outputs
+	      // 
+	    END_REGION Disabling
+	    
+	  ELSIF (#statErrorUserCleared = TRUE) AND (#statError = FALSE) THEN
+	    REGION Error user cleared
+	      // Error can only be cleared by user; rising edge at enable input is needed to continue 
+	      #statValid := FALSE;
+	      #statBusy := FALSE;
+	      #statError := TRUE;
+	      // execution aborted --> set state no processing
+	      #statFBState := #FB_STATE_NO_PROCESSING;
+	    END_REGION Error user cleared
+	    
+	  ELSIF (#statErrorAutoCleared = TRUE) AND (#statError = FALSE) THEN
+	    REGION Error auto cleared
+	      // Error can be reset by FB automatically  
+	      #statValid := FALSE;
+	      #statBusy := TRUE;
+	      #statError := TRUE;
+	      // TODO: Handling of autocleared error
+	      // 
+	    END_REGION Error auto cleared
+	    
+	  ELSIF (#statErrorAutoCleared = FALSE) AND (#statErrorUserCleared = FALSE) AND (#statError = TRUE) THEN
+	    REGION After user/auto cleared
+	      // If autocleared error is acknowledged
+	      #statValid := TRUE;
+	      #statBusy := TRUE;
+	      #statError := FALSE;
+	      // TODO: remove this line if more detailed status information is used instead of "#STATUS_SUBSEQUENT_CALL"
+	      #statStatus := #STATUS_SUBSEQUENT_CALL;
+	    END_REGION After user/auto cleared
+	  END_IF;
+	  
+	  REGION Write static values to outputs
+	    // Write static values to outputs
+	    #valid := #statValid;
+	    #busy := #statBusy;
+	    #error := #statError;
+	    #status := #statStatus;
+	    // if ENO mechanism is not used / not wanted replace the following line by --> ENO := TRUE;
+	    ENO := NOT #statError;
+	    // TODO: Write application specific static values to outputs
+	    #tensionActual := #statTensionActual;
+	  END_REGION Write static values to outputs
+	END_REGION OUTPUTS
+	
+END_FUNCTION_BLOCK
+

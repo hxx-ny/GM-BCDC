@@ -1,0 +1,263 @@
+﻿FUNCTION_BLOCK "LER_StackMainCommand"
+{ S7_Optimized_Access := 'TRUE' ; Published := 'TRUE' }
+VERSION : 0.1
+   VAR_INPUT 
+      enable : Bool;
+      reset : Bool;
+      rollerCathodePos : Bool;
+      rollerAnodePos : Bool;
+      timeOffSet { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Time;
+      motionStatus : Struct
+         StopRequest : Bool := FALSE;
+         Busy : Struct
+            TotalBusy : Bool;
+            CalculateBusy : Bool;
+            SemiStepBusy : Bool;
+            FullStepBusy : Bool;
+            AutoBusy : Bool;
+            CycleStopBusy : Bool;
+            FastStopBusy : Bool;
+            ResetBusy : Bool;
+         END_STRUCT;
+         Done : Struct
+            TotalDone : Bool;
+            CalculateDone : Bool;
+            SemiStepDone : Bool;
+            FullStepDone : Bool;
+            AutoDone : Bool;
+            CycleStopDone : Bool;
+            FastStopDone : Bool;
+            ResetDone : Bool;
+         END_STRUCT;
+         Error : Bool := FALSE;
+         ErrorID : DWord := 16#0000_0000;
+         NowCmd : DInt := 0;
+         BeforeCmd : DInt := 0;
+         NowStep : DInt := 160;
+         BeforeStep : DInt := 180;
+      END_STRUCT;
+      unitStatus : "LAF_typeUnitStatus";
+   END_VAR
+
+   VAR_OUTPUT 
+      direction : Bool;
+      motionCommands : Struct
+         Calculate : Bool := FALSE;
+         SemiStep : Bool := FALSE;
+         FullStep : Bool := FALSE;
+         Auto : Bool := FALSE;
+         SepaClean : Bool;
+         CycleStop : Bool := FALSE;
+         FastStop : Bool;
+         Reset : Bool := FALSE;
+      END_STRUCT;
+   END_VAR
+
+   VAR_IN_OUT 
+      motionInterface : Struct
+         Calculate : Bool;
+         SemiStep : Bool;
+         FullStep : Bool;
+         SepaClean : Bool;
+         Auto : Bool;
+         StopMotion : Bool;
+         Reset : Bool;
+      END_STRUCT;
+   END_VAR
+
+   VAR 
+      statNowCmd : DInt;
+      statStopCommand : Bool;
+      instTriggerAuto {InstructionName := 'R_TRIG'; LibVersion := '1.0'; S7_SetPoint := 'False'} : R_TRIG;
+      instTriggerSemiStep {InstructionName := 'R_TRIG'; LibVersion := '1.0'; S7_SetPoint := 'False'} : R_TRIG;
+      instTriggerFullStep {InstructionName := 'R_TRIG'; LibVersion := '1.0'} : R_TRIG;
+      instTriggerSepaClean {InstructionName := 'R_TRIG'; LibVersion := '1.0'} : R_TRIG;
+      instTriggerStop {InstructionName := 'R_TRIG'; LibVersion := '1.0'} : R_TRIG;
+      instStopWaitTimer {InstructionName := 'TON_TIME'; LibVersion := '1.0'} : TON_TIME;
+      instCalculateWaitTimer {InstructionName := 'TON_TIME'; LibVersion := '1.0'} : TON_TIME;
+   END_VAR
+
+   VAR CONSTANT 
+      STAT_IDLE : DInt := 0;
+      STAT_ERROR : DInt := 99;
+      STAT_START : DInt := 1;
+      STAT_DONE : DInt := 1000;
+      STAT_STOP : DInt := 20;
+      STAT_STOPWAIT : DInt := 21;
+      STAT_CALCULATE : DInt := 30;
+      STAT_CALCULATEWAIT : DInt := 31;
+      STAT_CMDCHECK : DInt := 40;
+      STAT_AUTO : DInt := 100;
+      STAT_SEMI_STEP : DInt := 200;
+      STAT_FULL_STEP : DInt := 300;
+      STAT_SEPA_CLEAN : DInt := 400;
+   END_VAR
+
+
+BEGIN
+	REGION INPUT SIGNAL
+	    #instTriggerAuto(CLK := #motionInterface.Auto);
+	    
+	    IF #instTriggerAuto.Q AND #statNowCmd = #STAT_IDLE THEN
+	        #statNowCmd := #STAT_START;
+	    END_IF;
+	    
+	    #instTriggerSemiStep(CLK := #motionInterface.SemiStep);
+	    
+	    IF #instTriggerSemiStep.Q AND #statNowCmd = #STAT_IDLE THEN
+	        #statNowCmd := #STAT_START;
+	    END_IF;
+	    
+	    #instTriggerFullStep(CLK := #motionInterface.FullStep);
+	    
+	    IF #instTriggerFullStep.Q AND #statNowCmd = #STAT_IDLE THEN
+	        #statNowCmd := #STAT_START;
+	    END_IF;
+	    
+	    #instTriggerSepaClean(CLK := #motionInterface.SepaClean);
+	    
+	    IF #instTriggerSepaClean.Q AND #statNowCmd = #STAT_IDLE THEN
+	        #statNowCmd := #STAT_START;
+	    END_IF;
+	    
+	    #instTriggerStop(CLK := #motionInterface.StopMotion);
+	    
+	    IF #instTriggerStop.Q AND #statNowCmd <> #STAT_STOP THEN
+	        #statStopCommand := TRUE;
+	        #statNowCmd := #STAT_STOP;
+	    END_IF;
+	    
+	    IF NOT #enable THEN
+	        #statNowCmd := #STAT_IDLE;
+	    END_IF;
+	    
+	END_REGION
+	
+	REGION COMMAND
+	    CASE #statNowCmd OF
+	        #STAT_IDLE:
+	            ;
+	            
+	        #STAT_ERROR:
+	            IF #reset THEN
+	                #statNowCmd := #STAT_IDLE;
+	            END_IF;
+	            
+	        #STAT_START:
+	            #statNowCmd := #STAT_STOP;
+	            
+	        #STAT_STOP:
+	            IF #motionStatus.Done.TotalDone AND #motionStatus.Done.CycleStopDone THEN
+	                IF #statStopCommand THEN
+	                    #statStopCommand := FALSE;
+	                    #statNowCmd := #STAT_IDLE;
+	                ELSE
+	                    #statNowCmd := #STAT_STOPWAIT;
+	                END_IF;
+	            END_IF;
+	            
+	            IF #motionStatus.Error THEN
+	                #statStopCommand := FALSE;
+	                #statNowCmd := #STAT_ERROR;
+	            END_IF;
+	            
+	        #STAT_STOPWAIT:
+	            #instStopWaitTimer(IN := TRUE,
+	                               PT := T#100MS);
+	            
+	            IF #instStopWaitTimer.Q THEN
+	                #statNowCmd := #STAT_CALCULATE;
+	            END_IF;
+	            
+	        #STAT_CALCULATE:
+	            IF #motionStatus.Done.TotalDone AND #motionStatus.Done.CalculateDone THEN
+	                #statNowCmd := #STAT_CALCULATEWAIT;
+	            END_IF;
+	            
+	            IF #motionStatus.Error THEN
+	                #statNowCmd := #STAT_ERROR;
+	            END_IF;
+	            
+	        #STAT_CALCULATEWAIT:
+	            #instCalculateWaitTimer(IN := TRUE,
+	                                    PT := T#100MS);
+	            
+	            IF #instCalculateWaitTimer.Q THEN
+	                #statNowCmd := #STAT_CMDCHECK;
+	            END_IF;
+	            
+	        #STAT_CMDCHECK:
+	            IF #motionInterface.Auto THEN
+	                #statNowCmd := #STAT_AUTO;
+	            ELSIF #motionInterface.SemiStep THEN
+	                #statNowCmd := #STAT_SEMI_STEP;
+	            ELSIF #motionInterface.FullStep THEN
+	                #statNowCmd := #STAT_FULL_STEP;
+	            ELSIF #motionInterface.SepaClean THEN
+	                #statNowCmd := #STAT_SEPA_CLEAN;
+	            ELSE
+	                #statNowCmd := #STAT_ERROR;
+	            END_IF;
+	            
+	        #STAT_AUTO:
+	            IF #motionStatus.Done.TotalDone AND #motionStatus.Done.AutoDone AND NOT #motionInterface.Auto THEN
+	                #statNowCmd := #STAT_DONE;
+	            END_IF;
+	            
+	            IF #motionStatus.Error THEN
+	                #statNowCmd := #STAT_ERROR;
+	            END_IF;
+	            
+	        #STAT_SEMI_STEP:
+	            IF #motionStatus.Done.TotalDone AND #motionStatus.Done.SemiStepDone AND NOT #motionInterface.SemiStep THEN
+	                #statNowCmd := #STAT_DONE;
+	            END_IF;
+	            
+	            IF #motionStatus.Error THEN
+	                #statNowCmd := #STAT_ERROR;
+	            END_IF;
+	            
+	        #STAT_FULL_STEP:
+	            IF #motionStatus.Done.TotalDone AND #motionStatus.Done.FullStepDone AND NOT #motionInterface.FullStep THEN
+	                #statNowCmd := #STAT_DONE;
+	            END_IF;
+	            
+	            IF #motionStatus.Error THEN
+	                #statNowCmd := #STAT_ERROR;
+	            END_IF;
+	            
+	        #STAT_SEPA_CLEAN:
+	            IF #motionStatus.Done.TotalDone AND #motionStatus.Done.AutoDone AND NOT #motionInterface.SepaClean THEN
+	                #statNowCmd := #STAT_DONE;
+	            END_IF;
+	            
+	            IF #motionStatus.Error THEN
+	                #statNowCmd := #STAT_ERROR;
+	            END_IF;
+	            
+	        #STAT_DONE:
+	            #statNowCmd := #STAT_IDLE;
+	            
+	    END_CASE;
+	END_REGION
+	
+	REGION OUTPUT SIGNAL
+	    IF #rollerCathodePos THEN
+	        #direction := TRUE;
+	    ELSIF #rollerAnodePos THEN
+	        #direction := FALSE;
+	    END_IF;
+	    
+	    
+	    #motionCommands.Calculate := #statNowCmd = #STAT_CALCULATE;
+	    #motionCommands.SemiStep := #statNowCmd = #STAT_SEMI_STEP;
+	    #motionCommands.FullStep := #statNowCmd = #STAT_FULL_STEP;
+	    #motionCommands.Auto := #statNowCmd = #STAT_AUTO;
+	    #motionCommands.SepaClean := #statNowCmd = #STAT_SEPA_CLEAN;
+	    #motionCommands.CycleStop := #statNowCmd = #STAT_STOP;
+	    #motionCommands.FastStop := FALSE;
+	    #motionCommands.Reset := #reset;
+	END_REGION
+	
+END_FUNCTION_BLOCK
+

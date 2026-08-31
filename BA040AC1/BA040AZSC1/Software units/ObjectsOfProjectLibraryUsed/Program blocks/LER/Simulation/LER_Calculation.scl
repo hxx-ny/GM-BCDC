@@ -1,0 +1,64 @@
+﻿FUNCTION_BLOCK "LER_Calculation"
+{ S7_Optimized_Access := 'TRUE' ; Published := 'TRUE' }
+VERSION : 0.1
+   VAR_INPUT 
+      "globalStatus.activateSimulation" : Bool;
+      Size : LER.Size;
+      AxisB { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : "LBC_typeAxis64PosControlNode";
+      AxisB_Configuration : "LBC_typeAxis64PosConfiguration";
+   END_VAR
+
+   VAR_IN_OUT 
+      AxisX : "LBC_typeAxis64PosConfiguration";
+      AxisZ : "LBC_typeAxis64PosConfiguration";
+      RolAxisZ : "LBC_typeAxis64PosConfiguration";
+   END_VAR
+
+   VAR 
+      JRWinderAxisB : "LBC_typeAxis64PosControlNode";
+      SepaGripperAxisX : Array[0..15] of "LBC_typeAxis64PosSetPosition";
+      sepaGripperAxisZ : Array[0..15] of "LBC_typeAxis64PosSetPosition";
+      start : Bool;
+      travelDistance : LReal;
+      OneLapDistance : LReal;
+      point : LReal;
+      angleDistance : LReal;
+      masterAxisSpeed : LReal;
+      subStartAxisSpeed : LReal;
+   END_VAR
+
+
+BEGIN
+	REGION
+	    IF #"globalStatus.activateSimulation" THEN
+	        #start := true;
+	    ELSE
+	        #start := FALSE;
+	    END_IF;
+	    END_REGION
+	    
+	    
+	    REGION
+	        IF #start THEN
+	            #OneLapDistance := (#Size.Anode.length + #Size.Cathode.length) + ((#Size.Anode.thickness * 25) + (#Size.Cathode.thickness * 24) + (#Size.Offset * 49) * 2);
+	            #point := #OneLapDistance / 4;
+	            #angleDistance := #OneLapDistance / 360;
+	            #masterAxisSpeed:= #AxisB_Configuration.setPositions[1].velocity*#angleDistance;
+	            #subStartAxisSpeed := #masterAxisSpeed;
+	        ELSE
+	            #masterAxisSpeed := 0.0;
+	            #subStartAxisSpeed := 0.0;
+	        END_IF;
+	        
+	    END_REGION
+	    
+	    REGION
+	        #AxisX.setPositions[2].velocity := #subStartAxisSpeed;
+	        #AxisZ.setPositions[4].velocity := #subStartAxisSpeed;
+	        #AxisZ.setPositions[5].velocity := #subStartAxisSpeed;
+	        #RolAxisZ.setPositions[2].velocity := #subStartAxisSpeed;
+	        #RolAxisZ.setPositions[3].velocity := #subStartAxisSpeed;
+	    END_REGION
+	        
+END_FUNCTION_BLOCK
+

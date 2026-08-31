@@ -1,0 +1,62 @@
+﻿FUNCTION "LConSMC_DeadZone" : Real
+{ S7_Optimized_Access := 'TRUE' ; Published := 'TRUE' }
+VERSION : 0.1
+//Dead zone filter The function can be called in any task.  Function ID: 0003
+   VAR_INPUT 
+      x : Real;   // Input value
+      zoneborder : Real;   // Value of the dead band symmetrical around 0  If "x" is within the zoneborder the output is 0. If "x" is outside the output is x 
+   END_VAR
+
+
+BEGIN
+	REGION BLOCK INFO HEADER
+	  //===============================================================================
+	  // SIEMENS AG / (c)Copyright 2023
+	  //-------------------------------------------------------------------------------
+	  // Title:            LConSMC_DeadZone
+	  // Comment/Function: Dead zone filter
+	  // Library/Family:   LConSMC
+	  // Author:           APC Erlangen
+	  // Tested with:      FW 2.8
+	  // Engineering:      TIA Portal V16
+	  // Restrictions:     -
+	  // Requirements:     -
+	  //-------------------------------------------------------------------------------
+	  // Change log table:
+	  // Version  | Date       | Expert in charge       | Changes applied
+	  //----------|------------|------------------------|------------------------------
+	  // 01.00.00 | 2012-07-27 | APC Erlangen           | Creation
+	  //===============================================================================
+	  //
+	END_REGION BLOCK INFO HEADER
+	
+	REGION DESCRIPTION
+	(/*
+	If the input value (x) is in the range of the dead zone (-zoneBorder < x < + zoneBorder), the output value is set to zero.
+	If the input value is at / below (–zoneBorder) or at / above +zoneBorder, input x is the output value.
+	The dead zone – symmetrical around the zero point – can be set using the value zoneBorder.
+	
+	| Input value x                    | Return value   |
+	| -------------------------------- | -------------- |
+	| x <= -zoneBorder                 | x              |
+	| -zoneBorder < x < zoneBorder     | 0              |
+	| x >= zoneBorder                  | x              |
+	
+	![Zone border fitler](DeadZone.png)
+	
+	*/)
+	END_REGION
+	
+	#LConSMC_DeadZone := 0.0;
+	IF (#x > (ABS(#zoneborder) * -1)) THEN                                        // Check lower border   
+	    IF (#x < ABS(#zoneborder)) THEN                                           // Check higher border
+	        #LConSMC_DeadZone := 0.0;                                                      //For x inside deadzone
+	    ELSE
+	        #LConSMC_DeadZone := #x;
+	    END_IF;
+	ELSE
+	    #LConSMC_DeadZone := #x;
+	END_IF;
+	
+END_FUNCTION
+

@@ -1,0 +1,252 @@
+﻿FUNCTION_BLOCK "LConSMC_TorquePrecontrol"
+{ S7_Optimized_Access := 'TRUE' ; Published := 'TRUE' }
+VERSION : 0.1
+//Torque pre-control calculation. The function block must be called in a cyclic task.  Function block ID: 6101
+   VAR_INPUT 
+      enable { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := FALSE;   // TRUE: Enable function block
+      metricUnits { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := TRUE;   // TRUE: Use metric system [m] / [m/min] / [m/s^2] / [N]  FALSE: Use angloamerican system [inch] / [ft/min] / [ft/s^2] / [Lbf]
+      typeOfDrive { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Int := 0;   // Definition of web tension direction  0: Web tension bevor the roll is controlled (Pull)  1: Web tension after the roll is controlled (Push)
+      drivespeed { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 0.0;   // [RPM] Drive speed for the friction characteristic
+      lineAcceleration { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 0.0;   // [m/s^2]/[ft/s^2] Web acceleration
+      diameter { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 0.0;   // [m] / [inch] Diameter of sectional drive
+      tensionSetpoint { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 0.0;   // [N] / [lbf] Tension setpoint
+      JFix { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;   // [kgm^2] / [lbft^2] Inertia on drive side (without drive, e.g. gear box)
+      JMandrel { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;   // [kgm^2] / [lbft^2] Inertia on load side (e.g. mandrel)
+      JMot { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;   // [kgm^2] / [lbft^2] Drive inertia
+      gearRatio { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;   // Gear ratio
+      frictionAdjustment { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Real;   // Multiplicative adaption factor for friction torque (1.0 = 100%)
+      tensionAdjustment { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Real;   // Multiplicative adaption factor for tension torque (1.0 = 100%)
+      accelerationAdjustment { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Real := 1.0;   // Multiplicative adaption factor for acceleration torque (1.0 = 100%)
+      sizeOfArray { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Int := 20;   // Numer of breakpoints that should be used from the friction characteristic
+      xn_speedValues { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : "LConSMC_typeBreakPointTable" := ([20(0.0)]);   // Speed breakpoints for friction characteristic
+      yn_torqueValues { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : "LConSMC_typeBreakPointTable" := ([20(0.0)]);   // Torque breakpoints for friction characteristic
+   END_VAR
+
+   VAR_OUTPUT 
+      busy { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;   // TRUE : Function block is executed
+      error { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := FALSE;   // TRUE: Function block has detected an error
+      errorID { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : DWord := 16#0000_0000;   // Further information on occured error (<> 16#0000_0000)
+      totalinertia { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 0.0;   // [kgm^2] / [lbft^2] Total inertia on the drive side
+      preCtrlMotor { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 0.0;   // [Nm] / [Lbf ft] Drive torque from friction and acceleration
+      totalTorquePreCtrl { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 0.0;   // [Nm] / [Lbf ft] Total torque precontrol value on drive side
+      tensionTorque { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 0.0;   // [Nm] / [Lbf ft] Tension torque on drive side
+   END_VAR
+
+   VAR 
+      instTableChar { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'; S7_SetPoint := 'False'} : "LConSMC_TableChar";
+      statAlpha { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statMfrict { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statMAccel { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statGearRatio2 { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statSignDrivespeed { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Int;
+      statEnableOld { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statBusy { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := FALSE;
+   END_VAR
+
+   VAR CONSTANT 
+      PI : Real := 3.141592;
+      NO_ERROR : DWord := 16#0000_0000;
+   END_VAR
+
+
+BEGIN
+	REGION BLOCK INFO HEADER
+	  //===============================================================================
+	  // SIEMENS AG / (c)Copyright 2023
+	  //-------------------------------------------------------------------------------
+	  // Title:            LConSMC_TorquePreControl
+	  // Comment/Function: Torque Precontrol Calculation for sectional drives
+	  // Library/Family:   LConSMC
+	  // Author:           APC Erlangen
+	  // Tested with:      FW 2.8
+	  // Engineering:      TIA Portal V16
+	  // Restrictions:     Needs to be called in a cyclic task
+	  // Requirements:     -
+	  //-------------------------------------------------------------------------------
+	  // Change log table:
+	  // Version  | Date       | Expert in charge       | Changes applied
+	  //----------|------------|------------------------|------------------------------
+	  // 01.02.00 | 2018-07-20 | APC Erlangen           | additional input "accelerationAdjustment"
+	  // 01.01.00 | 2016-11-17 | APC Erlangen           | adapted to styleguide; warning "variable might not be initialized" removed
+	  // 01.00.00 | 2012-08-08 | APC Erlangen           | First released version
+	  //===============================================================================
+	END_REGION BLOCK INFO HEADER
+	
+	REGION DESCRIPTION
+	(/*
+	The function block determines the pre-controlled torque for sectional drives.
+	The torque pre-control outputs the following torque setpoints to pre-control the drive:  
+	  
+	1. A torque setpoint as a function of the acceleration setpoint of the machine/system ramp-function generator and the inertia
+	2. Friction torque setpoint is generated depending on the drive speed using a characteristic
+	3. Tension torque based on the tension setpoint and the diameter  
+	  
+	In order to quickly compensate for disturbances and to implement the closed-loop control, the torque to be provided from the drive must be calculated as accurate as possible.
+	Depending on the control type, this is either realized additively after the speed controller or by dynamically adjusting the torque limits.
+	In both cases the appropriate torque must be calculated using its moment of inertia and transferred to the drive.
+	As an alternative to the method integrated in this block, the integrated friction characteristic of the drive system (only in SINAMICS S120) can also be used.
+	
+	NOTE
+	:    The precise setting of the compensation is especially important for indirect tension control.
+	This is so that the torque-generating current emulates, as far as possible, the material Tension.
+	
+	---
+	
+	#### Calculations
+	
+	The function block calculates the following physical quantities:  
+	  
+	* Total moment of inertia
+	
+	$ TotalInertia = \frac{J_{Mandrel}}{GearRatio^2}\ + J_{Mot} + J_{Fix} $
+	
+	* Angular acceleration of the drive
+	
+	$ \alpha = 2 \cdot \frac{lineAcceleration \cdot GearRatio}{diameter}\ $
+	
+	* Acceleration torque
+	
+	$ M_{acc} = TotalInertia \cdot \alpha \cdot accelerationAdjustment $
+	
+	* Friction torque
+	
+	$ M_{fric} = f(n) \cdot frictionAdjustment $
+	
+	* Tension torque
+	
+	$ M_{tension} = \frac{tensionSetpoint \cdot tensionAdjustment \cdot diameter}{2 \cdot GearRatio}\ $
+	
+	This friction torque is internally determined using the function block LConSMC_TableChar.
+	The user is responsible for providing valid and sensible values in the appropriate data fields.
+	If the factor FrictionAdjustment is set to 0.0, TableChar is not called and therefore a frictional torque is not added.
+	The pre-control torque of the motor, the sum of all pre-control torques, and the tension torque are calculated depending on the drive type.
+	The total torque is always the sum of the preCtrlMotor and tensionTorque.
+	
+	* Drive mode = PULL
+	
+	$ M_{preCtrlMotor} = M_{acc} + M_{fric} \qquad M_{TensionTorque} = M_{TensionTorque} $
+	
+	* Drive mode = HELD
+	
+	$ M_{preCtrlMotor} = M_{acc} + M_{fric} \qquad M_{TensionTorque} = - M_{TensionTorque} $
+	
+	------
+	
+	#### Block diagram
+	
+	![Block diagram](TorquePreControl_Diagram.png)
+	
+	
+	*/)
+	END_REGION DESCRIPTION
+	
+	#preCtrlMotor := 0.0;
+	#totalTorquePreCtrl := 0.0;
+	#tensionTorque := 0.0;
+	#totalinertia := 0.0;
+	
+	
+	IF #enable AND NOT (#statEnableOld) THEN                                           // rising edge, init
+	    #instTableChar(enable := false,
+	                   x := (ABS(#drivespeed)),
+	                   sizeOfArray := #sizeOfArray,
+	                   xn := #xn_speedValues,
+	                   yn := #yn_torqueValues);
+	    #error := (#gearRatio <= 0.0)
+	    OR (#JFix < 0.0)
+	    OR (#JMandrel < 0.0)
+	    OR (#JMot < 0.0)
+	    OR #typeOfDrive < 0
+	    OR #typeOfDrive > 1;
+	    
+	    IF #error THEN
+	      #errorID := "LCON_ERROR_TORQUE_PRECONTROL_INVALID_CONFIGURATION";                          // One or more Configuration Data are wrong or not plausible
+	        #statBusy := FALSE;
+	    ELSE
+	        #statBusy := TRUE;
+	        #errorID := #NO_ERROR;
+	    END_IF;
+	    #statEnableOld := #enable;
+	    RETURN;
+	END_IF;
+	
+	IF NOT (#enable) AND #statEnableOld THEN                                           // falling edge, disable
+	    #instTableChar(enable := false,
+	                   x := (ABS(#drivespeed)),
+	                   sizeOfArray := #sizeOfArray,
+	                   xn := #xn_speedValues,
+	                   yn := #yn_torqueValues);
+	    #statBusy := FALSE;
+	    #error := FALSE;
+	    #errorID := #NO_ERROR;
+	    #statEnableOld := #enable;
+	    RETURN;
+	END_IF;
+	
+	
+	IF #statBusy THEN
+	    IF #diameter <= 0.0 THEN
+	      #errorID := "LCON_ERROR_TORQUE_PRECONTROL_INVALID_INPUT";                             // Calculated diameter Value is not plausible
+	        #error := TRUE;
+	        #statBusy := FALSE;
+	    END_IF;
+	    
+	    #statGearRatio2 := #gearRatio * #gearRatio;
+	    #totalinertia := (#JMandrel / #statGearRatio2)                            // totalInertia = (jMandrel + jFix ) / gearRatio**2  + jMot
+	    + #JMot
+	    + #JFix;
+	    
+	    // Acceleration precontrol
+	    IF #metricUnits THEN
+	        #statAlpha := (#lineAcceleration * #gearRatio / (#diameter / 2.0));         // alpha = (acceleration * gearRatio) / ( diamActVal / 2.0 ) [ 1/s? ]   
+	    ELSE
+	        #statAlpha := (#lineAcceleration * #gearRatio / (#diameter / 2.0 / 12.0));  // alpha = (acceleration * gearRatio) / ( diamActVal / 2.0 ) [ 1/s? ]   
+	    END_IF;
+	    
+	    #statMAccel := #statAlpha * #totalinertia * #accelerationAdjustment;
+	    
+	    // Friction precontrol
+	    IF #drivespeed <> 0.0 THEN
+	        #statSignDrivespeed := LREAL_TO_INT(#drivespeed / ABS(#drivespeed));
+	    ELSE
+	        #statSignDrivespeed := 0;
+	    END_IF;
+	    
+	    IF (#frictionAdjustment <> 0.0) THEN
+	        #instTableChar(enable := true,
+	                       x := (ABS(#drivespeed)),
+	                       sizeOfArray := #sizeOfArray,
+	                       xn := #xn_speedValues,
+	                       yn := #yn_torqueValues);
+	        IF (#instTableChar.error) THEN                                       // If there's no error yet or its prio is below new prio
+	            #statMfrict := 0.0;
+	            #error := TRUE;
+	            #errorID := #instTableChar.errorID;
+	        ELSE
+	            #statMfrict := #instTableChar.y * #frictionAdjustment * #statSignDrivespeed;// [ M ] friction;
+	        END_IF;
+	    ELSE
+	        #statMfrict := 0.0;
+	    END_IF;
+	    
+	    // Tension precontrol
+	    IF #metricUnits THEN
+	        #tensionTorque := ((#tensionSetpoint * #tensionAdjustment)
+	        * (#diameter / 2.0)) / #gearRatio;                          // [M] Motor torque (Nm) required for tension [tension(N) * radius(M)/gear ratio]
+	    ELSE
+	        #tensionTorque := ((#tensionSetpoint * #tensionAdjustment) * (#diameter / 2.0 / 12.0)) / #gearRatio;  // [lbf ft]
+	    END_IF;
+	    // Torque addition          
+	    // Invert tensionTorque
+	    IF #typeOfDrive = "LCON_TYPE_OF_DRIVE_HELD" THEN
+	        #tensionTorque := - #tensionTorque;
+	    END_IF;
+	    #preCtrlMotor := #statMAccel + #statMfrict;                                 // Friction, acceleration
+	    #totalTorquePreCtrl := #preCtrlMotor + #tensionTorque;                    // Add tension torque
+	END_IF;
+	
+	// set outputs
+	#busy := #statBusy;
+	
+END_FUNCTION_BLOCK
+

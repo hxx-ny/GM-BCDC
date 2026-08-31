@@ -1,0 +1,65 @@
+﻿FUNCTION_BLOCK "2421_OutputControlPulse1"
+{ S7_Optimized_Access := 'TRUE' ; Published := 'FALSE' }
+VERSION : 0.1
+   VAR_INPUT 
+      Enable : Bool;
+      Condition1 : Bool;
+      Condition2 : Bool;
+   END_VAR
+
+   VAR_OUTPUT 
+      Output : Bool;
+   END_VAR
+
+   VAR 
+      statStep : DInt;
+      instTriggerCondition1 {InstructionName := 'R_TRIG'; LibVersion := '1.0'; S7_SetPoint := 'False'} : R_TRIG;
+   END_VAR
+
+   VAR CONSTANT 
+      STAT_STEP0 : DInt := 0;
+      STAT_STEP1 : DInt := 1;
+      STAT_STEP2 : DInt := 2;
+   END_VAR
+
+
+BEGIN
+	REGION COMMAND
+	    IF #Enable THEN
+	        REGION ENABLE
+	            #instTriggerCondition1(CLK := #Condition1);
+	            
+	            CASE #statStep OF
+	                #STAT_STEP0:
+	                    REGION STEP0
+	                        IF #instTriggerCondition1.Q THEN
+	                            #statStep := #STAT_STEP1;
+	                        END_IF;
+	                    END_REGION
+	                    
+	                #STAT_STEP1:
+	                    REGION STEP1
+	                        IF #Condition2 THEN
+	                            #Output := TRUE;
+	                            #statStep := #STAT_STEP2;
+	                        END_IF;
+	                    END_REGION
+	                    
+	                #STAT_STEP2:
+	                    REGION STEP2
+	                        IF NOT #Condition2 THEN
+	                            #Output := FALSE;
+	                            #statStep := #STAT_STEP0;
+	                        END_IF;
+	                    END_REGION
+	            END_CASE;
+	        END_REGION
+	    ELSE
+	        REGION DISABLE
+	            #statStep := #STAT_STEP0;
+	        END_REGION
+	    END_IF;
+	END_REGION
+	
+END_FUNCTION_BLOCK
+

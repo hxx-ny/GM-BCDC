@@ -1,0 +1,1367 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Document>
+  <Engineering version="V20" />
+  <SW.Blocks.OB ID="0">
+    <AttributeList>
+      <AutoNumber>false</AutoNumber>
+      <HeaderAuthor>ERsystem_FA2_DH. Kim</HeaderAuthor>
+      <Interface><Sections xmlns="http://www.siemens.com/automation/Openness/SW/Interface/v5">
+  <Section Name="Input">
+    <Member Name="LostRetentive" Datatype="Bool" Informative="true">
+      <Comment>
+        <MultiLanguageText Lang="en-US">True if retentive data are lost</MultiLanguageText>
+      </Comment>
+    </Member>
+    <Member Name="LostRTC" Datatype="Bool" Informative="true">
+      <Comment>
+        <MultiLanguageText Lang="en-US">True if date and time are lost</MultiLanguageText>
+      </Comment>
+    </Member>
+  </Section>
+  <Section Name="Temp" />
+  <Section Name="Constant" />
+</Sections></Interface>
+      <IsIECCheckEnabled>true</IsIECCheckEnabled>
+      <Name>Startup</Name>
+      <Namespace>Unit1.Em1</Namespace>
+      <Number>1010</Number>
+      <ProgrammingLanguage>LAD</ProgrammingLanguage>
+      <SecondaryType>Startup</SecondaryType>
+      <SetENOAutomatically>false</SetENOAutomatically>
+    </AttributeList>
+    <ObjectList>
+      <MultilingualText ID="1" CompositionName="Comment">
+        <ObjectList>
+          <MultilingualTextItem ID="2" CompositionName="Items">
+            <AttributeList>
+              <Culture>de-DE</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="3" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-GB</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="4" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-US</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="5" CompositionName="Items">
+            <AttributeList>
+              <Culture>es-ES</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="6" CompositionName="Items">
+            <AttributeList>
+              <Culture>fr-FR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="7" CompositionName="Items">
+            <AttributeList>
+              <Culture>it-IT</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="8" CompositionName="Items">
+            <AttributeList>
+              <Culture>ko-KR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="9" CompositionName="Items">
+            <AttributeList>
+              <Culture>zh-CN</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+        </ObjectList>
+      </MultilingualText>
+      <SW.Blocks.CompileUnit ID="A" CompositionName="CompileUnits">
+        <AttributeList>
+          <NetworkSource><StructuredText xmlns="http://www.siemens.com/automation/Openness/SW/NetworkSource/StructuredText/v4">
+  <LineComment UId="21">
+    <Text UId="22"> Set the Absoult Reference Designator in the Config DB</Text>
+  </LineComment>
+  <NewLine UId="23" />
+  <Token Text="IF" UId="24" />
+  <Blank UId="25" />
+  <Access Scope="Call" UId="26">
+    <Instruction Name="LEN" UId="27">
+      <Token Text="(" UId="28" />
+      <Parameter Name="IN" UId="29">
+        <Blank UId="30" />
+        <Token Text=":=" UId="31" />
+        <Blank UId="32" />
+        <Access Scope="GlobalVariable" UId="33">
+          <Symbol UId="34">
+            <Component Name="Unit1.Em1.Config" UId="35" />
+            <Token Text="." UId="36" />
+            <Component Name="em" UId="37" />
+            <Token Text="." UId="38" />
+            <Component Name="referenceDesignator" UId="39" />
+            <Token Text="." UId="40" />
+            <Component Name="parent" UId="41" />
+          </Symbol>
+        </Access>
+      </Parameter>
+      <Token Text=")" UId="43" />
+    </Instruction>
+  </Access>
+  <Blank UId="44" />
+  <Token Text="&lt;&gt;" UId="45" />
+  <Blank UId="46" />
+  <Access Scope="LiteralConstant" UId="47">
+    <Constant UId="48">
+      <ConstantValue UId="50">0</ConstantValue>
+    </Constant>
+  </Access>
+  <Blank UId="51" />
+  <Token Text="THEN" UId="52" />
+  <NewLine UId="53" />
+  <Blank Num="2" UId="54" />
+  <Access Scope="GlobalVariable" UId="55">
+    <Symbol UId="56">
+      <Component Name="Unit1.Em1.Config" UId="57" />
+      <Token Text="." UId="58" />
+      <Component Name="em" UId="59" />
+      <Token Text="." UId="60" />
+      <Component Name="referenceDesignator" UId="61" />
+      <Token Text="." UId="62" />
+      <Component Name="combined" UId="63" />
+    </Symbol>
+  </Access>
+  <Blank UId="64" />
+  <Token Text=":=" UId="65" />
+  <Blank UId="66" />
+  <Access Scope="Call" UId="67">
+    <Instruction Name="CONCAT" UId="68">
+      <TemplateValue Name="str_type" Type="Type" UId="69">WString</TemplateValue>
+      <Token Text="(" UId="70" />
+      <Parameter Name="IN1" UId="71">
+        <Blank UId="72" />
+        <Token Text=":=" UId="73" />
+        <Blank UId="74" />
+        <Access Scope="GlobalVariable" UId="75">
+          <Symbol UId="76">
+            <Component Name="Unit1.Em1.Config" UId="77" />
+            <Token Text="." UId="78" />
+            <Component Name="em" UId="79" />
+            <Token Text="." UId="80" />
+            <Component Name="referenceDesignator" UId="81" />
+            <Token Text="." UId="82" />
+            <Component Name="parent" UId="83" />
+          </Symbol>
+        </Access>
+      </Parameter>
+      <Token Text="," UId="84" />
+      <Blank UId="85" />
+      <Parameter Name="IN2" UId="86">
+        <Blank UId="87" />
+        <Token Text=":=" UId="88" />
+        <Blank UId="89" />
+        <Access Scope="TypedConstant" UId="90">
+          <Constant UId="91">
+            <ConstantValue UId="92">WSTRING#'.'</ConstantValue>
+          </Constant>
+        </Access>
+      </Parameter>
+      <Token Text="," UId="93" />
+      <Blank UId="94" />
+      <Parameter Name="IN3" UId="95">
+        <Blank UId="96" />
+        <Token Text=":=" UId="97" />
+        <Blank UId="98" />
+        <Access Scope="GlobalVariable" UId="99">
+          <Symbol UId="100">
+            <Component Name="Unit1.Em1.Config" UId="101" />
+            <Token Text="." UId="102" />
+            <Component Name="em" UId="103" />
+            <Token Text="." UId="104" />
+            <Component Name="referenceDesignator" UId="105" />
+            <Token Text="." UId="106" />
+            <Component Name="relative" UId="107" />
+          </Symbol>
+        </Access>
+      </Parameter>
+      <Token Text=")" UId="109" />
+    </Instruction>
+  </Access>
+  <Token Text=";" UId="110" />
+  <NewLine UId="111" />
+  <Token Text="ELSE" UId="112" />
+  <NewLine UId="113" />
+  <Blank Num="2" UId="114" />
+  <Access Scope="GlobalVariable" UId="115">
+    <Symbol UId="116">
+      <Component Name="Unit1.Em1.Config" UId="117" />
+      <Token Text="." UId="118" />
+      <Component Name="em" UId="119" />
+      <Token Text="." UId="120" />
+      <Component Name="referenceDesignator" UId="121" />
+      <Token Text="." UId="122" />
+      <Component Name="combined" UId="123" />
+    </Symbol>
+  </Access>
+  <Blank UId="124" />
+  <Token Text=":=" UId="125" />
+  <Blank UId="126" />
+  <Access Scope="GlobalVariable" UId="127">
+    <Symbol UId="128">
+      <Component Name="Unit1.Em1.Config" UId="129" />
+      <Token Text="." UId="130" />
+      <Component Name="em" UId="131" />
+      <Token Text="." UId="132" />
+      <Component Name="referenceDesignator" UId="133" />
+      <Token Text="." UId="134" />
+      <Component Name="relative" UId="135" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="136" />
+  <NewLine UId="137" />
+  <Token Text="END_IF" UId="138" />
+  <Token Text=";" UId="139" />
+</StructuredText></NetworkSource>
+          <ProgrammingLanguage>SCL</ProgrammingLanguage>
+        </AttributeList>
+        <ObjectList>
+          <MultilingualText ID="B" CompositionName="Comment">
+            <ObjectList>
+              <MultilingualTextItem ID="C" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="D" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-GB</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="E" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="F" CompositionName="Items">
+                <AttributeList>
+                  <Culture>es-ES</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="10" CompositionName="Items">
+                <AttributeList>
+                  <Culture>fr-FR</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="11" CompositionName="Items">
+                <AttributeList>
+                  <Culture>it-IT</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="12" CompositionName="Items">
+                <AttributeList>
+                  <Culture>ko-KR</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="13" CompositionName="Items">
+                <AttributeList>
+                  <Culture>zh-CN</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+          <MultilingualText ID="14" CompositionName="Title">
+            <ObjectList>
+              <MultilingualTextItem ID="15" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="16" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-GB</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="17" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text>Build the Absolut Reference Designator</Text>
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="18" CompositionName="Items">
+                <AttributeList>
+                  <Culture>es-ES</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="19" CompositionName="Items">
+                <AttributeList>
+                  <Culture>fr-FR</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="1A" CompositionName="Items">
+                <AttributeList>
+                  <Culture>it-IT</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="1B" CompositionName="Items">
+                <AttributeList>
+                  <Culture>ko-KR</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="1C" CompositionName="Items">
+                <AttributeList>
+                  <Culture>zh-CN</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+        </ObjectList>
+      </SW.Blocks.CompileUnit>
+      <SW.Blocks.CompileUnit ID="1D" CompositionName="CompileUnits">
+        <AttributeList>
+          <NetworkSource><StructuredText xmlns="http://www.siemens.com/automation/Openness/SW/NetworkSource/StructuredText/v4">
+  <LineComment UId="21">
+    <Text UId="22">Assign axes</Text>
+  </LineComment>
+  <NewLine UId="23" />
+  <Access Scope="GlobalVariable" UId="24">
+    <Symbol UId="25">
+      <Component Name="Unit1.Em1.Config" UId="26" />
+      <Token Text="." UId="27" />
+      <Component Name="axis" UId="28">
+        <Token Text="[" UId="29" />
+        <Access Scope="LiteralConstant" UId="30">
+          <Constant UId="31">
+            <ConstantValue UId="33">1</ConstantValue>
+          </Constant>
+        </Access>
+        <Token Text="]" UId="34" />
+      </Component>
+    </Symbol>
+  </Access>
+  <Blank UId="35" />
+  <Token Text=":=" UId="36" />
+  <Blank UId="37" />
+  <Access Scope="GlobalVariable" UId="38">
+    <Symbol UId="39">
+      <Component Name="BA030AZSDR2_UnwinderBottomAxisB" UId="40" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="41" />
+  <NewLine Num="2" UId="42" />
+  <LineComment UId="43">
+    <Text UId="44"> Assign configuration data of axis</Text>
+  </LineComment>
+  <NewLine UId="45" />
+  <LineComment UId="46">
+    <Text UId="47"> </Text>
+  </LineComment>
+  <NewLine UId="48" />
+  <LineComment UId="49">
+    <Text UId="50"> Axis 1 BA030A_UnwinderVirtual</Text>
+  </LineComment>
+  <NewLine UId="51" />
+  <LineComment UId="52">
+    <Text UId="53"> </Text>
+  </LineComment>
+  <NewLine UId="54" />
+  <LineComment UId="55">
+    <Text UId="56"> Axis 2 BA030AZSDR2_UnwinderBottomAxisB</Text>
+  </LineComment>
+  <NewLine UId="57" />
+  <Access Scope="GlobalVariable" UId="58">
+    <Symbol UId="59">
+      <Component Name="Unit1.Em1.HmiInterface" UId="60" />
+      <Token Text="." UId="61" />
+      <Component Name="cmUnwinderBtmAxisB" UId="62" />
+      <Token Text="." UId="63" />
+      <Component Name="commandConfiguration" UId="64" />
+      <Token Text="." UId="65" />
+      <Component Name="jog" UId="66" />
+      <Token Text="." UId="67" />
+      <Component Name="velocity" UId="68" />
+    </Symbol>
+  </Access>
+  <Blank UId="69" />
+  <Token Text=":=" UId="70" />
+  <Blank UId="71" />
+  <Access Scope="LiteralConstant" UId="72">
+    <Constant UId="73">
+      <ConstantValue UId="75">10.0</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="76" />
+  <NewLine UId="77" />
+  <Access Scope="GlobalVariable" UId="78">
+    <Symbol UId="79">
+      <Component Name="Unit1.Em1.HmiInterface" UId="80" />
+      <Token Text="." UId="81" />
+      <Component Name="cmUnwinderBtmAxisB" UId="82" />
+      <Token Text="." UId="83" />
+      <Component Name="commandConfiguration" UId="84" />
+      <Token Text="." UId="85" />
+      <Component Name="jog" UId="86" />
+      <Token Text="." UId="87" />
+      <Component Name="acceleration" UId="88" />
+    </Symbol>
+  </Access>
+  <Blank UId="89" />
+  <Token Text=":=" UId="90" />
+  <Blank UId="91" />
+  <Access Scope="LiteralConstant" UId="92">
+    <Constant UId="93">
+      <ConstantValue UId="95">100.0</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="96" />
+  <NewLine UId="97" />
+  <Access Scope="GlobalVariable" UId="98">
+    <Symbol UId="99">
+      <Component Name="Unit1.Em1.HmiInterface" UId="100" />
+      <Token Text="." UId="101" />
+      <Component Name="cmUnwinderBtmAxisB" UId="102" />
+      <Token Text="." UId="103" />
+      <Component Name="commandConfiguration" UId="104" />
+      <Token Text="." UId="105" />
+      <Component Name="jog" UId="106" />
+      <Token Text="." UId="107" />
+      <Component Name="deceleration" UId="108" />
+    </Symbol>
+  </Access>
+  <Blank UId="109" />
+  <Token Text=":=" UId="110" />
+  <Blank UId="111" />
+  <Access Scope="LiteralConstant" UId="112">
+    <Constant UId="113">
+      <ConstantValue UId="115">100.0</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="116" />
+  <NewLine UId="117" />
+  <Access Scope="GlobalVariable" UId="118">
+    <Symbol UId="119">
+      <Component Name="Unit1.Em1.HmiInterface" UId="120" />
+      <Token Text="." UId="121" />
+      <Component Name="cmUnwinderBtmAxisB" UId="122" />
+      <Token Text="." UId="123" />
+      <Component Name="commandConfiguration" UId="124" />
+      <Token Text="." UId="125" />
+      <Component Name="moveVelocity" UId="126" />
+      <Token Text="." UId="127" />
+      <Component Name="velocity" UId="128" />
+    </Symbol>
+  </Access>
+  <Blank UId="129" />
+  <Token Text=":=" UId="130" />
+  <Blank UId="131" />
+  <Access Scope="LiteralConstant" UId="132">
+    <Constant UId="133">
+      <ConstantValue UId="135">10.0</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="136" />
+  <NewLine UId="137" />
+  <Access Scope="GlobalVariable" UId="138">
+    <Symbol UId="139">
+      <Component Name="Unit1.Em1.HmiInterface" UId="140" />
+      <Token Text="." UId="141" />
+      <Component Name="cmUnwinderBtmAxisB" UId="142" />
+      <Token Text="." UId="143" />
+      <Component Name="commandConfiguration" UId="144" />
+      <Token Text="." UId="145" />
+      <Component Name="moveVelocity" UId="146" />
+      <Token Text="." UId="147" />
+      <Component Name="acceleration" UId="148" />
+    </Symbol>
+  </Access>
+  <Blank UId="149" />
+  <Token Text=":=" UId="150" />
+  <Blank UId="151" />
+  <Access Scope="LiteralConstant" UId="152">
+    <Constant UId="153">
+      <ConstantValue UId="155">100.0</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="156" />
+  <NewLine UId="157" />
+  <Access Scope="GlobalVariable" UId="158">
+    <Symbol UId="159">
+      <Component Name="Unit1.Em1.HmiInterface" UId="160" />
+      <Token Text="." UId="161" />
+      <Component Name="cmUnwinderBtmAxisB" UId="162" />
+      <Token Text="." UId="163" />
+      <Component Name="commandConfiguration" UId="164" />
+      <Token Text="." UId="165" />
+      <Component Name="moveVelocity" UId="166" />
+      <Token Text="." UId="167" />
+      <Component Name="deceleration" UId="168" />
+    </Symbol>
+  </Access>
+  <Blank UId="169" />
+  <Token Text=":=" UId="170" />
+  <Blank UId="171" />
+  <Access Scope="LiteralConstant" UId="172">
+    <Constant UId="173">
+      <ConstantValue UId="175">100.0</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="176" />
+  <NewLine UId="177" />
+  <Access Scope="GlobalVariable" UId="178">
+    <Symbol UId="179">
+      <Component Name="Unit1.Em1.HmiInterface" UId="180" />
+      <Token Text="." UId="181" />
+      <Component Name="cmUnwinderBtmAxisB" UId="182" />
+      <Token Text="." UId="183" />
+      <Component Name="commandConfiguration" UId="184" />
+      <Token Text="." UId="185" />
+      <Component Name="posRelative" UId="186" />
+      <Token Text="." UId="187" />
+      <Component Name="velocity" UId="188" />
+    </Symbol>
+  </Access>
+  <Blank UId="189" />
+  <Token Text=":=" UId="190" />
+  <Blank UId="191" />
+  <Access Scope="LiteralConstant" UId="192">
+    <Constant UId="193">
+      <ConstantValue UId="195">10.0</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="196" />
+  <NewLine UId="197" />
+  <Access Scope="GlobalVariable" UId="198">
+    <Symbol UId="199">
+      <Component Name="Unit1.Em1.HmiInterface" UId="200" />
+      <Token Text="." UId="201" />
+      <Component Name="cmUnwinderBtmAxisB" UId="202" />
+      <Token Text="." UId="203" />
+      <Component Name="commandConfiguration" UId="204" />
+      <Token Text="." UId="205" />
+      <Component Name="posRelative" UId="206" />
+      <Token Text="." UId="207" />
+      <Component Name="acceleration" UId="208" />
+    </Symbol>
+  </Access>
+  <Blank UId="209" />
+  <Token Text=":=" UId="210" />
+  <Blank UId="211" />
+  <Access Scope="LiteralConstant" UId="212">
+    <Constant UId="213">
+      <ConstantValue UId="215">100.0</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="216" />
+  <NewLine UId="217" />
+  <Access Scope="GlobalVariable" UId="218">
+    <Symbol UId="219">
+      <Component Name="Unit1.Em1.HmiInterface" UId="220" />
+      <Token Text="." UId="221" />
+      <Component Name="cmUnwinderBtmAxisB" UId="222" />
+      <Token Text="." UId="223" />
+      <Component Name="commandConfiguration" UId="224" />
+      <Token Text="." UId="225" />
+      <Component Name="posRelative" UId="226" />
+      <Token Text="." UId="227" />
+      <Component Name="deceleration" UId="228" />
+    </Symbol>
+  </Access>
+  <Blank UId="229" />
+  <Token Text=":=" UId="230" />
+  <Blank UId="231" />
+  <Access Scope="LiteralConstant" UId="232">
+    <Constant UId="233">
+      <ConstantValue UId="235">100.0</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="236" />
+  <NewLine Num="2" UId="237" />
+  <LineComment UId="238">
+    <Text UId="239"> FB Enable</Text>
+  </LineComment>
+  <NewLine UId="240" />
+  <Access Scope="GlobalVariable" UId="241">
+    <Symbol UId="242">
+      <Component Name="Unit1.Em1.HmiInterface" UId="243" />
+      <Token Text="." UId="244" />
+      <Component Name="cmUnwinderBtmAxisB" UId="245" />
+      <Token Text="." UId="246" />
+      <Component Name="commands" UId="247" />
+      <Token Text="." UId="248" />
+      <Component Name="enableMasterControl" UId="249" />
+    </Symbol>
+  </Access>
+  <Blank UId="250" />
+  <Token Text=":=" UId="251" />
+  <Blank UId="252" />
+  <Access Scope="LiteralConstant" UId="253">
+    <Constant UId="254">
+      <ConstantValue UId="256">TRUE</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="257" />
+</StructuredText></NetworkSource>
+          <ProgrammingLanguage>SCL</ProgrammingLanguage>
+        </AttributeList>
+        <ObjectList>
+          <MultilingualText ID="1E" CompositionName="Comment">
+            <ObjectList>
+              <MultilingualTextItem ID="1F" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="20" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-GB</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="21" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="22" CompositionName="Items">
+                <AttributeList>
+                  <Culture>es-ES</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="23" CompositionName="Items">
+                <AttributeList>
+                  <Culture>fr-FR</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="24" CompositionName="Items">
+                <AttributeList>
+                  <Culture>it-IT</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="25" CompositionName="Items">
+                <AttributeList>
+                  <Culture>ko-KR</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="26" CompositionName="Items">
+                <AttributeList>
+                  <Culture>zh-CN</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+          <MultilingualText ID="27" CompositionName="Title">
+            <ObjectList>
+              <MultilingualTextItem ID="28" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="29" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-GB</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="2A" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text>Assign axes data</Text>
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="2B" CompositionName="Items">
+                <AttributeList>
+                  <Culture>es-ES</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="2C" CompositionName="Items">
+                <AttributeList>
+                  <Culture>fr-FR</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="2D" CompositionName="Items">
+                <AttributeList>
+                  <Culture>it-IT</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="2E" CompositionName="Items">
+                <AttributeList>
+                  <Culture>ko-KR</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="2F" CompositionName="Items">
+                <AttributeList>
+                  <Culture>zh-CN</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+        </ObjectList>
+      </SW.Blocks.CompileUnit>
+      <SW.Blocks.CompileUnit ID="30" CompositionName="CompileUnits">
+        <AttributeList>
+          <NetworkSource><StructuredText xmlns="http://www.siemens.com/automation/Openness/SW/NetworkSource/StructuredText/v4">
+  <LineComment UId="21">
+    <Text UId="22">Assgin Configuration data of TwoWayActuator</Text>
+  </LineComment>
+  <NewLine UId="23" />
+  <Access Scope="GlobalVariable" UId="24">
+    <Symbol UId="25">
+      <Component Name="Unit1.Em1.Config" UId="26" />
+      <Token Text="." UId="27" />
+      <Component Name="cmAirShaftBtmOnOff" UId="28" />
+      <Token Text="." UId="29" />
+      <Component Name="disableFeedbackHomePos" UId="30" />
+    </Symbol>
+  </Access>
+  <Blank UId="31" />
+  <Token Text=":=" UId="32" />
+  <Blank UId="33" />
+  <Access Scope="LiteralConstant" UId="34">
+    <Constant UId="35">
+      <ConstantValue UId="37">TRUE</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="38" />
+  <NewLine UId="39" />
+  <Access Scope="GlobalVariable" UId="40">
+    <Symbol UId="41">
+      <Component Name="Unit1.Em1.Config" UId="42" />
+      <Token Text="." UId="43" />
+      <Component Name="cmAirShaftBtmOnOff" UId="44" />
+      <Token Text="." UId="45" />
+      <Component Name="disableFeedbackWorkPos" UId="46" />
+    </Symbol>
+  </Access>
+  <Blank UId="47" />
+  <Token Text=":=" UId="48" />
+  <Blank UId="49" />
+  <Access Scope="LiteralConstant" UId="50">
+    <Constant UId="51">
+      <ConstantValue UId="53">TRUE</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="54" />
+</StructuredText></NetworkSource>
+          <ProgrammingLanguage>SCL</ProgrammingLanguage>
+        </AttributeList>
+        <ObjectList>
+          <MultilingualText ID="31" CompositionName="Comment">
+            <ObjectList>
+              <MultilingualTextItem ID="32" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="33" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-GB</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="34" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="35" CompositionName="Items">
+                <AttributeList>
+                  <Culture>es-ES</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="36" CompositionName="Items">
+                <AttributeList>
+                  <Culture>fr-FR</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="37" CompositionName="Items">
+                <AttributeList>
+                  <Culture>it-IT</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="38" CompositionName="Items">
+                <AttributeList>
+                  <Culture>ko-KR</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="39" CompositionName="Items">
+                <AttributeList>
+                  <Culture>zh-CN</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+          <MultilingualText ID="3A" CompositionName="Title">
+            <ObjectList>
+              <MultilingualTextItem ID="3B" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="3C" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-GB</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="3D" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text>Assign TwoWayActuator data</Text>
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="3E" CompositionName="Items">
+                <AttributeList>
+                  <Culture>es-ES</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="3F" CompositionName="Items">
+                <AttributeList>
+                  <Culture>fr-FR</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="40" CompositionName="Items">
+                <AttributeList>
+                  <Culture>it-IT</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="41" CompositionName="Items">
+                <AttributeList>
+                  <Culture>ko-KR</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="42" CompositionName="Items">
+                <AttributeList>
+                  <Culture>zh-CN</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+        </ObjectList>
+      </SW.Blocks.CompileUnit>
+      <SW.Blocks.CompileUnit ID="43" CompositionName="CompileUnits">
+        <AttributeList>
+          <NetworkSource><StructuredText xmlns="http://www.siemens.com/automation/Openness/SW/NetworkSource/StructuredText/v4">
+  <Access Scope="GlobalVariable" UId="21">
+    <Symbol UId="22">
+      <Component Name="Unit1.Em1.Config" UId="23" />
+      <Token Text="." UId="24" />
+      <Component Name="cmEpcBtm" UId="25" />
+      <Token Text="." UId="26" />
+      <Component Name="hwID" UId="27" />
+      <Token Text="." UId="28" />
+      <Component Name="EkrOut_Auto_Sp_Acp_HW_ID" UId="29" />
+    </Symbol>
+  </Access>
+  <Blank UId="30" />
+  <Token Text=":=" UId="31" />
+  <Blank UId="32" />
+  <Access Scope="LiteralConstant" UId="33">
+    <Constant UId="34">
+      <ConstantValue UId="36">1058</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="37" />
+  <NewLine UId="38" />
+  <Access Scope="GlobalVariable" UId="39">
+    <Symbol UId="40">
+      <Component Name="Unit1.Em1.Config" UId="41" />
+      <Token Text="." UId="42" />
+      <Component Name="cmEpcBtm" UId="43" />
+      <Token Text="." UId="44" />
+      <Component Name="hwID" UId="45" />
+      <Token Text="." UId="46" />
+      <Component Name="EkrOut_CAM_Data_HW_ID" UId="47" />
+    </Symbol>
+  </Access>
+  <Blank UId="48" />
+  <Token Text=":=" UId="49" />
+  <Blank UId="50" />
+  <Access Scope="LiteralConstant" UId="51">
+    <Constant UId="52">
+      <ConstantValue UId="54">1059</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="55" />
+  <NewLine UId="56" />
+  <Access Scope="GlobalVariable" UId="57">
+    <Symbol UId="58">
+      <Component Name="Unit1.Em1.Config" UId="59" />
+      <Token Text="." UId="60" />
+      <Component Name="cmEpcBtm" UId="61" />
+      <Token Text="." UId="62" />
+      <Component Name="hwID" UId="63" />
+      <Token Text="." UId="64" />
+      <Component Name="EkrOut_CLS_Data_HW_ID" UId="65" />
+    </Symbol>
+  </Access>
+  <Blank UId="66" />
+  <Token Text=":=" UId="67" />
+  <Blank UId="68" />
+  <Access Scope="LiteralConstant" UId="69">
+    <Constant UId="70">
+      <ConstantValue UId="72">1060</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="73" />
+  <NewLine UId="74" />
+  <Access Scope="GlobalVariable" UId="75">
+    <Symbol UId="76">
+      <Component Name="Unit1.Em1.Config" UId="77" />
+      <Token Text="." UId="78" />
+      <Component Name="cmEpcBtm" UId="79" />
+      <Token Text="." UId="80" />
+      <Component Name="hwID" UId="81" />
+      <Token Text="." UId="82" />
+      <Component Name="EkrOut_Guiding_edges_HW_ID" UId="83" />
+    </Symbol>
+  </Access>
+  <Blank UId="84" />
+  <Token Text=":=" UId="85" />
+  <Blank UId="86" />
+  <Access Scope="LiteralConstant" UId="87">
+    <Constant UId="88">
+      <ConstantValue UId="90">1062</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="91" />
+  <NewLine UId="92" />
+  <Access Scope="GlobalVariable" UId="93">
+    <Symbol UId="94">
+      <Component Name="Unit1.Em1.Config" UId="95" />
+      <Token Text="." UId="96" />
+      <Component Name="cmEpcBtm" UId="97" />
+      <Token Text="." UId="98" />
+      <Component Name="hwID" UId="99" />
+      <Token Text="." UId="100" />
+      <Component Name="EkrOut_HEADER_Data_HW_ID" UId="101" />
+    </Symbol>
+  </Access>
+  <Blank UId="102" />
+  <Token Text=":=" UId="103" />
+  <Blank UId="104" />
+  <Access Scope="LiteralConstant" UId="105">
+    <Constant UId="106">
+      <ConstantValue UId="108">1063</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="109" />
+  <NewLine UId="110" />
+  <Access Scope="GlobalVariable" UId="111">
+    <Symbol UId="112">
+      <Component Name="Unit1.Em1.Config" UId="113" />
+      <Token Text="." UId="114" />
+      <Component Name="cmEpcBtm" UId="115" />
+      <Token Text="." UId="116" />
+      <Component Name="hwID" UId="117" />
+      <Token Text="." UId="118" />
+      <Component Name="EkrOut_POS_unit_HW_ID" UId="119" />
+    </Symbol>
+  </Access>
+  <Blank UId="120" />
+  <Token Text=":=" UId="121" />
+  <Blank UId="122" />
+  <Access Scope="LiteralConstant" UId="123">
+    <Constant UId="124">
+      <ConstantValue UId="126">1065</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="127" />
+  <NewLine UId="128" />
+  <Access Scope="GlobalVariable" UId="129">
+    <Symbol UId="130">
+      <Component Name="Unit1.Em1.Config" UId="131" />
+      <Token Text="." UId="132" />
+      <Component Name="cmEpcBtm" UId="133" />
+      <Token Text="." UId="134" />
+      <Component Name="hwID" UId="135" />
+      <Token Text="." UId="136" />
+      <Component Name="EkrOut_SEN_Data_HW_ID" UId="137" />
+    </Symbol>
+  </Access>
+  <Blank UId="138" />
+  <Token Text=":=" UId="139" />
+  <Blank UId="140" />
+  <Access Scope="LiteralConstant" UId="141">
+    <Constant UId="142">
+      <ConstantValue UId="144">1066</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="145" />
+  <NewLine UId="146" />
+  <Access Scope="GlobalVariable" UId="147">
+    <Symbol UId="148">
+      <Component Name="Unit1.Em1.Config" UId="149" />
+      <Token Text="." UId="150" />
+      <Component Name="cmEpcBtm" UId="151" />
+      <Token Text="." UId="152" />
+      <Component Name="hwID" UId="153" />
+      <Token Text="." UId="154" />
+      <Component Name="EkrOut_Servo_Center_HW_ID" UId="155" />
+    </Symbol>
+  </Access>
+  <Blank UId="156" />
+  <Token Text=":=" UId="157" />
+  <Blank UId="158" />
+  <Access Scope="LiteralConstant" UId="159">
+    <Constant UId="160">
+      <ConstantValue UId="162">1067</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="163" />
+  <NewLine UId="164" />
+  <Access Scope="GlobalVariable" UId="165">
+    <Symbol UId="166">
+      <Component Name="Unit1.Em1.Config" UId="167" />
+      <Token Text="." UId="168" />
+      <Component Name="cmEpcBtm" UId="169" />
+      <Token Text="." UId="170" />
+      <Component Name="hwID" UId="171" />
+      <Token Text="." UId="172" />
+      <Component Name="EkrOut_Setpoint_HW_ID" UId="173" />
+    </Symbol>
+  </Access>
+  <Blank UId="174" />
+  <Token Text=":=" UId="175" />
+  <Blank UId="176" />
+  <Access Scope="LiteralConstant" UId="177">
+    <Constant UId="178">
+      <ConstantValue UId="180">1068</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="181" />
+  <NewLine UId="182" />
+  <Access Scope="GlobalVariable" UId="183">
+    <Symbol UId="184">
+      <Component Name="Unit1.Em1.Config" UId="185" />
+      <Token Text="." UId="186" />
+      <Component Name="cmEpcBtm" UId="187" />
+      <Token Text="." UId="188" />
+      <Component Name="hwID" UId="189" />
+      <Token Text="." UId="190" />
+      <Component Name="EkrOut_Web_width_HW_ID" UId="191" />
+    </Symbol>
+  </Access>
+  <Blank UId="192" />
+  <Token Text=":=" UId="193" />
+  <Blank UId="194" />
+  <Access Scope="LiteralConstant" UId="195">
+    <Constant UId="196">
+      <ConstantValue UId="198">1069</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="199" />
+  <NewLine UId="200" />
+  <Access Scope="GlobalVariable" UId="201">
+    <Symbol UId="202">
+      <Component Name="Unit1.Em1.Config" UId="203" />
+      <Token Text="." UId="204" />
+      <Component Name="cmEpcBtm" UId="205" />
+      <Token Text="." UId="206" />
+      <Component Name="hwID" UId="207" />
+      <Token Text="." UId="208" />
+      <Component Name="EkrIn_Auto_Sp_Acp_HW_ID" UId="209" />
+    </Symbol>
+  </Access>
+  <Blank UId="210" />
+  <Token Text=":=" UId="211" />
+  <Blank UId="212" />
+  <Access Scope="LiteralConstant" UId="213">
+    <Constant UId="214">
+      <ConstantValue UId="216">1070</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="217" />
+  <NewLine UId="218" />
+  <Access Scope="GlobalVariable" UId="219">
+    <Symbol UId="220">
+      <Component Name="Unit1.Em1.Config" UId="221" />
+      <Token Text="." UId="222" />
+      <Component Name="cmEpcBtm" UId="223" />
+      <Token Text="." UId="224" />
+      <Component Name="hwID" UId="225" />
+      <Token Text="." UId="226" />
+      <Component Name="EkrIn_HEADER_Data_HW_ID" UId="227" />
+    </Symbol>
+  </Access>
+  <Blank UId="228" />
+  <Token Text=":=" UId="229" />
+  <Blank UId="230" />
+  <Access Scope="LiteralConstant" UId="231">
+    <Constant UId="232">
+      <ConstantValue UId="234">1072</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="235" />
+  <NewLine UId="236" />
+  <Access Scope="GlobalVariable" UId="237">
+    <Symbol UId="238">
+      <Component Name="Unit1.Em1.Config" UId="239" />
+      <Token Text="." UId="240" />
+      <Component Name="cmEpcBtm" UId="241" />
+      <Token Text="." UId="242" />
+      <Component Name="hwID" UId="243" />
+      <Token Text="." UId="244" />
+      <Component Name="EkrIn_POS_unit_HW_ID" UId="245" />
+    </Symbol>
+  </Access>
+  <Blank UId="246" />
+  <Token Text=":=" UId="247" />
+  <Blank UId="248" />
+  <Access Scope="LiteralConstant" UId="249">
+    <Constant UId="250">
+      <ConstantValue UId="252">1074</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="253" />
+  <NewLine UId="254" />
+  <Access Scope="GlobalVariable" UId="255">
+    <Symbol UId="256">
+      <Component Name="Unit1.Em1.Config" UId="257" />
+      <Token Text="." UId="258" />
+      <Component Name="cmEpcBtm" UId="259" />
+      <Token Text="." UId="260" />
+      <Component Name="hwID" UId="261" />
+      <Token Text="." UId="262" />
+      <Component Name="EkrIn_Setpoint_HW_ID" UId="263" />
+    </Symbol>
+  </Access>
+  <Blank UId="264" />
+  <Token Text=":=" UId="265" />
+  <Blank UId="266" />
+  <Access Scope="LiteralConstant" UId="267">
+    <Constant UId="268">
+      <ConstantValue UId="270">1075</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="271" />
+  <NewLine UId="272" />
+  <Access Scope="GlobalVariable" UId="273">
+    <Symbol UId="274">
+      <Component Name="Unit1.Em1.Config" UId="275" />
+      <Token Text="." UId="276" />
+      <Component Name="cmEpcBtm" UId="277" />
+      <Token Text="." UId="278" />
+      <Component Name="hwID" UId="279" />
+      <Token Text="." UId="280" />
+      <Component Name="EkrIn_Web_width_HW_ID" UId="281" />
+    </Symbol>
+  </Access>
+  <Blank UId="282" />
+  <Token Text=":=" UId="283" />
+  <Blank UId="284" />
+  <Access Scope="LiteralConstant" UId="285">
+    <Constant UId="286">
+      <ConstantValue UId="288">1076</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="289" />
+</StructuredText></NetworkSource>
+          <ProgrammingLanguage>SCL</ProgrammingLanguage>
+        </AttributeList>
+        <ObjectList>
+          <MultilingualText ID="44" CompositionName="Comment">
+            <ObjectList>
+              <MultilingualTextItem ID="45" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="46" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-GB</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="47" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="48" CompositionName="Items">
+                <AttributeList>
+                  <Culture>es-ES</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="49" CompositionName="Items">
+                <AttributeList>
+                  <Culture>fr-FR</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="4A" CompositionName="Items">
+                <AttributeList>
+                  <Culture>it-IT</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="4B" CompositionName="Items">
+                <AttributeList>
+                  <Culture>ko-KR</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="4C" CompositionName="Items">
+                <AttributeList>
+                  <Culture>zh-CN</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+          <MultilingualText ID="4D" CompositionName="Title">
+            <ObjectList>
+              <MultilingualTextItem ID="4E" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="4F" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-GB</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="50" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text>Assign EPC Config</Text>
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="51" CompositionName="Items">
+                <AttributeList>
+                  <Culture>es-ES</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="52" CompositionName="Items">
+                <AttributeList>
+                  <Culture>fr-FR</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="53" CompositionName="Items">
+                <AttributeList>
+                  <Culture>it-IT</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="54" CompositionName="Items">
+                <AttributeList>
+                  <Culture>ko-KR</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="55" CompositionName="Items">
+                <AttributeList>
+                  <Culture>zh-CN</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+        </ObjectList>
+      </SW.Blocks.CompileUnit>
+      <MultilingualText ID="56" CompositionName="Title">
+        <ObjectList>
+          <MultilingualTextItem ID="57" CompositionName="Items">
+            <AttributeList>
+              <Culture>de-DE</Culture>
+              <Text>"Complete Restart"</Text>
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="58" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-GB</Culture>
+              <Text>"Complete Restart"</Text>
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="59" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-US</Culture>
+              <Text>"Complete Restart"</Text>
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="5A" CompositionName="Items">
+            <AttributeList>
+              <Culture>es-ES</Culture>
+              <Text>"Complete Restart"</Text>
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="5B" CompositionName="Items">
+            <AttributeList>
+              <Culture>fr-FR</Culture>
+              <Text>"Complete Restart"</Text>
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="5C" CompositionName="Items">
+            <AttributeList>
+              <Culture>it-IT</Culture>
+              <Text>"Complete Restart"</Text>
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="5D" CompositionName="Items">
+            <AttributeList>
+              <Culture>ko-KR</Culture>
+              <Text>"Complete Restart"</Text>
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="5E" CompositionName="Items">
+            <AttributeList>
+              <Culture>zh-CN</Culture>
+              <Text>"Complete Restart"</Text>
+            </AttributeList>
+          </MultilingualTextItem>
+        </ObjectList>
+      </MultilingualText>
+    </ObjectList>
+  </SW.Blocks.OB>
+</Document>

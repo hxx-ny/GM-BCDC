@@ -1,0 +1,48 @@
+﻿FUNCTION_BLOCK "2152_PIDControl"
+{ S7_Optimized_Access := 'TRUE' ; Published := 'FALSE' }
+VERSION : 0.1
+   VAR_INPUT 
+      Enable : Bool;
+      InvertOption : Bool;
+      SetPoint : LReal;
+      Input : LReal;
+      Kp : LReal;
+      Ki : LReal;
+   END_VAR
+
+   VAR_OUTPUT 
+      OutputRef : LReal;
+      Output : LReal;
+   END_VAR
+
+   VAR 
+      statIntegSum : LReal;
+   END_VAR
+
+   VAR_TEMP 
+      tempReference : LReal;
+      tempPTerm : LReal;
+   END_VAR
+
+
+BEGIN
+	IF NOT #Enable THEN                                    // Enable := FALSE 상태 시 초기값으로 출력
+	    #statIntegSum := 0;                                // 누적오차 초기화
+	    #OutputRef := 0.0;                                 // 각도 보정량 초기화
+	    #Output := 0.0;                                    // 최종 출력값 초기화
+	    RETURN;
+	END_IF;
+	
+	IF #InvertOption THEN                                  //보정 방향에 대한 옵션
+	    #tempReference := #Input - #SetPoint;              // True 시 각도 보정량 : 현재 각도 - 목표 각도
+	ELSE
+	    #tempReference := #SetPoint - #Input;              // False 시 각도 보정량 : 설정 각도 - 현재 각도
+	END_IF;
+	#OutputRef := #tempReference;                          // 각도 보정량 출력
+	#tempPTerm := #tempReference * #Kp;                    // Kp값 증가 시 목표속도를 빠르게 추종함
+	
+	#statIntegSum := #statIntegSum + #tempReference * #Ki; // 누적오차를 계속 더하여 정속도 보정
+	
+	#Output := #tempPTerm + #statIntegSum;
+END_FUNCTION_BLOCK
+

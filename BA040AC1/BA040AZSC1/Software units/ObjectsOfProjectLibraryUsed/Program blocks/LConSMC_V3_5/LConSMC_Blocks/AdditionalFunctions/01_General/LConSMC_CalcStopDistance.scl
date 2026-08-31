@@ -1,0 +1,241 @@
+﻿FUNCTION "LConSMC_CalcStopDistance" : Void
+{ S7_Optimized_Access := 'TRUE' ; Published := 'TRUE' }
+VERSION : 0.1
+//This function calculates the distance remaining for braking and associated time to 
+//ramp down to zero the Unwinder as per the ramp down time, depending upon the 
+//given speed and acceleration.  Function block ID: 0005
+   VAR_INPUT 
+      velocity : LReal;   // [m/min] / [ft/min] Actual velocity
+      acceleration : LReal;   // [m/s^2] / [ft/s^2] Actual Acceleration/deceleration
+      maxVelocity : LReal;   // [m/min] / [ft/min] Reference velocity for ramp time
+      rampUpTime : LReal;   // [s] Ramp-up time 
+      rampDownTime : LReal;   // [s] Ramp-down time
+      roundingTime : LReal;   // [s] Rounding time 
+   END_VAR
+
+   VAR_OUTPUT 
+      error : Bool;   // TRUE: An error occured
+      errorID : DWord;   // Detail error description
+      StopDistance : LReal;   // [m] / [ft] Distance to stop
+      StopTime : LReal;   // [s] Time to stop
+   END_VAR
+
+   VAR_TEMP 
+      tmpV0 : LReal;
+      tmpA0 : LReal;
+      tmpVm : LReal;
+      tmpDm : LReal;
+      tmpD : LReal;
+      tmpJ1 : LReal;
+      tmpJ2 : LReal;
+      tmpDt1 : LReal;
+      tmpDt2 : LReal;
+      tmpDt3 : LReal;
+      tmpDt4 : LReal;
+      tmpDv1 : LReal;
+      tmpDv2 : LReal;
+      tmpDv3 : LReal;
+      tmpDv4 : LReal;
+      tmpDx1 : LReal;
+      tmpDx2 : LReal;
+      tmpDx3 : LReal;
+      tmpDx4 : LReal;
+      tmpTempReal : LReal;
+   END_VAR
+
+   VAR CONSTANT 
+      NO_ERROR : DWord := 16#0000_0000;
+   END_VAR
+
+
+BEGIN
+	REGION BLOCK INFO HEADER
+	  //===============================================================================
+	  // SIEMENS AG / (c)Copyright 2023
+	  //-------------------------------------------------------------------------------
+	  // Title:            LConSMC_CalcStopDistance
+	  // Comment/Function: Calculate time and distance until axis stop with jerk limit
+	  // Library/Family:   LConSMC
+	  // Author:           APC Erlangen
+	  // Tested with:      FW 2.8
+	  // Engineering:      TIA Portal V16
+	  // Restrictions:     -
+	  // Requirements:     -
+	  //-------------------------------------------------------------------------------
+	  // Change log table:
+	  // Version  | Date       | Expert in charge       | Changes applied
+	  //----------|------------|------------------------|------------------------------
+	  // 01.02.00 | 2018-07-19 | APC Erlangen           | bugfix calc time to reduce acceleration with jerk limitation (*c_00009*)
+	  // 01.01.01 | 2016-11-17 | APC Erlangen           | adapted to styleguide
+	  // 01.01.00 | 2016-04-11 | APC Erlangen           | bugfix a < 0.0 (#TR 2016-04-11)
+	  // 01.00.00 | 2012-07-23 | APC Erlangen           | Creation
+	  //===============================================================================
+	END_REGION BLOCK INFO HEADER
+	
+	REGION DESCRIPTION
+	(/*
+	The function calculates the braking time and braking distance taking the actual motion vector of a drive (velocity, acceleration)
+	as well as the specification of dynamics (maxVelocity, rampUpTime, rampdownTime, roundingTime) into account.
+	The length unit of the calculation corresponds to the unit used as input for the lineSpeed input.
+	The units of the inputs must be consistent as described. 
+	With roundingTime = 0.0 the rounding (jerk limiting, smoothing) is deactivated.
+	*/)
+	END_REGION DESCRIPTION
+	
+	IF #maxVelocity = 0.0                                              // Nominal value, mandatory
+	    OR #rampDownTime = 0.0                                           // Ramp down time, mandatory
+	    OR (#roundingTime <> 0.0 AND #rampUpTime = 0.0)                  // Ramp up time, mandatory for smoothing
+	THEN
+	    #error := TRUE;
+	    #errorID := "LCON_ERROR_CALC_STOP_DISTANCE_INVALID_CONFIGURATION";
+	    #StopDistance := 0.0;
+	    #StopTime := 0.0;
+	    RETURN;
+	ELSE
+	    #error := FALSE;
+	    #errorID := #NO_ERROR;
+	END_IF;
+	
+	
+	IF #velocity = 0.0 THEN
+	    #StopDistance := 0.0;
+	    #StopTime := 0.0;
+	    RETURN;
+	ELSIF #velocity < 0.0 THEN                                          // INVERT [CONVERTING TO POSITIVE VALUE]
+	    #tmpV0 := - #velocity / 60.0;                                         // UNIT CONVRSION FROM [LU/min] --> [LU/sec]
+	    #tmpA0 := - #acceleration;
+	ELSE                                                                //for velocity >0.0
+	    #tmpV0 := #velocity / 60.0;                                          // UNIT CONVRSION FROM [LU/min] --> [LU/sec]
+	    #tmpA0 := #acceleration;
+	END_IF;
+	
+	
+	#tmpDm := - ABS(#maxVelocity / #rampDownTime / 60.0);                  // MAXIMAL DECELERATION [LU/s2] [< 0]
+	
+	IF #tmpA0 < #tmpDm THEN                                                   // If actual acceleration is beyond the maximal---> error
+	    #error := TRUE;
+	    #errorID := "LCON_ERROR_CALC_STOP_DISTANCE_INVALID_CONFIGURATION";
+	    #StopDistance := 0.0;
+	    #StopTime := 0.0;
+	    RETURN;
+	END_IF;
+	
+	
+	IF #roundingTime = 0.0 THEN                                                       // NO SMOOTHING
+	    #StopTime := - #tmpV0 / #tmpDm;
+	    #StopDistance := #tmpV0 * #StopTime / 2.0;
+	    RETURN;
+	ELSE                                                                             // WITH SMOOTHING
+	    #tmpJ1 := - ABS(#maxVelocity / #rampUpTime / #roundingTime / 60.0);          // Jerk at acceleration, LU/s3 [< 0]
+	    #tmpJ2 := - ABS(#maxVelocity / #rampDownTime / #roundingTime / 60.0);        // Jerk at deceleration, LU/s3 [< 0]
+	    
+	    //CALCULATION OF dt1 AND dv1 FOR VARIOUS CONDITIONS   
+	    IF #tmpA0 > 0.0 THEN                                                         // Starting duing the ACCELERATION [start jerk]
+	        #tmpDt1 := - #tmpA0 / #tmpJ1;                                              // Time to reduce initial acceleration to zero [> 0]
+	        #tmpDv1 := #tmpA0 * #tmpDt1 + #tmpJ1 * #tmpDt1 * #tmpDt1 / 2.0;            // Velocity change while reducing initial acceleration to zero [> 0] (*c_00009*)
+	        #tmpVm := #tmpV0 + #tmpDv1;                                                // Maximum velocity during stopping
+	        #tmpTempReal := #tmpVm * #tmpJ2;
+	        IF (#tmpTempReal) > 0.0 THEN
+	            #error := TRUE;                                                     // ERROR if vm IS NEGATIVE
+	            #errorID := "LCON_ERROR_CALC_STOP_DISTANCE_INVALID_CONFIGURATION";
+	            #StopDistance := 0.0;
+	            #StopTime := 0.0;
+	            RETURN;
+	        ELSE
+	            #tmpD := - SQRT((- #tmpTempReal));                                          // Deceleration for velocity to reach from vm to zero, LU/s2 [< 0]        
+	        END_IF;
+	        
+	    ELSIF #tmpA0 = 0.0 THEN
+	        #tmpDt1 := 0.0;                                                           // No initial acceleration
+	        #tmpDv1 := 0.0;                                                           // No velocity increase
+	        #tmpVm := #tmpV0;                                                            // Maximum velocity during stopping
+	        #tmpTempReal := #tmpVm * #tmpJ2;
+	        IF (#tmpTempReal) > 0.0 THEN
+	            #error := TRUE;
+	            #errorID := "LCON_ERROR_CALC_STOP_DISTANCE_INVALID_CONFIGURATION";
+	            #StopDistance := 0.0;
+	            #StopTime := 0.0;
+	            RETURN;
+	        ELSE
+	            #tmpD := - SQRT((- #tmpTempReal));                                      // Deceleration reached from vm to zero, LU/s2 [< 0]
+	        END_IF;
+	        
+	    ELSE // [a0 < 0.0]
+	        #tmpDt1 := 0.0;                                                          // Initial acceleration ALREADY NEGATIVE
+	        #tmpDv1 := 0.0;                                                          // No velocity increase
+	        #tmpVm := #tmpV0;                                                           // Maximum velocity during stopping = initial velocity
+	        #tmpTempReal := #tmpA0 * #tmpA0 / 2.0 - #tmpVm * #tmpJ2;
+	        IF (#tmpTempReal) < 0.0 THEN
+	            #error := TRUE;
+	            #errorID := "LCON_ERROR_CALC_STOP_DISTANCE_INVALID_CONFIGURATION";
+	            #StopDistance := 0.0;
+	            #StopTime := 0.0;
+	            RETURN;
+	        ELSE
+	            #tmpD := - SQRT(#tmpTempReal);                                          // Deceleration reached from vm to zero, LU/s2 [< 0]
+	        END_IF;
+	    END_IF;
+	    
+	    IF #tmpD < #tmpDm THEN                                                       // Limit deceleration to dmax (not necessary reached)
+	        #tmpD := #tmpDm;
+	    END_IF;
+	    
+	    
+	    //CALCULATION OF dt2,dt4 AND dv2,dv4 FOR VARIOUS CONDITIONS  
+	    IF #tmpA0 < 0.0 THEN                                                      // Starting in the middle of the deceleration start jerK
+	        #tmpDt2 := (#tmpD - #tmpA0) / #tmpJ2;                                            //[>0]
+	        #tmpDt4 := #tmpD / #tmpJ2;                                                      //[>0]
+	        #tmpDv2 := #tmpDt2 * #tmpA0 + #tmpDt2 * #tmpDt2 * #tmpJ2 / 2.0;                        //[<0] Decrease in speed during dt2
+	    ELSE//a0=0.0 or a0>0.0                                                                  // Starting at the beginning of the deceleration start jerk
+	        #tmpDt2 := #tmpD / #tmpJ2;
+	        #tmpDt4 := #tmpDt2;
+	        #tmpDv2 := #tmpDt2 * #tmpDt2 * #tmpJ2 / 2.0;
+	    END_IF;
+	    #tmpDv4 := #tmpDt4 * #tmpD / 2.0;                                              // [<0]Speed [Decrease] change during end rounding dt4
+	    #tmpTempReal := #tmpVm + #tmpDv2 + #tmpDv4;
+	    
+	    
+	    //CALCULATION OF dt3 AND dv3
+	    IF (#tmpTempReal) > 0.0 THEN                                           // Check if constant deceleration necessary for velocity still non zero
+	        #tmpDv3 := - (#tmpTempReal);                                             //CHANGE IN SPEED REQUIRED TO ACHEIVE ZERO VELOCITY AT A RATE OF d
+	        #tmpDt3 := #tmpDv3 / #tmpD;
+	    ELSE
+	        #tmpDv3 := 0.0;
+	        #tmpDt3 := 0.0;
+	    END_IF;
+	    #StopTime := #tmpDt1 + #tmpDt2 + #tmpDt3 + #tmpDt4;                                       // Sum all times
+	    
+	    //CLACULATION OF STOPPING DISTANCE
+	    IF #tmpA0 > 0.0 THEN                                                                        // 1-2-3-4
+	        
+	        #tmpDx1 := #tmpDt1 * ((#tmpV0) + #tmpA0 * #tmpDt1 / 2.0 + #tmpDt1 * #tmpDt1 * #tmpJ1 / 6.0);             // v_start = v0;         a_start = a0;  j =  j1;  dt = t1
+	        #tmpDx2 := #tmpDt2 * ((#tmpV0 + #tmpDv1) + #tmpDt2 * #tmpDt2 * #tmpJ2 / 6.0);             // v_start = v0+dv1;     a_start = 0.0; j =  j2;  dt = t2
+	        #tmpDx3 := #tmpDt3 * ((#tmpV0 + #tmpDv1 + #tmpDv2) + #tmpD * #tmpDt3 / 2.0);                                       // v_start = v0+dv1+dv2; a_start = d;   j = 0.0;  dt = t3
+	        #tmpDx4 := #tmpDt4 * ((- #tmpDv4) + #tmpD * #tmpDt4 / 2.0 - #tmpDt4 * #tmpDt4 * #tmpJ2 / 6.0);            // v_start = -dv4;       a_start = d;   j = -j2;  dt = t4
+	        
+	        #StopDistance := #tmpDx1 + #tmpDx2 + #tmpDx3 + #tmpDx4;
+	        
+	    ELSIF #tmpA0 = 0.0 THEN                                                                    // 2-3-4
+	        
+	        #tmpDx1 := 0.0;                                                                                     //dt1=0.0
+	        #tmpDx2 := #tmpDt2 * ((#tmpV0) + #tmpDt2 * #tmpDt2 * #tmpJ2 / 6.0);            // v_start = v0;     a_start = 0.0; j =  j2;  dt = t2  dv1=0.0
+	        #tmpDx3 := #tmpDt3 * ((#tmpV0 + #tmpDv2) + #tmpD * #tmpDt3 / 2.0);                                       // v_start = v0+dv2; a_start = d;   j = 0.0;  dt = t3  dv1=0.0
+	        #tmpDx4 := #tmpDt4 * ((- #tmpDv4) + #tmpD * #tmpDt4 / 2.0 - #tmpDt4 * #tmpDt4 * #tmpJ2 / 6.0);            // v_start = -dv4    a_start = d;   j = -j2;  dt = t4
+	        
+	        #StopDistance := #tmpDx2 + #tmpDx3 + #tmpDx4;
+	    ELSE // a0 < 0.0                                                                     // 2'-3-4
+	        #tmpDx1 := 0.0;                                                                       // dt1=0.0
+	        #tmpDx2 := #tmpDt2 * ((#tmpV0) + #tmpA0 * #tmpDt2 / 2.0 + #tmpDt2 * #tmpDt2 * #tmpJ2 / 6.0);               // v_start = v0;     a_start = 0.0; j =  j2;  dt = t2       // #TR 2016-04-11 acceleration part (a0 * dt2 / 2.0) added
+	        #tmpDx3 := #tmpDt3 * ((#tmpV0 + #tmpDv2) + #tmpD * #tmpDt3 / 2.0);                                   // v_start = v0+dv2; a_start = a0;  j = 0.0;  dt = t3       // #TR 2016-04-11 a0 replaced by d
+	        #tmpDx4 := #tmpDt4 * ((- #tmpDv4) + #tmpD * #tmpDt4 / 2.0 - #tmpDt4 * #tmpDt4 * #tmpJ2 / 6.0);             // v_start = -dv4    a_start = d;   j = -j2;  dt = t4
+	        
+	        #StopDistance := #tmpDx2 + #tmpDx3 + #tmpDx4;
+	    END_IF;
+	END_IF;
+	
+	
+	
+	
+	
+END_FUNCTION
+

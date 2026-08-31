@@ -1,0 +1,488 @@
+﻿FUNCTION_BLOCK "LConSMC_EnableInterface"
+TITLE = Enable Template
+{ S7_Optimized_Access := 'TRUE' ; Published := 'TRUE' }
+AUTHOR : '(department/personInCharge/contact)'
+FAMILY : '(family)'
+//Template for an FB with Enable / Valid handling based on PLCopen standard "Function Blocks for Motion Control" V2.0
+   VAR_INPUT 
+      enable : Bool;   // TRUE: Enable functionality of FB
+      enableVelocityInterface { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;   // TRUE: Enable velocity setpoints  Changes in the "referenceVelocity" or the dynamics in "motionVector" are detected automatically
+      writeTorqueLimit { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;   // TRUE: Enable torque limits
+      writeAdditiveTorque { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;   // TRUE: Enable additive torque
+      positionControlled { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;   // TRUE: Enable moveVelocity position controlled  FALSE: Enable moveVelocity speed controlled
+      referenceVelocity { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;   // Reference velocity for input "override" = 100%
+      override { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;   // [%] Velocity override  override*referenceVelocity = setspeed (0-200%)
+   END_VAR
+
+   VAR_OUTPUT 
+      valid { ExternalWritable := 'False'} : Bool;   // TRUE: Valid set of output values available at the FB
+      busy { ExternalWritable := 'False'} : Bool;   // TRUE: FB is not finished and new output values can be expected
+      error { ExternalWritable := 'False'} : Bool;   // TRUE: An error occurred during the execution of the FB
+      status { ExternalWritable := 'False'} : DWord := #STATUS_NO_CALL;   // 16#0000 - 16#7FFF: Status of the FB, 16#8000 - 16#FFFF: Error identification
+      subfunctionState { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Word;   // ErrorIDs of motion control commands (Further diagnostic)
+      MCInterfaceActive { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;   // TRUE: A MC command is active (MoveVelocity or stop)
+      additiveTorqueActive { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;   // TRUE: Additive torque is active
+      torqueLimitActive { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;   // TRUE: Torque limitation is active
+   END_VAR
+
+   VAR_IN_OUT 
+      axis { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : DB_ANY;   // TO reference of axis
+      motionVector : "LConSMC_typeActualDynamics";   // Active motion vector
+      torqueValues : "LConSMC_typeTorqueValues";   // Active torque values
+   END_VAR
+
+   VAR 
+      statEnableOld { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;   // Old value of 'enable' input for edge detection
+      statValid { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;   // Static value for output 'valid'
+      statBusy { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;   // Static value for output 'busy'
+      statError { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;   // Static value for output 'error'
+      statErrorUserCleared { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;   // Error occurred that can only be solved by user; rising edge at enable input necessary
+      statErrorAutoCleared { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;   // Error occurred that can be acknowledged by FB
+      statAdditiveTorqueActive { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statDisablingCompleted { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;   // TRUE: Disabling has been completed
+      statTorqueLimitActive { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statMCInterfaceActive { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statEnableAdditiveTorque { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statEnableTorqueLimit { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statExecuteMoveVelocity { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statExecuteStop { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statInternalMoveExecute { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statRefTOValid { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statFirstStepCycle { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statDecelerationOld { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statAccelerationOld { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statJerkOld { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statReferenceVelocityOld { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statAxisInt { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : DB_ANY;
+      instStop {InstructionName := 'MC_HALT'; LibVersion := '9.0'; ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'; S7_SetPoint := 'False'} : MC_HALT;
+      instMoveVelocity {InstructionName := 'MC_MOVEVELOCITY'; LibVersion := '9.0'; ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'; S7_SetPoint := 'False'} : MC_MOVEVELOCITY;
+      instTorqueAdditive {InstructionName := 'MC_TORQUEADDITIVE'; LibVersion := '9.0'; ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'; S7_SetPoint := 'False'} : MC_TORQUEADDITIVE;
+      instTorqueRange {InstructionName := 'MC_TORQUERANGE'; LibVersion := '9.0'; ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'; S7_SetPoint := 'False'} : MC_TORQUERANGE;
+      instRTrigEnableInterface {InstructionName := 'R_TRIG'; LibVersion := '1.0'; ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : R_TRIG;
+      statSubfunctionState { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Word;
+      statStatus { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : DWord := #STATUS_NO_CALL;   // Static value for output 'status'
+      statFBState { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : DInt := #FB_STATE_NO_PROCESSING;   // State in the state machine of the FB
+      statFBStateOld { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : DInt;
+   END_VAR
+
+   VAR_TEMP 
+      tempEnable : Bool;   // Temporary value for input 'enable'
+      tempRefSpeedAxis {InstructionName := 'TO_SpeedAxis'; LibVersion := '9.0'} : REF_TO TO_SpeedAxis;
+   END_VAR
+
+   VAR CONSTANT 
+      FB_STATE_NO_PROCESSING : DInt := 0;   // FB state: No processing
+      FB_STATE_ENABLING : DInt := 10;   // FB state: Enabling
+      FB_STATE_PROCESSING : DInt := 50;   // FB state: Processing
+      FB_STATE_ERROR : DInt := 60;   // FB state: Error
+      FB_STATE_DISABLING : DInt := 90;   // FB state: Disabling
+      STATUS_NO_CALL : Word := 16#7000;   // No job being currently processed
+      STATUS_FIRST_CALL : Word := 16#7001;   // First call after incoming new job (rising edge 'enable')
+      STATUS_SUBSEQUENT_CALL : Word := 16#7002;   // Subsequent call during active processing without further details
+   END_VAR
+
+
+BEGIN
+	REGION BLOCK INFO HEADER
+	  //===============================================================================
+	  // SIEMENS AG / (c)Copyright 2024
+	  //-------------------------------------------------------------------------------
+	  // Title:            LConSMC_EnableInterface
+	  // Comment/Function: Enable motion and torque interface
+	  // Library/Family:   LConSMC
+	  // Author:           APC Erlangen
+	  // Tested with:      FW 3.0
+	  // Engineering:      TIA Portal V18
+	  // Restrictions:     -
+	  // Requirements:     FW 3.0 with MC V7.0 or higher
+	  //-------------------------------------------------------------------------------
+	  // Change log table:
+	  // Version  | Date       | Expert in charge       | Changes applied
+	  //----------|------------|------------------------|------------------------------
+	  // 03.00.00 | 2024-03-13 | APC Erlangen           | Runtime optimizations using TO references with MC V7.0
+	  //                                                  Redesign of FB according to PLCopen
+	  //                                                  New output *valid*
+	  //                                                  Renamed output *errorID* to *status*
+	  //                                                  Bugfixes: Velocity interface was not triggered correct at first start
+	  //                                                  Bugfixes: Reset velocity override to 100% if function block is disabled and axis is stopped
+	  // 02.00.01 | 2022-05-19 | APC Erlangen           | Bugfix resetting internal variables with rising edge of "enable" (*c_00045*)
+	  // 02.00.00 | 2022-03-25 | APC Erlangen           | Renamed input "executeMoveVelocity" to "enableVelocityInterface" (Same behaviour as before)
+	  // 01.00.04 | 2021-06-22 | APC Erlangen           | Bugfix setting the override to a value bigger 100% (*c_00037*)
+	  // 01.00.03 | 2021-01-27 | APC Erlangen           | Removed warning "Parameter might not be initialized"
+	  // 01.00.02 | 2020-08-31 | APC Erlangen           | Bugfix: Parametrizable deceleration possible via new datatype for motionVector (*c_00029*)
+	  //                                                  Rename: moveVelocityActive -> MCInterfaceActive. MCInterfaceActive is TRUE if MC_MoveVelocity OR MC_Halt ist active! (*c_00026*)
+	  //                                                  New ErrorMessage/Tag if MC_Halt has an error. (*c_00030*)
+	  //                                                  Bugfix: Cycledelay between calculated and executed motion profile has been removed(*c_00028*)
+	  // 01.00.01 | 2020-01-21 | APC Erlangen           | Bugfix: moveVelocity and stop will be resetted with enable (*c_00022*)
+	  // 01.00.00 | 2019-10-23 | APC Erlangen           | Creation
+	  //===============================================================================
+	  //
+	END_REGION BLOCK INFO HEADER
+	
+	REGION DESCRIPTION
+	(/*
+	This function block can be used to forward/manipulate speed setpoints, torque setpoints and torque limits to the drive.
+	All three setpoint channels (Velocity, torque limit and additive torque) can be individually activated and deactivated.
+	
+	Via the input *override* the velocity setpoint can be scaled: Effective setpoint = referenceVelocity * override/100.0
+	
+	NOTE
+	:    To use the torque precontrol/ limitation functions an additional telegram 750 must be used.
+	:    Configuration technology object -> Hardware interface -> Data exchange with the drive -> Additional data
+	
+	---
+	
+	*/)
+	END_REGION
+	
+	#tempEnable := #enable; // Work with temporary value / create process image
+	
+	REGION ENABLING/DISABLING
+	  IF (#tempEnable = TRUE) AND (#statStatus = #STATUS_NO_CALL) THEN // Enable FB
+	    // First call; initialize FB
+	    #statValid := TRUE;
+	    #statBusy := TRUE;
+	    #statError := FALSE;
+	    #statStatus := #STATUS_FIRST_CALL;
+	    #statErrorUserCleared := FALSE;
+	    #statErrorAutoCleared := FALSE;
+	    #statDisablingCompleted := FALSE;
+	    // State machine - start functionality
+	    #statFBState := #FB_STATE_ENABLING;
+	    #statFBStateOld := #FB_STATE_NO_PROCESSING;
+	    #statFirstStepCycle := TRUE;
+	    // TODO: Initialize functionality: reset of variables, diagnostics, etc.
+	    #statSubfunctionState := 16#0000;
+	    #statAdditiveTorqueActive := FALSE;
+	    #statTorqueLimitActive := FALSE;
+	    #statMCInterfaceActive := FALSE;
+	    #statRefTOValid := FALSE;
+	    #statExecuteMoveVelocity := False;
+	    #statEnableAdditiveTorque := FALSE;
+	    #statEnableTorqueLimit := FALSE;
+	    #statExecuteStop := FALSE;
+	    #statReferenceVelocityOld := 0.0;
+	    #statAxisInt := #axis;
+	    (*c_00045*)
+	    #statAccelerationOld := 0.0;
+	    #statDecelerationOld := 0.0;
+	    #statJerkOld := 0.0;
+	    // TODO: Initialize functionality: call subsidiary FBs with FALSE
+	    
+	  ELSIF (#tempEnable = FALSE) AND (#statEnableOld = TRUE) THEN // Disable FB 
+	    #statFBState := #FB_STATE_DISABLING;
+	    
+	  ELSIF (#statStatus = #STATUS_FIRST_CALL) THEN // Set status identifier of subsequent call
+	    #statStatus := #STATUS_SUBSEQUENT_CALL;
+	  END_IF;
+	  
+	  // Edge detection 'enable' input
+	  #statEnableOld := #tempEnable;
+	END_REGION ENABLING/DISABLING
+	
+	IF (#statStatus = #STATUS_NO_CALL) THEN // Nothing to do -> End here to reduce "system load"
+	  RETURN;
+	END_IF;
+	
+	REGION STATE MACHINE
+	  
+	  #tempRefSpeedAxis ?= #statAxisInt; // Try to assign DBAny to TO_SpeedAxis
+	  IF (#tempRefSpeedAxis = NULL) THEN
+	    // Invalid axis/DBAny
+	    #statErrorUserCleared := TRUE;
+	    #statRefTOValid := FALSE;
+	    #statStatus := "LCON_ERROR_ENABLE_INTERFACE_INVALID_AXIS";
+	    IF NOT (#statFBState = #FB_STATE_DISABLING) THEN
+	      #statFBState := #FB_STATE_NO_PROCESSING;
+	    END_IF;
+	  ELSE
+	    #statRefTOValid := TRUE;
+	  END_IF;
+	  
+	  IF #statFBState <> #statFBStateOld THEN
+	    #statFirstStepCycle := TRUE;
+	  END_IF;
+	  
+	  CASE #statFBState OF // State machine of FB
+	    #FB_STATE_NO_PROCESSING:
+	      REGION No Processing
+	        // No processing active (Note: this state must always be present and left empty)
+	        ;
+	      END_REGION No Processing
+	      
+	    #FB_STATE_ENABLING: // Enabling active
+	      REGION enabling
+	        // TODO: Use this state for application specific code, e.g. set preconditions of further processing (establish connections, etc.)
+	        // Call subsidiary FB or functionality
+	        // #instFB(execute := TRUE);
+	        // IF (#instFB.done = TRUE) THEN // Subsidiary FB finished successfully
+	        //   // Continue processing with next state e.g. #statFBState := FB_STATE_PROCESSING;
+	        
+	        // ELSIF (#instFB.error = TRUE) THEN // Error occurred in subsidiary FB
+	        //   // If the error occurred needs separate handling (e.g. close connection)
+	        //   // please set the error output only when this error handling completed successfully
+	        //   #statStatus := #ERR_XYZ; // Set correct status that identifies error clearly
+	        //   #statErrorAutoCleared OR #statErrorUserCleared // Set error type
+	        //   // TODO: Error handling
+	        // END_IF;
+	        IF #statFirstStepCycle THEN
+	          
+	          #statFirstStepCycle := FALSE;
+	        END_IF;
+	        // Assignment successful --> DBAny is at least a Speed axis
+	        // Reset additive torque command
+	        #instTorqueAdditive(Axis   := #tempRefSpeedAxis^,
+	                            Enable := FALSE);
+	        // Reset torque range command    
+	        #instTorqueRange(Axis   := #tempRefSpeedAxis^,
+	                         Enable := FALSE);
+	        //Reset moving commands (*c_00022*)
+	        #instStop(Axis    := #tempRefSpeedAxis^,
+	                  Execute := FALSE);
+	        #instMoveVelocity(Axis    := #tempRefSpeedAxis^,
+	                          Execute := FALSE);
+	        
+	        #statFBState := #FB_STATE_PROCESSING;
+	        // TODO: Set #statErrorAutoCleared := FALSE if autocleared is acknowledged
+	        
+	      END_REGION enabling
+	      
+	    #FB_STATE_PROCESSING: // Processing active
+	      REGION Processing
+	        IF #statFirstStepCycle THEN
+	          
+	          #statFirstStepCycle := FALSE;
+	        END_IF;
+	        //Enable/Disable TorqueCommands   
+	        #statEnableAdditiveTorque := #writeAdditiveTorque;
+	        #statEnableTorqueLimit := #writeTorqueLimit;
+	        #instRTrigEnableInterface(CLK := #enableVelocityInterface);
+	        //If overrideVelocity OR the dynamics will change, a new MoveVelocity Execute has to be set in same cycle
+	        IF (#enableVelocityInterface AND
+	          (#statReferenceVelocityOld <> #referenceVelocity
+	          OR #statAccelerationOld <> #motionVector.a
+	          OR #statJerkOld <> #motionVector.j
+	          OR #statDecelerationOld <> #motionVector.d))
+	          OR #instRTrigEnableInterface.Q
+	        THEN(*c_00029*)
+	          #statExecuteMoveVelocity := TRUE;
+	        END_IF;
+	        #statReferenceVelocityOld := #referenceVelocity;
+	        #statAccelerationOld := #motionVector.a;
+	        #statDecelerationOld := #motionVector.d;
+	        #statJerkOld := #motionVector.j;
+	        
+	        #tempRefSpeedAxis^.Override.Velocity := LIMIT(MN := 0.0, IN := #override, MX := 200.0);(*c_00037*)
+	        
+	      END_REGION Processing
+	      
+	    #FB_STATE_ERROR:  // Error state
+	      REGION Error
+	        IF #statFirstStepCycle THEN
+	          // Disable MoveVelocity
+	          #statExecuteMoveVelocity := FALSE;
+	          //Stop axis if enabled and speed setpoint is active
+	          IF #statRefTOValid THEN
+	            #statExecuteStop := #tempRefSpeedAxis^.StatusWord.%X0 AND (#instMoveVelocity.Busy);
+	          ELSE
+	            #statExecuteStop := FALSE;
+	          END_IF;
+	          // Disable additive torque/ torque limits
+	          #statEnableAdditiveTorque := FALSE;
+	          
+	          #statFirstStepCycle := FALSE;
+	        END_IF;
+	        
+	        IF (#statExecuteStop
+	          AND (#instStop.Done OR #instStop.Error OR #instStop.CommandAborted))
+	          OR NOT #statExecuteStop
+	        THEN
+	          #tempRefSpeedAxis^.Override.Velocity := 100.0;
+	          #statEnableTorqueLimit := FALSE;
+	          #statBusy := FALSE;
+	          #statFBState := #FB_STATE_NO_PROCESSING;
+	        END_IF;
+	      END_REGION
+	      
+	    #FB_STATE_DISABLING: // Disabling active
+	      REGION Disabling
+	        IF #statFirstStepCycle THEN
+	          // Disable MoveVelocity
+	          #statExecuteMoveVelocity := FALSE;
+	          //Stop axis if enabled and speed setpoint is active
+	          IF #statRefTOValid THEN
+	            #statExecuteStop := #tempRefSpeedAxis^.StatusWord.%X0 AND (#instMoveVelocity.Busy);
+	            
+	          ELSE
+	            #statExecuteStop := FALSE;
+	          END_IF;
+	          // Disable additive torque/ torque limits
+	          #statEnableAdditiveTorque := FALSE;
+	          
+	          #statFirstStepCycle := FALSE;
+	        END_IF;
+	        
+	        // When disabling is complete the bit #statDisablingCompleted must be set
+	        IF (#statExecuteStop
+	          AND (#instStop.Done OR #instStop.Error OR #instStop.CommandAborted))
+	          OR NOT #statExecuteStop
+	        THEN
+	          IF #statRefTOValid THEN
+	            #tempRefSpeedAxis^.Override.Velocity := 100.0;
+	          END_IF;
+	          #statExecuteStop := FALSE;
+	          #statEnableTorqueLimit := FALSE;
+	          #statDisablingCompleted := TRUE;
+	        END_IF;
+	      END_REGION Disabling
+	      
+	    ELSE // Undefined state in state machine reached
+	      REGION Undefined state
+	        #statStatus := "LCON_ERROR_ENABLE_INTERFACE_INVALID_STATE";
+	        #statErrorUserCleared := TRUE;
+	      END_REGION Undefined state
+	  END_CASE;
+	  #statFBStateOld := #statFBState;
+	END_REGION STATE MACHINE
+	
+	REGION MC COMMANDS
+	  IF (#statRefTOValid) THEN
+	    #instStop(Axis              := #tempRefSpeedAxis^,
+	              Execute           := #statExecuteStop,
+	              AbortAcceleration := TRUE,
+	              Deceleration      := #motionVector.d,(*c_00029*)
+	              Jerk              := #motionVector.j);
+	    
+	    #instMoveVelocity(Axis               := #tempRefSpeedAxis^,
+	                      Execute            := #statExecuteMoveVelocity AND NOT #instStop.Busy,//set only one time
+	                      Velocity           := #referenceVelocity,
+	                      Acceleration       := #motionVector.a,
+	                      Deceleration       := #motionVector.d,(*c_00029*)
+	                      Jerk               := #motionVector.j,
+	                      PositionControlled := #positionControlled);
+	    #statInternalMoveExecute := #instMoveVelocity.Execute;
+	    #statExecuteMoveVelocity := FALSE;
+	    
+	    #instTorqueAdditive(Axis   := #tempRefSpeedAxis^,
+	                        Enable := #statEnableAdditiveTorque,
+	                        Value  := #torqueValues.additiveTorque);
+	    
+	    #instTorqueRange(Axis       := #tempRefSpeedAxis^,
+	                     Enable     := #statEnableTorqueLimit,
+	                     UpperLimit := #torqueValues.upperTorqueLimit,
+	                     LowerLimit := #torqueValues.lowerTorqueLimit);
+	    
+	    #statMCInterfaceActive := #instMoveVelocity.Busy OR #instStop.Busy;
+	    #statAdditiveTorqueActive := #instTorqueAdditive.Busy;
+	    #statTorqueLimitActive := #instTorqueRange.Busy;
+	    
+	    // Error detection of MC commands
+	    IF #instMoveVelocity.Error THEN
+	      #statFBState := #FB_STATE_ERROR;
+	      #statStatus := "LCON_ERROR_ENABLE_INTERFACE_MOVE_VELOCITY";
+	      #statSubfunctionState := #instMoveVelocity.ErrorId;
+	      #statErrorUserCleared := TRUE;
+	    ELSIF #instMoveVelocity.CommandAborted
+	      AND NOT #instMoveVelocity.Execute
+	      AND NOT #instStop.Execute
+	    THEN
+	      // Move command has been aborted external
+	      #statFBState := #FB_STATE_ERROR;
+	      #statStatus := "LCON_ERROR_ENABLE_INTERFACE_MOVE_ABORTED";
+	      #statErrorUserCleared := TRUE;
+	    ELSIF #instStop.Error THEN
+	      #statErrorUserCleared := TRUE;
+	      #statStatus := "LCON_ERROR_ENABLE_INTERFACE_MOVE_VELOCITY";
+	      #statSubfunctionState := #instStop.ErrorId;
+	    ELSIF #instTorqueAdditive.Error THEN
+	      #statErrorUserCleared := TRUE;
+	      #statFBState := #FB_STATE_ERROR;
+	      #statStatus := "LCON_ERROR_ENABLE_INTERFACE_ADDITIVE_TORQUE";
+	      #statSubfunctionState := #instTorqueAdditive.ErrorId;
+	    ELSIF #instTorqueRange.Error THEN
+	      #statErrorUserCleared := TRUE;
+	      #statFBState := #FB_STATE_ERROR;
+	      #statStatus := "LCON_ERROR_ENABLE_INTERFACE_TORQUE_RANGE";
+	      #statSubfunctionState := #instTorqueRange.ErrorId;
+	    END_IF;
+	    
+	    (*c_00028*) //execute has to be set to false in SAME cycle. But after error status check.
+	    //If this execute would not be set to zero in same cycle and if there are two executes following after two cycles,
+	    //the second execute would be not considerd.
+	    #statExecuteMoveVelocity := FALSE;
+	    #instMoveVelocity(Axis    := #tempRefSpeedAxis^,
+	                      Execute := FALSE);
+	    
+	  ELSE
+	    #statMCInterfaceActive := FALSE;
+	    #statAdditiveTorqueActive := FALSE;
+	    #statTorqueLimitActive := FALSE;
+	  END_IF;
+	END_REGION
+	
+	REGION OUTPUTS
+	  // Write outputs
+	  IF (#statDisablingCompleted = TRUE) THEN
+	    REGION Disabling
+	      // Reset outputs if disabling completed
+	      #statValid := FALSE;
+	      #statBusy := FALSE;
+	      #statError := FALSE;
+	      #statErrorUserCleared := FALSE;
+	      #statErrorAutoCleared := FALSE;
+	      #statStatus := #STATUS_NO_CALL;
+	      // TODO: Reset application specific outputs
+	      #statSubfunctionState := 16#0000;
+	    END_REGION Disabling
+	    
+	  ELSIF (#statErrorUserCleared = TRUE) AND (#statError = FALSE) THEN
+	    REGION Error user cleared
+	      // Error can only be cleared by user; rising edge at enable input is needed to continue 
+	      #statValid := FALSE;
+	      #statError := TRUE;
+	      // execution aborted --> set state no processing
+	      IF NOT (#statFBState = #FB_STATE_ERROR) THEN
+	        #statFBState := #FB_STATE_NO_PROCESSING;
+	        #statBusy := FALSE;
+	      END_IF;
+	    END_REGION Error user cleared
+	    
+	  ELSIF (#statErrorAutoCleared = TRUE) AND (#statError = FALSE) THEN
+	    REGION Error auto cleared
+	      // Error can be reset by FB automatically  
+	      #statValid := FALSE;
+	      #statBusy := TRUE;
+	      #statError := TRUE;
+	      // TODO: Handling of autocleared error
+	      
+	    END_REGION Error auto cleared
+	    
+	  ELSIF (#statErrorAutoCleared = FALSE) AND (#statErrorUserCleared = FALSE) AND (#statError = TRUE) THEN
+	    REGION After user/auto cleared
+	      // If autocleared error is acknowledged
+	      #statValid := TRUE;
+	      #statBusy := TRUE;
+	      #statError := FALSE;
+	      // TODO: remove this line if more detailed status information is used instead of "#STATUS_SUBSEQUENT_CALL"
+	      #statStatus := #STATUS_SUBSEQUENT_CALL;
+	    END_REGION After user/auto cleared
+	  END_IF;
+	  
+	  REGION Write static values to outputs
+	    // Write static values to outputs
+	    #valid := #statValid;
+	    #busy := #statBusy;
+	    #error := #statError;
+	    #status := #statStatus;
+	    // if ENO mechanism is not used / not wanted replace the following line by --> ENO := TRUE;
+	    ENO := NOT #statError;
+	    // TODO: Write application specific static values to outputs
+	    #subfunctionState := #statSubfunctionState;
+	    #MCInterfaceActive := #statMCInterfaceActive;
+	    #additiveTorqueActive := #statAdditiveTorqueActive;
+	    #torqueLimitActive := #statTorqueLimitActive;
+	  END_REGION Write static values to outputs
+	END_REGION OUTPUTS
+	
+END_FUNCTION_BLOCK
+

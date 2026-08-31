@@ -1,0 +1,42 @@
+﻿FUNCTION "LER_Calculate_StackTable" : Void
+{ S7_Optimized_Access := 'TRUE' ; Published := 'TRUE' }
+VERSION : 0.1
+   VAR_INPUT 
+      calculate : Bool;
+      currentAnodeELNumber : DInt;   // EL = Electrode
+      currentCathodeELNumber : DInt;   // EL = Electrode
+      currentTotalELNumber : DInt;   // EL = Electrode
+      oneAnodeThickness : LReal;
+      oneCathodeThickness : LReal;
+      oneSepaThickness : LReal;
+   END_VAR
+
+   VAR_OUTPUT 
+      calPosition : LReal;
+   END_VAR
+
+   VAR_TEMP 
+      totalAnodeELThickness : LReal;
+      totalCathodeELThickness : LReal;
+      totalSepaThickness : LReal;
+   END_VAR
+
+
+BEGIN
+	REGION _name_
+	    
+	    #totalAnodeELThickness := DINT_TO_LREAL(IN := #currentAnodeELNumber) * #oneAnodeThickness;
+	    #totalCathodeELThickness := DINT_TO_LREAL(IN := #currentCathodeELNumber) * #oneCathodeThickness;
+	    
+	    IF #currentTotalELNumber > 0 THEN
+	        #totalSepaThickness := (DINT_TO_LREAL(IN := #currentTotalELNumber) - 1) * #oneSepaThickness;
+	    ELSE
+	        #totalSepaThickness := DINT_TO_LREAL(IN := #currentTotalELNumber);
+	    END_IF;
+	    
+	    #calPosition := #totalAnodeELThickness + #totalCathodeELThickness + #totalSepaThickness;
+	        
+	END_REGION
+	
+END_FUNCTION
+

@@ -1,0 +1,561 @@
+﻿FUNCTION_BLOCK "2305_CalculateCam_Compensator"
+{ S7_Optimized_Access := 'TRUE' ; Published := 'FALSE' }
+VERSION : 0.1
+   VAR_INPUT 
+      execute : Bool;
+      cpm : LReal;
+      distance : LReal;
+      offset : LReal;
+      width : LReal;
+      height : LReal;
+      gap : LReal;
+      lineSpeed : LReal;
+      ratioOption : Bool;
+      startRatio : LReal;
+      endRatio : LReal;
+      timeOption : Bool;
+      startTime : LReal;
+      endTime : LReal;
+      accRatio { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LInt := 2;
+   END_VAR
+
+   VAR_OUTPUT 
+      done : Bool;
+      busy : Bool;
+      error : Bool;
+      errorID : Word;
+   END_VAR
+
+   VAR_IN_OUT 
+      cam : DB_ANY;
+      EmptyPoint {InstructionName := 'TO_Cam_Struct_PointData'; LibVersion := '9.0'} : Array[1..10000] of TO_Cam_Struct_PointData;
+      EmptySegment {InstructionName := 'TO_Cam_Struct_SegmentData'; LibVersion := '9.0'} : Array[1..50] of TO_Cam_Struct_SegmentData;
+   END_VAR
+
+   VAR 
+      instMCInterpolateCam {InstructionName := 'MC_INTERPOLATECAM'; LibVersion := '9.0'; S7_SetPoint := 'False'} : MC_INTERPOLATECAM;
+      instMCCopyCamData {InstructionName := 'MC_COPYCAMDATA'; LibVersion := '9.0'} : MC_COPYCAMDATA;
+      statBusy : Bool;
+      statDone : Bool;
+      statCalculateCamState { S7_SetPoint := 'True'} : DInt;
+      statTimeTable : Array[1..50] of Time;
+      statStartTime : Time;
+      statEndTime : Time;
+      CalCulateTrigger {InstructionName := 'R_TRIG'; LibVersion := '1.0'; S7_SetPoint := 'False'} : R_TRIG;
+   END_VAR
+
+   VAR_TEMP 
+      tempCam {InstructionName := 'TO_Cam_10k'; LibVersion := '9.0'} : REF_TO TO_Cam_10k;
+      tempFCount : DInt;
+      tempFullTime : LReal;
+      tempCycleTime : LReal;
+      tempStartTime : LReal;
+      tempRestTime : LReal;
+      tempTime : Array[1..50] of LReal;
+      tempPos : Array[1..50] of LReal;
+      tempVel : Array[1..50] of LReal;
+      tempAcc : Array[1..50] of LReal;
+      tempJerk : Array[1..50] of LReal;
+      tempX : Array[1..50] of LReal;
+      tempCalAcc : Array[1..50] of LReal;
+      tempCalVel : Array[1..50] of LReal;
+      tempCalPos : Array[1..50] of LReal;
+      tempA3 : Array[1..50] of LReal;
+      tempA2 : Array[1..50] of LReal;
+      tempA1 : Array[1..50] of LReal;
+      tempA0 : Array[1..50] of LReal;
+      tempCalOriginL1 : LReal;
+      tempCalOriginL2 : LReal;
+      tempCalL1 : LReal;
+      tempCalL2 : LReal;
+      tempCalDistances : LReal;
+      tempDeltaX : LReal;
+      tempDeltaT : LReal;
+      tempRealX : LReal;
+      tempDeltaRealX : LReal;
+      tempOriginDistance : LReal;
+      tempDprime : LReal;
+      tempAlpha : LReal;
+      tempOriginL1 : LReal;
+      tempOriginL2 : LReal;
+      tempL1 : LReal;
+      tempL2 : LReal;
+      tempAfterVel : LReal;
+      tempAfterAcc : LReal;
+      tempAfterJerk : LReal;
+      tempCalAfterVel : LReal;
+      tempCalAfterAcc : LReal;
+      tempCalAfterJerk : LReal;
+      tempCalAfterPos : LReal;
+      tempCalAfterTime : LReal;
+      tempCalAfterRealTime : LReal;
+   END_VAR
+
+   VAR CONSTANT 
+      PI : LReal := 3.14159265358979;
+      CC_IDLE : DInt;
+      CC_INITIALIZE1 : DInt := 1;
+      CC_INITIALIZE2 : DInt := 2;
+      CC_INITIALIZE3 : DInt := 3;
+      CC_CALCULATE : DInt := 4;
+      CC_INTERPOLATE : DInt := 5;
+      CC_DONE : DInt := 6;
+      CC_ERROR : DInt := 99;
+   END_VAR
+
+
+BEGIN
+	REGION Mapping Cam
+	    #tempCam ?= #cam;
+	END_REGION
+	
+	REGION Error Check
+	    REGION MC_INTERPOLATE
+	        IF #instMCInterpolateCam.Error
+	        THEN
+	            #statCalculateCamState := #CC_ERROR;
+	            #errorID := #instMCInterpolateCam.ErrorId;
+	        END_IF;
+	    END_REGION
+	    
+	    REGION ACC RATIO
+	        IF #accRatio < 2
+	        THEN
+	            #statCalculateCamState := #CC_ERROR;
+	            #errorID := 16#1000;
+	        END_IF;
+	    END_REGION
+	    
+	    REGION BIT PARAMETER
+	        IF NOT #ratioOption AND NOT #timeOption THEN
+	            #statCalculateCamState := #CC_ERROR;
+	            #errorID := 16#1001;
+	        END_IF;
+	    END_REGION
+	    
+	    REGION RATIO PARAMETER CHECK
+	        IF #ratioOption THEN
+	            IF #startRatio < 0.0
+	                OR #startRatio > 50.0
+	                OR #endRatio > 100.0
+	                OR #endRatio < 0.0
+	                OR #endRatio - #startRatio <= 50.0
+	            THEN
+	                #statCalculateCamState := #CC_ERROR;
+	                #errorID := 16#1002;
+	            END_IF;
+	        END_IF;
+	    END_REGION
+	    
+	    REGION TIME PARAMETER CHECK
+	        IF #timeOption THEN
+	            #tempFullTime := 60000.0 / #cpm;
+	            IF #startTime < 0.0
+	                OR #startTime > #tempFullTime / 2.0
+	                OR #endTime > #tempFullTime
+	                OR #endTime < 0.0
+	                OR #endTime - #startTime <= #tempFullTime / 2.0
+	            THEN
+	                #statCalculateCamState := #CC_ERROR;
+	                #errorID := 16#1003;
+	            END_IF;
+	        END_IF;
+	    END_REGION
+	    
+	    REGION BASIC PARAMETER CHECK
+	        IF #cpm <= 0.0
+	            OR #lineSpeed <= 0.0
+	            OR ABS_LREAL(#distance) = 0.0
+	        THEN
+	            #statCalculateCamState := #CC_ERROR;
+	            #errorID := 16#1004;
+	        END_IF;
+	    END_REGION
+	END_REGION
+	
+	REGION Execute
+	    IF NOT #execute
+	    THEN
+	        #statCalculateCamState := #CC_IDLE;
+	    END_IF;
+	    IF #statCalculateCamState <> #CC_ERROR
+	    THEN
+	        #CalCulateTrigger(CLK := #execute);
+	    END_IF;
+	    IF #CalCulateTrigger.Q THEN
+	        #instMCCopyCamData.NumberOfPoints := 10000;
+	        #instMCCopyCamData.NumberOfSegments := 50;
+	        #statStartTime := TIME_TCK();
+	        #statCalculateCamState := #CC_INITIALIZE1;
+	    END_IF;
+	END_REGION
+	
+	REGION State Machine
+	    CASE #statCalculateCamState OF
+	        #CC_IDLE:
+	            REGION READY
+	                ;
+	            END_REGION
+	        #CC_INITIALIZE1:
+	            REGION INITIALIZE1
+	                #tempFCount := 0;
+	                FOR #tempFCount := 1 TO 10000 DO
+	                    #tempCam^.Point[#tempFCount].x := 0.0;
+	                    #tempCam^.Point[#tempFCount].y := 0.0;
+	                    #tempCam^.ValidPoint[#tempFCount] := FALSE;
+	                END_FOR;
+	                
+	                #tempFCount := 0;
+	                FOR #tempFCount := 1 TO 50 DO
+	                    #tempCam^.Segment[#tempFCount].a0 := 0.0;
+	                    #tempCam^.Segment[#tempFCount].a1 := 0.0;
+	                    #tempCam^.Segment[#tempFCount].a2 := 0.0;
+	                    #tempCam^.Segment[#tempFCount].a3 := 0.0;
+	                    #tempCam^.Segment[#tempFCount].a4 := 0.0;
+	                    #tempCam^.Segment[#tempFCount].a5 := 0.0;
+	                    #tempCam^.Segment[#tempFCount].a6 := 0.0;
+	                    #tempCam^.Segment[#tempFCount].sineAmplitude := 0.0;
+	                    #tempCam^.Segment[#tempFCount].sinePeriod := 0.0;
+	                    #tempCam^.Segment[#tempFCount].sinePhase := 0.0;
+	                    #tempCam^.Segment[#tempFCount].xmax := 0.0;
+	                    #tempCam^.Segment[#tempFCount].xmin := 0.0;
+	                    #tempCam^.ValidSegment[#tempFCount] := FALSE;
+	                END_FOR;
+	                
+	                
+	                #statCalculateCamState := #CC_CALCULATE;
+	                
+	            END_REGION
+	        #CC_CALCULATE:
+	            REGION CALCULATE
+	                IF #ratioOption THEN
+	                    REGION RATIO
+	                        #tempStartTime := 60000.0 / #cpm * #startRatio / 100.0;
+	                        #tempCycleTime := 60000.0 / #cpm * (#endRatio - #startRatio) / 100.0;
+	                        #tempRestTime := 60000.0 / #cpm * (100.0 - #endRatio) / 100.0;
+	                    END_REGION
+	                ELSE
+	                    REGION TIME
+	                        IF #timeOption THEN
+	                            #tempStartTime := #startTime;
+	                            #tempCycleTime := #endTime - #startTime;
+	                            #tempRestTime := 60000.0 / #cpm - #endTime;
+	                        END_IF;
+	                    END_REGION
+	                END_IF;
+	                
+	                #tempDprime := #width * (#height - #gap) / #height;
+	                #tempAlpha := (#distance - #tempDprime) / 2.0;
+	                #tempCalOriginL1 := SQRT_LREAL((#tempDprime / 2.0 + #tempAlpha) * (#tempDprime / 2.0 + #tempAlpha) + (#height - #gap) * (#height - #gap));
+	                #tempCalOriginL2 := SQRT_LREAL(#gap * #gap + ((#width - #tempDprime) / 2.0 - #tempAlpha) * ((#width - #tempDprime) / 2.0 - #tempAlpha));
+	                #tempCalL1 := SQRT_LREAL((#tempDprime / 2.0 + #tempAlpha - #distance) * (#tempDprime / 2.0 + #tempAlpha - #distance) + (#height - #gap) * (#height - #gap));
+	                #tempCalL2 := SQRT_LREAL(#gap * #gap + ((#width - #tempDprime) / 2.0 - #tempAlpha + #distance) * ((#width - #tempDprime) / 2.0 - #tempAlpha + #distance));
+	                #tempCalDistances := #tempCalOriginL1 + #tempCalOriginL2 - #tempCalL1 - #tempCalL2;
+	                
+	                REGION DIVIDE
+	                    // Calculate Time
+	                    #tempTime[1] := 0.0;
+	                    #tempTime[2] := #lineSpeed * #tempStartTime / 1000.0;
+	                    #tempTime[3] := #lineSpeed * #tempCycleTime / 1000.0;
+	                    #tempTime[4] := #lineSpeed * #tempRestTime / 1000.0;
+	                    #tempTime[5] := 0.0;
+	                    
+	                    // Calculate Pos
+	                    #tempPos[1] := 0.0;
+	                    #tempPos[2] := 0.0;
+	                    #tempPos[3] := #distance;
+	                    #tempPos[4] := 0.0;
+	                    #tempPos[5] := 0.0;
+	                    
+	                    // Calculate New Vel
+	                    #tempVel[1] := 0.0;
+	                    #tempVel[2] := 0.0;
+	                    #tempVel[3] := 2.0 * #tempPos[3] / (#tempTime[3] * (2.0 - 2.0 / LINT_TO_LREAL(#accRatio)));
+	                    #tempVel[4] := 0.0;
+	                    #tempVel[5] := 0.0;
+	                    
+	                    // Calculate Acc
+	                    #tempAcc[1] := 0.0;
+	                    #tempAcc[2] := 0.0;
+	                    #tempAcc[3] := LINT_TO_LREAL(#accRatio) * 2.0 * #tempVel[3] / #tempTime[3];
+	                    #tempAcc[4] := 0.0;
+	                    #tempAcc[5] := 0.0;
+	                    
+	                    // Calculate Jerk
+	                    #tempJerk[1] := 0.0;
+	                    #tempJerk[2] := 0.0;
+	                    #tempJerk[3] := LINT_TO_LREAL(#accRatio) * 2.0 * #tempAcc[3] / #tempTime[3];
+	                    #tempJerk[4] := - LINT_TO_LREAL(#accRatio) * 2.0 * #tempAcc[3] / #tempTime[3];
+	                    #tempJerk[5] := 0.0;
+	                    #tempJerk[6] := - LINT_TO_LREAL(#accRatio) * 2.0 * #tempAcc[3] / #tempTime[3];
+	                    #tempJerk[7] := LINT_TO_LREAL(#accRatio) * 2.0 * #tempAcc[3] / #tempTime[3];
+	                    #tempJerk[8] := 0.0;
+	                    
+	                    // Calculate X
+	                    #tempX[1] := #tempTime[1];
+	                    #tempX[2] := #tempTime[2];
+	                    #tempX[3] := #tempTime[3] / (LINT_TO_LREAL(#accRatio) * 2.0);
+	                    #tempX[4] := #tempTime[3] / (LINT_TO_LREAL(#accRatio) * 2.0);
+	                    #tempX[5] := #tempTime[3] * (1.0 - 2.0 / LINT_TO_LREAL(#accRatio));
+	                    #tempX[6] := #tempTime[3] / (LINT_TO_LREAL(#accRatio) * 2.0);
+	                    #tempX[7] := #tempTime[3] / (LINT_TO_LREAL(#accRatio) * 2.0);
+	                    #tempX[8] := #tempTime[4];
+	                    
+	                    // ==============================================================================
+	                    // Segment [1]
+	                    // ==============================================================================                           
+	                    #tempCalAcc[1] := 0.0;
+	                    #tempCalVel[1] := 0.0;
+	                    #tempCalPos[1] := 0.0;
+	                    
+	                    // ==============================================================================
+	                    // Segment [2]
+	                    // ==============================================================================                           
+	                    #tempCalAcc[2] := #tempJerk[2 - 1] * #tempX[2 - 1] + #tempCalAcc[2 - 1];
+	                    #tempCalVel[2] := #tempJerk[2 - 1] * #tempX[2 - 1] * #tempX[2 - 1] / 2.0 + #tempCalAcc[2 - 1] * #tempX[2 - 1] + #tempCalVel[2 - 1];
+	                    #tempCalPos[2] := #tempJerk[2 - 1] * #tempX[2 - 1] * #tempX[2 - 1] * #tempX[2 - 1] / 6.0 + #tempCalAcc[2 - 1] * #tempX[2 - 1] * #tempX[2 - 1] / 2.0 + #tempCalVel[2 - 1] * #tempX[2 - 1] + #tempCalPos[2 - 1];
+	                    IF ABS_LREAL(#tempCalVel[2]) < 0.000000001 THEN
+	                        #tempCalVel[2] := 0.0;
+	                    END_IF;
+	                    IF ABS_LREAL(#tempCalPos[2]) < 0.000000001 THEN
+	                        #tempCalPos[2] := 0.0;
+	                    END_IF;
+	                    
+	                    // ==============================================================================
+	                    // Segment [3]
+	                    // ==============================================================================
+	                    #tempCalAcc[3] := #tempJerk[3 - 1] * #tempX[3 - 1] + #tempCalAcc[3 - 1];
+	                    #tempCalVel[3] := #tempJerk[3 - 1] * #tempX[3 - 1] * #tempX[3 - 1] / 2.0 + #tempCalAcc[3 - 1] * #tempX[3 - 1] + #tempCalVel[3 - 1];
+	                    #tempCalPos[3] := #tempJerk[3 - 1] * #tempX[3 - 1] * #tempX[3 - 1] * #tempX[3 - 1] / 6.0 + #tempCalAcc[3 - 1] * #tempX[3 - 1] * #tempX[3 - 1] / 2.0 + #tempCalVel[3 - 1] * #tempX[3 - 1] + #tempCalPos[3 - 1];
+	                    IF ABS_LREAL(#tempCalVel[3]) < 0.000000001 THEN
+	                        #tempCalVel[3] := 0.0;
+	                    END_IF;
+	                    IF ABS_LREAL(#tempCalPos[3]) < 0.000000001 THEN
+	                        #tempCalPos[3] := 0.0;
+	                    END_IF;
+	                    
+	                    // ==============================================================================
+	                    // Segment [4]
+	                    // ==============================================================================
+	                    #tempCalAcc[4] := #tempJerk[4 - 1] * #tempX[4 - 1] + #tempCalAcc[4 - 1];
+	                    #tempCalVel[4] := #tempJerk[4 - 1] * #tempX[4 - 1] * #tempX[4 - 1] / 2.0 + #tempCalAcc[4 - 1] * #tempX[4 - 1] + #tempCalVel[4 - 1];
+	                    #tempCalPos[4] := #tempJerk[4 - 1] * #tempX[4 - 1] * #tempX[4 - 1] * #tempX[4 - 1] / 6.0 + #tempCalAcc[4 - 1] * #tempX[4 - 1] * #tempX[4 - 1] / 2.0 + #tempCalVel[4 - 1] * #tempX[4 - 1] + #tempCalPos[4 - 1];
+	                    IF ABS_LREAL(#tempCalVel[4]) < 0.000000001 THEN
+	                        #tempCalVel[4] := 0.0;
+	                    END_IF;
+	                    IF ABS_LREAL(#tempCalPos[4]) < 0.000000001 THEN
+	                        #tempCalPos[4] := 0.0;
+	                    END_IF;
+	                    
+	                    // ==============================================================================
+	                    // Segment [5]
+	                    // ==============================================================================
+	                    #tempCalAcc[5] := #tempJerk[5 - 1] * #tempX[5 - 1] + #tempCalAcc[5 - 1];
+	                    #tempCalVel[5] := #tempJerk[5 - 1] * #tempX[5 - 1] * #tempX[5 - 1] / 2.0 + #tempCalAcc[5 - 1] * #tempX[5 - 1] + #tempCalVel[5 - 1];
+	                    #tempCalPos[5] := #tempJerk[5 - 1] * #tempX[5 - 1] * #tempX[5 - 1] * #tempX[5 - 1] / 6.0 + #tempCalAcc[5 - 1] * #tempX[5 - 1] * #tempX[5 - 1] / 2.0 + #tempCalVel[5 - 1] * #tempX[5 - 1] + #tempCalPos[5 - 1];
+	                    IF ABS_LREAL(#tempCalVel[5]) < 0.000000001 THEN
+	                        #tempCalVel[5] := 0.0;
+	                    END_IF;
+	                    IF ABS_LREAL(#tempCalPos[5]) < 0.000000001 THEN
+	                        #tempCalPos[5] := 0.0;
+	                    END_IF;
+	                    
+	                    // ==============================================================================
+	                    // Segment [6]
+	                    // ==============================================================================
+	                    #tempCalAcc[6] := #tempJerk[6 - 1] * #tempX[6 - 1] + #tempCalAcc[6 - 1];
+	                    #tempCalVel[6] := #tempJerk[6 - 1] * #tempX[6 - 1] * #tempX[6 - 1] / 2.0 + #tempCalAcc[6 - 1] * #tempX[6 - 1] + #tempCalVel[6 - 1];
+	                    #tempCalPos[6] := #tempJerk[6 - 1] * #tempX[6 - 1] * #tempX[6 - 1] * #tempX[6 - 1] / 6.0 + #tempCalAcc[6 - 1] * #tempX[6 - 1] * #tempX[6 - 1] / 2.0 + #tempCalVel[6 - 1] * #tempX[6 - 1] + #tempCalPos[6 - 1];
+	                    IF ABS_LREAL(#tempCalVel[6]) < 0.000000001 THEN
+	                        #tempCalVel[6] := 0.0;
+	                    END_IF;
+	                    IF ABS_LREAL(#tempCalPos[6]) < 0.000000001 THEN
+	                        #tempCalPos[6] := 0.0;
+	                    END_IF;
+	                    
+	                    // ==============================================================================
+	                    // Segment [7]
+	                    // ==============================================================================
+	                    #tempCalAcc[7] := #tempJerk[7 - 1] * #tempX[7 - 1] + #tempCalAcc[7 - 1];
+	                    #tempCalVel[7] := #tempJerk[7 - 1] * #tempX[7 - 1] * #tempX[7 - 1] / 2.0 + #tempCalAcc[7 - 1] * #tempX[7 - 1] + #tempCalVel[7 - 1];
+	                    #tempCalPos[7] := #tempJerk[7 - 1] * #tempX[7 - 1] * #tempX[7 - 1] * #tempX[7 - 1] / 6.0 + #tempCalAcc[7 - 1] * #tempX[7 - 1] * #tempX[7 - 1] / 2.0 + #tempCalVel[7 - 1] * #tempX[7 - 1] + #tempCalPos[7 - 1];
+	                    IF ABS_LREAL(#tempCalVel[7]) < 0.000000001 THEN
+	                        #tempCalVel[7] := 0.0;
+	                    END_IF;
+	                    IF ABS_LREAL(#tempCalPos[7]) < 0.000000001 THEN
+	                        #tempCalPos[7] := 0.0;
+	                    END_IF;
+	                    
+	                    // ==============================================================================
+	                    // Segment [8]
+	                    // ==============================================================================
+	                    #tempCalAcc[8] := #tempJerk[8 - 1] * #tempX[8 - 1] + #tempCalAcc[8 - 1];
+	                    #tempCalVel[8] := #tempJerk[8 - 1] * #tempX[8 - 1] * #tempX[8 - 1] / 2.0 + #tempCalAcc[8 - 1] * #tempX[8 - 1] + #tempCalVel[8 - 1];
+	                    #tempCalPos[8] := #tempJerk[8 - 1] * #tempX[8 - 1] * #tempX[8 - 1] * #tempX[8 - 1] / 6.0 + #tempCalAcc[8 - 1] * #tempX[8 - 1] * #tempX[8 - 1] / 2.0 + #tempCalVel[8 - 1] * #tempX[8 - 1] + #tempCalPos[8 - 1];
+	                    IF ABS_LREAL(#tempCalVel[8]) < 0.000000001 THEN
+	                        #tempCalVel[8] := 0.0;
+	                    END_IF;
+	                    IF ABS_LREAL(#tempCalPos[8]) < 0.000000001 THEN
+	                        #tempCalPos[8] := 0.0;
+	                    END_IF;
+	                    
+	                    
+	                    #tempDeltaT := (#tempCycleTime + #tempRestTime) / 1000.0 / 9999.0;
+	                    #tempDeltaX := #lineSpeed * #tempDeltaT;
+	                    #tempFCount := 0;
+	                    FOR #tempFCount := 1 TO 10000 DO
+	                        #tempCam^.Point[#tempFCount].x := #tempDeltaX * DINT_TO_LREAL(#tempFCount - 1);
+	                        #tempRealX := #tempCam^.Point[#tempFCount].x;
+	                        IF #tempRealX <= #tempX[2] AND #tempRealX >= 0.0 THEN
+	                            #tempDeltaRealX := #tempRealX;
+	                            #tempOriginDistance := #tempJerk[2] * #tempDeltaRealX * #tempDeltaRealX * #tempDeltaRealX / 6.0 + #tempCalAcc[2] * #tempDeltaRealX * #tempDeltaRealX / 2.0 + #tempCalVel[2] * #tempDeltaRealX + #tempCalPos[2];
+	                        END_IF;
+	                        
+	                        IF #tempRealX <= #tempX[2] + #tempX[3] AND #tempRealX >= #tempX[2] THEN
+	                            #tempDeltaRealX := #tempRealX - #tempX[2];
+	                            #tempOriginDistance := #tempJerk[3] * #tempDeltaRealX * #tempDeltaRealX * #tempDeltaRealX / 6.0 + #tempCalAcc[3] * #tempDeltaRealX * #tempDeltaRealX / 2.0 + #tempCalVel[3] * #tempDeltaRealX + #tempCalPos[3];
+	                        END_IF;
+	                        
+	                        IF #tempRealX <= #tempX[2] + #tempX[3] + #tempX[4] AND #tempRealX >= #tempX[2] + #tempX[3] THEN
+	                            #tempDeltaRealX := #tempRealX - #tempX[2] - #tempX[3];
+	                            #tempOriginDistance := #tempJerk[4] * #tempDeltaRealX * #tempDeltaRealX * #tempDeltaRealX / 6.0 + #tempCalAcc[4] * #tempDeltaRealX * #tempDeltaRealX / 2.0 + #tempCalVel[4] * #tempDeltaRealX + #tempCalPos[4];
+	                        END_IF;
+	                        
+	                        IF #tempRealX <= #tempX[2] + #tempX[3] + #tempX[4] + #tempX[5] AND #tempRealX >= #tempX[2] + #tempX[3] + #tempX[4] THEN
+	                            #tempDeltaRealX := #tempRealX - #tempX[2] - #tempX[3] - #tempX[4];
+	                            #tempOriginDistance := #tempJerk[5] * #tempDeltaRealX * #tempDeltaRealX * #tempDeltaRealX / 6.0 + #tempCalAcc[5] * #tempDeltaRealX * #tempDeltaRealX / 2.0 + #tempCalVel[5] * #tempDeltaRealX + #tempCalPos[5];
+	                        END_IF;
+	                        
+	                        IF #tempRealX >= #tempX[2] + #tempX[3] + #tempX[4] + #tempX[5] THEN
+	                            #tempDeltaRealX := #tempRealX - #tempX[2] - #tempX[3] - #tempX[4] - #tempX[5];
+	                            #tempOriginDistance := #tempJerk[6] * #tempDeltaRealX * #tempDeltaRealX * #tempDeltaRealX / 6.0 + #tempCalAcc[6] * #tempDeltaRealX * #tempDeltaRealX / 2.0 + #tempCalVel[6] * #tempDeltaRealX + #tempCalPos[6];
+	                        END_IF;
+	                        
+	                        IF #tempRealX >= #tempX[2] + #tempX[3] + #tempX[4] + #tempX[5] + #tempX[6] THEN
+	                            #tempDeltaRealX := #tempRealX - #tempX[2] - #tempX[3] - #tempX[4] - #tempX[5] - #tempX[6];
+	                            #tempOriginDistance := #tempJerk[7] * #tempDeltaRealX * #tempDeltaRealX * #tempDeltaRealX / 6.0 + #tempCalAcc[7] * #tempDeltaRealX * #tempDeltaRealX / 2.0 + #tempCalVel[7] * #tempDeltaRealX + #tempCalPos[7];
+	                        END_IF;
+	                        
+	                        IF #tempRealX >= #tempX[2] + #tempX[3] + #tempX[4] + #tempX[5] + #tempX[6] + #tempX[7] THEN
+	                            #tempDeltaRealX := #tempRealX - #tempX[2] - #tempX[3] - #tempX[4] - #tempX[5] - #tempX[6] - #tempX[7];
+	                            #tempOriginDistance := #tempJerk[8] * #tempDeltaRealX * #tempDeltaRealX * #tempDeltaRealX / 6.0 + #tempCalAcc[8] * #tempDeltaRealX * #tempDeltaRealX / 2.0 + #tempCalVel[8] * #tempDeltaRealX + #tempCalPos[8];
+	                        END_IF;
+	                        
+	                        #tempOriginL1 := SQRT_LREAL((#tempDprime / 2.0 + #tempAlpha) * (#tempDprime / 2.0 + #tempAlpha) + (#height - #gap) * (#height - #gap));
+	                        #tempOriginL2 := SQRT_LREAL(#gap * #gap + ((#width - #tempDprime) / 2.0 - #tempAlpha) * ((#width - #tempDprime) / 2.0 - #tempAlpha));
+	                        #tempL1 := SQRT_LREAL((#tempDprime / 2.0 + #tempAlpha - #tempOriginDistance) * (#tempDprime / 2.0 + #tempAlpha - #tempOriginDistance) + (#height - #gap) * (#height - #gap));
+	                        #tempL2 := SQRT_LREAL(#gap * #gap + ((#width - #tempDprime) / 2.0 - #tempAlpha + #tempOriginDistance) * ((#width - #tempDprime) / 2.0 - #tempAlpha + #tempOriginDistance));
+	                        IF #tempRealX <= #lineSpeed * (#tempStartTime + #tempCycleTime) / 1000.0 THEN
+	                            #tempCam^.Point[#tempFCount].y := (#tempOriginL1 + #tempOriginL2 - #tempL1 - #tempL2 + #tempRealX) / 2.0;
+	                        ELSE
+	                            IF #tempRealX <= #lineSpeed * ((#tempStartTime + #tempCycleTime) + #tempRestTime * 1.0 / 4.0) / 1000.0 THEN
+	                                #tempAfterVel := 2.0 * (- #width - #tempCalDistances) / (#lineSpeed * #tempRestTime / 1000.0);
+	                                #tempAfterAcc := 4 * #tempAfterVel / (#lineSpeed * #tempRestTime / 1000.0);
+	                                #tempAfterJerk := 4 * #tempAfterAcc / (#lineSpeed * #tempRestTime / 1000.0);
+	                                #tempCalAfterPos := 0.0;
+	                                #tempCalAfterVel := 0.0;
+	                                #tempCalAfterAcc := 0.0;
+	                                #tempCalAfterJerk := #tempAfterJerk * (#tempRealX - #lineSpeed * (#tempStartTime + #tempCycleTime) / 1000.0) * (#tempRealX - #lineSpeed * (#tempStartTime + #tempCycleTime) / 1000.0) * (#tempRealX - #lineSpeed * (#tempStartTime + #tempCycleTime) / 1000.0) / 6.0;
+	                                #tempCam^.Point[#tempFCount].y := (#tempCalDistances + #tempCalAfterJerk + #tempRealX) / 2.0;
+	                            ELSE
+	                                IF #tempRealX <= #lineSpeed * ((#tempStartTime + #tempCycleTime) + #tempRestTime * 2.0 / 4.0) / 1000.0 THEN
+	                                    #tempCalAfterTime := #lineSpeed * #tempRestTime * 1.0 / 4.0 / 1000.0;
+	                                    #tempCalAfterRealTime := (#tempRealX - #lineSpeed * ((#tempStartTime + #tempCycleTime) + #tempRestTime * 1.0 / 4.0) / 1000.0);
+	                                    #tempAfterVel := 2.0 * (- #width - #tempCalDistances) / (#lineSpeed * #tempRestTime / 1000.0);
+	                                    #tempAfterAcc := 4 * #tempAfterVel / (#lineSpeed * #tempRestTime / 1000.0);
+	                                    #tempAfterJerk := 4 * #tempAfterAcc / (#lineSpeed * #tempRestTime / 1000.0);
+	                                    #tempCalAfterPos := (- #width - #tempCalDistances) / 12.0;
+	                                    #tempCalAfterVel := #tempAfterVel / 2.0 * #tempCalAfterRealTime;
+	                                    #tempCalAfterAcc := #tempAfterAcc * #tempCalAfterRealTime * #tempCalAfterRealTime / 2.0;
+	                                    #tempCalAfterJerk := - #tempAfterJerk * #tempCalAfterRealTime * #tempCalAfterRealTime * #tempCalAfterRealTime / 6.0;
+	                                    #tempCam^.Point[#tempFCount].y := (#tempCalDistances + #tempCalAfterJerk + #tempCalAfterAcc + #tempCalAfterVel + #tempCalAfterPos + #tempRealX) / 2.0;
+	                                ELSE
+	                                    IF #tempRealX <= #lineSpeed * ((#tempStartTime + #tempCycleTime) + #tempRestTime * 3.0 / 4.0) / 1000.0 THEN
+	                                        #tempCalAfterTime := #lineSpeed * #tempRestTime * 2.0 / 4.0 / 1000.0;
+	                                        #tempCalAfterRealTime := (#tempRealX - #lineSpeed * ((#tempStartTime + #tempCycleTime) + #tempRestTime * 2.0 / 4.0) / 1000.0);
+	                                        #tempAfterVel := 2.0 * (- #width - #tempCalDistances) / (#lineSpeed * #tempRestTime / 1000.0);
+	                                        #tempAfterAcc := 4 * #tempAfterVel / (#lineSpeed * #tempRestTime / 1000.0);
+	                                        #tempAfterJerk := 4 * #tempAfterAcc / (#lineSpeed * #tempRestTime / 1000.0);
+	                                        #tempCalAfterPos := (- #width - #tempCalDistances) / 2.0;
+	                                        #tempCalAfterVel := #tempAfterVel * #tempCalAfterRealTime;
+	                                        #tempCalAfterAcc := 0.0;
+	                                        #tempCalAfterJerk := - #tempAfterJerk * #tempCalAfterRealTime * #tempCalAfterRealTime * #tempCalAfterRealTime / 6.0;
+	                                        #tempCam^.Point[#tempFCount].y := (#tempCalDistances + #tempCalAfterJerk + #tempCalAfterAcc + #tempCalAfterVel + #tempCalAfterPos + #tempRealX) / 2.0;
+	                                    ELSE
+	                                        #tempCalAfterTime := #lineSpeed * #tempRestTime * 3.0 / 4.0 / 1000.0;
+	                                        #tempCalAfterRealTime := (#tempRealX - #lineSpeed * ((#tempStartTime + #tempCycleTime) + #tempRestTime * 3.0 / 4.0) / 1000.0);
+	                                        #tempAfterVel := 2.0 * (- #width - #tempCalDistances) / (#lineSpeed * #tempRestTime / 1000.0);
+	                                        #tempAfterAcc := 4 * #tempAfterVel / (#lineSpeed * #tempRestTime / 1000.0);
+	                                        #tempAfterJerk := 4 * #tempAfterAcc / (#lineSpeed * #tempRestTime / 1000.0);
+	                                        #tempCalAfterPos := (- #width - #tempCalDistances) / 2.0 + 5.0 * (- #width - #tempCalDistances) / 12.0;
+	                                        #tempCalAfterVel := #tempAfterVel / 2.0 * #tempCalAfterRealTime;
+	                                        #tempCalAfterAcc := - #tempAfterAcc * #tempCalAfterRealTime * #tempCalAfterRealTime / 2.0;
+	                                        #tempCalAfterJerk := #tempAfterJerk * #tempCalAfterRealTime * #tempCalAfterRealTime * #tempCalAfterRealTime / 6.0;
+	                                        #tempCam^.Point[#tempFCount].y := (#tempCalDistances + #tempCalAfterJerk + #tempCalAfterAcc + #tempCalAfterVel + #tempCalAfterPos + #tempRealX) / 2.0;
+	                                    END_IF;
+	                                END_IF;
+	                            END_IF;
+	                        END_IF;
+	                        
+	                        IF #tempFCount = 1 THEN
+	                            #tempCam^.Point[#tempFCount].y := 0.0;
+	                        ELSIF #tempFCount = 10000 THEN
+	                            #tempCam^.Point[#tempFCount].y := 0.0;
+	                        END_IF;
+	                        
+	                        #tempCam^.ValidPoint[#tempFCount] := TRUE;
+	                        
+	                    END_FOR;
+	                    
+	                END_REGION
+	                #statEndTime := TIME_TCK();
+	                #statTimeTable[#CC_CALCULATE] := #statEndTime - #statStartTime;
+	                #statStartTime := TIME_TCK();
+	                #statCalculateCamState := #CC_INTERPOLATE;
+	            END_REGION
+	        #CC_INTERPOLATE:
+	            REGION INTERPOLATE
+	                IF #instMCInterpolateCam.Done
+	                THEN
+	                    #statEndTime := TIME_TCK();
+	                    #statTimeTable[#CC_INTERPOLATE] := #statEndTime - #statStartTime;
+	                    #statStartTime := TIME_TCK();
+	                    #statCalculateCamState := #CC_DONE;
+	                END_IF;
+	            END_REGION
+	        #CC_DONE:
+	            REGION DONE
+	                ;
+	            END_REGION
+	        #CC_ERROR:
+	            REGION ERROR
+	                ;
+	            END_REGION
+	    END_CASE;
+	END_REGION
+	
+	REGION Instance
+	    #instMCInterpolateCam(Cam := #tempCam^,
+	                          Execute := #statCalculateCamState = #CC_INTERPOLATE);
+	    #instMCCopyCamData(Cam := #tempCam^,
+	                       Execute := #statCalculateCamState = #CC_INITIALIZE1 OR #statCalculateCamState = #CC_INITIALIZE3,
+	                       Mode := 0,
+	                       StartPointCam := 1,
+	                       StartSegmentCam := 1,
+	                       StartPointArray := 1,
+	                       StartSegmentArray := 1,
+	                       ArrayOfPoints := #EmptyPoint,
+	                       ArrayOfSegments := #EmptySegment);
+	END_REGION
+	
+	REGION Outputs
+	    #busy := #statCalculateCamState = #CC_INITIALIZE1
+	    OR #statCalculateCamState = #CC_INITIALIZE2
+	    OR #statCalculateCamState = #CC_INITIALIZE3
+	    OR #statCalculateCamState = #CC_CALCULATE
+	    OR #statCalculateCamState = #CC_INTERPOLATE;
+	    #error := #statCalculateCamState = #CC_ERROR;
+	    #done := #statCalculateCamState = #CC_DONE;
+	END_REGION
+END_FUNCTION_BLOCK
+

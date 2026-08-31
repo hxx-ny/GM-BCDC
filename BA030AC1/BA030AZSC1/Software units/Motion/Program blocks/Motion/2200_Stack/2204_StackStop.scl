@@ -1,0 +1,1027 @@
+﻿FUNCTION_BLOCK "2204_StackStop"
+{ S7_Optimized_Access := 'TRUE' ; Published := 'FALSE' }
+VERSION : 0.1
+   VAR_INPUT 
+      Execute : Bool;
+      Auto : Bool;
+      FastStop : Bool;
+      CPM : LReal;
+      StageWidth : LReal;
+   END_VAR
+
+   VAR_OUTPUT 
+      Done : Bool;
+      Busy : Bool;
+      Error : Bool;
+      ErrorID : DWord;
+      NowCmd : DInt;
+      BeforeCmd : DInt;
+   END_VAR
+
+   VAR_IN_OUT 
+      Axis : Struct
+         MasterVirtual : DB_ANY;
+         UnwinderVirtual : DB_ANY;
+         UnwinderTop : DB_ANY;
+         UnwinderBottom : DB_ANY;
+         FinalRoller : DB_ANY;
+         Compensator : DB_ANY;
+         AnodePnPX1 : DB_ANY;
+         AnodePnPX2 : DB_ANY;
+         AnodePnPZ1 : DB_ANY;
+         AnodePnPZ2 : DB_ANY;
+         CathodePnPX1 : DB_ANY;
+         CathodePnPX2 : DB_ANY;
+         CathodePnPZ1 : DB_ANY;
+         CathodePnPZ2 : DB_ANY;
+         AnodeMandrelYFront : DB_ANY;
+         AnodeMandrelYRear : DB_ANY;
+         AnodeMandrelZFront : DB_ANY;
+         AnodeMandrelZRear : DB_ANY;
+         CathodeMandrelYFront : DB_ANY;
+         CathodeMandrelYRear : DB_ANY;
+         CathodeMandrelZFront : DB_ANY;
+         CathodeMandrelZRear : DB_ANY;
+         SepaGripperX : DB_ANY;
+      END_STRUCT;
+   END_VAR
+
+   VAR 
+      statNowCmd : DInt;
+      statBeforeCmd : DInt;
+      statPosition : LReal;
+      statTimeTable : Array[1..50] of Time;
+      statStartTime : Time;
+      statEndTime : Time;
+      instTriggerExecute {InstructionName := 'R_TRIG'; LibVersion := '1.0'; S7_SetPoint := 'False'} : R_TRIG;
+      instMoveAbsMasterVirtual {InstructionName := 'MC_MOVEABSOLUTE'; LibVersion := '9.0'} : MC_MOVEABSOLUTE;
+      instHaltMasterVirtual {InstructionName := 'MC_HALT'; LibVersion := '9.0'} : MC_HALT;
+      instHomeMasterVirtual {InstructionName := 'MC_HOME'; LibVersion := '9.0'} : MC_HOME;
+      instHaltSlaveUnwinderVirtual {InstructionName := 'MC_HALT'; LibVersion := '9.0'} : MC_HALT;
+      instHaltFinalRoller {InstructionName := 'MC_HALT'; LibVersion := '9.0'} : MC_HALT;
+      instHaltCompensator {InstructionName := 'MC_HALT'; LibVersion := '9.0'} : MC_HALT;
+      instHaltAnodePnPX1 {InstructionName := 'MC_HALT'; LibVersion := '9.0'} : MC_HALT;
+      instHaltAnodePnPX2 {InstructionName := 'MC_HALT'; LibVersion := '9.0'} : MC_HALT;
+      instHaltAnodePnPZ1 {InstructionName := 'MC_HALT'; LibVersion := '9.0'} : MC_HALT;
+      instHaltAnodePnPZ2 {InstructionName := 'MC_HALT'; LibVersion := '9.0'} : MC_HALT;
+      instHaltCathodePnPX1 {InstructionName := 'MC_HALT'; LibVersion := '9.0'} : MC_HALT;
+      instHaltCathodePnPX2 {InstructionName := 'MC_HALT'; LibVersion := '9.0'} : MC_HALT;
+      instHaltCathodePnPZ1 {InstructionName := 'MC_HALT'; LibVersion := '9.0'} : MC_HALT;
+      instHaltCathodePnPZ2 {InstructionName := 'MC_HALT'; LibVersion := '9.0'} : MC_HALT;
+      instHaltAnodeMandrelYFront {InstructionName := 'MC_HALT'; LibVersion := '9.0'} : MC_HALT;
+      instHaltAnodeMandrelYRear {InstructionName := 'MC_HALT'; LibVersion := '9.0'} : MC_HALT;
+      instHaltAnodeMandrelZFront {InstructionName := 'MC_HALT'; LibVersion := '9.0'} : MC_HALT;
+      instHaltAnodeMandrelZRear {InstructionName := 'MC_HALT'; LibVersion := '9.0'} : MC_HALT;
+      instHaltCathodeMandrelYFront {InstructionName := 'MC_HALT'; LibVersion := '9.0'} : MC_HALT;
+      instHaltCathodeMandrelYRear {InstructionName := 'MC_HALT'; LibVersion := '9.0'} : MC_HALT;
+      instHaltCathodeMandrelZFront {InstructionName := 'MC_HALT'; LibVersion := '9.0'} : MC_HALT;
+      instHaltCathodeMandrelZRear {InstructionName := 'MC_HALT'; LibVersion := '9.0'} : MC_HALT;
+   END_VAR
+
+   VAR_TEMP 
+      tempMasterVirtual {InstructionName := 'TO_SynchronousAxis'; LibVersion := '9.0'} : REF_TO TO_SynchronousAxis;
+      tempSlaveUnwinderVirtual {InstructionName := 'TO_SynchronousAxis'; LibVersion := '9.0'} : REF_TO TO_SynchronousAxis;
+      tempSynchronousAxis {InstructionName := 'TO_SynchronousAxis'; LibVersion := '9.0'} : REF_TO TO_SynchronousAxis;
+      tempDistances : LReal;
+      tempCount : LReal;
+      tempRemain : LReal;
+      tempLineSpeed : LReal;
+      tempTime : LReal;
+   END_VAR
+
+   VAR CONSTANT 
+      STAT_IDLE : DInt := 0;
+      STAT_ERROR : DInt := 99;
+      STAT_START : DInt := 100;
+      STAT_STOP_CHECK : DInt := 110;
+      STAT_AUTO_CHECK : DInt := 120;
+      STAT_UNWINDER : DInt := 130;
+      STAT_MASTER : DInt := 140;
+      STAT_OTHERS : DInt := 150;
+      STAT_ALL : DInt := 160;
+      STAT_HOME : DInt := 170;
+      STAT_DONE : DInt := 10000;
+   END_VAR
+
+
+BEGIN
+	REGION TECHNOLOGY OBJECT
+	    REGION AXIS                                                                                                  // Axis Mapping 영역
+	        #tempMasterVirtual ?= #Axis.MasterVirtual;                                                                    // Master Virtual Axis 할당
+	        #tempSlaveUnwinderVirtual ?= #Axis.UnwinderVirtual;                                                      // Slave Unwinder Virtual Axis 할당
+	    END_REGION
+	END_REGION
+	
+	REGION INPUT SIGNAL
+	    REGION EXECUTE
+	        IF NOT #Execute THEN                                                                                     // 상승 에지 미검출 시
+	            #statBeforeCmd := #statNowCmd;                                                                       // 이전 명령 모니터링
+	            #statNowCmd := #STAT_IDLE;                                                                           // STAT_IDLE 상태로 이동
+	        END_IF;
+	        
+	        #instTriggerExecute(CLK := #Execute);                                                                    // 상승 에지 검출
+	        
+	        IF #instTriggerExecute.Q THEN                                                                            // 상승 에지 검출 시
+	            #statStartTime := TIME_TCK();
+	            #statBeforeCmd := #statNowCmd;                                                                       // 이전 명령 모니터링
+	            #statNowCmd := #STAT_START;                                                                          // STAT_START 상태 돌입
+	        END_IF;
+	    END_REGION
+	END_REGION
+	
+	REGION COMMAND
+	    CASE #statNowCmd OF
+	        #STAT_IDLE:
+	            REGION IDLE
+	                ;
+	            END_REGION
+	            
+	        #STAT_ERROR:
+	            REGION ERROR
+	                ;
+	            END_REGION
+	            
+	        #STAT_START:
+	            REGION START
+	                #statEndTime := TIME_TCK();
+	                #statTimeTable[#STAT_START / 10 - 9] := #statEndTime - #statStartTime;
+	                #statStartTime := TIME_TCK();
+	                #statBeforeCmd := #statNowCmd;                                                                   // 이전 명령 모니터링
+	                #statNowCmd := #STAT_STOP_CHECK;                                                                 // STAT_AUTO_CHECK 상태 돌입
+	            END_REGION
+	            
+	        #STAT_STOP_CHECK:
+	            REGION STOP CHECK
+	                IF #FastStop THEN
+	                    #statEndTime := TIME_TCK();
+	                    #statTimeTable[#STAT_STOP_CHECK / 10 - 9] := #statEndTime - #statStartTime;
+	                    #statStartTime := TIME_TCK();
+	                    #statBeforeCmd := #statNowCmd;                                                               // 이전 명령 모니터링
+	                    #statNowCmd := #STAT_ALL;                                                                    // STAT_ALL 상태 돌입
+	                ELSE
+	                    #statEndTime := TIME_TCK();
+	                    #statTimeTable[#STAT_STOP_CHECK / 10 - 9] := #statEndTime - #statStartTime;
+	                    #statStartTime := TIME_TCK();
+	                    #statBeforeCmd := #statNowCmd;                                                               // 이전 명령 모니터링
+	                    #statNowCmd := #STAT_AUTO_CHECK;                                                                    // STAT_ALL 상태 돌입
+	                END_IF;
+	            END_REGION
+	            
+	        #STAT_AUTO_CHECK:                                                                                        // Auto 신호에 따라서 정지
+	            REGION AUTO CHECK
+	                IF #Auto THEN                                                                                    // Auto : True
+	                    #statPosition := 0.0;
+	                    #statEndTime := TIME_TCK();
+	                    #statTimeTable[#STAT_AUTO_CHECK / 10 - 9] := #statEndTime - #statStartTime;
+	                    #statStartTime := TIME_TCK();
+	                    #statBeforeCmd := #statNowCmd;                                                               // 이전 명령 모니터링
+	                    #statNowCmd := #STAT_UNWINDER;                                                               // STAT_UNWINDER 상태 돌입
+	                ELSE                                                                                             // Auto : False
+	                    #statEndTime := TIME_TCK();
+	                    #statTimeTable[#STAT_AUTO_CHECK / 10 - 9] := #statEndTime - #statStartTime;
+	                    #statStartTime := TIME_TCK();
+	                    #statBeforeCmd := #statNowCmd;                                                               // 이전 명령 모니터링
+	                    #statNowCmd := #STAT_ALL;                                                                    // STAT_ALL 상태 돌입
+	                END_IF;
+	            END_REGION
+	            
+	        #STAT_UNWINDER:                                                                                          // Unwinder 정지 영역
+	            REGION UNWINDER
+	                REGION DONE
+	                    IF #instHaltSlaveUnwinderVirtual.Busy THEN                                                   // Unwinder Halt 동작 완료 시
+	                        #tempDistances := #tempMasterVirtual^.Position;                                          // Master축의 현재 위치를 Distance에 입력
+	                        #tempCount := CEIL_LREAL((#tempMasterVirtual^.Position / #StageWidth) - 0.000001);                               // 셀 카운트 =이동거리 / 스테이지 폭
+	                        #tempRemain := #tempDistances / #StageWidth - FLOOR_LREAL(#tempDistances / #StageWidth); // 현재 마스터축이 남은 거리 셀 당으로 계산
+	                        IF #tempRemain < 0.75 THEN                                                               // 남은 셀폭이 75% 안넘을 시
+	                            #statPosition := #tempCount * #StageWidth;                                   // 그 장수에 정지
+	                        ELSE
+	                            #statPosition := (#tempCount + 1.0) * #StageWidth;                                   // 75% 넘었으면, 다음장에 정지
+	                        END_IF;
+	                        #statEndTime := TIME_TCK();
+	                        #statTimeTable[#STAT_UNWINDER / 10 - 9] := #statEndTime - #statStartTime;
+	                        #statStartTime := TIME_TCK();
+	                        #statBeforeCmd := #statNowCmd;                                                           // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_MASTER;                                                             //STAT_MASTER 상태 돌입
+	                    END_IF;
+	                END_REGION
+	                
+	                REGION ERROR
+	                    IF #instHaltSlaveUnwinderVirtual.Error THEN                                                  // Unwinder Halt 동작 중 에러 발생 시
+	                        #ErrorID := #instHaltSlaveUnwinderVirtual.ErrorId;                                       // Halt 에러ID 출력
+	                        #statBeforeCmd := #statNowCmd;                                                           // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;
+	                    END_IF;
+	                    
+	                    IF #instHaltSlaveUnwinderVirtual.CommandAborted THEN                                                  // Unwinder Halt 동작 중 에러 발생 시
+	                        #ErrorID := #instHaltSlaveUnwinderVirtual.ErrorId;                                       // Halt 에러ID 출력
+	                        #statBeforeCmd := #statNowCmd;                                                           // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;
+	                    END_IF;
+	                END_REGION
+	            END_REGION
+	            
+	        #STAT_MASTER:
+	            REGION MASTER
+	                REGION DONE
+	                    IF #instMoveAbsMasterVirtual.Done AND #tempMasterVirtual^.Velocity = 0.0 THEN                // Move Absolute 동작 완료 후 완전 정지 시
+	                        #statEndTime := TIME_TCK();
+	                        #statTimeTable[#STAT_MASTER / 10 - 9] := #statEndTime - #statStartTime;
+	                        #statStartTime := TIME_TCK();
+	                        #statBeforeCmd := #statNowCmd;                                                           // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_OTHERS;                                                             // STAT_OTHERS 상태 돌입
+	                    END_IF;
+	                END_REGION
+	                
+	                REGION ERROR
+	                    IF #instMoveAbsMasterVirtual.Error THEN                                                      // Master Axis Move Absolute 동작 중 에러 발생 시
+	                        #ErrorID := #instMoveAbsMasterVirtual.ErrorId;                                           // Master Axis Move Absolute 에러ID 출력
+	                        #statBeforeCmd := #statNowCmd;                                                           // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                              // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instMoveAbsMasterVirtual.CommandAborted THEN                                                      // Master Axis Move Absolute 동작 중 에러 발생 시
+	                        #ErrorID := #instMoveAbsMasterVirtual.ErrorId;                                           // Master Axis Move Absolute 에러ID 출력
+	                        #statBeforeCmd := #statNowCmd;                                                           // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                              // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                END_REGION
+	            END_REGION
+	            
+	        #STAT_OTHERS:
+	            REGION OTHERS
+	                REGION DONE
+	                    IF #instHaltFinalRoller.Done                                                                 // 모든 축의 Halt 동작이 완료 시
+	                        AND #instHaltCompensator.Done
+	                        AND #instHaltAnodePnPX1.Done
+	                        AND #instHaltAnodePnPX2.Done
+	                        AND #instHaltAnodePnPZ1.Done
+	                        AND #instHaltAnodePnPZ2.Done
+	                        AND #instHaltCathodePnPX1.Done
+	                        AND #instHaltCathodePnPX2.Done
+	                        AND #instHaltCathodePnPZ1.Done
+	                        AND #instHaltCathodePnPZ2.Done
+	                        AND #instHaltAnodeMandrelYFront.Done
+	                        AND #instHaltAnodeMandrelYRear.Done
+	                        AND #instHaltAnodeMandrelZFront.Done
+	                        AND #instHaltAnodeMandrelZRear.Done
+	                        AND #instHaltCathodeMandrelYFront.Done
+	                        AND #instHaltCathodeMandrelYRear.Done
+	                        AND #instHaltCathodeMandrelZFront.Done
+	                        AND #instHaltCathodeMandrelZRear.Done
+	                    THEN
+	                        #statEndTime := TIME_TCK();
+	                        #statTimeTable[#STAT_OTHERS / 10 - 9] := #statEndTime - #statStartTime;
+	                        #statStartTime := TIME_TCK();
+	                        #statBeforeCmd := #statNowCmd;                                                           // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_HOME;                                                               // STAT_DONE 상태 돌입
+	                    END_IF;
+	                END_REGION
+	                
+	                REGION ERROR
+	                    IF #instHaltFinalRoller.Error THEN                                                           // Final Roller Halt 동작 중 에러 발생 시
+	                        #ErrorID := #instHaltFinalRoller.ErrorId;                                                // Final Roller Halt 에러ID 출력
+	                        #statBeforeCmd := #statNowCmd;                                                           // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                              // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instHaltCompensator.Error THEN                                                           // Compensator Halt 동작 중 에러 발생 시
+	                        #ErrorID := #instHaltCompensator.ErrorId;                                                // Compensator Halt 에러ID 출력
+	                        #statBeforeCmd := #statNowCmd;                                                           // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                              // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instHaltAnodePnPX1.Error THEN                                                            // Anode PnP X1 Halt 동작 중 에러 발생 시
+	                        #ErrorID := #instHaltAnodePnPX1.ErrorId;                                                 // Anode PnP X1 Halt 에러ID 출력
+	                        #statBeforeCmd := #statNowCmd;                                                           // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                              // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instHaltAnodePnPX2.Error THEN                                                            // Anode PnP X2 Halt 동작 중 에러 발생 시
+	                        #ErrorID := #instHaltAnodePnPX2.ErrorId;                                                 // Anode PnP X2 Halt 에러ID 출력
+	                        #statBeforeCmd := #statNowCmd;                                                           // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                              // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instHaltAnodePnPZ1.Error THEN                                                            // Anode PnP Z1 Halt 동작 중 에러 발생 시
+	                        #ErrorID := #instHaltAnodePnPZ1.ErrorId;                                                 // Anode PnP Z1 Halt 에러ID 출력
+	                        #statBeforeCmd := #statNowCmd;                                                           // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                              // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instHaltAnodePnPZ2.Error THEN                                                            // Anode PnP Z2 Halt 동작 중 에러 발생 시
+	                        #ErrorID := #instHaltAnodePnPZ2.ErrorId;                                                 // Anode PnP Z2 Halt 에러ID 출력
+	                        #statBeforeCmd := #statNowCmd;                                                           // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                              // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instHaltCathodePnPX1.Error THEN                                                          // Cathode PnP X1 Halt 동작 중 에러 발생 시
+	                        #ErrorID := #instHaltCathodePnPX1.ErrorId;                                               // Cathode PnP X1 Halt 에러ID 출력
+	                        #statBeforeCmd := #statNowCmd;                                                           // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                              // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instHaltCathodePnPX2.Error THEN                                                          // Cathode PnP X2 Halt 동작 중 에러 발생 시
+	                        #ErrorID := #instHaltCathodePnPX2.ErrorId;                                               // Cathode PnP X2 Halt 에러ID 출력
+	                        #statBeforeCmd := #statNowCmd;                                                           // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                              // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instHaltCathodePnPZ1.Error THEN                                                          // Cathode PnP Z1 Halt 동작 중 에러 발생 시
+	                        #ErrorID := #instHaltCathodePnPZ1.ErrorId;                                               // Cathode PnP Z1 Halt 에러ID 출력
+	                        #statBeforeCmd := #statNowCmd;                                                           // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                              // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instHaltCathodePnPZ2.Error THEN                                                          // Cathode PnP Z2 Halt 동작 중 에러 발생 시
+	                        #ErrorID := #instHaltCathodePnPZ2.ErrorId;                                               // Cathode PnP Z2 Halt 에러ID 출력
+	                        #statBeforeCmd := #statNowCmd;                                                           // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                              // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instHaltAnodeMandrelYFront.Error THEN                                                    // Anode Mandrel Y Front Halt 동작 중 에러 발생 시
+	                        #ErrorID := #instHaltAnodeMandrelYFront.ErrorId;                                         // Anode Mandrel Y Front Halt 에러ID 출력
+	                        #statBeforeCmd := #statNowCmd;                                                           // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                              // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instHaltAnodeMandrelYRear.Error THEN                                                     // Anode Mandrel Y Rear Halt 동작 중 에러 발생 시
+	                        #ErrorID := #instHaltAnodeMandrelYRear.ErrorId;                                          // Anode Mandrel Y Rear Halt 에러ID 출력
+	                        #statBeforeCmd := #statNowCmd;                                                           // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                              // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instHaltAnodeMandrelZFront.Error THEN                                                    // Anode Mandrel Z Front Halt 동작 중 에러 발생 시
+	                        #ErrorID := #instHaltAnodeMandrelZFront.ErrorId;                                         // Anode Mandrel Z Front Halt 에러ID 출력
+	                        #statBeforeCmd := #statNowCmd;                                                           // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                              // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instHaltAnodeMandrelZRear.Error THEN                                                     // Anode Mandrel Z Rear Halt 동작 중 에러 발생 시
+	                        #ErrorID := #instHaltAnodeMandrelZRear.ErrorId;                                          // Anode Mandrel Z Rear Halt 에러ID 출력
+	                        #statBeforeCmd := #statNowCmd;                                                           // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                              // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instHaltCathodeMandrelYFront.Error THEN                                                  // Cathode Mandrel Y Front Halt 동작 중 에러 발생 시
+	                        #ErrorID := #instHaltCathodeMandrelYFront.ErrorId;                                       // Cathode Mandrel Y Front Halt 에러ID 출력
+	                        #statBeforeCmd := #statNowCmd;                                                           // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                              // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instHaltCathodeMandrelYRear.Error THEN                                                   // Cathode Mandrel Y Rear Halt 동작 중 에러 발생 시
+	                        #ErrorID := #instHaltCathodeMandrelYRear.ErrorId;                                        // Cathode Mandrel Y Rear Halt 에러ID 출력
+	                        #statBeforeCmd := #statNowCmd;                                                           // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                              // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instHaltCathodeMandrelZFront.Error THEN                                                  // Cathode Mandrel Z Front Halt 동작 중 에러 발생 시
+	                        #ErrorID := #instHaltCathodeMandrelZFront.ErrorId;                                       // Cathode Mandrel Z Front Halt 에러ID 출력
+	                        #statBeforeCmd := #statNowCmd;                                                           // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                              // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instHaltCathodeMandrelZRear.Error THEN                                                   // Cathode Mandrel Z Rear Halt 동작 중 에러 발생 시
+	                        #ErrorID := #instHaltCathodeMandrelZRear.ErrorId;                                        // Cathode Mandrel Z Rear Halt 에러ID 출력
+	                        #statBeforeCmd := #statNowCmd;                                                           // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                              // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    //
+	                    IF #instHaltFinalRoller.CommandAborted THEN                                                           // Final Roller Halt 동작 중 에러 발생 시
+	                        #ErrorID := #instHaltFinalRoller.ErrorId;                                                // Final Roller Halt 에러ID 출력
+	                        #statBeforeCmd := #statNowCmd;                                                           // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                              // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instHaltCompensator.CommandAborted THEN                                                           // Compensator Halt 동작 중 에러 발생 시
+	                        #ErrorID := #instHaltCompensator.ErrorId;                                                // Compensator Halt 에러ID 출력
+	                        #statBeforeCmd := #statNowCmd;                                                           // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                              // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instHaltAnodePnPX1.CommandAborted THEN                                                            // Anode PnP X1 Halt 동작 중 에러 발생 시
+	                        #ErrorID := #instHaltAnodePnPX1.ErrorId;                                                 // Anode PnP X1 Halt 에러ID 출력
+	                        #statBeforeCmd := #statNowCmd;                                                           // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                              // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instHaltAnodePnPX2.CommandAborted THEN                                                            // Anode PnP X2 Halt 동작 중 에러 발생 시
+	                        #ErrorID := #instHaltAnodePnPX2.ErrorId;                                                 // Anode PnP X2 Halt 에러ID 출력
+	                        #statBeforeCmd := #statNowCmd;                                                           // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                              // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instHaltAnodePnPZ1.CommandAborted THEN                                                            // Anode PnP Z1 Halt 동작 중 에러 발생 시
+	                        #ErrorID := #instHaltAnodePnPZ1.ErrorId;                                                 // Anode PnP Z1 Halt 에러ID 출력
+	                        #statBeforeCmd := #statNowCmd;                                                           // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                              // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instHaltAnodePnPZ2.CommandAborted THEN                                                            // Anode PnP Z2 Halt 동작 중 에러 발생 시
+	                        #ErrorID := #instHaltAnodePnPZ2.ErrorId;                                                 // Anode PnP Z2 Halt 에러ID 출력
+	                        #statBeforeCmd := #statNowCmd;                                                           // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                              // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instHaltCathodePnPX1.CommandAborted THEN                                                          // Cathode PnP X1 Halt 동작 중 에러 발생 시
+	                        #ErrorID := #instHaltCathodePnPX1.ErrorId;                                               // Cathode PnP X1 Halt 에러ID 출력
+	                        #statBeforeCmd := #statNowCmd;                                                           // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                              // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instHaltCathodePnPX2.CommandAborted THEN                                                          // Cathode PnP X2 Halt 동작 중 에러 발생 시
+	                        #ErrorID := #instHaltCathodePnPX2.ErrorId;                                               // Cathode PnP X2 Halt 에러ID 출력
+	                        #statBeforeCmd := #statNowCmd;                                                           // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                              // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instHaltCathodePnPZ1.CommandAborted THEN                                                          // Cathode PnP Z1 Halt 동작 중 에러 발생 시
+	                        #ErrorID := #instHaltCathodePnPZ1.ErrorId;                                               // Cathode PnP Z1 Halt 에러ID 출력
+	                        #statBeforeCmd := #statNowCmd;                                                           // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                              // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instHaltCathodePnPZ2.CommandAborted THEN                                                          // Cathode PnP Z2 Halt 동작 중 에러 발생 시
+	                        #ErrorID := #instHaltCathodePnPZ2.ErrorId;                                               // Cathode PnP Z2 Halt 에러ID 출력
+	                        #statBeforeCmd := #statNowCmd;                                                           // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                              // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instHaltAnodeMandrelYFront.CommandAborted THEN                                                    // Anode Mandrel Y Front Halt 동작 중 에러 발생 시
+	                        #ErrorID := #instHaltAnodeMandrelYFront.ErrorId;                                         // Anode Mandrel Y Front Halt 에러ID 출력
+	                        #statBeforeCmd := #statNowCmd;                                                           // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                              // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instHaltAnodeMandrelYRear.CommandAborted THEN                                                     // Anode Mandrel Y Rear Halt 동작 중 에러 발생 시
+	                        #ErrorID := #instHaltAnodeMandrelYRear.ErrorId;                                          // Anode Mandrel Y Rear Halt 에러ID 출력
+	                        #statBeforeCmd := #statNowCmd;                                                           // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                              // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instHaltAnodeMandrelZFront.CommandAborted THEN                                                    // Anode Mandrel Z Front Halt 동작 중 에러 발생 시
+	                        #ErrorID := #instHaltAnodeMandrelZFront.ErrorId;                                         // Anode Mandrel Z Front Halt 에러ID 출력
+	                        #statBeforeCmd := #statNowCmd;                                                           // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                              // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instHaltAnodeMandrelZRear.CommandAborted THEN                                                     // Anode Mandrel Z Rear Halt 동작 중 에러 발생 시
+	                        #ErrorID := #instHaltAnodeMandrelZRear.ErrorId;                                          // Anode Mandrel Z Rear Halt 에러ID 출력
+	                        #statBeforeCmd := #statNowCmd;                                                           // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                              // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instHaltCathodeMandrelYFront.CommandAborted THEN                                                  // Cathode Mandrel Y Front Halt 동작 중 에러 발생 시
+	                        #ErrorID := #instHaltCathodeMandrelYFront.ErrorId;                                       // Cathode Mandrel Y Front Halt 에러ID 출력
+	                        #statBeforeCmd := #statNowCmd;                                                           // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                              // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instHaltCathodeMandrelYRear.CommandAborted THEN                                                   // Cathode Mandrel Y Rear Halt 동작 중 에러 발생 시
+	                        #ErrorID := #instHaltCathodeMandrelYRear.ErrorId;                                        // Cathode Mandrel Y Rear Halt 에러ID 출력
+	                        #statBeforeCmd := #statNowCmd;                                                           // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                              // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instHaltCathodeMandrelZFront.CommandAborted THEN                                                  // Cathode Mandrel Z Front Halt 동작 중 에러 발생 시
+	                        #ErrorID := #instHaltCathodeMandrelZFront.ErrorId;                                       // Cathode Mandrel Z Front Halt 에러ID 출력
+	                        #statBeforeCmd := #statNowCmd;                                                           // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                              // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instHaltCathodeMandrelZRear.CommandAborted THEN                                                   // Cathode Mandrel Z Rear Halt 동작 중 에러 발생 시
+	                        #ErrorID := #instHaltCathodeMandrelZRear.ErrorId;                                        // Cathode Mandrel Z Rear Halt 에러ID 출력
+	                        #statBeforeCmd := #statNowCmd;                                                           // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                              // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                END_REGION
+	            END_REGION
+	            
+	        #STAT_ALL:
+	                REGION ALL
+	                    REGION DONE                                                                                      // 모든 축 Halt 동작 완료 시
+	                        IF #instHaltMasterVirtual.Done
+	                            AND #instHaltSlaveUnwinderVirtual.Done
+	                            AND #instHaltFinalRoller.Done
+	                            AND #instHaltCompensator.Done
+	                            AND #instHaltAnodePnPX1.Done
+	                            AND #instHaltAnodePnPX2.Done
+	                            AND #instHaltAnodePnPZ1.Done
+	                            AND #instHaltAnodePnPZ2.Done
+	                            AND #instHaltCathodePnPX1.Done
+	                            AND #instHaltCathodePnPX2.Done
+	                            AND #instHaltCathodePnPZ1.Done
+	                            AND #instHaltCathodePnPZ2.Done
+	                            AND #instHaltAnodeMandrelYFront.Done
+	                            AND #instHaltAnodeMandrelYRear.Done
+	                            AND #instHaltAnodeMandrelZFront.Done
+	                            AND #instHaltAnodeMandrelZRear.Done
+	                            AND #instHaltCathodeMandrelYFront.Done
+	                            AND #instHaltCathodeMandrelYRear.Done
+	                            AND #instHaltCathodeMandrelZFront.Done
+	                            AND #instHaltCathodeMandrelZRear.Done
+	                        THEN
+	                            #statEndTime := TIME_TCK();
+	                            #statTimeTable[#STAT_ALL / 10 - 9] := #statEndTime - #statStartTime;
+	                            #statStartTime := TIME_TCK();
+	                            #statBeforeCmd := #statNowCmd;                                                           // 이전 명령 모니터링
+	                            #statNowCmd := #STAT_HOME;                                                               // STAT_DONE 상태로 이동
+	                        END_IF;
+	                    END_REGION
+	                    
+	                    REGION ERROR 
+	                        IF #instHaltMasterVirtual.Error THEN                                                         // Master Virtual Halt 동작 중 에러 발생 시
+	                            #ErrorID := #instHaltMasterVirtual.ErrorId;                                              // Master Virtual Halt 에러ID 출력
+	                            #statBeforeCmd := #statNowCmd;                                                           // 이전 명령 모니터링
+	                            #statNowCmd := #STAT_ERROR;                                                              // STAT_ERROR 상태로 이동
+	                        END_IF;
+	                        
+	                        IF #instHaltSlaveUnwinderVirtual.Error THEN                                                  // Slave Unwinder Virtual Halt 동작 중 에러 발생 시
+	                            #ErrorID := #instHaltSlaveUnwinderVirtual.ErrorId;                                       // Slave Unwinder Virtual Halt 에러ID 출력
+	                            #statBeforeCmd := #statNowCmd;                                                           // 이전 명령 모니터링
+	                            #statNowCmd := #STAT_ERROR;                                                              // STAT_ERROR 상태로 이동
+	                        END_IF;
+	                        
+	                        IF #instHaltFinalRoller.Error THEN                                                           // Final Roller Halt 동작 중 에러 발생 시
+	                            #ErrorID := #instHaltFinalRoller.ErrorId;                                                // Final Roller Halt 에러ID 출력
+	                            #statBeforeCmd := #statNowCmd;                                                           // 이전 명령 모니터링
+	                            #statNowCmd := #STAT_ERROR;                                                              // STAT_ERROR 상태로 이동
+	                        END_IF;
+	                        
+	                        IF #instHaltCompensator.Error THEN                                                           // Compensator Halt 동작 중 에러 발생 시
+	                            #ErrorID := #instHaltCompensator.ErrorId;                                                // Compensator Halt 에러ID 출력
+	                            #statBeforeCmd := #statNowCmd;                                                           // 이전 명령 모니터링
+	                            #statNowCmd := #STAT_ERROR;                                                              // STAT_ERROR 상태로 이동
+	                        END_IF;
+	                        
+	                        IF #instHaltAnodePnPX1.Error THEN                                                            // Anode PnP X1 Halt 동작 중 에러 발생 시
+	                            #ErrorID := #instHaltAnodePnPX1.ErrorId;                                                 // Anode PnP X1 Halt 에러ID 출력
+	                            #statBeforeCmd := #statNowCmd;                                                           // 이전 명령 모니터링
+	                            #statNowCmd := #STAT_ERROR;                                                              // STAT_ERROR 상태로 이동
+	                        END_IF;
+	                        
+	                        IF #instHaltAnodePnPX2.Error THEN                                                            // Anode PnP X2 Halt 동작 중 에러 발생 시
+	                            #ErrorID := #instHaltAnodePnPX2.ErrorId;                                                 // Anode PnP X2 Halt 에러ID 출력
+	                            #statBeforeCmd := #statNowCmd;                                                           // 이전 명령 모니터링
+	                            #statNowCmd := #STAT_ERROR;                                                              // STAT_ERROR 상태로 이동
+	                        END_IF;
+	                        
+	                        IF #instHaltAnodePnPZ1.Error THEN                                                            // Anode PnP Z1 Halt 동작 중 에러 발생 시
+	                            #ErrorID := #instHaltAnodePnPZ1.ErrorId;                                                 // Anode PnP Z1 Halt 에러ID 출력
+	                            #statBeforeCmd := #statNowCmd;                                                           // 이전 명령 모니터링
+	                            #statNowCmd := #STAT_ERROR;                                                              // STAT_ERROR 상태로 이동
+	                        END_IF;
+	                        
+	                        IF #instHaltAnodePnPZ2.Error THEN                                                            // Anode PnP Z2 Halt 동작 중 에러 발생 시
+	                            #ErrorID := #instHaltAnodePnPZ2.ErrorId;                                                 // Anode PnP Z2 Halt 에러ID 출력
+	                            #statBeforeCmd := #statNowCmd;                                                           // 이전 명령 모니터링
+	                            #statNowCmd := #STAT_ERROR;                                                              // STAT_ERROR 상태로 이동
+	                        END_IF;
+	                        
+	                        IF #instHaltCathodePnPX1.Error THEN                                                          // Cathode PnP X1 Halt 동작 중 에러 발생 시
+	                            #ErrorID := #instHaltCathodePnPX1.ErrorId;                                               // Cathode PnP X1 Halt 에러ID 출력
+	                            #statBeforeCmd := #statNowCmd;                                                           // 이전 명령 모니터링
+	                            #statNowCmd := #STAT_ERROR;                                                              // STAT_ERROR 상태로 이동
+	                        END_IF;
+	                        
+	                        IF #instHaltCathodePnPX2.Error THEN                                                          // Cathode PnP X2 Halt 동작 중 에러 발생 시
+	                            #ErrorID := #instHaltCathodePnPX2.ErrorId;                                               // Cathode PnP X2 Halt 에러ID 출력
+	                            #statBeforeCmd := #statNowCmd;                                                           // 이전 명령 모니터링
+	                            #statNowCmd := #STAT_ERROR;                                                              // STAT_ERROR 상태로 이동
+	                        END_IF;
+	                        
+	                        IF #instHaltCathodePnPZ1.Error THEN                                                          // Cathode PnP Z1 Halt 동작 중 에러 발생 시
+	                            #ErrorID := #instHaltCathodePnPZ1.ErrorId;                                               // Cathode PnP Z1 Halt 에러ID 출력
+	                            #statBeforeCmd := #statNowCmd;                                                           // 이전 명령 모니터링
+	                            #statNowCmd := #STAT_ERROR;                                                              // STAT_ERROR 상태로 이동
+	                        END_IF;
+	                        
+	                        IF #instHaltCathodePnPZ2.Error THEN                                                          // Cathode PnP Z2 Halt 동작 중 에러 발생 시
+	                            #ErrorID := #instHaltCathodePnPZ2.ErrorId;                                               // Cathode PnP Z2 Halt 에러ID 출력
+	                            #statBeforeCmd := #statNowCmd;                                                           // 이전 명령 모니터링
+	                            #statNowCmd := #STAT_ERROR;                                                              // STAT_ERROR 상태로 이동
+	                        END_IF;
+	                        
+	                        IF #instHaltAnodeMandrelYFront.Error THEN                                                    // Anode Mandrel Y Front Halt 동작 중 에러 발생 시
+	                            #ErrorID := #instHaltAnodeMandrelYFront.ErrorId;                                         // Anode Mandrel Y Front Halt 에러ID 출력
+	                            #statBeforeCmd := #statNowCmd;                                                           // 이전 명령 모니터링
+	                            #statNowCmd := #STAT_ERROR;                                                              // STAT_ERROR 상태로 이동
+	                        END_IF;
+	                        
+	                        IF #instHaltAnodeMandrelYRear.Error THEN                                                     // Anode Mandrel Y Rear Halt 동작 중 에러 발생 시
+	                            #ErrorID := #instHaltAnodeMandrelYRear.ErrorId;                                          // Anode Mandrel Y Rear Halt 에러ID 출력
+	                            #statBeforeCmd := #statNowCmd;                                                           // 이전 명령 모니터링
+	                            #statNowCmd := #STAT_ERROR;                                                              // STAT_ERROR 상태로 이동
+	                        END_IF;
+	                        
+	                        IF #instHaltAnodeMandrelZFront.Error THEN                                                    // Anode Mandrel Z Front Halt 동작 중 에러 발생 시
+	                            #ErrorID := #instHaltAnodeMandrelZFront.ErrorId;                                         // Anode Mandrel Z Front Halt 에러ID 출력
+	                            #statBeforeCmd := #statNowCmd;                                                           // 이전 명령 모니터링
+	                            #statNowCmd := #STAT_ERROR;                                                              // STAT_ERROR 상태로 이동
+	                        END_IF;
+	                        
+	                        IF #instHaltAnodeMandrelZRear.Error THEN                                                     // Anode Mandrel Z Rear Halt 동작 중 에러 발생 시
+	                            #ErrorID := #instHaltAnodeMandrelZRear.ErrorId;                                          // Anode Mandrel Z Rear Halt 에러ID 출력
+	                            #statBeforeCmd := #statNowCmd;                                                           // 이전 명령 모니터링
+	                            #statNowCmd := #STAT_ERROR;                                                              // STAT_ERROR 상태로 이동
+	                        END_IF;
+	                        
+	                        IF #instHaltCathodeMandrelYFront.Error THEN                                                  // Cathode Mandrel Y Front Halt 동작 중 에러 발생 시
+	                            #ErrorID := #instHaltCathodeMandrelYFront.ErrorId;                                       // Cathode Mandrel Y Front Halt 에러ID 출력
+	                            #statBeforeCmd := #statNowCmd;                                                           // 이전 명령 모니터링
+	                            #statNowCmd := #STAT_ERROR;                                                              // STAT_ERROR 상태로 이동
+	                        END_IF;
+	                        
+	                        IF #instHaltCathodeMandrelYRear.Error THEN                                                   // Cathode Mandrel Y Rear Halt 동작 중 에러 발생 시
+	                            #ErrorID := #instHaltCathodeMandrelYRear.ErrorId;                                        // Cathode Mandrel Y Rear Halt 에러ID 출력
+	                            #statBeforeCmd := #statNowCmd;                                                           // 이전 명령 모니터링
+	                            #statNowCmd := #STAT_ERROR;                                                              // STAT_ERROR 상태로 이동
+	                        END_IF;
+	                        
+	                        IF #instHaltCathodeMandrelZFront.Error THEN                                                  // Cathode Mandrel Z Front Halt 동작 중 에러 발생 시
+	                            #ErrorID := #instHaltCathodeMandrelZFront.ErrorId;                                       // Cathode Mandrel Z Front Halt 에러ID 출력
+	                            #statBeforeCmd := #statNowCmd;                                                           // 이전 명령 모니터링
+	                            #statNowCmd := #STAT_ERROR;                                                              // STAT_ERROR 상태로 이동
+	                        END_IF;
+	                        
+	                        IF #instHaltCathodeMandrelZRear.Error THEN                                                   // Cathode Mandrel Z Rear Halt 동작 중 에러 발생 시
+	                            #ErrorID := #instHaltCathodeMandrelZRear.ErrorId;                                        // Cathode Mandrel Z Rear Halt 에러ID 출력
+	                            #statBeforeCmd := #statNowCmd;                                                           // 이전 명령 모니터링
+	                            #statNowCmd := #STAT_ERROR;                                                              // STAT_ERROR 상태로 이동
+	                        END_IF;
+	
+	                        // IF #instHaltFinalRoller.CommandAborted THEN                                                           // Final Roller Halt 동작 중 에러 발생 시
+	                        //     #ErrorID := #instHaltFinalRoller.ErrorId;                                                // Final Roller Halt 에러ID 출력
+	                        //     #statBeforeCmd := #statNowCmd;                                                           // 이전 명령 모니터링
+	                        //     #statNowCmd := #STAT_ERROR;                                                              // STAT_ERROR 상태 돌입
+	                        // END_IF;
+	                        
+	                        // IF #instHaltCompensator.CommandAborted THEN                                                           // Compensator Halt 동작 중 에러 발생 시
+	                        //     #ErrorID := #instHaltCompensator.ErrorId;                                                // Compensator Halt 에러ID 출력
+	                        //     #statBeforeCmd := #statNowCmd;                                                           // 이전 명령 모니터링
+	                        //     #statNowCmd := #STAT_ERROR;                                                              // STAT_ERROR 상태 돌입
+	                        // END_IF;
+	                        
+	                        // IF #instHaltAnodePnPX1.CommandAborted THEN                                                            // Anode PnP X1 Halt 동작 중 에러 발생 시
+	                        //     #ErrorID := #instHaltAnodePnPX1.ErrorId;                                                 // Anode PnP X1 Halt 에러ID 출력
+	                        //     #statBeforeCmd := #statNowCmd;                                                           // 이전 명령 모니터링
+	                        //     #statNowCmd := #STAT_ERROR;                                                              // STAT_ERROR 상태 돌입
+	                        // END_IF;
+	                        
+	                        // IF #instHaltAnodePnPX2.CommandAborted THEN                                                            // Anode PnP X2 Halt 동작 중 에러 발생 시
+	                        //     #ErrorID := #instHaltAnodePnPX2.ErrorId;                                                 // Anode PnP X2 Halt 에러ID 출력
+	                        //     #statBeforeCmd := #statNowCmd;                                                           // 이전 명령 모니터링
+	                        //     #statNowCmd := #STAT_ERROR;                                                              // STAT_ERROR 상태 돌입
+	                        // END_IF;
+	                        
+	                        // IF #instHaltAnodePnPZ1.CommandAborted THEN                                                            // Anode PnP Z1 Halt 동작 중 에러 발생 시
+	                        //     #ErrorID := #instHaltAnodePnPZ1.ErrorId;                                                 // Anode PnP Z1 Halt 에러ID 출력
+	                        //     #statBeforeCmd := #statNowCmd;                                                           // 이전 명령 모니터링
+	                        //     #statNowCmd := #STAT_ERROR;                                                              // STAT_ERROR 상태 돌입
+	                        // END_IF;
+	                        
+	                        // IF #instHaltAnodePnPZ2.CommandAborted THEN                                                            // Anode PnP Z2 Halt 동작 중 에러 발생 시
+	                        //     #ErrorID := #instHaltAnodePnPZ2.ErrorId;                                                 // Anode PnP Z2 Halt 에러ID 출력
+	                        //     #statBeforeCmd := #statNowCmd;                                                           // 이전 명령 모니터링
+	                        //     #statNowCmd := #STAT_ERROR;                                                              // STAT_ERROR 상태 돌입
+	                        // END_IF;
+	                        
+	                        // IF #instHaltCathodePnPX1.CommandAborted THEN                                                          // Cathode PnP X1 Halt 동작 중 에러 발생 시
+	                        //     #ErrorID := #instHaltCathodePnPX1.ErrorId;                                               // Cathode PnP X1 Halt 에러ID 출력
+	                        //     #statBeforeCmd := #statNowCmd;                                                           // 이전 명령 모니터링
+	                        //     #statNowCmd := #STAT_ERROR;                                                              // STAT_ERROR 상태 돌입
+	                        // END_IF;
+	                        
+	                        // IF #instHaltCathodePnPX2.CommandAborted THEN                                                          // Cathode PnP X2 Halt 동작 중 에러 발생 시
+	                        //     #ErrorID := #instHaltCathodePnPX2.ErrorId;                                               // Cathode PnP X2 Halt 에러ID 출력
+	                        //     #statBeforeCmd := #statNowCmd;                                                           // 이전 명령 모니터링
+	                        //     #statNowCmd := #STAT_ERROR;                                                              // STAT_ERROR 상태 돌입
+	                        // END_IF;
+	                        
+	                        // IF #instHaltCathodePnPZ1.CommandAborted THEN                                                          // Cathode PnP Z1 Halt 동작 중 에러 발생 시
+	                        //     #ErrorID := #instHaltCathodePnPZ1.ErrorId;                                               // Cathode PnP Z1 Halt 에러ID 출력
+	                        //     #statBeforeCmd := #statNowCmd;                                                           // 이전 명령 모니터링
+	                        //     #statNowCmd := #STAT_ERROR;                                                              // STAT_ERROR 상태 돌입
+	                        // END_IF;
+	                        
+	                        // IF #instHaltCathodePnPZ2.CommandAborted THEN                                                          // Cathode PnP Z2 Halt 동작 중 에러 발생 시
+	                        //     #ErrorID := #instHaltCathodePnPZ2.ErrorId;                                               // Cathode PnP Z2 Halt 에러ID 출력
+	                        //     #statBeforeCmd := #statNowCmd;                                                           // 이전 명령 모니터링
+	                        //     #statNowCmd := #STAT_ERROR;                                                              // STAT_ERROR 상태 돌입
+	                        // END_IF;
+	                        
+	                        // IF #instHaltAnodeMandrelYFront.CommandAborted THEN                                                    // Anode Mandrel Y Front Halt 동작 중 에러 발생 시
+	                        //     #ErrorID := #instHaltAnodeMandrelYFront.ErrorId;                                         // Anode Mandrel Y Front Halt 에러ID 출력
+	                        //     #statBeforeCmd := #statNowCmd;                                                           // 이전 명령 모니터링
+	                        //     #statNowCmd := #STAT_ERROR;                                                              // STAT_ERROR 상태 돌입
+	                        // END_IF;
+	                        
+	                        // IF #instHaltAnodeMandrelYRear.CommandAborted THEN                                                     // Anode Mandrel Y Rear Halt 동작 중 에러 발생 시
+	                        //     #ErrorID := #instHaltAnodeMandrelYRear.ErrorId;                                          // Anode Mandrel Y Rear Halt 에러ID 출력
+	                        //     #statBeforeCmd := #statNowCmd;                                                           // 이전 명령 모니터링
+	                        //     #statNowCmd := #STAT_ERROR;                                                              // STAT_ERROR 상태 돌입
+	                        // END_IF;
+	                        
+	                        // IF #instHaltAnodeMandrelZFront.CommandAborted THEN                                                    // Anode Mandrel Z Front Halt 동작 중 에러 발생 시
+	                        //     #ErrorID := #instHaltAnodeMandrelZFront.ErrorId;                                         // Anode Mandrel Z Front Halt 에러ID 출력
+	                        //     #statBeforeCmd := #statNowCmd;                                                           // 이전 명령 모니터링
+	                        //     #statNowCmd := #STAT_ERROR;                                                              // STAT_ERROR 상태 돌입
+	                        // END_IF;
+	                        
+	                        // IF #instHaltAnodeMandrelZRear.CommandAborted THEN                                                     // Anode Mandrel Z Rear Halt 동작 중 에러 발생 시
+	                        //     #ErrorID := #instHaltAnodeMandrelZRear.ErrorId;                                          // Anode Mandrel Z Rear Halt 에러ID 출력
+	                        //     #statBeforeCmd := #statNowCmd;                                                           // 이전 명령 모니터링
+	                        //     #statNowCmd := #STAT_ERROR;                                                              // STAT_ERROR 상태 돌입
+	                        // END_IF;
+	                        
+	                        // IF #instHaltCathodeMandrelYFront.CommandAborted THEN                                                  // Cathode Mandrel Y Front Halt 동작 중 에러 발생 시
+	                        //     #ErrorID := #instHaltCathodeMandrelYFront.ErrorId;                                       // Cathode Mandrel Y Front Halt 에러ID 출력
+	                        //     #statBeforeCmd := #statNowCmd;                                                           // 이전 명령 모니터링
+	                        //     #statNowCmd := #STAT_ERROR;                                                              // STAT_ERROR 상태 돌입
+	                        // END_IF;
+	                        
+	                        // IF #instHaltCathodeMandrelYRear.CommandAborted THEN                                                   // Cathode Mandrel Y Rear Halt 동작 중 에러 발생 시
+	                        //     #ErrorID := #instHaltCathodeMandrelYRear.ErrorId;                                        // Cathode Mandrel Y Rear Halt 에러ID 출력
+	                        //     #statBeforeCmd := #statNowCmd;                                                           // 이전 명령 모니터링
+	                        //     #statNowCmd := #STAT_ERROR;                                                              // STAT_ERROR 상태 돌입
+	                        // END_IF;
+	                        
+	                        // IF #instHaltCathodeMandrelZFront.CommandAborted THEN                                                  // Cathode Mandrel Z Front Halt 동작 중 에러 발생 시
+	                        //     #ErrorID := #instHaltCathodeMandrelZFront.ErrorId;                                       // Cathode Mandrel Z Front Halt 에러ID 출력
+	                        //     #statBeforeCmd := #statNowCmd;                                                           // 이전 명령 모니터링
+	                        //     #statNowCmd := #STAT_ERROR;                                                              // STAT_ERROR 상태 돌입
+	                        // END_IF;
+	                        
+	                        // IF #instHaltCathodeMandrelZRear.CommandAborted THEN                                                   // Cathode Mandrel Z Rear Halt 동작 중 에러 발생 시
+	                        //     #ErrorID := #instHaltCathodeMandrelZRear.ErrorId;                                        // Cathode Mandrel Z Rear Halt 에러ID 출력
+	                        //     #statBeforeCmd := #statNowCmd;                                                           // 이전 명령 모니터링
+	                        //     #statNowCmd := #STAT_ERROR;                                                              // STAT_ERROR 상태 돌입
+	                        // END_IF;
+	                    END_REGION
+	                    
+	                    
+	                END_REGION
+	            
+	        #STAT_HOME:
+	            REGION HOME
+	                REGION DONE
+	                    IF #instHomeMasterVirtual.Done THEN                                   //가상축 홈 동작 완료시
+	                        #statEndTime := TIME_TCK();
+	                        #statTimeTable[#STAT_HOME / 10 - 9] := #statEndTime - #statStartTime;
+	                        #statStartTime := TIME_TCK();
+	                        #statBeforeCmd := #statNowCmd;                                    // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_DONE;                                    // STAT_DONE 상태 돌입
+	                    END_IF;
+	                END_REGION
+	                
+	                REGION ERROR                                                              // 가상축 홈 동작 중 에러 발생 시
+	                    IF #instHomeMasterVirtual.Error THEN
+	                        #ErrorID := #instHomeMasterVirtual.ErrorId;                       // 에러ID 출력
+	                        #statBeforeCmd := #statNowCmd;                                    // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                       // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                END_REGION
+	            END_REGION
+	            
+	        #STAT_DONE:
+	            REGION DONE
+	                ;
+	            END_REGION
+	    END_CASE;
+	END_REGION
+	
+	REGION INSTANCES
+	    REGION MASTER VIRTUAL
+	        #tempLineSpeed := #StageWidth * #CPM / 60.0;                                                             // Master Virtual 선속 [mm/s] 계산
+	        #tempTime := 60.0 / #CPM;                                                                                // Master Virtual 구동 시간[s] 계산
+	        
+	        #instMoveAbsMasterVirtual(Axis := #tempMasterVirtual^,
+	                                  Execute := #statNowCmd = #STAT_MASTER,
+	                                  Position := #statPosition,
+	                                  Velocity := #tempLineSpeed,
+	                                  Acceleration := 4.0 * #tempLineSpeed / #tempTime,
+	                                  Deceleration := 4.0 * #tempLineSpeed / #tempTime,
+	                                  Jerk := 0.0,
+	                                  BufferMode := 0,
+	                                  Direction := 1);
+	        #instHaltMasterVirtual(Axis := #tempMasterVirtual^,
+	                               Execute := #statNowCmd = #STAT_ALL,
+	                               Deceleration := 4.0 * #tempLineSpeed / #tempTime,
+	                               Jerk := 0.0,
+	                               AbortAcceleration := FALSE,
+	                               Mode := 0);
+	        #instHomeMasterVirtual(Axis := #tempMasterVirtual^,                           // 마스터 가상축 지정
+	                               Execute := #statNowCmd = #STAT_HOME,                   //  STAT_Home 상태일 때
+	                               Position := 0.0,
+	                               Mode := 0,
+	                               Sensor := 0);
+	        
+	        
+	    END_REGION
+	    
+	    REGION UNWINDER VIRTUAL
+	        #instHaltSlaveUnwinderVirtual(Axis := #tempSlaveUnwinderVirtual^,
+	                                      Execute := #statNowCmd = #STAT_ALL OR #statNowCmd = #STAT_UNWINDER,
+	                                      Deceleration := 4.0 * #tempLineSpeed / #tempTime,
+	                                      Jerk := 0.0,
+	                                      AbortAcceleration := FALSE,
+	                                      Mode := 0);
+	    END_REGION
+	    
+	    REGION FINAL ROLLER
+	        #tempSynchronousAxis ?= #Axis.FinalRoller;
+	        #instHaltFinalRoller(Axis := #tempSynchronousAxis^,
+	                             Execute := #statNowCmd = #STAT_OTHERS OR #statNowCmd = #STAT_ALL,
+	                             Deceleration := 4.0 * #tempLineSpeed / #tempTime,
+	                             Jerk := 0.0,
+	                             AbortAcceleration := FALSE,
+	                             Mode := 0);
+	    END_REGION
+	    
+	    REGION COMPENSATOR
+	        #tempSynchronousAxis ?= #Axis.Compensator;
+	        #instHaltCompensator(Axis := #tempSynchronousAxis^,
+	                             Execute := #statNowCmd = #STAT_OTHERS OR #statNowCmd = #STAT_ALL,
+	                             Deceleration := 4.0 * #tempLineSpeed / #tempTime,
+	                             Jerk := 0.0,
+	                             AbortAcceleration := FALSE,
+	                             Mode := 0);
+	    END_REGION
+	    
+	    REGION ANODE PNP X1
+	        #tempSynchronousAxis ?= #Axis.AnodePnPX1;
+	        #instHaltAnodePnPX1(Axis := #tempSynchronousAxis^,
+	                            Execute := #statNowCmd = #STAT_OTHERS OR #statNowCmd = #STAT_ALL,
+	                            Deceleration := 4.0 * #tempLineSpeed / #tempTime,
+	                            Jerk := 0.0,
+	                            AbortAcceleration := FALSE,
+	                            Mode := 0);
+	    END_REGION
+	    
+	    REGION ANODE PNP X2
+	        #tempSynchronousAxis ?= #Axis.AnodePnPX2;
+	        #instHaltAnodePnPX2(Axis := #tempSynchronousAxis^,
+	                            Execute := #statNowCmd = #STAT_OTHERS OR #statNowCmd = #STAT_ALL,
+	                            Deceleration := 4.0 * #tempLineSpeed / #tempTime,
+	                            Jerk := 0.0,
+	                            AbortAcceleration := FALSE,
+	                            Mode := 0);
+	    END_REGION
+	    
+	    REGION ANODE PNP Z1
+	        #tempSynchronousAxis ?= #Axis.AnodePnPZ1;
+	        #instHaltAnodePnPZ1(Axis := #tempSynchronousAxis^,
+	                            Execute := #statNowCmd = #STAT_OTHERS OR #statNowCmd = #STAT_ALL,
+	                            Deceleration := 4.0 * #tempLineSpeed / #tempTime,
+	                            Jerk := 0.0,
+	                            AbortAcceleration := FALSE,
+	                            Mode := 0);
+	    END_REGION
+	    
+	    REGION ANODE PNP Z2
+	        #tempSynchronousAxis ?= #Axis.AnodePnPZ2;
+	        #instHaltAnodePnPZ2(Axis := #tempSynchronousAxis^,
+	                            Execute := #statNowCmd = #STAT_OTHERS OR #statNowCmd = #STAT_ALL,
+	                            Deceleration := 4.0 * #tempLineSpeed / #tempTime,
+	                            Jerk := 0.0,
+	                            AbortAcceleration := FALSE,
+	                            Mode := 0);
+	    END_REGION
+	    
+	    REGION CATHODE PNP X1
+	        #tempSynchronousAxis ?= #Axis.CathodePnPX1;
+	        #instHaltCathodePnPX1(Axis := #tempSynchronousAxis^,
+	                              Execute := #statNowCmd = #STAT_OTHERS OR #statNowCmd = #STAT_ALL,
+	                              Deceleration := 4.0 * #tempLineSpeed / #tempTime,
+	                              Jerk := 0.0,
+	                              AbortAcceleration := FALSE,
+	                              Mode := 0);
+	    END_REGION
+	    
+	    REGION CATHODE PNP X2
+	        #tempSynchronousAxis ?= #Axis.CathodePnPX2;
+	        #instHaltCathodePnPX2(Axis := #tempSynchronousAxis^,
+	                              Execute := #statNowCmd = #STAT_OTHERS OR #statNowCmd = #STAT_ALL,
+	                              Deceleration := 4.0 * #tempLineSpeed / #tempTime,
+	                              Jerk := 0.0,
+	                              AbortAcceleration := FALSE,
+	                              Mode := 0);
+	    END_REGION
+	    
+	    REGION CATHODE PNP Z1
+	        #tempSynchronousAxis ?= #Axis.CathodePnPZ1;
+	        #instHaltCathodePnPZ1(Axis := #tempSynchronousAxis^,
+	                              Execute := #statNowCmd = #STAT_OTHERS OR #statNowCmd = #STAT_ALL,
+	                              Deceleration := 4.0 * #tempLineSpeed / #tempTime,
+	                              Jerk := 0.0,
+	                              AbortAcceleration := FALSE,
+	                              Mode := 0);
+	    END_REGION
+	    
+	    REGION CATHODE PNP Z2
+	        #tempSynchronousAxis ?= #Axis.CathodePnPZ2;
+	        #instHaltCathodePnPZ2(Axis := #tempSynchronousAxis^,
+	                              Execute := #statNowCmd = #STAT_OTHERS OR #statNowCmd = #STAT_ALL,
+	                              Deceleration := 4.0 * #tempLineSpeed / #tempTime,
+	                              Jerk := 0.0,
+	                              AbortAcceleration := FALSE,
+	                              Mode := 0);
+	    END_REGION
+	    
+	    REGION ANODE MANDREL Y FRONT
+	        #tempSynchronousAxis ?= #Axis.AnodeMandrelYFront;
+	        #instHaltAnodeMandrelYFront(Axis := #tempSynchronousAxis^,
+	                                    Execute := #statNowCmd = #STAT_OTHERS OR #statNowCmd = #STAT_ALL,
+	                                    Deceleration := 4.0 * #tempLineSpeed / #tempTime,
+	                                    Jerk := 0.0,
+	                                    AbortAcceleration := FALSE,
+	                                    Mode := 0);
+	    END_REGION
+	    
+	    REGION ANODE MANDREL Y REAR
+	        #tempSynchronousAxis ?= #Axis.AnodeMandrelYRear;
+	        #instHaltAnodeMandrelYRear(Axis := #tempSynchronousAxis^,
+	                                   Execute := #statNowCmd = #STAT_OTHERS OR #statNowCmd = #STAT_ALL,
+	                                   Deceleration := 4.0 * #tempLineSpeed / #tempTime,
+	                                   Jerk := 0.0,
+	                                   AbortAcceleration := FALSE,
+	                                   Mode := 0);
+	    END_REGION
+	    
+	    REGION ANODE MANDREL Z FRONT
+	        #tempSynchronousAxis ?= #Axis.AnodeMandrelZFront;
+	        #instHaltAnodeMandrelZFront(Axis := #tempSynchronousAxis^,
+	                                    Execute := #statNowCmd = #STAT_OTHERS OR #statNowCmd = #STAT_ALL,
+	                                    Deceleration := 4.0 * #tempLineSpeed / #tempTime,
+	                                    Jerk := 0.0,
+	                                    AbortAcceleration := FALSE,
+	                                    Mode := 0);
+	    END_REGION
+	    
+	    REGION ANODE MANDREL Z REAR
+	        #tempSynchronousAxis ?= #Axis.AnodeMandrelZRear;
+	        #instHaltAnodeMandrelZRear(Axis := #tempSynchronousAxis^,
+	                                   Execute := #statNowCmd = #STAT_OTHERS OR #statNowCmd = #STAT_ALL,
+	                                   Deceleration := 4.0 * #tempLineSpeed / #tempTime,
+	                                   Jerk := 0.0,
+	                                   AbortAcceleration := FALSE,
+	                                   Mode := 0);
+	    END_REGION
+	    
+	    REGION CATHODE MANDREL Y FRONT
+	        #tempSynchronousAxis ?= #Axis.CathodeMandrelYFront;
+	        #instHaltCathodeMandrelYFront(Axis := #tempSynchronousAxis^,
+	                                      Execute := #statNowCmd = #STAT_OTHERS OR #statNowCmd = #STAT_ALL,
+	                                      Deceleration := 4.0 * #tempLineSpeed / #tempTime,
+	                                      Jerk := 0.0,
+	                                      AbortAcceleration := FALSE,
+	                                      Mode := 0);
+	    END_REGION
+	    
+	    REGION CATHODE MANDREL Y REAR
+	        #tempSynchronousAxis ?= #Axis.CathodeMandrelYRear;
+	        #instHaltCathodeMandrelYRear(Axis := #tempSynchronousAxis^,
+	                                     Execute := #statNowCmd = #STAT_OTHERS OR #statNowCmd = #STAT_ALL,
+	                                     Deceleration := 4.0 * #tempLineSpeed / #tempTime,
+	                                     Jerk := 0.0,
+	                                     AbortAcceleration := FALSE,
+	                                     Mode := 0);
+	    END_REGION
+	    
+	    REGION CATHODE MANDREL Z FRONT
+	        #tempSynchronousAxis ?= #Axis.CathodeMandrelZFront;
+	        #instHaltCathodeMandrelZFront(Axis := #tempSynchronousAxis^,
+	                                      Execute := #statNowCmd = #STAT_OTHERS OR #statNowCmd = #STAT_ALL,
+	                                      Deceleration := 4.0 * #tempLineSpeed / #tempTime,
+	                                      Jerk := 0.0,
+	                                      AbortAcceleration := FALSE,
+	                                      Mode := 0);
+	    END_REGION
+	    
+	    REGION CATHODE MANDREL Z REAR
+	        #tempSynchronousAxis ?= #Axis.CathodeMandrelZRear;
+	        #instHaltCathodeMandrelZRear(Axis := #tempSynchronousAxis^,
+	                                     Execute := #statNowCmd = #STAT_OTHERS OR #statNowCmd = #STAT_ALL,
+	                                     Deceleration := 4.0 * #tempLineSpeed / #tempTime,
+	                                     Jerk := 0.0,
+	                                     AbortAcceleration := FALSE,
+	                                     Mode := 0);
+	    END_REGION
+	END_REGION
+	
+	REGION OUTPUT SIGNAL                                                                                             // 각 커맨드 동작 시 상태 표시 출력
+	    #Busy := #statNowCmd = #STAT_START
+	    OR #statNowCmd = #STAT_AUTO_CHECK
+	    OR #statNowCmd = #STAT_UNWINDER
+	    OR #statNowCmd = #STAT_MASTER
+	    OR #statNowCmd = #STAT_OTHERS
+	    OR #statNowCmd = #STAT_ALL;
+	    #Done := #statNowCmd = #STAT_DONE;
+	    #Error := #statNowCmd = #STAT_ERROR;
+	    #NowCmd := #statNowCmd;
+	    #BeforeCmd := #statBeforeCmd;
+	END_REGION
+	
+END_FUNCTION_BLOCK
+

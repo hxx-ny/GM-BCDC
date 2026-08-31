@@ -1,0 +1,653 @@
+﻿FUNCTION_BLOCK "2202_StackSemiStep"
+{ S7_Optimized_Access := 'TRUE' ; Published := 'FALSE' }
+VERSION : 0.1
+   VAR_INPUT 
+      Execute : Bool;
+      MandrelUse : Bool;
+      CPM : LReal;
+      StageWidth : LReal;
+      InitialPosFinalRoller : LReal;
+      InitialPosCompensator : LReal;
+      InitialPosAnodeMandrelYFront : LReal;
+      InitialPosAnodeMandrelYRear : LReal;
+      InitialPosAnodeMandrelZFront : LReal;
+      InitialPosAnodeMandrelZRear : LReal;
+      InitialPosCathodeMandrelYFront : LReal;
+      InitialPosCathodeMandrelYRear : LReal;
+      InitialPosCathodeMandrelZFront : LReal;
+      InitialPosCathodeMandrelZRear : LReal;
+   END_VAR
+
+   VAR_OUTPUT 
+      Done : Bool;
+      Busy : Bool;
+      Error : Bool;
+      ErrorID : DWord;
+      StatusID : DWord;
+      NowCmd : DInt;
+      BeforeCmd : DInt;
+   END_VAR
+
+   VAR_IN_OUT 
+      MasterVirtual : DB_ANY;
+      SlaveUnwinderVirtual : DB_ANY;
+      FinalRoller : DB_ANY;
+      Compensator : DB_ANY;
+      FinalRollerCam : DB_ANY;
+      CompensatorCam : DB_ANY;
+      Axis : Struct
+         MasterVirtual : DB_ANY;
+         UnwinderVirtual : DB_ANY;
+         UnwinderTop : DB_ANY;
+         UnwinderBottom : DB_ANY;
+         FinalRoller : DB_ANY;
+         Compensator : DB_ANY;
+         AnodePnPX1 : DB_ANY;
+         AnodePnPX2 : DB_ANY;
+         AnodePnPZ1 : DB_ANY;
+         AnodePnPZ2 : DB_ANY;
+         CathodePnPX1 : DB_ANY;
+         CathodePnPX2 : DB_ANY;
+         CathodePnPZ1 : DB_ANY;
+         CathodePnPZ2 : DB_ANY;
+         AnodeMandrelYFront : DB_ANY;
+         AnodeMandrelYRear : DB_ANY;
+         AnodeMandrelZFront : DB_ANY;
+         AnodeMandrelZRear : DB_ANY;
+         CathodeMandrelYFront : DB_ANY;
+         CathodeMandrelYRear : DB_ANY;
+         CathodeMandrelZFront : DB_ANY;
+         CathodeMandrelZRear : DB_ANY;
+         SepaGripperX : DB_ANY;
+      END_STRUCT;
+      Cam : Struct
+         FinalRollerCam : DB_ANY;
+         CompensatorCam : DB_ANY;
+         AnodePnPX1Cam : DB_ANY;
+         AnodePnPX2Cam : DB_ANY;
+         AnodePnPZ1Cam : DB_ANY;
+         AnodePnPZ2Cam : DB_ANY;
+         CathodePnPX1Cam : DB_ANY;
+         CathodePnPX2Cam : DB_ANY;
+         CathodePnPZ1Cam : DB_ANY;
+         CathodePnPZ2Cam : DB_ANY;
+         AnodeMandrelYFrontCam : DB_ANY;
+         AnodeMandrelYRearCam : DB_ANY;
+         AnodeMandrelZFrontCam : DB_ANY;
+         AnodeMandrelZRearCam : DB_ANY;
+         CathodeMandrelYFrontCam : DB_ANY;
+         CathodeMandrelYRearCam : DB_ANY;
+         CathodeMandrelZFrontCam : DB_ANY;
+         CathodeMandrelZRearCam : DB_ANY;
+      END_STRUCT;
+   END_VAR
+
+   VAR 
+      statNowCmd : DInt;
+      statBeforeCmd : DInt;
+      statLineSpeed : LReal;
+      statTimeTable : Array[1..50] of Time;
+      statStartTime : Time;
+      statEndTime : Time;
+      instTriggerExecute {InstructionName := 'R_TRIG'; LibVersion := '1.0'; S7_SetPoint := 'False'} : R_TRIG;
+      instHomeMasterVirtual {InstructionName := 'MC_HOME'; LibVersion := '9.0'} : MC_HOME;
+      instMoveAbsMasterVirtual {InstructionName := 'MC_MOVERELATIVE'; LibVersion := '9.0'} : MC_MOVERELATIVE;
+      instGearinSlaveUnwinderVirtual {InstructionName := 'MC_GEARIN'; LibVersion := '9.0'} : MC_GEARIN;
+      instCaminFinalRoller {InstructionName := 'MC_CAMIN'; LibVersion := '9.0'} : MC_CAMIN;
+      instCaminCompensator {InstructionName := 'MC_CAMIN'; LibVersion := '9.0'} : MC_CAMIN;
+      instCaminAnodeMandrelYFront {InstructionName := 'MC_CAMIN'; LibVersion := '9.0'} : MC_CAMIN;
+      instCaminAnodeMandrelYRear {InstructionName := 'MC_CAMIN'; LibVersion := '9.0'} : MC_CAMIN;
+      instCaminAnodeMandrelZFront {InstructionName := 'MC_CAMIN'; LibVersion := '9.0'} : MC_CAMIN;
+      instCaminAnodeMandrelZRear {InstructionName := 'MC_CAMIN'; LibVersion := '9.0'} : MC_CAMIN;
+      instCaminCathodeMandrelYFront {InstructionName := 'MC_CAMIN'; LibVersion := '9.0'} : MC_CAMIN;
+      instCaminCathodeMandrelYRear {InstructionName := 'MC_CAMIN'; LibVersion := '9.0'} : MC_CAMIN;
+      instCaminCathodeMandrelZFront {InstructionName := 'MC_CAMIN'; LibVersion := '9.0'} : MC_CAMIN;
+      instCaminCathodeMandrelZRear {InstructionName := 'MC_CAMIN'; LibVersion := '9.0'} : MC_CAMIN;
+   END_VAR
+
+   VAR_TEMP 
+      tempMasterVirtual {InstructionName := 'TO_SynchronousAxis'; LibVersion := '9.0'} : REF_TO TO_SynchronousAxis;
+      tempSlaveUnwinderVirtual {InstructionName := 'TO_SynchronousAxis'; LibVersion := '9.0'} : REF_TO TO_SynchronousAxis;
+      tempSynchronousAxis {InstructionName := 'TO_SynchronousAxis'; LibVersion := '9.0'} : REF_TO TO_SynchronousAxis;
+      tempCam10k {InstructionName := 'TO_Cam_10k'; LibVersion := '9.0'} : REF_TO TO_Cam_10k;
+      tempFinalRoller {InstructionName := 'TO_SynchronousAxis'; LibVersion := '9.0'} : REF_TO TO_SynchronousAxis;
+      tempCompensator {InstructionName := 'TO_SynchronousAxis'; LibVersion := '9.0'} : REF_TO TO_SynchronousAxis;
+      tempFinalRollerCam {InstructionName := 'TO_Cam_10k'; LibVersion := '9.0'} : REF_TO TO_Cam_10k;
+      tempCompensatorCam {InstructionName := 'TO_Cam_10k'; LibVersion := '9.0'} : REF_TO TO_Cam_10k;
+      tempStageWidth : LReal;
+      tempLineSpeed : LReal;
+      tempTime : LReal;
+      tempInitialPosFinalRoller : LReal;
+      tempInitialPosCompensator : LReal;
+      tempInitialPosAnodeMandrelYFront : LReal;
+      tempInitialPosAnodeMandrelYRear : LReal;
+      tempInitialPosAnodeMandrelZFront : LReal;
+      tempInitialPosAnodeMandrelZRear : LReal;
+      tempInitialPosCathodeMandrelYFront : LReal;
+      tempInitialPosCathodeMandrelYRear : LReal;
+      tempInitialPosCathodeMandrelZFront : LReal;
+      tempInitialPosCathodeMandrelZRear : LReal;
+   END_VAR
+
+   VAR CONSTANT 
+      STAT_IDLE : DInt := 0;
+      STAT_ERROR : DInt := 99;
+      STAT_START : DInt := 100;
+      STAT_CONTINUE : DInt := 110;
+      STAT_HOME : DInt := 120;
+      STAT_GEAR_IN : DInt := 130;
+      STAT_CAM_IN1 : DInt := 140;
+      STAT_CAM_IN2 : DInt := 150;
+      STAT_MOVE_REL : DInt := 160;
+      STAT_DONE : DInt := 10000;
+   END_VAR
+
+
+BEGIN
+	REGION TECHNOLOGY OBJECT
+	    REGION AXIS                                                                           // Axis Mapping 영역
+	        #tempMasterVirtual ?= #Axis.MasterVirtual;                                             // Master 할당
+	        #tempSlaveUnwinderVirtual ?= #Axis.UnwinderVirtual;                               // Slave(Unwinder) 할당
+	        #tempFinalRoller ?= #Axis.FinalRoller;                                                 // Final Roller 할당
+	        #tempCompensator ?= #Axis.Compensator;                                                 // Compensator 할당
+	    END_REGION
+	    
+	    REGION CAM                                                                            // 캠 계산에 사용할 임시 변수 선언
+	        #tempFinalRollerCam ?= #Cam.FinalRollerCam;                                           // FinalRoller Cam 할당
+	        #tempCompensatorCam ?= #Cam.CompensatorCam;                                           // Compensator Cam 할당
+	    END_REGION
+	END_REGION
+	
+	REGION INPUT SIGNAL                                                                       // 입력 신호 처리
+	    REGION EXECUTE
+	        IF NOT #Execute THEN                                                              // Execute := False 상태 시 IDLE 상태로 초기화
+	            #statBeforeCmd := #statNowCmd;                                                // 이전 명령 모니터링
+	            #statNowCmd := #STAT_IDLE;                                                    // STAT_IDLE 상태로 이동
+	        END_IF;
+	        
+	        #instTriggerExecute(CLK := #Execute);                                             // 상승 에지 검출
+	        
+	        IF #instTriggerExecute.Q THEN                                                     // 상승 엣지 검출 시
+	            #statLineSpeed := 0.0;                                                        // 재가동을 위한 선속 초기화
+	            #statStartTime := TIME_TCK();
+	            #statBeforeCmd := #statNowCmd;                                                // 이전 명령 모니터링
+	            #statNowCmd := #STAT_START;                                                   // STAT_START 상태 돌입
+	        END_IF;
+	    END_REGION
+	END_REGION
+	
+	REGION COMMAND
+	    CASE #statNowCmd OF
+	        #STAT_IDLE:
+	            REGION IDLE
+	                ;
+	            END_REGION
+	            
+	        #STAT_ERROR:
+	            REGION ERROR
+	                ;
+	            END_REGION
+	            
+	        #STAT_START:
+	            REGION STEP START
+	                #statEndTime := TIME_TCK();
+	                #statTimeTable[#STAT_START / 10 - 9] := #statEndTime - #statStartTime;
+	                #statStartTime := TIME_TCK();
+	                #statBeforeCmd := #statNowCmd;                                            // 이전 명령 모니터링
+	                #statNowCmd := #STAT_GEAR_IN;                                                // 정상적으로 돌입 시 Home 상태 돌입
+	            END_REGION
+	     
+	        #STAT_GEAR_IN:                                                                    // Unwinder 가상축 GearIn 상태
+	            REGION GEAR IN
+	                REGION DONE                                                               // Unwinder GearIn 동작 완료 시
+	                    IF #instGearinSlaveUnwinderVirtual.InGear THEN
+	                        #statEndTime := TIME_TCK();
+	                        #statTimeTable[#STAT_GEAR_IN / 10 - 9] := #statEndTime - #statStartTime;
+	                        #statStartTime := TIME_TCK();
+	                        #statBeforeCmd := #statNowCmd;                                    // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_CAM_IN1;                                      // STAT_CAM_IN 상태 돌입
+	                    END_IF;
+	                END_REGION
+	                
+	                REGION ERROR                                                              // Unwinder 가상축 GearIn 동작 중 에러 발생 시
+	                    IF #instGearinSlaveUnwinderVirtual.Error THEN
+	                        #ErrorID := #instGearinSlaveUnwinderVirtual.ErrorId;              // GearIn 에러ID 출력
+	                        #StatusID := 16#0300_2480;
+	                        #statBeforeCmd := #statNowCmd;                                    // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                       // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                END_REGION
+	            END_REGION
+	            
+	        #STAT_CAM_IN1:                                                                     // FinalRoller와 Compensator 캠 동기화 상태
+	            REGION CAM IN
+	                REGION DONE                                                               // FinalRoller와 Compensator 캠 동기화 완료 시
+	                    IF #instCaminFinalRoller.InSync AND #instCaminCompensator.InSync THEN // FinalRoller와 Compensator 전부 캠 동기화 상태 확인
+	                        #statEndTime := TIME_TCK();
+	                        #statTimeTable[#STAT_CAM_IN1 / 10 - 9] := #statEndTime - #statStartTime;
+	                        #statStartTime := TIME_TCK();
+	                        #statBeforeCmd := #statNowCmd;
+	                        IF #MandrelUse THEN
+	                            #statNowCmd := #STAT_CAM_IN2;
+	                        ELSE
+	                            #statNowCmd := #STAT_MOVE_REL;                                    // STAT_MOVE_ABS 상태 돌입
+	                        END_IF;
+	                    END_IF;
+	                END_REGION
+	                
+	                REGION ERROR                                              
+	                    IF #instCaminFinalRoller.Error THEN                                   // FinalRoller 캠 동기화 중 에러 발생 시
+	                        #ErrorID := #instCaminFinalRoller.ErrorId;                        // FinalRoller 에러ID 출력
+	                        #statBeforeCmd := #statNowCmd;                                    // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                       // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instCaminCompensator.Error THEN                                   // Compensator 캠 동기화 중 에러 발생 시
+	                        #ErrorID := #instCaminCompensator.ErrorId;                        // Compensator 에러ID 출력
+	                        #StatusID := 16#0600_2490;
+	                        #statBeforeCmd := #statNowCmd;                                    // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                       // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                END_REGION
+	            END_REGION
+	            
+	        #STAT_CAM_IN2:                                                           // Cam In 동작 영역
+	            REGION CAM IN
+	                REGION DONE                                                     // Cam In 동작 완료 시
+	                    IF #instCaminAnodeMandrelYFront.InSync
+	                        AND #instCaminAnodeMandrelYRear.InSync
+	                        AND #instCaminAnodeMandrelZFront.InSync
+	                        AND #instCaminAnodeMandrelZRear.InSync
+	                        AND #instCaminCathodeMandrelYFront.InSync
+	                        AND #instCaminCathodeMandrelYRear.InSync
+	                        AND #instCaminCathodeMandrelZFront.InSync
+	                        AND #instCaminCathodeMandrelZRear.InSync
+	                    THEN
+	                        #statEndTime := TIME_TCK();
+	                        #statTimeTable[#STAT_CAM_IN2 / 10 - 9] := #statEndTime - #statStartTime;
+	                        #statStartTime := TIME_TCK();
+	                        #statBeforeCmd := #statNowCmd;
+	                        #statNowCmd := #STAT_MOVE_REL;
+	                    END_IF;
+	                END_REGION
+	                
+	                REGION ERROR  
+	                    IF #instCaminAnodeMandrelYFront.Error THEN                  // AnodeMandrelYFront CamIn 에러 발생 시
+	                        #ErrorID := #instCaminAnodeMandrelYFront.ErrorId;       // AnodeMandrelYFront CamIn 에러 ID 출력
+	                        #StatusID := 16#2800_2490;
+	                        #statBeforeCmd := #statNowCmd;                          // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                             // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instCaminAnodeMandrelYRear.Error THEN                   // AnodeMandrelYRear CamIn 에러 발생 시
+	                        #ErrorID := #instCaminAnodeMandrelYRear.ErrorId;        // AnodeMandrelYRear CamIn 에러 ID 출력
+	                        #StatusID := 16#3000_2490;
+	                        #statBeforeCmd := #statNowCmd;                          // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                             // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instCaminAnodeMandrelZFront.Error THEN                  // AnodeMandrelZFront CamIn 에러 발생 시
+	                        #ErrorID := #instCaminAnodeMandrelZFront.ErrorId;       // AnodeMandrelZFront CamIn 에러 ID 출력
+	                        #StatusID := 16#2900_2490;
+	                        #statBeforeCmd := #statNowCmd;                          // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                             // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instCaminAnodeMandrelZRear.Error THEN                   // AnodeMandrelZRear CamIn 에러 발생 시
+	                        #ErrorID := #instCaminAnodeMandrelZRear.ErrorId;        // AnodeMandrelZRear CamIn 에러 ID 출력
+	                        #StatusID := 16#3100_2490;
+	                        #statBeforeCmd := #statNowCmd;                          // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                             // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instCaminCathodeMandrelYFront.Error THEN                // CathodeMandrelYFront CamIn 에러 발생 시
+	                        #ErrorID := #instCaminCathodeMandrelYFront.ErrorId;     // CathodeMandrelYFront CamIn 에러 ID 출력
+	                        #StatusID := 16#3200_2490;
+	                        #statBeforeCmd := #statNowCmd;                          // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                             // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instCaminCathodeMandrelYRear.Error THEN                 // CathodeMandrelYRear CamIn 에러 발생 시
+	                        #ErrorID := #instCaminCathodeMandrelYRear.ErrorId;      // CathodeMandrelYRear CamIn 에러 ID 출력
+	                        #StatusID := 16#3400_2490;
+	                        #statBeforeCmd := #statNowCmd;                          // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                             // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instCaminCathodeMandrelZFront.Error THEN                // CathodeMandrelZFront CamIn 에러 발생 시
+	                        #ErrorID := #instCaminCathodeMandrelZFront.ErrorId;     // CathodeMandrelZFront CamIn 에러 ID 출력
+	                        #StatusID := 16#3300_2490;
+	                        #statBeforeCmd := #statNowCmd;                          // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                             // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instCaminCathodeMandrelZRear.Error THEN                 // CathodeMandrelZRear CamIn 에러 발생 시
+	                        #ErrorID := #instCaminCathodeMandrelZRear.ErrorId;      // CathodeMandrelZRear CamIn 에러 ID 출력
+	                        #StatusID := 16#3500_2490;
+	                        #statBeforeCmd := #statNowCmd;                          // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                             // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    
+	                END_REGION
+	            END_REGION
+	        
+	        #STAT_MOVE_REL:
+	            REGION MOVE ABSOLUTE
+	                REGION DONE                                                               // Move Absolute 동작 완료 시
+	                    IF #instMoveAbsMasterVirtual.Done THEN
+	                        #statEndTime := TIME_TCK();
+	                        #statTimeTable[#STAT_MOVE_REL / 10 - 9] := #statEndTime - #statStartTime;
+	                        #statStartTime := TIME_TCK();
+	                        #statBeforeCmd := #statNowCmd;                                    // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_DONE;                                        // STAT_DONE 상태 돌입
+	                    END_IF;
+	                END_REGION
+	                
+	                REGION ERROR                                                              // Move Absolute 동작 중 에러 발생 시
+	                    IF #instMoveAbsMasterVirtual.Error THEN
+	                        #ErrorID := #instMoveAbsMasterVirtual.ErrorId;                    // MoveAbs 에러ID 출력
+	                        #StatusID := 16#0200_24D0;
+	                        #statBeforeCmd := #statNowCmd;                                    // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                       // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                END_REGION
+	            END_REGION
+	        
+	        #STAT_DONE:
+	            REGION DONE
+	                ;
+	            END_REGION
+	    END_CASE;
+	END_REGION
+	
+	REGION INSTANCES                                                                          // 각 커맨드에 따른 인스턴스 DB 호출 영역
+	    REGION MOVE RELARIVE                                                                // Master축 Move Absolute 파라미터 
+	        REGION MASTER VIRTUAL AXIS
+	            #tempStageWidth := #StageWidth;                                               // 스택 스테이지 폭
+	            #tempLineSpeed := #StageWidth * #CPM / 60.0;                                  // 선속[mm/s] = 스테이지 폭(mm) / 셀당 시간(60/CPM)
+	            #tempTime := 60.0 / #CPM * 2.0;                                               // Stack 왕복 이동 시간 : 셀당 시간(60/CPM) * 2(왕복)
+	            #instMoveAbsMasterVirtual(Axis := #tempMasterVirtual^,
+	                                      Execute := #statNowCmd = #STAT_MOVE_REL,            // STAT_MOVE_ABS 상태일 때
+	                                      Distance:= #StageWidth,                          // 원점에서 스테이지 폭 만큼 이동
+	                                      Velocity := #tempLineSpeed,                         // 동작 속도는 선속과 동일
+	                                      Acceleration := 3.0 * #tempLineSpeed / #tempTime,   // 가속 = 감속 = 선속 / 시간
+	                                      Deceleration := 3.0 * #tempLineSpeed / #tempTime,   // 가속 = 감속 = 선속 / 시간
+	                                      Jerk := 0.0,
+	                                      BufferMode := 0);
+	        END_REGION
+	    END_REGION
+	    
+	    REGION GEAR IN                                                                        // Unwinder 가상축 GearIn 파라미터 설정
+	        REGION UNWINDER VIRTUAL AXIS 
+	            #instGearinSlaveUnwinderVirtual(Master := #tempMasterVirtual^,                // 마스터 가상축 지정
+	                                            Slave := #tempSlaveUnwinderVirtual^,          // Unwinder 가상축 지정
+	                                            Execute := #statNowCmd = #STAT_GEAR_IN AND NOT #instGearinSlaveUnwinderVirtual.InGear,       // STAT_GEAR_IN 상태일 때
+	                                            Acceleration := -1.0,
+	                                            Deceleration := -1.0,
+	                                            Jerk := 0.0,
+	                                            RatioDenominator := 1,
+	                                            RatioNumerator := 1);
+	        END_REGION
+	    END_REGION
+	    
+	    REGION CAM IN                                                                         // FinalRoller, Compensator CamIn
+	        REGION FINAL ROLLER                                                               // Final Roller 캠인 파라미터 설정
+	            #tempInitialPosFinalRoller := #InitialPosFinalRoller;                         // Final Roller 초기값 설정
+	            
+	            #instCaminFinalRoller(Master := #tempMasterVirtual^,                          // Master 가상축 지정
+	                                  Slave := #tempFinalRoller^,                             // FinalRoller축 지정
+	                                  Cam := #tempFinalRollerCam^,                            // FinalRoller캠 지정
+	                                  Execute := #statNowCmd = #STAT_CAM_IN1 AND NOT #instCaminFinalRoller.InSync,                  // STAT_CAM_IN 상태일 때
+	                                  Velocity := -1.0,
+	                                  Acceleration := -1.0,
+	                                  Deceleration := -1.0,
+	                                  Jerk := 0.0,
+	                                  MasterOffset := 0.0,
+	                                  SlaveOffset := #tempInitialPosFinalRoller,              //Final Roller 초기값을 SlaveOffset으로 지정
+	                                  MasterScaling := 1.0,
+	                                  SlaveScaling := 1.0,
+	                                  MasterSyncPosition := 0.0,
+	                                  MasterStartDistance := 0.0,
+	                                  SyncDirection := 3,
+	                                  SyncProfileReference := 2,
+	                                  ApplicationMode := 1);
+	        END_REGION
+	        
+	        REGION COMPENSATOR                                                                // Compensator 캠인 파라미터 설정
+	            #tempInitialPosCompensator := #InitialPosCompensator;                         // Compensator 초기값 설정
+	            
+	            #instCaminCompensator(Master := #tempMasterVirtual^,                          // Master 가상축 지정
+	                                  Slave := #tempCompensator^,                             // Compensator 실제축 지정
+	                                  Cam := #tempCompensatorCam^,                            // Compensator 캠 지정
+	                                  Execute := #statNowCmd = #STAT_CAM_IN1 AND NOT #instCaminCompensator.InSync,                  // STAT_CAM_IN 상태일 때
+	                                  Velocity := -1.0,
+	                                  Acceleration := -1.0,
+	                                  Deceleration := -1.0,
+	                                  Jerk := 0.0,
+	                                  MasterOffset := 0.0,
+	                                  SlaveOffset := #tempInitialPosCompensator,              // Compensator 초기값을 SlaveOffset으로 지정
+	                                  MasterScaling := 1.0,
+	                                  SlaveScaling := 1.0,
+	                                  MasterSyncPosition := 0.0,
+	                                  MasterStartDistance := 0.0,
+	                                  SyncDirection := 3,
+	                                  SyncProfileReference := 2,
+	                                  ApplicationMode := 2);
+	        END_REGION
+	        
+	        REGION MANDREL Y 
+	            REGION ANODE MANDREL Y FRONT
+	                #tempInitialPosAnodeMandrelYFront := #InitialPosAnodeMandrelYFront;
+	                #tempSynchronousAxis ?= #Axis.AnodeMandrelYFront;
+	                #tempCam10k ?= #Cam.AnodeMandrelYFrontCam;
+	                
+	                #instCaminAnodeMandrelYFront(Master := #tempMasterVirtual^,
+	                                             Slave := #tempSynchronousAxis^,
+	                                             Cam := #tempCam10k^,
+	                                             Execute := #statNowCmd = #STAT_CAM_IN2 AND NOT #instCaminAnodeMandrelYFront.InSync AND #MandrelUse,
+	                                             Velocity := -1.0,
+	                                             Acceleration := -1.0,
+	                                             Deceleration := -1.0,
+	                                             Jerk := 0.0,
+	                                             MasterOffset := 0.0,
+	                                             SlaveOffset := #tempInitialPosAnodeMandrelYFront,
+	                                             MasterScaling := 1.0,
+	                                             SlaveScaling := 1.0,
+	                                             MasterSyncPosition := 0.0,
+	                                             MasterStartDistance := 0.0,
+	                                             SyncDirection := 3,
+	                                             SyncProfileReference := 2,
+	                                             ApplicationMode := 0);
+	            END_REGION
+	            
+	            REGION ANODE MANDREL Y REAR
+	                #tempInitialPosAnodeMandrelYRear := #InitialPosAnodeMandrelYRear;
+	                #tempSynchronousAxis ?= #Axis.AnodeMandrelYRear;
+	                #tempCam10k ?= #Cam.AnodeMandrelYRearCam;
+	                
+	                #instCaminAnodeMandrelYRear(Master := #tempMasterVirtual^,
+	                                            Slave := #tempSynchronousAxis^,
+	                                            Cam := #tempCam10k^,
+	                                            Execute := #statNowCmd = #STAT_CAM_IN2 AND NOT #instCaminAnodeMandrelYRear.InSync AND #MandrelUse,
+	                                            Velocity := -1.0,
+	                                            Acceleration := -1.0,
+	                                            Deceleration := -1.0,
+	                                            Jerk := 0.0,
+	                                            MasterOffset := 0.0,
+	                                            SlaveOffset := #tempInitialPosAnodeMandrelYRear,
+	                                            MasterScaling := 1.0,
+	                                            SlaveScaling := 1.0,
+	                                            MasterSyncPosition := 0.0,
+	                                            MasterStartDistance := 0.0,
+	                                            SyncDirection := 3,
+	                                            SyncProfileReference := 2,
+	                                            ApplicationMode := 0);
+	            END_REGION
+	            
+	            REGION CATHODE MANDREL Y FRONT
+	                #tempInitialPosCathodeMandrelYFront := #InitialPosCathodeMandrelYFront;
+	                #tempSynchronousAxis ?= #Axis.CathodeMandrelYFront;
+	                #tempCam10k ?= #Cam.CathodeMandrelYFrontCam;
+	                
+	                #instCaminCathodeMandrelYFront(Master := #tempMasterVirtual^,
+	                                               Slave := #tempSynchronousAxis^,
+	                                               Cam := #tempCam10k^,
+	                                               Execute := #statNowCmd = #STAT_CAM_IN2 AND NOT #instCaminCathodeMandrelYFront.InSync AND #MandrelUse,
+	                                               Velocity := -1.0,
+	                                               Acceleration := -1.0,
+	                                               Deceleration := -1.0,
+	                                               Jerk := 0.0,
+	                                               MasterOffset := 0.0,
+	                                               SlaveOffset := #tempInitialPosCathodeMandrelYFront,
+	                                               MasterScaling := 1.0,
+	                                               SlaveScaling := 1.0,
+	                                               MasterSyncPosition := 0.0,
+	                                               MasterStartDistance := 0.0,
+	                                               SyncDirection := 3,
+	                                               SyncProfileReference := 2,
+	                                               ApplicationMode := 0);
+	            END_REGION
+	            
+	            REGION CATHODE MANDREL Y REAR
+	                #tempInitialPosCathodeMandrelYRear := #InitialPosCathodeMandrelYRear;
+	                #tempSynchronousAxis ?= #Axis.CathodeMandrelYRear;
+	                #tempCam10k ?= #Cam.CathodeMandrelYRearCam;
+	                
+	                #instCaminCathodeMandrelYRear(Master := #tempMasterVirtual^,
+	                                              Slave := #tempSynchronousAxis^,
+	                                              Cam := #tempCam10k^,
+	                                              Execute := #statNowCmd = #STAT_CAM_IN2 AND NOT #instCaminCathodeMandrelYRear.InSync AND #MandrelUse,
+	                                              Velocity := -1.0,
+	                                              Acceleration := -1.0,
+	                                              Deceleration := -1.0,
+	                                              Jerk := 0.0,
+	                                              MasterOffset := 0.0,
+	                                              SlaveOffset := #tempInitialPosCathodeMandrelYRear,
+	                                              MasterScaling := 1.0,
+	                                              SlaveScaling := 1.0,
+	                                              MasterSyncPosition := 0.0,
+	                                              MasterStartDistance := 0.0,
+	                                              SyncDirection := 3,
+	                                              SyncProfileReference := 2,
+	                                              ApplicationMode := 0);
+	            END_REGION
+	        END_REGION
+	        
+	        REGION MANDREL Z 
+	            REGION ANODE MANDREL Z FRONT
+	                #tempInitialPosAnodeMandrelZFront := #InitialPosAnodeMandrelZFront;
+	                #tempSynchronousAxis ?= #Axis.AnodeMandrelZFront;
+	                #tempCam10k ?= #Cam.AnodeMandrelZFrontCam;
+	                
+	                #instCaminAnodeMandrelZFront(Master := #tempMasterVirtual^,
+	                                             Slave := #tempSynchronousAxis^,
+	                                             Cam := #tempCam10k^,
+	                                             Execute := #statNowCmd = #STAT_CAM_IN2 AND NOT #instCaminAnodeMandrelZFront.InSync AND #MandrelUse,
+	                                             Velocity := -1.0,
+	                                             Acceleration := -1.0,
+	                                             Deceleration := -1.0,
+	                                             Jerk := 0.0,
+	                                             MasterOffset := 0.0,
+	                                             SlaveOffset := #tempInitialPosAnodeMandrelZFront,
+	                                             MasterScaling := 1.0,
+	                                             SlaveScaling := 1.0,
+	                                             MasterSyncPosition := 0.0,
+	                                             MasterStartDistance := 0.0,
+	                                             SyncDirection := 3,
+	                                             SyncProfileReference := 2,
+	                                             ApplicationMode := 0);
+	            END_REGION
+	            
+	            REGION ANODE MANDREL Z REAR
+	                #tempInitialPosAnodeMandrelZRear := #InitialPosAnodeMandrelZRear;
+	                #tempSynchronousAxis ?= #Axis.AnodeMandrelZRear;
+	                #tempCam10k ?= #Cam.AnodeMandrelZRearCam;
+	                
+	                #instCaminAnodeMandrelZRear(Master := #tempMasterVirtual^,
+	                                            Slave := #tempSynchronousAxis^,
+	                                            Cam := #tempCam10k^,
+	                                            Execute := #statNowCmd = #STAT_CAM_IN2 AND NOT #instCaminAnodeMandrelZRear.InSync AND #MandrelUse,
+	                                            Velocity := -1.0,
+	                                            Acceleration := -1.0,
+	                                            Deceleration := -1.0,
+	                                            Jerk := 0.0,
+	                                            MasterOffset := 0.0,
+	                                            SlaveOffset := #tempInitialPosAnodeMandrelZRear,
+	                                            MasterScaling := 1.0,
+	                                            SlaveScaling := 1.0,
+	                                            MasterSyncPosition := 0.0,
+	                                            MasterStartDistance := 0.0,
+	                                            SyncDirection := 3,
+	                                            SyncProfileReference := 2,
+	                                            ApplicationMode := 0);
+	            END_REGION
+	            
+	            REGION CATHODE MANDREL Z FRONT
+	                #tempInitialPosCathodeMandrelZFront := #InitialPosCathodeMandrelZFront;
+	                #tempSynchronousAxis ?= #Axis.CathodeMandrelZFront;
+	                #tempCam10k ?= #Cam.CathodeMandrelZFrontCam;
+	                
+	                #instCaminCathodeMandrelZFront(Master := #tempMasterVirtual^,
+	                                               Slave := #tempSynchronousAxis^,
+	                                               Cam := #tempCam10k^,
+	                                               Execute := #statNowCmd = #STAT_CAM_IN2 AND NOT #instCaminCathodeMandrelZFront.InSync AND #MandrelUse,
+	                                               Velocity := -1.0,
+	                                               Acceleration := -1.0,
+	                                               Deceleration := -1.0,
+	                                               Jerk := 0.0,
+	                                               MasterOffset := 0.0,
+	                                               SlaveOffset := #tempInitialPosCathodeMandrelZFront,
+	                                               MasterScaling := 1.0,
+	                                               SlaveScaling := 1.0,
+	                                               MasterSyncPosition := 0.0,
+	                                               MasterStartDistance := 0.0,
+	                                               SyncDirection := 3,
+	                                               SyncProfileReference := 2,
+	                                               ApplicationMode := 0);
+	            END_REGION
+	            
+	            REGION CATHODE MANDREL Z REAR
+	                #tempInitialPosCathodeMandrelZRear := #InitialPosCathodeMandrelZRear;
+	                #tempSynchronousAxis ?= #Axis.CathodeMandrelZRear;
+	                #tempCam10k ?= #Cam.CathodeMandrelZRearCam;
+	                
+	                #instCaminCathodeMandrelZRear(Master := #tempMasterVirtual^,
+	                                              Slave := #tempSynchronousAxis^,
+	                                              Cam := #tempCam10k^,
+	                                              Execute := #statNowCmd = #STAT_CAM_IN2 AND NOT #instCaminCathodeMandrelZRear.InSync AND #MandrelUse,
+	                                              Velocity := -1.0,
+	                                              Acceleration := -1.0,
+	                                              Deceleration := -1.0,
+	                                              Jerk := 0.0,
+	                                              MasterOffset := 0.0,
+	                                              SlaveOffset := #tempInitialPosCathodeMandrelZRear,
+	                                              MasterScaling := 1.0,
+	                                              SlaveScaling := 1.0,
+	                                              MasterSyncPosition := 0.0,
+	                                              MasterStartDistance := 0.0,
+	                                              SyncDirection := 3,
+	                                              SyncProfileReference := 2,
+	                                              ApplicationMode :=0);
+	            END_REGION
+	        END_REGION
+	        
+	    END_REGION
+	END_REGION
+	
+	REGION OUTPUT SIGNAL                                                                      // 각 커맨드 동작 시 Busy 출력
+	    #Busy := #statNowCmd = #STAT_START
+	    OR #statNowCmd = #STAT_HOME
+	    OR #statNowCmd = #STAT_CONTINUE
+	    OR #statNowCmd = #STAT_GEAR_IN
+	    OR #statNowCmd = #STAT_CAM_IN1
+	    OR #statNowCmd = #STAT_MOVE_REL;
+	    #Done := #statNowCmd = #STAT_DONE;
+	    #Error := #statNowCmd = #STAT_ERROR;
+	    #NowCmd := #statNowCmd;
+	    #BeforeCmd := #statBeforeCmd;
+	END_REGION
+	
+END_FUNCTION_BLOCK
+

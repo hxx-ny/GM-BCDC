@@ -1,0 +1,246 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Document>
+  <Engineering version="V20" />
+  <SW.Types.PlcStruct ID="0">
+    <AttributeList>
+      <Access>Published</Access>
+      <Interface><Sections xmlns="http://www.siemens.com/automation/Openness/SW/Interface/v5">
+  <Section Name="None">
+    <Member Name="execute" Datatype="Bool">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">TRUE: Starte Messung mit steigender Flanke</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">TRUE: Start friction measurement with rising edge</MultiLanguageText>
+      </Comment>
+    </Member>
+    <Member Name="abort" Datatype="Bool">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">TRUE: Stoppe Messung und Achse mit steigender Flanke</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">TRUE: Rising edge stops measurement and axis</MultiLanguageText>
+      </Comment>
+    </Member>
+    <Member Name="warmUpTime" Datatype="Time">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">Warmlaufzeit  Vor Beginn der Messung dreht der Antrieb für die parametrierte Zeit mit der maximalen Messdrehzahl</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">Warm up time  Before the measurement starts the drive rotates with maximum measurement speed for the parameterized time</MultiLanguageText>
+      </Comment>
+    </Member>
+    <Member Name="rampTime" Datatype="Real">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">[ms] Time to ramp up to maximum speed</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">[ms] Time to ramp up to maximum speed</MultiLanguageText>
+      </Comment>
+      <StartValue>1000.0</StartValue>
+    </Member>
+    <Member Name="noOfMeasurementPoints" Datatype="Int">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">Anzahl an Messpunkten pro Drehzahlwert (Einstellbar zwischen 50-500)</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">Number measurement points per speed step (limited between 50-500)</MultiLanguageText>
+      </Comment>
+      <StartValue>50</StartValue>
+    </Member>
+    <Member Name="sizeOfArray" Datatype="Int">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">maxSpeed = 0:  Anzahl der verwendeten Stützpunkte (aus "speedValues")  maxSpeed &lt;&gt; 0:  Anzahl an Messpunkten zwischen 0 und "maxSpeed"</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">maxSpeed = 0:  Number of breakpoints (from "speedValues")  maxSpeed &lt;&gt; 0:  Number of measuring points between 0 and "maxSpeed"</MultiLanguageText>
+      </Comment>
+      <StartValue>20</StartValue>
+    </Member>
+    <Member Name="maxSpeed" Datatype="LReal">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">[1/min] Maximaldrehzahl für die die Reibung gemessen werden soll</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">[RPM] Maximim speed at which the friction should be recorded</MultiLanguageText>
+      </Comment>
+      <StartValue>0.0</StartValue>
+    </Member>
+    <Member Name="speedValues" Datatype="&quot;LConSMC_typeBreakPointTable&quot;">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">[1/min] Stützpunkte der Drehzahlwerte für die die Reibung gemessen werden soll. Wird nur verwendet wenn "maxSpeed" = 0.</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">[RPM] Breakpoints of speed values for which the friction should be measured. Only if "maxSpeed" = 0.</MultiLanguageText>
+      </Comment>
+      <Sections>
+        <Section Name="None">
+          <Member Name="values" Datatype="Array[0..&quot;LCON_MAX_VALUE_BREAK_POINT_TABLE&quot;] of LReal">
+            <Subelement Path="0">
+              <StartValue>0.0</StartValue>
+            </Subelement>
+            <Subelement Path="1">
+              <StartValue>0.0</StartValue>
+            </Subelement>
+            <Subelement Path="2">
+              <StartValue>0.0</StartValue>
+            </Subelement>
+            <Subelement Path="3">
+              <StartValue>0.0</StartValue>
+            </Subelement>
+            <Subelement Path="4">
+              <StartValue>0.0</StartValue>
+            </Subelement>
+            <Subelement Path="5">
+              <StartValue>0.0</StartValue>
+            </Subelement>
+            <Subelement Path="6">
+              <StartValue>0.0</StartValue>
+            </Subelement>
+            <Subelement Path="7">
+              <StartValue>0.0</StartValue>
+            </Subelement>
+            <Subelement Path="8">
+              <StartValue>0.0</StartValue>
+            </Subelement>
+            <Subelement Path="9">
+              <StartValue>0.0</StartValue>
+            </Subelement>
+            <Subelement Path="10">
+              <StartValue>0.0</StartValue>
+            </Subelement>
+            <Subelement Path="11">
+              <StartValue>0.0</StartValue>
+            </Subelement>
+            <Subelement Path="12">
+              <StartValue>0.0</StartValue>
+            </Subelement>
+            <Subelement Path="13">
+              <StartValue>0.0</StartValue>
+            </Subelement>
+            <Subelement Path="14">
+              <StartValue>0.0</StartValue>
+            </Subelement>
+            <Subelement Path="15">
+              <StartValue>0.0</StartValue>
+            </Subelement>
+            <Subelement Path="16">
+              <StartValue>0.0</StartValue>
+            </Subelement>
+            <Subelement Path="17">
+              <StartValue>0.0</StartValue>
+            </Subelement>
+            <Subelement Path="18">
+              <StartValue>0.0</StartValue>
+            </Subelement>
+            <Subelement Path="19">
+              <StartValue>0.0</StartValue>
+            </Subelement>
+          </Member>
+        </Section>
+      </Sections>
+    </Member>
+    <Member Name="measurementDelayTime" Datatype="Time">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">Einschwingzeit für jeden Messpunkt nachdem die Reibung gemessen wird</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">Settling time after which the friction is measured at each speed setpoint</MultiLanguageText>
+      </Comment>
+      <StartValue>T#1S</StartValue>
+    </Member>
+  </Section>
+</Sections></Interface>
+      <Name>LConSMC_typeFrictionMeasurementV2In</Name>
+      <Namespace />
+    </AttributeList>
+    <ObjectList>
+      <MultilingualText ID="1" CompositionName="Comment">
+        <ObjectList>
+          <MultilingualTextItem ID="2" CompositionName="Items">
+            <AttributeList>
+              <Culture>de-DE</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="3" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-GB</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="4" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-US</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="5" CompositionName="Items">
+            <AttributeList>
+              <Culture>es-ES</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="6" CompositionName="Items">
+            <AttributeList>
+              <Culture>fr-FR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="7" CompositionName="Items">
+            <AttributeList>
+              <Culture>it-IT</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="8" CompositionName="Items">
+            <AttributeList>
+              <Culture>ko-KR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="9" CompositionName="Items">
+            <AttributeList>
+              <Culture>zh-CN</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+        </ObjectList>
+      </MultilingualText>
+      <MultilingualText ID="A" CompositionName="Title">
+        <ObjectList>
+          <MultilingualTextItem ID="B" CompositionName="Items">
+            <AttributeList>
+              <Culture>de-DE</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="C" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-GB</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="D" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-US</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="E" CompositionName="Items">
+            <AttributeList>
+              <Culture>es-ES</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="F" CompositionName="Items">
+            <AttributeList>
+              <Culture>fr-FR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="10" CompositionName="Items">
+            <AttributeList>
+              <Culture>it-IT</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="11" CompositionName="Items">
+            <AttributeList>
+              <Culture>ko-KR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="12" CompositionName="Items">
+            <AttributeList>
+              <Culture>zh-CN</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+        </ObjectList>
+      </MultilingualText>
+    </ObjectList>
+  </SW.Types.PlcStruct>
+</Document>

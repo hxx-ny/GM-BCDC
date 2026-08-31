@@ -1,0 +1,83 @@
+﻿FUNCTION "LConSMC_Linear" : LReal
+{ S7_Optimized_Access := 'TRUE' ; Published := 'TRUE' }
+VERSION : 0.1
+//Linear interpolation between two breakpoints.  Function ID: 0001
+   VAR_INPUT 
+      x : LReal;   // Input value
+      x1 : LReal;   // First breakpoint, x value
+      y1 : LReal;   // First breakpoint, y value
+      x2 : LReal;   // Second breakpoint, x-value
+      y2 : LReal;   // Second breakpoint, y value
+   END_VAR
+
+   VAR_TEMP 
+      tmpXcalc1 : LReal;
+      tmpYcalc1 : LReal;
+      tmpXcalc2 : LReal;
+      tmpYcalc2 : LReal;
+   END_VAR
+
+
+BEGIN
+	REGION BLOCK INFO HEADER
+	  //===============================================================================
+	  // SIEMENS AG / (c)Copyright 2023
+	  //-------------------------------------------------------------------------------
+	  // Title:            LConSMC_Linear
+	  // Comment/Function: Linear interpolation between two breakpoints
+	  // Library/Family:   LConSMC
+	  // Author:           APC Erlangen
+	  // Tested with:      FW 2.8
+	  // Engineering:      TIA Portal V16
+	  // Restrictions:     -
+	  // Requirements:     -
+	  //-------------------------------------------------------------------------------
+	  // Change log table:
+	  // Version  | Date       | Expert in charge       | Changes applied
+	  //----------|------------|------------------------|------------------------------
+	  // 01.01.00 | 2016-11-17 | APC Erlangen           | adapted to styleguide
+	  // 01.00.00 | 2012-07-01 | APC Erlangen           | Creation
+	  //===============================================================================
+	END_REGION BLOCK INFO HEADER
+	
+	REGION DESCRIPTION
+	(/*
+	Using the breakpoints entered, this function determines the matching Y coordinate of the coordinate present at input x.
+	The interpolated Y coordinate is provided as return value of the function.
+	The input point x is limited by the coordinates X1 and X2. If the coordinates X1 and X2 are equal, 0.0 is displayed as return value and no interpolation is carried out.
+	  
+	$ Return\_value = \frac{x-x_1}{x_1-x_2}\ (y_2-y_1)+y_1 $
+	  
+	---
+	
+	![Linear interpolation](LinearInterpolation.png)
+	
+	---
+	*/)
+	END_REGION DESCRIPTION
+	
+	#LConSMC_Linear := 0.0;
+	IF (#x1 <> #x2) THEN
+	    IF (#x1 > #x2) THEN
+	        #tmpXcalc1 := #x2;
+	        #tmpYcalc1 := #y2;
+	        #tmpXcalc2 := #x1;
+	        #tmpYcalc2 := #y1;
+	    ELSE
+	        #tmpXcalc1 := #x1;
+	        #tmpYcalc1 := #y1;
+	        #tmpXcalc2 := #x2;
+	        #tmpYcalc2 := #y2;
+	    END_IF;
+	    IF (#x < #tmpXcalc1) THEN
+	        #LConSMC_Linear := #tmpYcalc1;
+	    ELSIF (#x > #tmpXcalc2) THEN
+	        #LConSMC_Linear := #tmpYcalc2;                                                            // End limits
+	    ELSE
+	        #LConSMC_Linear := ((#x - #tmpXcalc1) / (#tmpXcalc2 - #tmpXcalc1)) * (#tmpYcalc2 - #tmpYcalc1) + #tmpYcalc1;        // Interpolate between two points
+	    END_IF;
+	END_IF;
+	
+	
+END_FUNCTION
+

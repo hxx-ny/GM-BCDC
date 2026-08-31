@@ -1,0 +1,1292 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Document>
+  <Engineering version="V20" />
+  <SW.Blocks.OB ID="0">
+    <AttributeList>
+      <Interface><Sections xmlns="http://www.siemens.com/automation/Openness/SW/Interface/v5">
+  <Section Name="Input">
+    <Member Name="Initial_Call" Datatype="Bool" Informative="true">
+      <Comment>
+        <MultiLanguageText Lang="en-US">Initial call of this OB</MultiLanguageText>
+      </Comment>
+    </Member>
+    <Member Name="Remanence" Datatype="Bool" Informative="true">
+      <Comment>
+        <MultiLanguageText Lang="en-US">=True, if remanent data are available</MultiLanguageText>
+      </Comment>
+    </Member>
+  </Section>
+  <Section Name="Temp">
+    <Member Name="tempEnable" Datatype="Bool">
+      <Comment>
+        <MultiLanguageText Lang="en-US">Replace with the user tags</MultiLanguageText>
+      </Comment>
+    </Member>
+    <Member Name="tempFilter" Datatype="Bool">
+      <Comment>
+        <MultiLanguageText Lang="en-US">Replace with the user tags</MultiLanguageText>
+      </Comment>
+    </Member>
+    <Member Name="tempValid" Datatype="Bool">
+      <Comment>
+        <MultiLanguageText Lang="en-US">Replace with the user tags</MultiLanguageText>
+      </Comment>
+    </Member>
+    <Member Name="tempBusy" Datatype="Bool">
+      <Comment>
+        <MultiLanguageText Lang="en-US">Replace with the user tags</MultiLanguageText>
+      </Comment>
+    </Member>
+    <Member Name="tempError" Datatype="Bool">
+      <Comment>
+        <MultiLanguageText Lang="en-US">Replace with the user tags</MultiLanguageText>
+      </Comment>
+    </Member>
+    <Member Name="tempStatus" Datatype="Word">
+      <Comment>
+        <MultiLanguageText Lang="en-US">Replace with the user tags</MultiLanguageText>
+      </Comment>
+    </Member>
+  </Section>
+  <Section Name="Constant" />
+</Sections></Interface>
+      <Name>Main</Name>
+      <Namespace>PFE</Namespace>
+      <Number>124</Number>
+      <ProgrammingLanguage>LAD</ProgrammingLanguage>
+      <SecondaryType>ProgramCycle</SecondaryType>
+      <SetENOAutomatically>false</SetENOAutomatically>
+    </AttributeList>
+    <ObjectList>
+      <MultilingualText ID="1" CompositionName="Comment">
+        <ObjectList>
+          <MultilingualTextItem ID="2" CompositionName="Items">
+            <AttributeList>
+              <Culture>de-DE</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="3" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-GB</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="4" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-US</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="5" CompositionName="Items">
+            <AttributeList>
+              <Culture>es-ES</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="6" CompositionName="Items">
+            <AttributeList>
+              <Culture>fr-FR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="7" CompositionName="Items">
+            <AttributeList>
+              <Culture>it-IT</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="8" CompositionName="Items">
+            <AttributeList>
+              <Culture>ko-KR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="9" CompositionName="Items">
+            <AttributeList>
+              <Culture>zh-CN</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+        </ObjectList>
+      </MultilingualText>
+      <SW.Blocks.CompileUnit ID="A" CompositionName="CompileUnits">
+        <AttributeList>
+          <NetworkSource><FlgNet xmlns="http://www.siemens.com/automation/Openness/SW/NetworkSource/FlgNet/v5">
+  <Parts>
+    <Access Scope="LocalVariable" UId="21">
+      <Symbol>
+        <Component Name="tempEnable" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="22">
+      <Symbol>
+        <Component Name="PFE.LPFE_ProgramData" />
+        <Component Name="PLCInfo" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="23">
+      <Symbol>
+        <Component Name="tempFilter" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="24">
+      <Symbol>
+        <Component Name="PFE.LPFE_MainBuffer" />
+        <Component Name="mainBufferBlocked" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="25">
+      <Symbol>
+        <Component Name="PFE.LPFE_DigitalEventConfig" />
+        <Component Name="AlarmsDisplayClass" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="26">
+      <Symbol>
+        <Component Name="PFE.LPFE_AdditionalAlarmData" />
+        <Component Name="additionalAlarmData" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="27">
+      <Symbol>
+        <Component Name="PFE.LPFE_DigitalEventConfig" />
+        <Component Name="RootcauseCellData" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="28">
+      <Symbol>
+        <Component Name="PFE.LPFE_MainBuffer" />
+        <Component Name="buffer" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="29">
+      <Symbol>
+        <Component Name="PFE.LPFE_MainBuffer" />
+        <Component Name="mgmtBuffer" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="30">
+      <Symbol>
+        <Component Name="PFE.LPFE_GlobalConfigurationData" />
+        <Component Name="globalWriteDataCounter" />
+        <Component Name="nextInUId" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="31">
+      <Symbol>
+        <Component Name="tempValid" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="32">
+      <Symbol>
+        <Component Name="tempBusy" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="33">
+      <Symbol>
+        <Component Name="tempError" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="34">
+      <Symbol>
+        <Component Name="tempStatus" />
+      </Symbol>
+    </Access>
+    <Part Name="Contact" UId="35" />
+    <Call UId="36">
+      <CallInfo Name="LPFE_DigitalEventHandler" BlockType="FB">
+        <Instance Scope="GlobalVariable" UId="37">
+          <Component Name="PFE.instDigitalEventHandler" />
+        </Instance>
+        <Parameter Name="enable" Section="Input" Type="Bool" />
+        <Parameter Name="PLCInfo" Section="Input" Type="&quot;LPFE_typePLCInfo&quot;" />
+        <Parameter Name="rootCauseFilter" Section="Input" Type="Bool" />
+        <Parameter Name="swapActive" Section="Input" Type="Bool" />
+        <Parameter Name="bufferBlocked" Section="Input" Type="Bool" />
+        <Parameter Name="DispClassNr" Section="Input" Type="Array[0..31] of UInt" />
+        <Parameter Name="valid" Section="Output" Type="Bool" />
+        <Parameter Name="busy" Section="Output" Type="Bool" />
+        <Parameter Name="error" Section="Output" Type="Bool" />
+        <Parameter Name="status" Section="Output" Type="Word" />
+        <Parameter Name="diagnostics" Section="Output" Type="&quot;LPFE_typeFBDiagnostics&quot;" />
+        <Parameter Name="EventsGenerated" Section="Output" Type="Int" />
+        <Parameter Name="AlarmsNotFoud" Section="Output" Type="Int" />
+        <Parameter Name="additionalAlarmData" Section="InOut" Type="Array[*] of &quot;LPFE_typeAdditionalAlarmData&quot;" />
+        <Parameter Name="cellFaultData" Section="InOut" Type="Array[*] of &quot;LPFE_typeRootCauseCellData&quot;" />
+        <Parameter Name="mainBuffer" Section="InOut" Type="Variant" />
+        <Parameter Name="bufferMgt" Section="InOut" Type="&quot;LPFE_typeMsgBuffer&quot;" />
+        <Parameter Name="nextInUId" Section="InOut" Type="UDInt" />
+      </CallInfo>
+    </Call>
+  </Parts>
+  <Wires>
+    <Wire UId="42">
+      <Powerrail />
+      <NameCon UId="36" Name="en" />
+      <NameCon UId="35" Name="in" />
+    </Wire>
+    <Wire UId="43">
+      <IdentCon UId="21" />
+      <NameCon UId="35" Name="operand" />
+    </Wire>
+    <Wire UId="44">
+      <NameCon UId="35" Name="out" />
+      <NameCon UId="36" Name="enable" />
+    </Wire>
+    <Wire UId="45">
+      <IdentCon UId="22" />
+      <NameCon UId="36" Name="PLCInfo" />
+    </Wire>
+    <Wire UId="46">
+      <IdentCon UId="23" />
+      <NameCon UId="36" Name="rootCauseFilter" />
+    </Wire>
+    <Wire UId="47">
+      <OpenCon UId="38" />
+      <NameCon UId="36" Name="swapActive" />
+    </Wire>
+    <Wire UId="48">
+      <IdentCon UId="24" />
+      <NameCon UId="36" Name="bufferBlocked" />
+    </Wire>
+    <Wire UId="49">
+      <IdentCon UId="25" />
+      <NameCon UId="36" Name="DispClassNr" />
+    </Wire>
+    <Wire UId="50">
+      <IdentCon UId="26" />
+      <NameCon UId="36" Name="additionalAlarmData" />
+    </Wire>
+    <Wire UId="51">
+      <IdentCon UId="27" />
+      <NameCon UId="36" Name="cellFaultData" />
+    </Wire>
+    <Wire UId="52">
+      <IdentCon UId="28" />
+      <NameCon UId="36" Name="mainBuffer" />
+    </Wire>
+    <Wire UId="53">
+      <IdentCon UId="29" />
+      <NameCon UId="36" Name="bufferMgt" />
+    </Wire>
+    <Wire UId="54">
+      <IdentCon UId="30" />
+      <NameCon UId="36" Name="nextInUId" />
+    </Wire>
+    <Wire UId="55">
+      <NameCon UId="36" Name="valid" />
+      <IdentCon UId="31" />
+    </Wire>
+    <Wire UId="56">
+      <NameCon UId="36" Name="busy" />
+      <IdentCon UId="32" />
+    </Wire>
+    <Wire UId="57">
+      <NameCon UId="36" Name="error" />
+      <IdentCon UId="33" />
+    </Wire>
+    <Wire UId="58">
+      <NameCon UId="36" Name="status" />
+      <IdentCon UId="34" />
+    </Wire>
+    <Wire UId="59">
+      <NameCon UId="36" Name="diagnostics" />
+      <OpenCon UId="39" />
+    </Wire>
+    <Wire UId="60">
+      <NameCon UId="36" Name="EventsGenerated" />
+      <OpenCon UId="40" />
+    </Wire>
+    <Wire UId="61">
+      <NameCon UId="36" Name="AlarmsNotFoud" />
+      <OpenCon UId="41" />
+    </Wire>
+  </Wires>
+</FlgNet></NetworkSource>
+          <ProgrammingLanguage>LAD</ProgrammingLanguage>
+        </AttributeList>
+        <ObjectList>
+          <MultilingualText ID="B" CompositionName="Comment">
+            <ObjectList>
+              <MultilingualTextItem ID="C" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="D" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-GB</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="E" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="F" CompositionName="Items">
+                <AttributeList>
+                  <Culture>es-ES</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="10" CompositionName="Items">
+                <AttributeList>
+                  <Culture>fr-FR</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="11" CompositionName="Items">
+                <AttributeList>
+                  <Culture>it-IT</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="12" CompositionName="Items">
+                <AttributeList>
+                  <Culture>ko-KR</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="13" CompositionName="Items">
+                <AttributeList>
+                  <Culture>zh-CN</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+          <MultilingualText ID="14" CompositionName="Title">
+            <ObjectList>
+              <MultilingualTextItem ID="15" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="16" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-GB</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="17" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text>Calling Digital Event Handler</Text>
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="18" CompositionName="Items">
+                <AttributeList>
+                  <Culture>es-ES</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="19" CompositionName="Items">
+                <AttributeList>
+                  <Culture>fr-FR</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="1A" CompositionName="Items">
+                <AttributeList>
+                  <Culture>it-IT</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="1B" CompositionName="Items">
+                <AttributeList>
+                  <Culture>ko-KR</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="1C" CompositionName="Items">
+                <AttributeList>
+                  <Culture>zh-CN</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+        </ObjectList>
+      </SW.Blocks.CompileUnit>
+      <SW.Blocks.CompileUnit ID="1D" CompositionName="CompileUnits">
+        <AttributeList>
+          <NetworkSource><FlgNet xmlns="http://www.siemens.com/automation/Openness/SW/NetworkSource/FlgNet/v5">
+  <Parts>
+    <Access Scope="GlobalVariable" UId="21">
+      <Symbol>
+        <Component Name="PFE.LPFE_ProgramData" />
+        <Component Name="PLCInfo" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="22">
+      <Symbol>
+        <Component Name="PFE.LPFE_GlobalConfigurationData" />
+        <Component Name="channelConfigurationTxn" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="23">
+      <Symbol>
+        <Component Name="PFE.LPFE_GlobalConfigurationData" />
+        <Component Name="channelConfigurationToHost" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="24">
+      <Symbol>
+        <Component Name="PFE.LPFE_GlobalConfigurationData" />
+        <Component Name="channelConfigurationMQTTToHost" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="25">
+      <Symbol>
+        <Component Name="PFE.LPFE_GlobalConfigurationData" />
+        <Component Name="retryConfiguration" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="26">
+      <Symbol>
+        <Component Name="PFE.LPFE_GlobalConfigurationData" />
+        <Component Name="blockingMainBufferDuringResetTime" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="27">
+      <Symbol>
+        <Component Name="PFE.LPFE_ProgramData" />
+        <Component Name="ProgramInformation" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>0</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+        <Component Name="programName" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="28">
+      <Symbol>
+        <Component Name="PFE.LPFE_GlobalConfigurationData" />
+        <Component Name="shiftInitialization" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="29">
+      <Symbol>
+        <Component Name="PFE.LPFE_MainBuffer" />
+        <Component Name="resourceSent" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="30">
+      <Symbol>
+        <Component Name="PFE.LPFE_MainBuffer" />
+        <Component Name="sendResourceEventsAfterReset" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="31">
+      <Symbol>
+        <Component Name="PFE.LPFE_MainBuffer" />
+        <Component Name="resetReceived" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="32">
+      <Symbol>
+        <Component Name="PFE.LPFE_MainBuffer" />
+        <Component Name="mainBufferBlocked" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="33">
+      <Symbol>
+        <Component Name="PFE.LPFE_GlobalConfigurationData" />
+        <Component Name="cleanupAll" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="34">
+      <Symbol>
+        <Component Name="PFE.LPFE_GlobalConfigurationData" />
+        <Component Name="globalSessionId" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="35">
+      <Symbol>
+        <Component Name="PFE.LPFE_GlobalConfigurationData" />
+        <Component Name="connectionParametersFromHost" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="36">
+      <Symbol>
+        <Component Name="PFE.LPFE_GlobalConfigurationData" />
+        <Component Name="connectionParametersToHost" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="37">
+      <Symbol>
+        <Component Name="PFE.LPFE_GlobalConfigurationData" />
+        <Component Name="connectionParametersToHostTxn" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="38">
+      <Symbol>
+        <Component Name="PFE.LPFE_GlobalConfigurationData" />
+        <Component Name="heartbeatConfiguration" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="39">
+      <Symbol>
+        <Component Name="PFE.LPFE_GlobalConfigurationData" />
+        <Component Name="heartbeatInterface" />
+        <Component Name="heartbeat" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="40">
+      <Symbol>
+        <Component Name="PFE.LPFE_GlobalConfigurationData" />
+        <Component Name="heartbeatInterface" />
+        <Component Name="connectionDead" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="41">
+      <Symbol>
+        <Component Name="PFE.LPFE_FromHostBuffer" />
+        <Component Name="inChannel" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="42">
+      <Symbol>
+        <Component Name="PFE.LPFE_InterfaceChannels" />
+        <Component Name="toHostChannels" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="43">
+      <Symbol>
+        <Component Name="PFE.LPFE_InterfaceChannels" />
+        <Component Name="txnChannel" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="44">
+      <Symbol>
+        <Component Name="PFE.LPFE_PRTBuffer" />
+        <Component Name="buffer" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="45">
+      <Symbol>
+        <Component Name="PFE.LPFE_PRTBuffer" />
+        <Component Name="mgmtBuffer" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="46">
+      <Symbol>
+        <Component Name="PFE.LPFE_FNBuffer" />
+        <Component Name="buffer" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="47">
+      <Symbol>
+        <Component Name="PFE.LPFE_FNBuffer" />
+        <Component Name="mgmtBuffer" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="48">
+      <Symbol>
+        <Component Name="PFE.LPFE_TelemetryBuffer" />
+        <Component Name="buffer" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="49">
+      <Symbol>
+        <Component Name="PFE.LPFE_TelemetryBuffer" />
+        <Component Name="mgmtBuffer" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="50">
+      <Symbol>
+        <Component Name="PFE.LPFE_RecordBuffer" />
+        <Component Name="buffer" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="51">
+      <Symbol>
+        <Component Name="PFE.LPFE_RecordBuffer" />
+        <Component Name="mgmtBuffer" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="52">
+      <Symbol>
+        <Component Name="PFE.LPFE_MainBuffer" />
+        <Component Name="buffer" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="53">
+      <Symbol>
+        <Component Name="PFE.LPFE_MainBuffer" />
+        <Component Name="mgmtBuffer" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="54">
+      <Symbol>
+        <Component Name="PFE.LPFE_AckAndResetBuffer" />
+        <Component Name="buffer" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="55">
+      <Symbol>
+        <Component Name="PFE.LPFE_AckAndResetBuffer" />
+        <Component Name="mgmtBuffer" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="56">
+      <Symbol>
+        <Component Name="PFE.LPFE_TxnBuffer" />
+        <Component Name="buffer" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="57">
+      <Symbol>
+        <Component Name="PFE.LPFE_TxnBuffer" />
+        <Component Name="buffer" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="58">
+      <Symbol>
+        <Component Name="PFE.LPFE_TxnBuffer" />
+        <Component Name="mgmtBuffer" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="59">
+      <Symbol>
+        <Component Name="PFE.LPFE_GlobalConfigurationData" />
+        <Component Name="globalWriteDataCounter" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="60">
+      <Symbol>
+        <Component Name="PFE.LPFE_GlobalConfigurationData" />
+        <Component Name="globalReceiveDataCounter" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="61">
+      <Symbol>
+        <Component Name="PFE.LPFE_GlobalConfigurationData" />
+        <Component Name="globalReceiveDataCounter" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="62">
+      <Symbol>
+        <Component Name="PFE.LPFE_GlobalConfigurationData" />
+        <Component Name="globalPacketIdentifier" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="63">
+      <Symbol>
+        <Component Name="PFE.LPFE_GlobalConfigurationData" />
+        <Component Name="globalWriteDataCounter" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="64">
+      <Symbol>
+        <Component Name="PFE.LPFE_MonitorData" />
+        <Component Name="newTransactions" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="65">
+      <Symbol>
+        <Component Name="PFE.LPFE_RecordBuffer" />
+        <Component Name="currentCriticalRecord" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="66">
+      <Symbol>
+        <Component Name="PFE.LPFE_FNBuffer" />
+        <Component Name="currentCriticalEvent" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="67">
+      <Symbol>
+        <Component Name="PFE.LPFE_MonitorData" />
+        <Component Name="Channels" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="68">
+      <Symbol>
+        <Component Name="PFE.LPFE_MonitorData" />
+        <Component Name="Transactions" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="69">
+      <Symbol>
+        <Component Name="PFE.LPFE_PerformanceMeasurement" />
+        <Component Name="performanceMeasurement" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="70">
+      <Symbol>
+        <Component Name="PFE.LPFE_MonitorData" />
+        <Component Name="healthData" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="71">
+      <Symbol>
+        <Component Name="PFE.LPFE_GlobalConfigurationData" />
+        <Component Name="pfeManualReset" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="72">
+      <Symbol>
+        <Component Name="PFE.LPFE_MonitorData" />
+        <Component Name="shiftElapsedTime" />
+      </Symbol>
+    </Access>
+    <Call UId="73">
+      <CallInfo Name="LPFE_PFEBackbone" BlockType="FB">
+        <Instance Scope="GlobalVariable" UId="74">
+          <Component Name="PFE.instPFEBackbone" />
+        </Instance>
+        <Parameter Name="plcInfo" Section="Input" Type="&quot;LPFE_typePLCInfo&quot;" />
+        <Parameter Name="channelConfigurationTxn" Section="Input" Type="&quot;LPFE_typeOutboundChannelConfig&quot;" />
+        <Parameter Name="channelConfigurationToHost" Section="Input" Type="Array[0..&quot;LE_NUMBER_OF_INTERFACE_BUFFERS&quot;] of &quot;LPFE_typeRequestChannelConfig&quot;" />
+        <Parameter Name="channelConfigurationMQTTToHost" Section="Input" Type="&quot;LPFE_typeRequestChannelConfigMQTT&quot;" />
+        <Parameter Name="globalRetryConfiguration" Section="Input" Type="&quot;LPFE_typeMsgRetryConfig&quot;" />
+        <Parameter Name="blockingMainBufferTime" Section="Input" Type="Time" />
+        <Parameter Name="programName" Section="Input" Type="Array[0..15] of Char" />
+        <Parameter Name="newShiftInitialization" Section="Input" Type="Bool" />
+        <Parameter Name="currentShiftElapsedTime" Section="Output" Type="Time" />
+        <Parameter Name="resourcesSent" Section="InOut" Type="Bool" />
+        <Parameter Name="sendResourceEvents" Section="InOut" Type="Bool" />
+        <Parameter Name="resetReceived" Section="InOut" Type="Bool" />
+        <Parameter Name="mainBufferBlocked" Section="InOut" Type="Bool" />
+        <Parameter Name="cleanupAll" Section="InOut" Type="Bool" />
+        <Parameter Name="sessionID" Section="InOut" Type="UDInt" />
+        <Parameter Name="globalConnectionParametersFromHost" Section="InOut" Type="&quot;LPFE_typeConnectionParameters_1&quot;" />
+        <Parameter Name="globalConnectionParametersToHost" Section="InOut" Type="Array[0..&quot;LE_NUMBER_OF_INTERFACE_BUFFERS&quot;] of &quot;LPFE_typeConnectionParameters_1&quot;" />
+        <Parameter Name="globalConnectionParametersTxnChannel" Section="InOut" Type="&quot;LPFE_typeConnectionParameters_1&quot;" />
+        <Parameter Name="globalHeartbeatConfiguration" Section="InOut" Type="&quot;LPFE_typeHeartbeatConfig&quot;" />
+        <Parameter Name="globalHeartbit" Section="InOut" Type="Bool" />
+        <Parameter Name="globalHeartbitDead" Section="InOut" Type="Bool" />
+        <Parameter Name="fromHostChannel" Section="InOut" Type="&quot;LPFE_typePFEDataInChannel&quot;" />
+        <Parameter Name="toHostInterfaceChannels" Section="InOut" Type="Array[0..&quot;LE_NUMBER_OF_INTERFACE_BUFFERS&quot;] of &quot;LPFE_typeRequestChannel&quot;" />
+        <Parameter Name="txnChannel" Section="InOut" Type="&quot;LPFE_typePFEDataOutChannel&quot;" />
+        <Parameter Name="prtBuffer" Section="InOut" Type="Variant" />
+        <Parameter Name="prtBufferMgmt" Section="InOut" Type="&quot;LPFE_typeMsgBuffer&quot;" />
+        <Parameter Name="FNBuffer" Section="InOut" Type="Variant" />
+        <Parameter Name="FNBufferMgmt" Section="InOut" Type="&quot;LPFE_typeMsgBuffer&quot;" />
+        <Parameter Name="TelemetryBuffer" Section="InOut" Type="Variant" />
+        <Parameter Name="TelemetryBufferMgmt" Section="InOut" Type="&quot;LPFE_typeMsgBuffer&quot;" />
+        <Parameter Name="recordBuffer" Section="InOut" Type="Variant" />
+        <Parameter Name="recordBufferMgmt" Section="InOut" Type="&quot;LPFE_typeMsgBuffer&quot;" />
+        <Parameter Name="mainBuffer" Section="InOut" Type="Variant" />
+        <Parameter Name="mainBufferMgmt" Section="InOut" Type="&quot;LPFE_typeMsgBuffer&quot;" />
+        <Parameter Name="ackAndResetBuffer" Section="InOut" Type="Variant" />
+        <Parameter Name="ackAndResetBufferMgmt" Section="InOut" Type="&quot;LPFE_typeMsgBuffer&quot;" />
+        <Parameter Name="txnBufferArray" Section="InOut" Type="Array[*] of &quot;LPFE_typePFEData&quot;" />
+        <Parameter Name="txnBufferVariant" Section="InOut" Type="Variant" />
+        <Parameter Name="txnBufferMgmt" Section="InOut" Type="&quot;LPFE_typeMsgBuffer&quot;" />
+        <Parameter Name="nextInUIdForAckAndReset" Section="InOut" Type="&quot;LPFE_typeGlobalSeqMgmt&quot;" />
+        <Parameter Name="nextInUIdFromHostResponse" Section="InOut" Type="&quot;LPFE_typeGlobalSeqMgmt&quot;" />
+        <Parameter Name="nextInUIdToHostResponse" Section="InOut" Type="&quot;LPFE_typeGlobalSeqMgmt&quot;" />
+        <Parameter Name="nextInUIdToHostPacketIdentifier" Section="InOut" Type="&quot;LPFE_typeGlobalSeqMgmt&quot;" />
+        <Parameter Name="nextUIdTxnChannel" Section="InOut" Type="&quot;LPFE_typeGlobalSeqMgmt&quot;" />
+        <Parameter Name="newTransactions" Section="InOut" Type="Int" />
+        <Parameter Name="criticalRecord" Section="InOut" Type="&quot;LPFE_typeCriticalRecEnvelope&quot;" />
+        <Parameter Name="criticalEvent" Section="InOut" Type="&quot;LPFE_typeCriticalEventEnvelope&quot;" />
+        <Parameter Name="diagnosticsMonitorDataChannels" Section="InOut" Type="Array[0..&quot;LE_NUMBER_OF_INTERFACE_BUFFERS&quot;] of &quot;LPFE_typeDiagnosticMonitorChannel&quot;" />
+        <Parameter Name="monitorTransactions" Section="InOut" Type="Array[*] of &quot;LPFE_typePFEData&quot;" />
+        <Parameter Name="performanceMeasurements" Section="InOut" Type="Array[*] of &quot;LPFE_typeRequestMeasureBuffer&quot;" />
+        <Parameter Name="healthData" Section="InOut" Type="&quot;LPFE_typeMonitorData&quot;" />
+        <Parameter Name="pfeManualReset" Section="InOut" Type="Bool" />
+      </CallInfo>
+    </Call>
+  </Parts>
+  <Wires>
+    <Wire UId="75">
+      <Powerrail />
+      <NameCon UId="73" Name="en" />
+    </Wire>
+    <Wire UId="76">
+      <IdentCon UId="21" />
+      <NameCon UId="73" Name="plcInfo" />
+    </Wire>
+    <Wire UId="77">
+      <IdentCon UId="22" />
+      <NameCon UId="73" Name="channelConfigurationTxn" />
+    </Wire>
+    <Wire UId="78">
+      <IdentCon UId="23" />
+      <NameCon UId="73" Name="channelConfigurationToHost" />
+    </Wire>
+    <Wire UId="79">
+      <IdentCon UId="24" />
+      <NameCon UId="73" Name="channelConfigurationMQTTToHost" />
+    </Wire>
+    <Wire UId="80">
+      <IdentCon UId="25" />
+      <NameCon UId="73" Name="globalRetryConfiguration" />
+    </Wire>
+    <Wire UId="81">
+      <IdentCon UId="26" />
+      <NameCon UId="73" Name="blockingMainBufferTime" />
+    </Wire>
+    <Wire UId="82">
+      <IdentCon UId="27" />
+      <NameCon UId="73" Name="programName" />
+    </Wire>
+    <Wire UId="83">
+      <IdentCon UId="28" />
+      <NameCon UId="73" Name="newShiftInitialization" />
+    </Wire>
+    <Wire UId="84">
+      <IdentCon UId="29" />
+      <NameCon UId="73" Name="resourcesSent" />
+    </Wire>
+    <Wire UId="85">
+      <IdentCon UId="30" />
+      <NameCon UId="73" Name="sendResourceEvents" />
+    </Wire>
+    <Wire UId="86">
+      <IdentCon UId="31" />
+      <NameCon UId="73" Name="resetReceived" />
+    </Wire>
+    <Wire UId="87">
+      <IdentCon UId="32" />
+      <NameCon UId="73" Name="mainBufferBlocked" />
+    </Wire>
+    <Wire UId="88">
+      <IdentCon UId="33" />
+      <NameCon UId="73" Name="cleanupAll" />
+    </Wire>
+    <Wire UId="89">
+      <IdentCon UId="34" />
+      <NameCon UId="73" Name="sessionID" />
+    </Wire>
+    <Wire UId="90">
+      <IdentCon UId="35" />
+      <NameCon UId="73" Name="globalConnectionParametersFromHost" />
+    </Wire>
+    <Wire UId="91">
+      <IdentCon UId="36" />
+      <NameCon UId="73" Name="globalConnectionParametersToHost" />
+    </Wire>
+    <Wire UId="92">
+      <IdentCon UId="37" />
+      <NameCon UId="73" Name="globalConnectionParametersTxnChannel" />
+    </Wire>
+    <Wire UId="93">
+      <IdentCon UId="38" />
+      <NameCon UId="73" Name="globalHeartbeatConfiguration" />
+    </Wire>
+    <Wire UId="94">
+      <IdentCon UId="39" />
+      <NameCon UId="73" Name="globalHeartbit" />
+    </Wire>
+    <Wire UId="95">
+      <IdentCon UId="40" />
+      <NameCon UId="73" Name="globalHeartbitDead" />
+    </Wire>
+    <Wire UId="96">
+      <IdentCon UId="41" />
+      <NameCon UId="73" Name="fromHostChannel" />
+    </Wire>
+    <Wire UId="97">
+      <IdentCon UId="42" />
+      <NameCon UId="73" Name="toHostInterfaceChannels" />
+    </Wire>
+    <Wire UId="98">
+      <IdentCon UId="43" />
+      <NameCon UId="73" Name="txnChannel" />
+    </Wire>
+    <Wire UId="99">
+      <IdentCon UId="44" />
+      <NameCon UId="73" Name="prtBuffer" />
+    </Wire>
+    <Wire UId="100">
+      <IdentCon UId="45" />
+      <NameCon UId="73" Name="prtBufferMgmt" />
+    </Wire>
+    <Wire UId="101">
+      <IdentCon UId="46" />
+      <NameCon UId="73" Name="FNBuffer" />
+    </Wire>
+    <Wire UId="102">
+      <IdentCon UId="47" />
+      <NameCon UId="73" Name="FNBufferMgmt" />
+    </Wire>
+    <Wire UId="103">
+      <IdentCon UId="48" />
+      <NameCon UId="73" Name="TelemetryBuffer" />
+    </Wire>
+    <Wire UId="104">
+      <IdentCon UId="49" />
+      <NameCon UId="73" Name="TelemetryBufferMgmt" />
+    </Wire>
+    <Wire UId="105">
+      <IdentCon UId="50" />
+      <NameCon UId="73" Name="recordBuffer" />
+    </Wire>
+    <Wire UId="106">
+      <IdentCon UId="51" />
+      <NameCon UId="73" Name="recordBufferMgmt" />
+    </Wire>
+    <Wire UId="107">
+      <IdentCon UId="52" />
+      <NameCon UId="73" Name="mainBuffer" />
+    </Wire>
+    <Wire UId="108">
+      <IdentCon UId="53" />
+      <NameCon UId="73" Name="mainBufferMgmt" />
+    </Wire>
+    <Wire UId="109">
+      <IdentCon UId="54" />
+      <NameCon UId="73" Name="ackAndResetBuffer" />
+    </Wire>
+    <Wire UId="110">
+      <IdentCon UId="55" />
+      <NameCon UId="73" Name="ackAndResetBufferMgmt" />
+    </Wire>
+    <Wire UId="111">
+      <IdentCon UId="56" />
+      <NameCon UId="73" Name="txnBufferArray" />
+    </Wire>
+    <Wire UId="112">
+      <IdentCon UId="57" />
+      <NameCon UId="73" Name="txnBufferVariant" />
+    </Wire>
+    <Wire UId="113">
+      <IdentCon UId="58" />
+      <NameCon UId="73" Name="txnBufferMgmt" />
+    </Wire>
+    <Wire UId="114">
+      <IdentCon UId="59" />
+      <NameCon UId="73" Name="nextInUIdForAckAndReset" />
+    </Wire>
+    <Wire UId="115">
+      <IdentCon UId="60" />
+      <NameCon UId="73" Name="nextInUIdFromHostResponse" />
+    </Wire>
+    <Wire UId="116">
+      <IdentCon UId="61" />
+      <NameCon UId="73" Name="nextInUIdToHostResponse" />
+    </Wire>
+    <Wire UId="117">
+      <IdentCon UId="62" />
+      <NameCon UId="73" Name="nextInUIdToHostPacketIdentifier" />
+    </Wire>
+    <Wire UId="118">
+      <IdentCon UId="63" />
+      <NameCon UId="73" Name="nextUIdTxnChannel" />
+    </Wire>
+    <Wire UId="119">
+      <IdentCon UId="64" />
+      <NameCon UId="73" Name="newTransactions" />
+    </Wire>
+    <Wire UId="120">
+      <IdentCon UId="65" />
+      <NameCon UId="73" Name="criticalRecord" />
+    </Wire>
+    <Wire UId="121">
+      <IdentCon UId="66" />
+      <NameCon UId="73" Name="criticalEvent" />
+    </Wire>
+    <Wire UId="122">
+      <IdentCon UId="67" />
+      <NameCon UId="73" Name="diagnosticsMonitorDataChannels" />
+    </Wire>
+    <Wire UId="123">
+      <IdentCon UId="68" />
+      <NameCon UId="73" Name="monitorTransactions" />
+    </Wire>
+    <Wire UId="124">
+      <IdentCon UId="69" />
+      <NameCon UId="73" Name="performanceMeasurements" />
+    </Wire>
+    <Wire UId="125">
+      <IdentCon UId="70" />
+      <NameCon UId="73" Name="healthData" />
+    </Wire>
+    <Wire UId="126">
+      <IdentCon UId="71" />
+      <NameCon UId="73" Name="pfeManualReset" />
+    </Wire>
+    <Wire UId="127">
+      <NameCon UId="73" Name="currentShiftElapsedTime" />
+      <IdentCon UId="72" />
+    </Wire>
+  </Wires>
+</FlgNet></NetworkSource>
+          <ProgrammingLanguage>LAD</ProgrammingLanguage>
+        </AttributeList>
+        <ObjectList>
+          <MultilingualText ID="1E" CompositionName="Comment">
+            <ObjectList>
+              <MultilingualTextItem ID="1F" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="20" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-GB</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="21" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="22" CompositionName="Items">
+                <AttributeList>
+                  <Culture>es-ES</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="23" CompositionName="Items">
+                <AttributeList>
+                  <Culture>fr-FR</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="24" CompositionName="Items">
+                <AttributeList>
+                  <Culture>it-IT</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="25" CompositionName="Items">
+                <AttributeList>
+                  <Culture>ko-KR</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="26" CompositionName="Items">
+                <AttributeList>
+                  <Culture>zh-CN</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+          <MultilingualText ID="27" CompositionName="Title">
+            <ObjectList>
+              <MultilingualTextItem ID="28" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="29" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-GB</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="2A" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text>Calling PFE Backbone Strucuture</Text>
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="2B" CompositionName="Items">
+                <AttributeList>
+                  <Culture>es-ES</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="2C" CompositionName="Items">
+                <AttributeList>
+                  <Culture>fr-FR</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="2D" CompositionName="Items">
+                <AttributeList>
+                  <Culture>it-IT</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="2E" CompositionName="Items">
+                <AttributeList>
+                  <Culture>ko-KR</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="2F" CompositionName="Items">
+                <AttributeList>
+                  <Culture>zh-CN</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+        </ObjectList>
+      </SW.Blocks.CompileUnit>
+      <SW.Blocks.CompileUnit ID="30" CompositionName="CompileUnits">
+        <AttributeList>
+          <NetworkSource />
+          <ProgrammingLanguage>LAD</ProgrammingLanguage>
+        </AttributeList>
+        <ObjectList>
+          <MultilingualText ID="31" CompositionName="Comment">
+            <ObjectList>
+              <MultilingualTextItem ID="32" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="33" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-GB</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="34" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="35" CompositionName="Items">
+                <AttributeList>
+                  <Culture>es-ES</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="36" CompositionName="Items">
+                <AttributeList>
+                  <Culture>fr-FR</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="37" CompositionName="Items">
+                <AttributeList>
+                  <Culture>it-IT</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="38" CompositionName="Items">
+                <AttributeList>
+                  <Culture>ko-KR</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="39" CompositionName="Items">
+                <AttributeList>
+                  <Culture>zh-CN</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+          <MultilingualText ID="3A" CompositionName="Title">
+            <ObjectList>
+              <MultilingualTextItem ID="3B" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="3C" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-GB</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="3D" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="3E" CompositionName="Items">
+                <AttributeList>
+                  <Culture>es-ES</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="3F" CompositionName="Items">
+                <AttributeList>
+                  <Culture>fr-FR</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="40" CompositionName="Items">
+                <AttributeList>
+                  <Culture>it-IT</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="41" CompositionName="Items">
+                <AttributeList>
+                  <Culture>ko-KR</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="42" CompositionName="Items">
+                <AttributeList>
+                  <Culture>zh-CN</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+        </ObjectList>
+      </SW.Blocks.CompileUnit>
+      <MultilingualText ID="43" CompositionName="Title">
+        <ObjectList>
+          <MultilingualTextItem ID="44" CompositionName="Items">
+            <AttributeList>
+              <Culture>de-DE</Culture>
+              <Text>"Main Program Sweep (Cycle)"</Text>
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="45" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-GB</Culture>
+              <Text>"Main Program Sweep (Cycle)"</Text>
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="46" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-US</Culture>
+              <Text>"Main Program Sweep (Cycle)"</Text>
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="47" CompositionName="Items">
+            <AttributeList>
+              <Culture>es-ES</Culture>
+              <Text>"Main Program Sweep (Cycle)"</Text>
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="48" CompositionName="Items">
+            <AttributeList>
+              <Culture>fr-FR</Culture>
+              <Text>"Main Program Sweep (Cycle)"</Text>
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="49" CompositionName="Items">
+            <AttributeList>
+              <Culture>it-IT</Culture>
+              <Text>"Main Program Sweep (Cycle)"</Text>
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="4A" CompositionName="Items">
+            <AttributeList>
+              <Culture>ko-KR</Culture>
+              <Text>"Main Program Sweep (Cycle)"</Text>
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="4B" CompositionName="Items">
+            <AttributeList>
+              <Culture>zh-CN</Culture>
+              <Text>"Main Program Sweep (Cycle)"</Text>
+            </AttributeList>
+          </MultilingualTextItem>
+        </ObjectList>
+      </MultilingualText>
+    </ObjectList>
+  </SW.Blocks.OB>
+</Document>

@@ -1,0 +1,344 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Document>
+  <Engineering version="V20" />
+  <SW.Blocks.GlobalDB ID="0">
+    <AttributeList>
+      <Interface><Sections xmlns="http://www.siemens.com/automation/Openness/SW/Interface/v5">
+  <Section Name="Static">
+    <Member Name="mainHeader" Datatype="Array[0..&quot;NO_OF_PANELS&quot;] of &quot;LAF_typeHeader&quot;">
+      <Comment>
+        <MultiLanguageText Lang="en-US">Input from the status bar of the HMI</MultiLanguageText>
+      </Comment>
+      <Sections>
+        <Section Name="None">
+          <Member Name="hmiToPlc" Datatype="&quot;LAF_typeHeaderHmiToPlc&quot;">
+            <Sections>
+              <Section Name="None">
+                <Member Name="acknowledge" Datatype="Bool">
+                  <Subelement Path="0">
+                    <StartValue>FALSE</StartValue>
+                  </Subelement>
+                  <Subelement Path="1">
+                    <StartValue>FALSE</StartValue>
+                  </Subelement>
+                </Member>
+                <Member Name="powerCommands" Datatype="Byte">
+                  <Subelement Path="0">
+                    <StartValue>16#00</StartValue>
+                  </Subelement>
+                  <Subelement Path="1">
+                    <StartValue>16#00</StartValue>
+                  </Subelement>
+                </Member>
+                <Member Name="selectedUnits" Datatype="Word">
+                  <Subelement Path="0">
+                    <StartValue>16#0001</StartValue>
+                  </Subelement>
+                  <Subelement Path="1">
+                    <StartValue>16#0001</StartValue>
+                  </Subelement>
+                </Member>
+                <Member Name="modeRequests" Datatype="Word">
+                  <Subelement Path="0">
+                    <StartValue>16#0000</StartValue>
+                  </Subelement>
+                  <Subelement Path="1">
+                    <StartValue>16#0000</StartValue>
+                  </Subelement>
+                </Member>
+                <Member Name="stateCommands" Datatype="Word">
+                  <Subelement Path="0">
+                    <StartValue>16#0000</StartValue>
+                  </Subelement>
+                  <Subelement Path="1">
+                    <StartValue>16#0000</StartValue>
+                  </Subelement>
+                </Member>
+                <Member Name="specialFunctions" Datatype="LWord">
+                  <Subelement Path="0">
+                    <StartValue>16#0000</StartValue>
+                  </Subelement>
+                  <Subelement Path="1">
+                    <StartValue>16#0000</StartValue>
+                  </Subelement>
+                </Member>
+              </Section>
+            </Sections>
+          </Member>
+          <Member Name="plcToHmi" Datatype="&quot;LAF_typeHeaderPlcToHmi&quot;">
+            <Sections>
+              <Section Name="None">
+                <Member Name="powerStatus" Datatype="Int">
+                  <Subelement Path="0">
+                    <StartValue>0</StartValue>
+                  </Subelement>
+                  <Subelement Path="1">
+                    <StartValue>0</StartValue>
+                  </Subelement>
+                </Member>
+                <Member Name="displayedMode" Datatype="DInt">
+                  <Subelement Path="0">
+                    <StartValue>2</StartValue>
+                  </Subelement>
+                  <Subelement Path="1">
+                    <StartValue>2</StartValue>
+                  </Subelement>
+                </Member>
+                <Member Name="displayedState" Datatype="DInt">
+                  <Subelement Path="0">
+                    <StartValue>2</StartValue>
+                  </Subelement>
+                  <Subelement Path="1">
+                    <StartValue>2</StartValue>
+                  </Subelement>
+                </Member>
+                <Member Name="modeRequestsButtons" Datatype="&quot;LUC_typeButtons&quot;">
+                  <Sections>
+                    <Section Name="None">
+                      <Member Name="visibility" Datatype="LWord">
+                        <Subelement Path="0">
+                          <StartValue>16#000F</StartValue>
+                        </Subelement>
+                        <Subelement Path="1">
+                          <StartValue>16#000F</StartValue>
+                        </Subelement>
+                      </Member>
+                      <Member Name="operatorControlAllowed" Datatype="LWord">
+                        <Subelement Path="0">
+                          <StartValue>16#000F</StartValue>
+                        </Subelement>
+                        <Subelement Path="1">
+                          <StartValue>16#0001</StartValue>
+                        </Subelement>
+                      </Member>
+                      <Member Name="active" Datatype="LWord">
+                        <Subelement Path="0">
+                          <StartValue>16#0002</StartValue>
+                        </Subelement>
+                        <Subelement Path="1">
+                          <StartValue>16#0002</StartValue>
+                        </Subelement>
+                      </Member>
+                    </Section>
+                  </Sections>
+                </Member>
+                <Member Name="stateCommandsButtons" Datatype="&quot;LUC_typeButtons&quot;">
+                  <Sections>
+                    <Section Name="None">
+                      <Member Name="visibility" Datatype="LWord">
+                        <Subelement Path="0">
+                          <StartValue>16#0000</StartValue>
+                        </Subelement>
+                        <Subelement Path="1">
+                          <StartValue>16#000F</StartValue>
+                        </Subelement>
+                      </Member>
+                      <Member Name="operatorControlAllowed" Datatype="LWord">
+                        <Subelement Path="0">
+                          <StartValue>16#0084</StartValue>
+                        </Subelement>
+                        <Subelement Path="1">
+                          <StartValue>16#0084</StartValue>
+                        </Subelement>
+                      </Member>
+                      <Member Name="active" Datatype="LWord">
+                        <Subelement Path="0">
+                          <StartValue>16#0000</StartValue>
+                        </Subelement>
+                        <Subelement Path="1">
+                          <StartValue>16#0000</StartValue>
+                        </Subelement>
+                      </Member>
+                    </Section>
+                  </Sections>
+                </Member>
+                <Member Name="specialFunctionButtons" Datatype="&quot;LUC_typeButtons&quot;">
+                  <Sections>
+                    <Section Name="None">
+                      <Member Name="visibility" Datatype="LWord">
+                        <Subelement Path="0">
+                          <StartValue>16#701FFFFF</StartValue>
+                        </Subelement>
+                        <Subelement Path="1">
+                          <StartValue>16#7FFFF</StartValue>
+                        </Subelement>
+                      </Member>
+                      <Member Name="operatorControlAllowed" Datatype="LWord">
+                        <Subelement Path="0">
+                          <StartValue>16#701FFFFF</StartValue>
+                        </Subelement>
+                        <Subelement Path="1">
+                          <StartValue>16#7FFFF</StartValue>
+                        </Subelement>
+                      </Member>
+                      <Member Name="active" Datatype="LWord">
+                        <Subelement Path="0">
+                          <StartValue>16#0000</StartValue>
+                        </Subelement>
+                        <Subelement Path="1">
+                          <StartValue>16#0000</StartValue>
+                        </Subelement>
+                      </Member>
+                    </Section>
+                  </Sections>
+                </Member>
+              </Section>
+            </Sections>
+          </Member>
+        </Section>
+      </Sections>
+    </Member>
+    <Member Name="operationInterlock" Datatype="&quot;LAF_typeOperationInterlockInterface&quot;">
+      <Sections>
+        <Section Name="None">
+          <Member Name="commands" Datatype="&quot;LAF_typeOperationInterlockCommands&quot;">
+            <Sections>
+              <Section Name="None">
+                <Member Name="reqMaintenanceLock" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="reqMaintenanceReset" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="serverMachineName" Datatype="WString">
+                  <StartValue>WSTRING#'ucp-3013893F1460'</StartValue>
+                </Member>
+                <Member Name="localMachineName" Datatype="WString">
+                  <StartValue>WSTRING#'Controlroom Client'</StartValue>
+                </Member>
+              </Section>
+            </Sections>
+          </Member>
+          <Member Name="monitoring" Datatype="&quot;LAF_typeOperationInterlockProcessValues&quot;">
+            <Sections>
+              <Section Name="None">
+                <Member Name="maintenanceLockActive" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+              </Section>
+            </Sections>
+          </Member>
+        </Section>
+      </Sections>
+    </Member>
+    <Member Name="TestBit" Datatype="Array[0..9] of Bool">
+      <AttributeList>
+        <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+      </AttributeList>
+    </Member>
+  </Section>
+</Sections></Interface>
+      <MemoryReserve>100</MemoryReserve>
+      <Name>Hmi</Name>
+      <Namespace />
+      <Number>4</Number>
+      <ProgrammingLanguage>DB</ProgrammingLanguage>
+    </AttributeList>
+    <ObjectList>
+      <MultilingualText ID="1" CompositionName="Comment">
+        <ObjectList>
+          <MultilingualTextItem ID="2" CompositionName="Items">
+            <AttributeList>
+              <Culture>de-DE</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="3" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-GB</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="4" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-US</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="5" CompositionName="Items">
+            <AttributeList>
+              <Culture>es-ES</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="6" CompositionName="Items">
+            <AttributeList>
+              <Culture>fr-FR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="7" CompositionName="Items">
+            <AttributeList>
+              <Culture>it-IT</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="8" CompositionName="Items">
+            <AttributeList>
+              <Culture>ko-KR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="9" CompositionName="Items">
+            <AttributeList>
+              <Culture>zh-CN</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+        </ObjectList>
+      </MultilingualText>
+      <MultilingualText ID="A" CompositionName="Title">
+        <ObjectList>
+          <MultilingualTextItem ID="B" CompositionName="Items">
+            <AttributeList>
+              <Culture>de-DE</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="C" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-GB</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="D" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-US</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="E" CompositionName="Items">
+            <AttributeList>
+              <Culture>es-ES</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="F" CompositionName="Items">
+            <AttributeList>
+              <Culture>fr-FR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="10" CompositionName="Items">
+            <AttributeList>
+              <Culture>it-IT</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="11" CompositionName="Items">
+            <AttributeList>
+              <Culture>ko-KR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="12" CompositionName="Items">
+            <AttributeList>
+              <Culture>zh-CN</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+        </ObjectList>
+      </MultilingualText>
+    </ObjectList>
+  </SW.Blocks.GlobalDB>
+</Document>

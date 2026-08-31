@@ -1,0 +1,888 @@
+﻿FUNCTION_BLOCK "2303_CalculateCam_FinalRoller"
+{ S7_Optimized_Access := 'TRUE' ; Published := 'FALSE' }
+VERSION : 0.1
+   VAR_INPUT 
+      execute : Bool;
+      cpm : LReal;
+      distance : LReal;
+      lineSpeed : LReal;
+      ratioOption : Bool;
+      startRatio : LReal;
+      endRatio : LReal;
+      timeOption : Bool;
+      startTime : LReal;
+      endTime : LReal;
+      accRatio { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LInt := 2;
+   END_VAR
+
+   VAR_OUTPUT 
+      done : Bool;
+      busy : Bool;
+      error : Bool;
+      errorID : Word;
+   END_VAR
+
+   VAR_IN_OUT 
+      cam : DB_ANY;
+      EmptyPoint {InstructionName := 'TO_Cam_Struct_PointData'; LibVersion := '9.0'} : Array[1..10000] of TO_Cam_Struct_PointData;
+      EmptySegment {InstructionName := 'TO_Cam_Struct_SegmentData'; LibVersion := '9.0'} : Array[1..50] of TO_Cam_Struct_SegmentData;
+   END_VAR
+
+   VAR 
+      instMCInterpolateCam {InstructionName := 'MC_INTERPOLATECAM'; LibVersion := '9.0'; S7_SetPoint := 'False'} : MC_INTERPOLATECAM;
+      instMCCopyCamData {InstructionName := 'MC_COPYCAMDATA'; LibVersion := '9.0'} : MC_COPYCAMDATA;
+      statBusy : Bool;
+      statDone : Bool;
+      statCalculateCamState { S7_SetPoint := 'True'} : DInt;
+      statTimeTable : Array[1..50] of Time;
+      statStartTime : Time;
+      statEndTime : Time;
+      CalCulateTrigger {InstructionName := 'R_TRIG'; LibVersion := '1.0'; S7_SetPoint := 'False'} : R_TRIG;
+   END_VAR
+
+   VAR_TEMP 
+      tempCam {InstructionName := 'TO_Cam_10k'; LibVersion := '9.0'} : REF_TO TO_Cam_10k;
+      tempFCount : DInt;
+      tempFullTime : LReal;
+      tempCycleTime : LReal;
+      tempStartTime : LReal;
+      tempRestTime : LReal;
+      tempTime : Array[1..50] of LReal;
+      tempPos : Array[1..50] of LReal;
+      tempVel : Array[1..50] of LReal;
+      tempAcc : Array[1..50] of LReal;
+      tempJerk : Array[1..50] of LReal;
+      tempX : Array[1..50] of LReal;
+      tempCalAcc : Array[1..50] of LReal;
+      tempCalVel : Array[1..50] of LReal;
+      tempCalPos : Array[1..50] of LReal;
+      tempA3 : Array[1..50] of LReal;
+      tempA2 : Array[1..50] of LReal;
+      tempA1 : Array[1..50] of LReal;
+      tempA0 : Array[1..50] of LReal;
+   END_VAR
+
+   VAR CONSTANT 
+      PI : LReal := 3.14159265358979;
+      CC_IDLE : DInt;
+      CC_INITIALIZE1 : DInt := 1;
+      CC_INITIALIZE2 : DInt := 2;
+      CC_INITIALIZE3 : DInt := 3;
+      CC_CALCULATE : DInt := 4;
+      CC_INTERPOLATE : DInt := 5;
+      CC_DONE : DInt := 6;
+      CC_ERROR : DInt := 99;
+   END_VAR
+
+
+BEGIN
+	REGION Mapping Cam
+	    #tempCam ?= #cam;
+	END_REGION
+	
+	REGION Error Check
+	    REGION MC_INTERPOLATE
+	        IF #instMCInterpolateCam.Error
+	        THEN
+	            #statCalculateCamState := #CC_ERROR;
+	            #errorID := #instMCInterpolateCam.ErrorId;
+	        END_IF;
+	    END_REGION
+	    
+	    REGION ACC RATIO
+	        IF #accRatio < 2
+	        THEN
+	            #statCalculateCamState := #CC_ERROR;
+	            #errorID := 16#1000;
+	        END_IF;
+	    END_REGION
+	    
+	    REGION BIT PARAMETER
+	        IF NOT #ratioOption AND NOT #timeOption THEN
+	            #statCalculateCamState := #CC_ERROR;
+	            #errorID := 16#1001;
+	        END_IF;
+	    END_REGION
+	    
+	    REGION RATIO PARAMETER CHECK
+	        IF #ratioOption THEN
+	            IF #startRatio < 0.0
+	                OR #startRatio > 50.0
+	                OR #endRatio > 100.0
+	                OR #endRatio < 0.0
+	                OR #endRatio - #startRatio <= 50.0
+	            THEN
+	                #statCalculateCamState := #CC_ERROR;
+	                #errorID := 16#1002;
+	            END_IF;
+	        END_IF;
+	    END_REGION
+	    
+	    REGION TIME PARAMETER CHECK
+	        IF #timeOption THEN
+	            #tempFullTime := 60000.0 / #cpm;
+	            IF #startTime < 0.0
+	                OR #startTime > #tempFullTime / 2.0
+	                OR #endTime > #tempFullTime
+	                OR #endTime < 0.0
+	                OR #endTime - #startTime <= #tempFullTime / 2.0
+	            THEN
+	                #statCalculateCamState := #CC_ERROR;
+	                #errorID := 16#1003;
+	            END_IF;
+	        END_IF;
+	    END_REGION
+	    
+	    REGION BASIC PARAMETER CHECK
+	        IF #cpm <= 0.0
+	            OR #lineSpeed <= 0.0
+	            OR ABS_LREAL(#distance) = 0.0
+	        THEN
+	            #statCalculateCamState := #CC_ERROR;
+	            #errorID := 16#1004;
+	        END_IF;
+	    END_REGION
+	END_REGION
+	
+	REGION Execute
+	    IF NOT #execute
+	    THEN
+	        #statCalculateCamState := #CC_IDLE;
+	    END_IF;
+	    IF #statCalculateCamState <> #CC_ERROR
+	    THEN
+	        #CalCulateTrigger(CLK := #execute);
+	    END_IF;
+	    IF #CalCulateTrigger.Q THEN
+	        #instMCCopyCamData.NumberOfPoints := 10000;
+	        #instMCCopyCamData.NumberOfSegments := 50;
+	        #statStartTime := TIME_TCK();
+	        #statCalculateCamState := #CC_INITIALIZE1;
+	    END_IF;
+	END_REGION
+	
+	REGION State Machine
+	    CASE #statCalculateCamState OF
+	            
+	        #CC_IDLE:
+	            REGION READY
+	                ;
+	            END_REGION
+	            
+	        #CC_INITIALIZE1:
+	            REGION INITIALIZE1
+	                #tempFCount := 0;
+	                FOR #tempFCount := 1 TO 10000 DO
+	                    #tempCam^.Point[#tempFCount].x := 0.0;
+	                    #tempCam^.Point[#tempFCount].y := 0.0;
+	                    #tempCam^.ValidPoint[#tempFCount] := FALSE;
+	                END_FOR;
+	                
+	                #tempFCount := 0;
+	                FOR #tempFCount := 1 TO 50 DO
+	                    #tempCam^.Segment[#tempFCount].a0 := 0.0;
+	                    #tempCam^.Segment[#tempFCount].a1 := 0.0;
+	                    #tempCam^.Segment[#tempFCount].a2 := 0.0;
+	                    #tempCam^.Segment[#tempFCount].a3 := 0.0;
+	                    #tempCam^.Segment[#tempFCount].a4 := 0.0;
+	                    #tempCam^.Segment[#tempFCount].a5 := 0.0;
+	                    #tempCam^.Segment[#tempFCount].a6 := 0.0;
+	                    #tempCam^.Segment[#tempFCount].sineAmplitude := 0.0;
+	                    #tempCam^.Segment[#tempFCount].sinePeriod := 0.0;
+	                    #tempCam^.Segment[#tempFCount].sinePhase := 0.0;
+	                    #tempCam^.Segment[#tempFCount].xmax := 0.0;
+	                    #tempCam^.Segment[#tempFCount].xmin := 0.0;
+	                    #tempCam^.ValidSegment[#tempFCount] := FALSE;
+	                END_FOR;
+	                
+	                
+	                #statCalculateCamState := #CC_CALCULATE;
+	                
+	            END_REGION
+	            
+	        #CC_CALCULATE:
+	            REGION CALCULATE
+	                IF #ratioOption THEN
+	                    REGION RATIO
+	                        #tempStartTime := 60000.0 / #cpm * #startRatio / 100.0;
+	                        #tempCycleTime := 60000.0 / #cpm * (#endRatio - #startRatio) / 100.0;
+	                        #tempRestTime := 60000.0 / #cpm * (100.0 - #endRatio) / 100.0;
+	                    END_REGION
+	                ELSE
+	                    REGION TIME
+	                        IF #timeOption THEN
+	                            #tempStartTime := #startTime;
+	                            #tempCycleTime := #endTime - #startTime;
+	                            #tempRestTime := 60000.0 / #cpm - #endTime;
+	                        END_IF;
+	                    END_REGION
+	                END_IF;
+	                
+	                REGION DIVIDE
+	                    // Calculate Time
+	                    #tempTime[1] := 0.0;
+	                    #tempTime[2] := #lineSpeed * #tempStartTime / 1000.0;
+	                    #tempTime[3] := #lineSpeed * #tempCycleTime / 1000.0;
+	                    #tempTime[4] := #lineSpeed * #tempRestTime / 1000.0;
+	                    #tempTime[5] := 0.0;
+	                    #tempTime[1] := 0.0;
+	                    #tempTime[2] := #lineSpeed * #tempStartTime / 1000.0;
+	                    #tempTime[3] := #lineSpeed * #tempCycleTime / 1000.0;
+	                    #tempTime[4] := #lineSpeed * #tempRestTime / 1000.0;
+	                    #tempTime[5] := 0.0;
+	                    
+	                    // Calculate Pos
+	                    #tempPos[1] := 0.0;
+	                    #tempPos[2] := 0.0;
+	                    #tempPos[3] := #distance;
+	                    #tempPos[4] := 0.0;
+	                    #tempPos[5] := 0.0;
+	                    
+	                    // Calculate New Vel
+	                    #tempVel[1] := 0.0;
+	                    #tempVel[2] := 0.0;
+	                    #tempVel[3] := 2.0 * #tempPos[3] / (#tempTime[3] * (2.0 - 2.0 / LINT_TO_LREAL(#accRatio)));
+	                    #tempVel[4] := 0.0;
+	                    #tempVel[5] := 0.0;
+	                    
+	                    // Calculate Acc
+	                    #tempAcc[1] := 0.0;
+	                    #tempAcc[2] := 0.0;
+	                    #tempAcc[3] := LINT_TO_LREAL(#accRatio) * 2.0 * #tempVel[3] / #tempTime[3];
+	                    #tempAcc[4] := 0.0;
+	                    #tempAcc[5] := 0.0;
+	                    
+	                    // Calculate Jerk
+	                    #tempJerk[1] := 0.0;
+	                    #tempJerk[2] := 0.0;
+	                    #tempJerk[3] := LINT_TO_LREAL(#accRatio) * 2.0 * #tempAcc[3] / #tempTime[3];
+	                    #tempJerk[4] := - LINT_TO_LREAL(#accRatio) * 2.0 * #tempAcc[3] / #tempTime[3];
+	                    #tempJerk[5] := 0.0;
+	                    #tempJerk[6] := - LINT_TO_LREAL(#accRatio) * 2.0 * #tempAcc[3] / #tempTime[3];
+	                    #tempJerk[7] := LINT_TO_LREAL(#accRatio) * 2.0 * #tempAcc[3] / #tempTime[3];
+	                    #tempJerk[8] := 0.0;
+	                    #tempJerk[9] := 0.0;
+	                    #tempJerk[10] := - LINT_TO_LREAL(#accRatio) * 2.0 * #tempAcc[3] / #tempTime[3];
+	                    #tempJerk[11] := LINT_TO_LREAL(#accRatio) * 2.0 * #tempAcc[3] / #tempTime[3];
+	                    #tempJerk[12] := 0.0;
+	                    #tempJerk[13] := LINT_TO_LREAL(#accRatio) * 2.0 * #tempAcc[3] / #tempTime[3];
+	                    #tempJerk[14] := - LINT_TO_LREAL(#accRatio) * 2.0 * #tempAcc[3] / #tempTime[3];
+	                    #tempJerk[15] := 0.0;
+	                    
+	                    // Calculate X
+	                    #tempX[1] := #tempTime[1];
+	                    #tempX[2] := #tempTime[2];
+	                    #tempX[3] := #tempTime[3] / (LINT_TO_LREAL(#accRatio) * 2.0);
+	                    #tempX[4] := #tempTime[3] / (LINT_TO_LREAL(#accRatio) * 2.0);
+	                    #tempX[5] := #tempTime[3] * (1.0 - 2.0 / LINT_TO_LREAL(#accRatio));
+	                    #tempX[6] := #tempTime[3] / (LINT_TO_LREAL(#accRatio) * 2.0);
+	                    #tempX[7] := #tempTime[3] / (LINT_TO_LREAL(#accRatio) * 2.0);
+	                    #tempX[8] := #tempTime[4];
+	                    #tempX[9] := #tempTime[2];
+	                    #tempX[10] := #tempTime[3] / (LINT_TO_LREAL(#accRatio) * 2.0);
+	                    #tempX[11] := #tempTime[3] / (LINT_TO_LREAL(#accRatio) * 2.0);
+	                    #tempX[12] := #tempTime[3] * (1.0 - 2.0 / LINT_TO_LREAL(#accRatio));
+	                    #tempX[13] := #tempTime[3] / (LINT_TO_LREAL(#accRatio) * 2.0);
+	                    #tempX[14] := #tempTime[3] / (LINT_TO_LREAL(#accRatio) * 2.0);
+	                    #tempX[15] := #tempTime[4];
+	                    
+	                    // ==============================================================================
+	                    // Segment [1]
+	                    // ==============================================================================  
+	                    #tempCalAcc[1] := 0.0;
+	                    #tempCalVel[1] := 0.0;
+	                    #tempCalPos[1] := 0.0;
+	                    #tempA3[1] := #tempJerk[1] / 6.0;
+	                    #tempA2[1] := #tempCalAcc[1] / 2.0;
+	                    #tempA1[1] := #tempCalVel[1];
+	                    #tempA0[1] := #tempCalPos[1];
+	                    #tempCam^.Segment[1].a0 := #tempA0[1];
+	                    #tempCam^.Segment[1].a1 := #tempA1[1];
+	                    #tempCam^.Segment[1].a2 := #tempA2[1];
+	                    #tempCam^.Segment[1].a3 := #tempA3[1];
+	                    #tempCam^.Segment[1].a4 := 0.0;
+	                    #tempCam^.Segment[1].a5 := 0.0;
+	                    #tempCam^.Segment[1].a6 := 0.0;
+	                    #tempCam^.Segment[1].xmax := #tempX[1];
+	                    #tempCam^.Segment[1].xmin := 0.0;
+	                    #tempCam^.Segment[1].sineAmplitude := 0.0;
+	                    #tempCam^.Segment[1].sinePeriod := 0.0;
+	                    #tempCam^.Segment[1].sinePhase := 0.0;
+	                    
+	                    IF #tempX[1] = 0.0 THEN
+	                        #tempCam^.ValidSegment[1] := FALSE;
+	                    ELSE
+	                        #tempCam^.ValidSegment[1] := TRUE;
+	                    END_IF;
+	                    
+	                    // ==============================================================================
+	                    // Segment [2]
+	                    // ==============================================================================                         
+	                    #tempCalAcc[2] := #tempJerk[2 - 1] * #tempX[2 - 1] + #tempCalAcc[2 - 1];
+	                    #tempCalVel[2] := #tempJerk[2 - 1] * #tempX[2 - 1] * #tempX[2 - 1] / 2.0 + #tempCalAcc[2 - 1] * #tempX[2 - 1] + #tempCalVel[2 - 1];
+	                    #tempCalPos[2] := #tempJerk[2 - 1] * #tempX[2 - 1] * #tempX[2 - 1] * #tempX[2 - 1] / 6.0 + #tempCalAcc[2 - 1] * #tempX[2 - 1] * #tempX[2 - 1] / 2.0 + #tempCalVel[2 - 1] * #tempX[2 - 1] + #tempCalPos[2 - 1];
+	                    
+	                    IF ABS_LREAL(#tempCalVel[2]) < 0.000000001 THEN
+	                        #tempCalVel[2] := 0.0;
+	                    END_IF;
+	                    IF ABS_LREAL(#tempCalPos[2]) < 0.000000001 THEN
+	                        #tempCalPos[2] := 0.0;
+	                    END_IF;
+	                    
+	                    #tempA3[2] := #tempJerk[2] / 6.0;
+	                    #tempA2[2] := #tempCalAcc[2] / 2.0;
+	                    #tempA1[2] := #tempCalVel[2];
+	                    #tempA0[2] := #tempCalPos[2];
+	                    #tempCam^.Segment[2].a0 := #tempA0[2];
+	                    #tempCam^.Segment[2].a1 := #tempA1[2];
+	                    #tempCam^.Segment[2].a2 := #tempA2[2];
+	                    #tempCam^.Segment[2].a3 := #tempA3[2];
+	                    #tempCam^.Segment[2].a4 := 0.0;
+	                    #tempCam^.Segment[2].a5 := 0.0;
+	                    #tempCam^.Segment[2].a6 := 0.0;
+	                    #tempCam^.Segment[2].xmax := #tempCam^.Segment[2 - 1].xmax + #tempX[2];
+	                    #tempCam^.Segment[2].xmin := #tempCam^.Segment[2 - 1].xmax;
+	                    #tempCam^.Segment[2].sineAmplitude := 0.0;
+	                    #tempCam^.Segment[2].sinePeriod := 0.0;
+	                    #tempCam^.Segment[2].sinePhase := 0.0;
+	                    
+	                    IF #tempX[2] = 0.0 THEN
+	                        #tempCam^.ValidSegment[2] := FALSE;
+	                    ELSE
+	                        #tempCam^.ValidSegment[2] := TRUE;
+	                    END_IF;
+	                    
+	                    // ==============================================================================
+	                    // Segment [3]
+	                    // ==============================================================================  
+	                    #tempCalAcc[3] := #tempJerk[3 - 1] * #tempX[3 - 1] + #tempCalAcc[3 - 1];
+	                    #tempCalVel[3] := #tempJerk[3 - 1] * #tempX[3 - 1] * #tempX[3 - 1] / 2.0 + #tempCalAcc[3 - 1] * #tempX[3 - 1] + #tempCalVel[3 - 1];
+	                    #tempCalPos[3] := #tempJerk[3 - 1] * #tempX[3 - 1] * #tempX[3 - 1] * #tempX[3 - 1] / 6.0 + #tempCalAcc[3 - 1] * #tempX[3 - 1] * #tempX[3 - 1] / 2.0 + #tempCalVel[3 - 1] * #tempX[3 - 1] + #tempCalPos[3 - 1];
+	                    IF ABS_LREAL(#tempCalVel[3]) < 0.000000001 THEN
+	                        #tempCalVel[3] := 0.0;
+	                    END_IF;
+	                    IF ABS_LREAL(#tempCalPos[3]) < 0.000000001 THEN
+	                        #tempCalPos[3] := 0.0;
+	                    END_IF;
+	                    #tempA3[3] := #tempJerk[3] / 6.0;
+	                    #tempA2[3] := #tempCalAcc[3] / 2.0;
+	                    #tempA1[3] := #tempCalVel[3];
+	                    #tempA0[3] := #tempCalPos[3];
+	                    #tempCam^.Segment[3].a0 := #tempA0[3];
+	                    #tempCam^.Segment[3].a1 := #tempA1[3];
+	                    #tempCam^.Segment[3].a2 := #tempA2[3];
+	                    #tempCam^.Segment[3].a3 := #tempA3[3];
+	                    #tempCam^.Segment[3].a4 := 0.0;
+	                    #tempCam^.Segment[3].a5 := 0.0;
+	                    #tempCam^.Segment[3].a6 := 0.0;
+	                    #tempCam^.Segment[3].xmax := #tempCam^.Segment[3 - 1].xmax + #tempX[3];
+	                    #tempCam^.Segment[3].xmin := #tempCam^.Segment[3 - 1].xmax;
+	                    #tempCam^.Segment[3].sineAmplitude := 0.0;
+	                    #tempCam^.Segment[3].sinePeriod := 0.0;
+	                    #tempCam^.Segment[3].sinePhase := 0.0;
+	                    IF #tempX[3] = 0.0 THEN
+	                        #tempCam^.ValidSegment[3] := FALSE;
+	                    ELSE
+	                        #tempCam^.ValidSegment[3] := TRUE;
+	                    END_IF;
+	                    
+	                    // ==============================================================================
+	                    // Segment [4]
+	                    // ==============================================================================                   
+	                    #tempCalAcc[4] := #tempJerk[4 - 1] * #tempX[4 - 1] + #tempCalAcc[4 - 1];
+	                    #tempCalVel[4] := #tempJerk[4 - 1] * #tempX[4 - 1] * #tempX[4 - 1] / 2.0 + #tempCalAcc[4 - 1] * #tempX[4 - 1] + #tempCalVel[4 - 1];
+	                    #tempCalPos[4] := #tempJerk[4 - 1] * #tempX[4 - 1] * #tempX[4 - 1] * #tempX[4 - 1] / 6.0 + #tempCalAcc[4 - 1] * #tempX[4 - 1] * #tempX[4 - 1] / 2.0 + #tempCalVel[4 - 1] * #tempX[4 - 1] + #tempCalPos[4 - 1];
+	                    
+	                    IF ABS_LREAL(#tempCalVel[4]) < 0.000000001 THEN
+	                        #tempCalVel[4] := 0.0;
+	                    END_IF;
+	                    IF ABS_LREAL(#tempCalPos[4]) < 0.000000001 THEN
+	                        #tempCalPos[4] := 0.0;
+	                    END_IF;
+	                    
+	                    #tempA3[4] := #tempJerk[4] / 6.0;
+	                    #tempA2[4] := #tempCalAcc[4] / 2.0;
+	                    #tempA1[4] := #tempCalVel[4];
+	                    #tempA0[4] := #tempCalPos[4];
+	                    #tempCam^.Segment[4].a0 := #tempA0[4];
+	                    #tempCam^.Segment[4].a1 := #tempA1[4];
+	                    #tempCam^.Segment[4].a2 := #tempA2[4];
+	                    #tempCam^.Segment[4].a3 := #tempA3[4];
+	                    #tempCam^.Segment[4].a4 := 0.0;
+	                    #tempCam^.Segment[4].a5 := 0.0;
+	                    #tempCam^.Segment[4].a6 := 0.0;
+	                    #tempCam^.Segment[4].xmax := #tempCam^.Segment[4 - 1].xmax + #tempX[4];
+	                    #tempCam^.Segment[4].xmin := #tempCam^.Segment[4 - 1].xmax;
+	                    #tempCam^.Segment[4].sineAmplitude := 0.0;
+	                    #tempCam^.Segment[4].sinePeriod := 0.0;
+	                    #tempCam^.Segment[4].sinePhase := 0.0;
+	                    
+	                    IF #tempX[4] = 0.0 THEN
+	                        #tempCam^.ValidSegment[4] := FALSE;
+	                    ELSE
+	                        #tempCam^.ValidSegment[4] := TRUE;
+	                    END_IF;
+	                    
+	                    // ==============================================================================
+	                    // Segment [5]
+	                    // ==============================================================================               
+	                    #tempCalAcc[5] := #tempJerk[5 - 1] * #tempX[5 - 1] + #tempCalAcc[5 - 1];
+	                    #tempCalVel[5] := #tempJerk[5 - 1] * #tempX[5 - 1] * #tempX[5 - 1] / 2.0 + #tempCalAcc[5 - 1] * #tempX[5 - 1] + #tempCalVel[5 - 1];
+	                    #tempCalPos[5] := #tempJerk[5 - 1] * #tempX[5 - 1] * #tempX[5 - 1] * #tempX[5 - 1] / 6.0 + #tempCalAcc[5 - 1] * #tempX[5 - 1] * #tempX[5 - 1] / 2.0 + #tempCalVel[5 - 1] * #tempX[5 - 1] + #tempCalPos[5 - 1];
+	                    
+	                    IF ABS_LREAL(#tempCalVel[5]) < 0.000000001 THEN
+	                        #tempCalVel[5] := 0.0;
+	                    END_IF;
+	                    IF ABS_LREAL(#tempCalPos[5]) < 0.000000001 THEN
+	                        #tempCalPos[5] := 0.0;
+	                    END_IF;
+	                    
+	                    #tempA3[5] := #tempJerk[5] / 6.0;
+	                    #tempA2[5] := #tempCalAcc[5] / 2.0;
+	                    #tempA1[5] := #tempCalVel[5];
+	                    #tempA0[5] := #tempCalPos[5];
+	                    #tempCam^.Segment[5].a0 := #tempA0[5];
+	                    #tempCam^.Segment[5].a1 := #tempA1[5];
+	                    #tempCam^.Segment[5].a2 := #tempA2[5];
+	                    #tempCam^.Segment[5].a3 := #tempA3[5];
+	                    #tempCam^.Segment[5].a4 := 0.0;
+	                    #tempCam^.Segment[5].a5 := 0.0;
+	                    #tempCam^.Segment[5].a6 := 0.0;
+	                    #tempCam^.Segment[5].xmax := #tempCam^.Segment[5 - 1].xmax + #tempX[5];
+	                    #tempCam^.Segment[5].xmin := #tempCam^.Segment[5 - 1].xmax;
+	                    #tempCam^.Segment[5].sineAmplitude := 0.0;
+	                    #tempCam^.Segment[5].sinePeriod := 0.0;
+	                    #tempCam^.Segment[5].sinePhase := 0.0;
+	                    
+	                    IF #tempX[5] = 0.0 THEN
+	                        #tempCam^.ValidSegment[5] := FALSE;
+	                    ELSE
+	                        #tempCam^.ValidSegment[5] := TRUE;
+	                    END_IF;
+	                    
+	                    // ==============================================================================
+	                    // Segment [6]
+	                    // ==============================================================================                   
+	                    #tempCalAcc[6] := #tempJerk[6 - 1] * #tempX[6 - 1] + #tempCalAcc[6 - 1];
+	                    #tempCalVel[6] := #tempJerk[6 - 1] * #tempX[6 - 1] * #tempX[6 - 1] / 2.0 + #tempCalAcc[6 - 1] * #tempX[6 - 1] + #tempCalVel[6 - 1];
+	                    #tempCalPos[6] := #tempJerk[6 - 1] * #tempX[6 - 1] * #tempX[6 - 1] * #tempX[6 - 1] / 6.0 + #tempCalAcc[6 - 1] * #tempX[6 - 1] * #tempX[6 - 1] / 2.0 + #tempCalVel[6 - 1] * #tempX[6 - 1] + #tempCalPos[6 - 1];
+	                    
+	                    IF ABS_LREAL(#tempCalVel[6]) < 0.000000001 THEN
+	                        #tempCalVel[6] := 0.0;
+	                    END_IF;
+	                    IF ABS_LREAL(#tempCalPos[6]) < 0.000000001 THEN
+	                        #tempCalPos[6] := 0.0;
+	                    END_IF;
+	                    
+	                    #tempA3[6] := #tempJerk[6] / 6.0;
+	                    #tempA2[6] := #tempCalAcc[6] / 2.0;
+	                    #tempA1[6] := #tempCalVel[6];
+	                    #tempA0[6] := #tempCalPos[6];
+	                    #tempCam^.Segment[6].a0 := #tempA0[6];
+	                    #tempCam^.Segment[6].a1 := #tempA1[6];
+	                    #tempCam^.Segment[6].a2 := #tempA2[6];
+	                    #tempCam^.Segment[6].a3 := #tempA3[6];
+	                    #tempCam^.Segment[6].a4 := 0.0;
+	                    #tempCam^.Segment[6].a5 := 0.0;
+	                    #tempCam^.Segment[6].a6 := 0.0;
+	                    #tempCam^.Segment[6].xmax := #tempCam^.Segment[6 - 1].xmax + #tempX[6];
+	                    #tempCam^.Segment[6].xmin := #tempCam^.Segment[6 - 1].xmax;
+	                    #tempCam^.Segment[6].sineAmplitude := 0.0;
+	                    #tempCam^.Segment[6].sinePeriod := 0.0;
+	                    #tempCam^.Segment[6].sinePhase := 0.0;
+	                    
+	                    IF #tempX[6] = 0.0 THEN
+	                        #tempCam^.ValidSegment[6] := FALSE;
+	                    ELSE
+	                        #tempCam^.ValidSegment[6] := TRUE;
+	                    END_IF;
+	                    
+	                    // ==============================================================================
+	                    // Segment [7]
+	                    // ==============================================================================                   
+	                    #tempCalAcc[7] := #tempJerk[7 - 1] * #tempX[7 - 1] + #tempCalAcc[7 - 1];
+	                    #tempCalVel[7] := #tempJerk[7 - 1] * #tempX[7 - 1] * #tempX[7 - 1] / 2.0 + #tempCalAcc[7 - 1] * #tempX[7 - 1] + #tempCalVel[7 - 1];
+	                    #tempCalPos[7] := #tempJerk[7 - 1] * #tempX[7 - 1] * #tempX[7 - 1] * #tempX[7 - 1] / 6.0 + #tempCalAcc[7 - 1] * #tempX[7 - 1] * #tempX[7 - 1] / 2.0 + #tempCalVel[7 - 1] * #tempX[7 - 1] + #tempCalPos[7 - 1];
+	                    
+	                    IF ABS_LREAL(#tempCalVel[7]) < 0.000000001 THEN
+	                        #tempCalVel[7] := 0.0;
+	                    END_IF;
+	                    IF ABS_LREAL(#tempCalPos[7]) < 0.000000001 THEN
+	                        #tempCalPos[7] := 0.0;
+	                    END_IF;
+	                    
+	                    #tempA3[7] := #tempJerk[7] / 6.0;
+	                    #tempA2[7] := #tempCalAcc[7] / 2.0;
+	                    #tempA1[7] := #tempCalVel[7];
+	                    #tempA0[7] := #tempCalPos[7];
+	                    #tempCam^.Segment[7].a0 := #tempA0[7];
+	                    #tempCam^.Segment[7].a1 := #tempA1[7];
+	                    #tempCam^.Segment[7].a2 := #tempA2[7];
+	                    #tempCam^.Segment[7].a3 := #tempA3[7];
+	                    #tempCam^.Segment[7].a4 := 0.0;
+	                    #tempCam^.Segment[7].a5 := 0.0;
+	                    #tempCam^.Segment[7].a6 := 0.0;
+	                    #tempCam^.Segment[7].xmax := #tempCam^.Segment[7 - 1].xmax + #tempX[7];
+	                    #tempCam^.Segment[7].xmin := #tempCam^.Segment[7 - 1].xmax;
+	                    #tempCam^.Segment[7].sineAmplitude := 0.0;
+	                    #tempCam^.Segment[7].sinePeriod := 0.0;
+	                    #tempCam^.Segment[7].sinePhase := 0.0;
+	                    
+	                    IF #tempX[7] = 0.0 THEN
+	                        #tempCam^.ValidSegment[7] := FALSE;
+	                    ELSE
+	                        #tempCam^.ValidSegment[7] := TRUE;
+	                    END_IF;
+	                    
+	                    // ==============================================================================
+	                    // Segment [8]
+	                    // ==============================================================================                   
+	                    #tempCalAcc[8] := #tempJerk[8 - 1] * #tempX[8 - 1] + #tempCalAcc[8 - 1];
+	                    #tempCalVel[8] := #tempJerk[8 - 1] * #tempX[8 - 1] * #tempX[8 - 1] / 2.0 + #tempCalAcc[8 - 1] * #tempX[8 - 1] + #tempCalVel[8 - 1];
+	                    #tempCalPos[8] := #tempJerk[8 - 1] * #tempX[8 - 1] * #tempX[8 - 1] * #tempX[8 - 1] / 6.0 + #tempCalAcc[8 - 1] * #tempX[8 - 1] * #tempX[8 - 1] / 2.0 + #tempCalVel[8 - 1] * #tempX[8 - 1] + #tempCalPos[8 - 1];
+	                    
+	                    IF ABS_LREAL(#tempCalVel[8]) < 0.000000001 THEN
+	                        #tempCalVel[8] := 0.0;
+	                    END_IF;
+	                    IF ABS_LREAL(#tempCalPos[8]) < 0.000000001 THEN
+	                        #tempCalPos[8] := 0.0;
+	                    END_IF;
+	                    
+	                    #tempA3[8] := #tempJerk[8] / 6.0;
+	                    #tempA2[8] := #tempCalAcc[8] / 2.0;
+	                    #tempA1[8] := #tempCalVel[8];
+	                    #tempA0[8] := #tempCalPos[8];
+	                    #tempCam^.Segment[8].a0 := #tempA0[8];
+	                    #tempCam^.Segment[8].a1 := #tempA1[8];
+	                    #tempCam^.Segment[8].a2 := #tempA2[8];
+	                    #tempCam^.Segment[8].a3 := #tempA3[8];
+	                    #tempCam^.Segment[8].a4 := 0.0;
+	                    #tempCam^.Segment[8].a5 := 0.0;
+	                    #tempCam^.Segment[8].a6 := 0.0;
+	                    #tempCam^.Segment[8].xmax := #tempCam^.Segment[8 - 1].xmax + #tempX[8];
+	                    #tempCam^.Segment[8].xmin := #tempCam^.Segment[8 - 1].xmax;
+	                    #tempCam^.Segment[8].sineAmplitude := 0.0;
+	                    #tempCam^.Segment[8].sinePeriod := 0.0;
+	                    #tempCam^.Segment[8].sinePhase := 0.0;
+	                    
+	                    IF #tempX[8] = 0.0 THEN
+	                        #tempCam^.ValidSegment[8] := FALSE;
+	                    ELSE
+	                        #tempCam^.ValidSegment[8] := TRUE;
+	                    END_IF;
+	                    
+	                    // ==============================================================================
+	                    // Segment [9]
+	                    // ==============================================================================                   
+	                    #tempCalAcc[9] := #tempJerk[9 - 1] * #tempX[9 - 1] + #tempCalAcc[9 - 1];
+	                    #tempCalVel[9] := #tempJerk[9 - 1] * #tempX[9 - 1] * #tempX[9 - 1] / 2.0 + #tempCalAcc[9 - 1] * #tempX[9 - 1] + #tempCalVel[9 - 1];
+	                    #tempCalPos[9] := #tempJerk[9 - 1] * #tempX[9 - 1] * #tempX[9 - 1] * #tempX[9 - 1] / 6.0 + #tempCalAcc[9 - 1] * #tempX[9 - 1] * #tempX[9 - 1] / 2.0 + #tempCalVel[9 - 1] * #tempX[9 - 1] + #tempCalPos[9 - 1];
+	                    
+	                    IF ABS_LREAL(#tempCalVel[9]) < 0.000000001 THEN
+	                        #tempCalVel[9] := 0.0;
+	                    END_IF;
+	                    IF ABS_LREAL(#tempCalPos[9]) < 0.000000001 THEN
+	                        #tempCalPos[9] := 0.0;
+	                    END_IF;
+	                    
+	                    #tempA3[9] := #tempJerk[9] / 6.0;
+	                    #tempA2[9] := #tempCalAcc[9] / 2.0;
+	                    #tempA1[9] := #tempCalVel[9];
+	                    #tempA0[9] := #tempCalPos[9];
+	                    #tempCam^.Segment[9].a0 := #tempA0[9];
+	                    #tempCam^.Segment[9].a1 := #tempA1[9];
+	                    #tempCam^.Segment[9].a2 := #tempA2[9];
+	                    #tempCam^.Segment[9].a3 := #tempA3[9];
+	                    #tempCam^.Segment[9].a4 := 0.0;
+	                    #tempCam^.Segment[9].a5 := 0.0;
+	                    #tempCam^.Segment[9].a6 := 0.0;
+	                    #tempCam^.Segment[9].xmax := #tempCam^.Segment[9 - 1].xmax + #tempX[9];
+	                    #tempCam^.Segment[9].xmin := #tempCam^.Segment[9 - 1].xmax;
+	                    #tempCam^.Segment[9].sineAmplitude := 0.0;
+	                    #tempCam^.Segment[9].sinePeriod := 0.0;
+	                    #tempCam^.Segment[9].sinePhase := 0.0;
+	                    
+	                    IF #tempX[9] = 0.0 THEN
+	                        #tempCam^.ValidSegment[9] := FALSE;
+	                    ELSE
+	                        #tempCam^.ValidSegment[9] := TRUE;
+	                    END_IF;
+	                    
+	                    // ==============================================================================
+	                    // Segment [10]
+	                    // ==============================================================================                   
+	                    #tempCalAcc[10] := #tempJerk[10 - 1] * #tempX[10 - 1] + #tempCalAcc[10 - 1];
+	                    #tempCalVel[10] := #tempJerk[10 - 1] * #tempX[10 - 1] * #tempX[10 - 1] / 2.0 + #tempCalAcc[10 - 1] * #tempX[10 - 1] + #tempCalVel[10 - 1];
+	                    #tempCalPos[10] := #tempJerk[10 - 1] * #tempX[10 - 1] * #tempX[10 - 1] * #tempX[10 - 1] / 6.0 + #tempCalAcc[10 - 1] * #tempX[10 - 1] * #tempX[10 - 1] / 2.0 + #tempCalVel[10 - 1] * #tempX[10 - 1] + #tempCalPos[10 - 1];
+	                    
+	                    IF ABS_LREAL(#tempCalVel[10]) < 0.000000001 THEN
+	                        #tempCalVel[10] := 0.0;
+	                    END_IF;
+	                    IF ABS_LREAL(#tempCalPos[10]) < 0.000000001 THEN
+	                        #tempCalPos[10] := 0.0;
+	                    END_IF;
+	                    
+	                    #tempA3[10] := #tempJerk[10] / 6.0;
+	                    #tempA2[10] := #tempCalAcc[10] / 2.0;
+	                    #tempA1[10] := #tempCalVel[10];
+	                    #tempA0[10] := #tempCalPos[10];
+	                    #tempCam^.Segment[10].a0 := #tempA0[10];
+	                    #tempCam^.Segment[10].a1 := #tempA1[10];
+	                    #tempCam^.Segment[10].a2 := #tempA2[10];
+	                    #tempCam^.Segment[10].a3 := #tempA3[10];
+	                    #tempCam^.Segment[10].a4 := 0.0;
+	                    #tempCam^.Segment[10].a5 := 0.0;
+	                    #tempCam^.Segment[10].a6 := 0.0;
+	                    #tempCam^.Segment[10].xmax := #tempCam^.Segment[10 - 1].xmax + #tempX[10];
+	                    #tempCam^.Segment[10].xmin := #tempCam^.Segment[10 - 1].xmax;
+	                    #tempCam^.Segment[10].sineAmplitude := 0.0;
+	                    #tempCam^.Segment[10].sinePeriod := 0.0;
+	                    #tempCam^.Segment[10].sinePhase := 0.0;
+	                    
+	                    IF #tempX[10] = 0.0 THEN
+	                        #tempCam^.ValidSegment[10] := FALSE;
+	                    ELSE
+	                        #tempCam^.ValidSegment[10] := TRUE;
+	                    END_IF;
+	                    
+	                    // ==============================================================================
+	                    // Segment [11]
+	                    // ==============================================================================                   
+	                    #tempCalAcc[11] := #tempJerk[11 - 1] * #tempX[11 - 1] + #tempCalAcc[11 - 1];
+	                    #tempCalVel[11] := #tempJerk[11 - 1] * #tempX[11 - 1] * #tempX[11 - 1] / 2.0 + #tempCalAcc[11 - 1] * #tempX[11 - 1] + #tempCalVel[11 - 1];
+	                    #tempCalPos[11] := #tempJerk[11 - 1] * #tempX[11 - 1] * #tempX[11 - 1] * #tempX[11 - 1] / 6.0 + #tempCalAcc[11 - 1] * #tempX[11 - 1] * #tempX[11 - 1] / 2.0 + #tempCalVel[11 - 1] * #tempX[11 - 1] + #tempCalPos[11 - 1];
+	                    
+	                    IF ABS_LREAL(#tempCalVel[11]) < 0.000000001 THEN
+	                        #tempCalVel[11] := 0.0;
+	                    END_IF;
+	                    IF ABS_LREAL(#tempCalPos[11]) < 0.000000001 THEN
+	                        #tempCalPos[11] := 0.0;
+	                    END_IF;
+	                    
+	                    #tempA3[11] := #tempJerk[11] / 6.0;
+	                    #tempA2[11] := #tempCalAcc[11] / 2.0;
+	                    #tempA1[11] := #tempCalVel[11];
+	                    #tempA0[11] := #tempCalPos[11];
+	                    #tempCam^.Segment[11].a0 := #tempA0[11];
+	                    #tempCam^.Segment[11].a1 := #tempA1[11];
+	                    #tempCam^.Segment[11].a2 := #tempA2[11];
+	                    #tempCam^.Segment[11].a3 := #tempA3[11];
+	                    #tempCam^.Segment[11].a4 := 0.0;
+	                    #tempCam^.Segment[11].a5 := 0.0;
+	                    #tempCam^.Segment[11].a6 := 0.0;
+	                    #tempCam^.Segment[11].xmax := #tempCam^.Segment[11 - 1].xmax + #tempX[11];
+	                    #tempCam^.Segment[11].xmin := #tempCam^.Segment[11 - 1].xmax;
+	                    #tempCam^.Segment[11].sineAmplitude := 0.0;
+	                    #tempCam^.Segment[11].sinePeriod := 0.0;
+	                    #tempCam^.Segment[11].sinePhase := 0.0;
+	                    
+	                    IF #tempX[11] = 0.0 THEN
+	                        #tempCam^.ValidSegment[11] := FALSE;
+	                    ELSE
+	                        #tempCam^.ValidSegment[11] := TRUE;
+	                    END_IF;
+	                    
+	                    // ==============================================================================
+	                    // Segment [12]
+	                    // ==============================================================================                   
+	                    #tempCalAcc[12] := #tempJerk[12 - 1] * #tempX[12 - 1] + #tempCalAcc[12 - 1];
+	                    #tempCalVel[12] := #tempJerk[12 - 1] * #tempX[12 - 1] * #tempX[12 - 1] / 2.0 + #tempCalAcc[12 - 1] * #tempX[12 - 1] + #tempCalVel[12 - 1];
+	                    #tempCalPos[12] := #tempJerk[12 - 1] * #tempX[12 - 1] * #tempX[12 - 1] * #tempX[12 - 1] / 6.0 + #tempCalAcc[12 - 1] * #tempX[12 - 1] * #tempX[12 - 1] / 2.0 + #tempCalVel[12 - 1] * #tempX[12 - 1] + #tempCalPos[12 - 1];
+	                    
+	                    IF ABS_LREAL(#tempCalVel[12]) < 0.000000001 THEN
+	                        #tempCalVel[12] := 0.0;
+	                    END_IF;
+	                    IF ABS_LREAL(#tempCalPos[12]) < 0.000000001 THEN
+	                        #tempCalPos[12] := 0.0;
+	                    END_IF;
+	                    
+	                    #tempA3[12] := #tempJerk[12] / 6.0;
+	                    #tempA2[12] := #tempCalAcc[12] / 2.0;
+	                    #tempA1[12] := #tempCalVel[12];
+	                    #tempA0[12] := #tempCalPos[12];
+	                    #tempCam^.Segment[12].a0 := #tempA0[12];
+	                    #tempCam^.Segment[12].a1 := #tempA1[12];
+	                    #tempCam^.Segment[12].a2 := #tempA2[12];
+	                    #tempCam^.Segment[12].a3 := #tempA3[12];
+	                    #tempCam^.Segment[12].a4 := 0.0;
+	                    #tempCam^.Segment[12].a5 := 0.0;
+	                    #tempCam^.Segment[12].a6 := 0.0;
+	                    #tempCam^.Segment[12].xmax := #tempCam^.Segment[12 - 1].xmax + #tempX[12];
+	                    #tempCam^.Segment[12].xmin := #tempCam^.Segment[12 - 1].xmax;
+	                    #tempCam^.Segment[12].sineAmplitude := 0.0;
+	                    #tempCam^.Segment[12].sinePeriod := 0.0;
+	                    #tempCam^.Segment[12].sinePhase := 0.0;
+	                    
+	                    IF #tempX[12] = 0.0 THEN
+	                        #tempCam^.ValidSegment[12] := FALSE;
+	                    ELSE
+	                        #tempCam^.ValidSegment[12] := TRUE;
+	                    END_IF;
+	                    
+	                    // ==============================================================================
+	                    // Segment [13]
+	                    // ==============================================================================                   
+	                    #tempCalAcc[13] := #tempJerk[13 - 1] * #tempX[13 - 1] + #tempCalAcc[13 - 1];
+	                    #tempCalVel[13] := #tempJerk[13 - 1] * #tempX[13 - 1] * #tempX[13 - 1] / 2.0 + #tempCalAcc[13 - 1] * #tempX[13 - 1] + #tempCalVel[13 - 1];
+	                    #tempCalPos[13] := #tempJerk[13 - 1] * #tempX[13 - 1] * #tempX[13 - 1] * #tempX[13 - 1] / 6.0 + #tempCalAcc[13 - 1] * #tempX[13 - 1] * #tempX[13 - 1] / 2.0 + #tempCalVel[13 - 1] * #tempX[13 - 1] + #tempCalPos[13 - 1];
+	                    
+	                    IF ABS_LREAL(#tempCalVel[13]) < 0.000000001 THEN
+	                        #tempCalVel[13] := 0.0;
+	                    END_IF;
+	                    IF ABS_LREAL(#tempCalPos[13]) < 0.000000001 THEN
+	                        #tempCalPos[13] := 0.0;
+	                    END_IF;
+	                    
+	                    #tempA3[13] := #tempJerk[13] / 6.0;
+	                    #tempA2[13] := #tempCalAcc[13] / 2.0;
+	                    #tempA1[13] := #tempCalVel[13];
+	                    #tempA0[13] := #tempCalPos[13];
+	                    #tempCam^.Segment[13].a0 := #tempA0[13];
+	                    #tempCam^.Segment[13].a1 := #tempA1[13];
+	                    #tempCam^.Segment[13].a2 := #tempA2[13];
+	                    #tempCam^.Segment[13].a3 := #tempA3[13];
+	                    #tempCam^.Segment[13].a4 := 0.0;
+	                    #tempCam^.Segment[13].a5 := 0.0;
+	                    #tempCam^.Segment[13].a6 := 0.0;
+	                    #tempCam^.Segment[13].xmax := #tempCam^.Segment[13 - 1].xmax + #tempX[13];
+	                    #tempCam^.Segment[13].xmin := #tempCam^.Segment[13 - 1].xmax;
+	                    #tempCam^.Segment[13].sineAmplitude := 0.0;
+	                    #tempCam^.Segment[13].sinePeriod := 0.0;
+	                    #tempCam^.Segment[13].sinePhase := 0.0;
+	                    
+	                    IF #tempX[13] = 0.0 THEN
+	                        #tempCam^.ValidSegment[13] := FALSE;
+	                    ELSE
+	                        #tempCam^.ValidSegment[13] := TRUE;
+	                    END_IF;
+	                    
+	                    // ==============================================================================
+	                    // Segment [14]
+	                    // ==============================================================================                   
+	                    #tempCalAcc[14] := #tempJerk[14 - 1] * #tempX[14 - 1] + #tempCalAcc[14 - 1];
+	                    #tempCalVel[14] := #tempJerk[14 - 1] * #tempX[14 - 1] * #tempX[14 - 1] / 2.0 + #tempCalAcc[14 - 1] * #tempX[14 - 1] + #tempCalVel[14 - 1];
+	                    #tempCalPos[14] := #tempJerk[14 - 1] * #tempX[14 - 1] * #tempX[14 - 1] * #tempX[14 - 1] / 6.0 + #tempCalAcc[14 - 1] * #tempX[14 - 1] * #tempX[14 - 1] / 2.0 + #tempCalVel[14 - 1] * #tempX[14 - 1] + #tempCalPos[14 - 1];
+	                    
+	                    IF ABS_LREAL(#tempCalVel[14]) < 0.000000001 THEN
+	                        #tempCalVel[14] := 0.0;
+	                    END_IF;
+	                    IF ABS_LREAL(#tempCalPos[14]) < 0.000000001 THEN
+	                        #tempCalPos[14] := 0.0;
+	                    END_IF;
+	                    
+	                    #tempA3[14] := #tempJerk[14] / 6.0;
+	                    #tempA2[14] := #tempCalAcc[14] / 2.0;
+	                    #tempA1[14] := #tempCalVel[14];
+	                    #tempA0[14] := #tempCalPos[14];
+	                    #tempCam^.Segment[14].a0 := #tempA0[14];
+	                    #tempCam^.Segment[14].a1 := #tempA1[14];
+	                    #tempCam^.Segment[14].a2 := #tempA2[14];
+	                    #tempCam^.Segment[14].a3 := #tempA3[14];
+	                    #tempCam^.Segment[14].a4 := 0.0;
+	                    #tempCam^.Segment[14].a5 := 0.0;
+	                    #tempCam^.Segment[14].a6 := 0.0;
+	                    #tempCam^.Segment[14].xmax := #tempCam^.Segment[14 - 1].xmax + #tempX[14];
+	                    #tempCam^.Segment[14].xmin := #tempCam^.Segment[14 - 1].xmax;
+	                    #tempCam^.Segment[14].sineAmplitude := 0.0;
+	                    #tempCam^.Segment[14].sinePeriod := 0.0;
+	                    #tempCam^.Segment[14].sinePhase := 0.0;
+	                    
+	                    IF #tempX[14] = 0.0 THEN
+	                        #tempCam^.ValidSegment[14] := FALSE;
+	                    ELSE
+	                        #tempCam^.ValidSegment[14] := TRUE;
+	                    END_IF;
+	                    
+	                    // ==============================================================================
+	                    // Segment [15]
+	                    // ==============================================================================                   
+	                    #tempCalAcc[15] := #tempJerk[15 - 1] * #tempX[15 - 1] + #tempCalAcc[15 - 1];
+	                    #tempCalVel[15] := #tempJerk[15 - 1] * #tempX[15 - 1] * #tempX[15 - 1] / 2.0 + #tempCalAcc[15 - 1] * #tempX[15 - 1] + #tempCalVel[15 - 1];
+	                    #tempCalPos[15] := #tempJerk[15 - 1] * #tempX[15 - 1] * #tempX[15 - 1] * #tempX[15 - 1] / 6.0 + #tempCalAcc[15 - 1] * #tempX[15 - 1] * #tempX[15 - 1] / 2.0 + #tempCalVel[15 - 1] * #tempX[15 - 1] + #tempCalPos[15 - 1];
+	                    
+	                    IF ABS_LREAL(#tempCalVel[15]) < 0.000000001 THEN
+	                        #tempCalVel[15] := 0.0;
+	                    END_IF;
+	                    IF ABS_LREAL(#tempCalPos[15]) < 0.000000001 THEN
+	                        #tempCalPos[15] := 0.0;
+	                    END_IF;
+	                    
+	                    #tempA3[15] := #tempJerk[15] / 6.0;
+	                    #tempA2[15] := #tempCalAcc[15] / 2.0;
+	                    #tempA1[15] := #tempCalVel[15];
+	                    #tempA0[15] := #tempCalPos[15];
+	                    #tempCam^.Segment[15].a0 := #tempA0[15];
+	                    #tempCam^.Segment[15].a1 := #tempA1[15];
+	                    #tempCam^.Segment[15].a2 := #tempA2[15];
+	                    #tempCam^.Segment[15].a3 := #tempA3[15];
+	                    #tempCam^.Segment[15].a4 := 0.0;
+	                    #tempCam^.Segment[15].a5 := 0.0;
+	                    #tempCam^.Segment[15].a6 := 0.0;
+	                    #tempCam^.Segment[15].xmax := #tempCam^.Segment[15 - 1].xmax + #tempX[15];
+	                    #tempCam^.Segment[15].xmin := #tempCam^.Segment[15 - 1].xmax;
+	                    #tempCam^.Segment[15].sineAmplitude := 0.0;
+	                    #tempCam^.Segment[15].sinePeriod := 0.0;
+	                    #tempCam^.Segment[15].sinePhase := 0.0;
+	                    
+	                    IF #tempX[15] = 0.0 THEN
+	                        #tempCam^.ValidSegment[15] := FALSE;
+	                    ELSE
+	                        #tempCam^.ValidSegment[15] := TRUE;
+	                    END_IF;
+	                    
+	                    #statEndTime := TIME_TCK();
+	                    #statTimeTable[#CC_CALCULATE] := #statEndTime - #statStartTime;
+	                    #statStartTime := TIME_TCK();
+	                    #statCalculateCamState := #CC_INTERPOLATE;
+	                END_REGION
+	            END_REGION
+	            
+	        #CC_INTERPOLATE:
+	            REGION INTERPOLATE
+	                IF #instMCInterpolateCam.Done
+	                THEN
+	                    #statEndTime := TIME_TCK();
+	                    #statTimeTable[#CC_INTERPOLATE] := #statEndTime - #statStartTime;
+	                    #statStartTime := TIME_TCK();
+	                    #statCalculateCamState := #CC_DONE;
+	                END_IF;
+	            END_REGION
+	            
+	        #CC_DONE:
+	            REGION DONE
+	                ;
+	            END_REGION
+	            
+	        #CC_ERROR:
+	            REGION ERROR
+	                ;
+	            END_REGION
+	    END_CASE;
+	    
+	END_REGION
+	
+	REGION Instance
+	    #instMCInterpolateCam(Cam := #tempCam^,
+	                          Execute := #statCalculateCamState = #CC_INTERPOLATE);
+	    #instMCCopyCamData(Cam := #tempCam^,
+	                       Execute := #statCalculateCamState = #CC_INITIALIZE1 OR #statCalculateCamState = #CC_INITIALIZE3,
+	                       Mode := 0,
+	                       StartPointCam := 1,
+	                       StartSegmentCam := 1,
+	                       StartPointArray := 1,
+	                       StartSegmentArray := 1,
+	                       ArrayOfPoints := #EmptyPoint,
+	                       ArrayOfSegments := #EmptySegment);
+	END_REGION
+	
+	REGION Outputs
+	    #busy := #statCalculateCamState = #CC_INITIALIZE1
+	    OR #statCalculateCamState = #CC_INITIALIZE2
+	    OR #statCalculateCamState = #CC_INITIALIZE3
+	    OR #statCalculateCamState = #CC_CALCULATE
+	    OR #statCalculateCamState = #CC_INTERPOLATE;
+	    #error := #statCalculateCamState = #CC_ERROR;
+	    #done := #statCalculateCamState = #CC_DONE;
+	END_REGION
+END_FUNCTION_BLOCK
+

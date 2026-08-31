@@ -1,0 +1,76 @@
+﻿FUNCTION "LConSMC_Limiter" : LReal
+{ S7_Optimized_Access := 'TRUE' ; Published := 'TRUE' }
+VERSION : 0.1
+//Limiting the input value between specified limits, the function can be called in any task.  Function block ID: 0004
+   VAR_INPUT 
+      x : LReal;   // Input value
+      UpperLimit : LReal;   // Upper limit
+      LowerLimit : LReal;   // Lower limit
+   END_VAR
+
+   VAR_OUTPUT 
+      UpperLimitReached : Bool;   // TRUE: Upper limit reached
+      LowerLimitReached : Bool;   // TRUE: Lower limit reached
+   END_VAR
+
+
+BEGIN
+	REGION BLOCK INFO HEADER
+	  //===============================================================================
+	  // SIEMENS AG / (c)Copyright 2023
+	  //-------------------------------------------------------------------------------
+	  // Title:            LConSMC_Limiter
+	  // Comment/Function: Limiting unit with feedback
+	  // Library/Family:   LConSMC
+	  // Author:           APC Erlangen
+	  // Tested with:      FW 2.8
+	  // Engineering:      TIA Portal V16
+	  // Restrictions:     -
+	  // Requirements:     -
+	  //-------------------------------------------------------------------------------
+	  // Change log table:
+	  // Version  | Date       | Expert in charge       | Changes applied
+	  //----------|------------|------------------------|------------------------------
+	  // 01.01.00 | 2016-11-17 | APC Erlangen           | Adapted to styleguide
+	  // 01.00.00 | 2012-07-01 | APC Erlangen           | Creation
+	  //===============================================================================
+	  //
+	END_REGION BLOCK INFO HEADER
+	
+	REGION DESCRIPTION
+	(/*
+	The function block transfers the input value x to its return value. The input value is limited dependent on the input parameters upperLimit and lowerLimit.
+	If the input quantity reaches upper limit upperLimit, output upperLimitReached is set to TRUE.
+	If the input quantity reaches lower limit value lowerLimit, output lowerLimitReached is set to TRUE.
+	If the lower limit value is greater or equal to the upper limit value, output y is set to the upper limit value upperLimit.
+	
+	#### Timing diagram
+	
+	![Limiter](Limiter_Diagram.png)
+	
+	*/)
+	END_REGION
+	
+	IF (#LowerLimit >= #UpperLimit) THEN
+	    #LConSMC_Limiter := #UpperLimit;
+	    #UpperLimitReached := TRUE;
+	    #LowerLimitReached := TRUE;
+	    
+	ELSIF (#x >= #UpperLimit) THEN
+	    #LConSMC_Limiter := #UpperLimit;
+	    #UpperLimitReached := TRUE;
+	    #LowerLimitReached := FALSE;
+	    
+	    
+	ELSIF (#x <= #LowerLimit) THEN
+	    #LConSMC_Limiter := #LowerLimit;
+	    #UpperLimitReached := FALSE;
+	    #LowerLimitReached := TRUE;
+	ELSE
+	    #LConSMC_Limiter := #x;
+	    #UpperLimitReached := FALSE;
+	    #LowerLimitReached := FALSE;
+	END_IF;
+	
+END_FUNCTION
+

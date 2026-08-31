@@ -1,0 +1,95 @@
+﻿FUNCTION_BLOCK "LConSMC_Differentiator"
+{ S7_Optimized_Access := 'TRUE' ; Published := 'TRUE' }
+VERSION : 0.1
+//Numerical differentiator function block must be called in a cyclic interrupt, e.g. OB30.  Function block ID: 1103
+   VAR_INPUT 
+      x { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 0.0;   // Input value
+      diffTime { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 0.0;   // [ms] Time constant for differentator
+      tCycle { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Real;   // [ms] Cycle time the function block is called
+   END_VAR
+
+   VAR_OUTPUT 
+      error { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;   // TRUE: An error occured
+      errorID { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : DWord := 16#0000_0000;   // Detailed error description
+      y { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 0.0;   // Output value = (xn-xn-1) * diffTime/cycleTime
+   END_VAR
+
+   VAR 
+      statTmax { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statXkm1 { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statXFactor { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statFirstRun { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := TRUE;
+      statError { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := FALSE;
+   END_VAR
+
+   VAR CONSTANT 
+      MAX_DIFF_TIME : Real := 1000.0;
+      NO_ERROR : DWord := 16#0000_0000;
+   END_VAR
+
+
+BEGIN
+	REGION BLOCK INFO HEADER
+	  //===============================================================================
+	  // SIEMENS AG / (c)Copyright 2023
+	  //-------------------------------------------------------------------------------
+	  // Title:            LConSMC_Differentiator
+	  // Comment/Function: Numerical differentiator
+	  // Library/Family:   LConSMC
+	  // Author:           APC Erlangen
+	  // Tested with:      FW 2.8
+	  // Engineering:      TIA Portal V16
+	  // Restrictions:     Needs to be called in a cyclic task
+	  // Requirements:     -
+	  //-------------------------------------------------------------------------------
+	  // Change log table:
+	  // Version  | Date       | Expert in charge       | Changes applied
+	  //----------|------------|------------------------|------------------------------
+	  // 01.01.00 | 2016-11-17 | APC Erlangen           | Removed warning "Parameter might not be initialized"
+	  // 01.00.00 | 2012-07-18 | APC Erlangen           | Creation
+	  //===============================================================================
+	  //
+	END_REGION BLOCK INFO HEADER
+	
+	REGION DESCRIPTION
+	(/*
+	The output value y changes as a function of the rate of change of input value x, multiplied by the differential time constant diffTime.
+	The input *diffTime* is internally limited: cycleTime ≤ diffTime ≤ 1000 
+	Discrete values are calculated using the following algorithm:
+	
+	$ y_n = (x_n - x_{n-1}) \cdot \frac{diffTime}{cycleTime}\ $
+	
+	*/)
+	END_REGION
+	
+	IF (#statFirstRun) THEN                                                          // only at the first Run
+	    #statFirstRun := FALSE;
+	    #statXkm1 := 0.0;
+	END_IF;
+	
+	#statError := #statError OR (#tCycle = 0.0);                                           // Cycle time identified as zero
+	
+	IF (#statError) THEN
+	  #errorID := "LCON_ERROR_DIFFERENTIATOR_INVALID_CYCLE_TIME";                                       // FB NOT running IN cyclic task (81)
+	ELSE
+	    #errorID := #NO_ERROR;
+	END_IF;
+	
+	IF (NOT #statError) THEN
+	    #statTmax := LIMIT(MN := #tCycle,
+	                       IN := #diffTime,
+	                       MX := #MAX_DIFF_TIME);                                      //Limits for Tmax
+	    
+	    #statXFactor := #statTmax / #tCycle;
+	    
+	    #y := #statXFactor * (#x - #statXkm1);
+	    #statXkm1 := #x;
+	ELSE
+	    #y := 0.0;
+	END_IF;
+	
+	#error := #statError;
+	
+	
+END_FUNCTION_BLOCK
+

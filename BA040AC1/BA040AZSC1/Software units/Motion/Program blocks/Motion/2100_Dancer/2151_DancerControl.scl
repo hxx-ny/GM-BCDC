@@ -1,0 +1,89 @@
+﻿FUNCTION_BLOCK "2151_DancerControl"
+{ S7_Optimized_Access := 'TRUE' ; Published := 'FALSE' }
+VERSION : 0.1
+   VAR_INPUT 
+      Enable : Bool;
+      Disable : Bool;
+      Reset : Bool;
+   END_VAR
+
+   VAR_OUTPUT 
+      ResetRequest : Bool;
+   END_VAR
+
+   VAR_IN_OUT 
+      MasterAxis : DB_ANY;
+      SlaveAxis : DB_ANY;
+   END_VAR
+
+   VAR 
+      statEnablePulse : Bool;
+      statEnableRein : Bool;
+      statStep : DInt;
+      statError : Bool;
+      statRunning : Bool;
+      statDone : Bool;
+      statTimeTable : Array[1..50] of Time;
+      statStartTime : Time;
+      statEndTime : Time;
+      instSlaveMCHalt {InstructionName := 'MC_HALT'; LibVersion := '9.0'; S7_SetPoint := 'False'} : MC_HALT;
+      instSlaveMCMoveVelocity {InstructionName := 'MC_MOVEVELOCITY'; LibVersion := '9.0'} : MC_MOVEVELOCITY;
+      instPIDControl : "2152_PIDControl";
+   END_VAR
+
+   VAR_TEMP 
+      tempMasterAxis {InstructionName := 'TO_Axis'; LibVersion := '9.0'} : REF_TO TO_Axis;
+      tempSlaveAxis {InstructionName := 'TO_Axis'; LibVersion := '9.0'} : REF_TO TO_Axis;
+   END_VAR
+
+
+BEGIN
+	REGION Enable Command
+	    #statEnablePulse := #Enable AND NOT #statEnableRein;
+	    #statEnableRein := #Enable;
+	END_REGION
+	
+	IF #Reset THEN             // Reset 신호 감지 시
+	    REGION Reset Command   // DancerControl 파라미터 초기화
+	        #statStep := 0;
+	        #statError := FALSE;
+	        #statRunning := FALSE;
+	        #statDone := FALSE;
+	    END_REGION
+	ELSIF #Disable THEN        // Disable 신호 감지 시
+	    REGION Disable Command // DancerControl 파라미터 초기화
+	        #statStep := 0;
+	        #statError := FALSE;
+	        #statRunning := FALSE;
+	        #statDone := FALSE;
+	    END_REGION
+	ELSE
+	    REGION Command State
+	        CASE #statStep OF
+	            0:
+	                #statRunning := FALSE;
+	                
+	                IF #statEnablePulse AND NOT #statError AND NOT #statRunning THEN
+	                    #statRunning := TRUE;
+	                    #statDone := FALSE;
+	                    #statStep := 10;
+	                END_IF;
+	            ELSE
+	                #statError := TRUE;
+	                #statRunning := FALSE;
+	                #statStep := 0;
+	        END_CASE;
+	    END_REGION
+	END_IF;
+	
+	
+	REGION Instances
+	    #tempMasterAxis ?= #MasterAxis;
+	    #tempSlaveAxis ?= #SlaveAxis;
+	    #ResetRequest := #Reset;
+	END_REGION
+	
+	
+	
+END_FUNCTION_BLOCK
+

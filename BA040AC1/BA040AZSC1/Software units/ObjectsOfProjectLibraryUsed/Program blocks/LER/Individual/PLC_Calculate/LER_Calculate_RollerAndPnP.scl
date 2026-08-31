@@ -1,0 +1,49 @@
+﻿FUNCTION "LER_Calculate_RollerAndPnP" : Void
+{ S7_Optimized_Access := 'TRUE' ; Published := 'TRUE' }
+VERSION : 0.1
+   VAR_INPUT 
+      calculate : Bool;
+      cpm : DInt;
+      masterStartPosition : LReal;
+      masterEndPosition : LReal;
+      subStartPosition : LReal;
+      subEndPosition : LReal;
+   END_VAR
+
+   VAR_OUTPUT 
+      mainPnPVel : LReal;
+      mainPnPAccDec : LReal;
+      finalRollerVel : LReal;
+      finalRollerAccDec : LReal;
+   END_VAR
+
+   VAR_TEMP 
+      tempMasterPosition : LReal;
+      tempMasterVelocity : LReal;
+      tempMasterAccDec : LReal;
+      tempSubVelocity : LReal;
+      tempSubAccDec : LReal;
+      tempRatio : LReal;
+   END_VAR
+
+
+BEGIN
+	REGION _name_
+	    
+	    // < Reference >
+	    // CPM * 13.0은 Main P&P가 80CPM일 때, X축이 한 번 이동할 때 약 500ms가 나와야 하는 것을 기준으로 계산.
+	    // Acc, Dec의 * 10은 속도 그래프의 1:1:1 사다리꼴 기준으로 계산.
+	    
+	    IF #calculate THEN
+	        #tempMasterPosition := ABS(IN := #masterEndPosition - #masterStartPosition);
+	        #tempRatio := ABS(IN := #subEndPosition - #subStartPosition) / ABS(IN := #masterEndPosition - #masterStartPosition);
+	        
+	        #mainPnPVel := DINT_TO_REAL(IN := #cpm) * 13;
+	        #mainPnPAccDec := #mainPnPVel * 10;
+	        #finalRollerVel := #mainPnPVel * #tempRatio;
+	        #finalRollerAccDec := #finalRollerVel * 10;
+	    END_IF;
+	    
+	END_REGION
+END_FUNCTION
+

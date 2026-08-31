@@ -1,0 +1,197 @@
+﻿FUNCTION_BLOCK "LConSMC_SetAxisSTW"
+{ S7_Optimized_Access := 'TRUE' ; Published := 'TRUE' }
+VERSION : 0.1
+   VAR_INPUT 
+      enable { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;   // TRUE: Enable function block
+      resetSpeedInt { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;   // Rising edge: Reset speed controller integrator (Via bit 6 in STW2)
+      maskMotorBlockedFault { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;   // TRUE: Set bit 8 in STW2  FALSE: Reset bit 8 in STW2
+      axis { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : DB_ANY;   // Used axis
+   END_VAR
+
+   VAR_OUTPUT 
+      integratorResetDone { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;   // TRUE: The speed controller integrator has been reset
+      maskMotorBlockedFaultDone { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;   // TRUE: The bit 8 in STW2 is set
+      busy { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;   // TRUE: Function block is processed
+      error { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;   // An error occured
+      errorID { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Word;   // ErrorID of MC_SetAxisSTW
+   END_VAR
+
+   VAR 
+      instSetAxisSTW {InstructionName := 'MC_SETAXISSTW'; LibVersion := '9.0'; ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'; S7_SetPoint := 'False'} : MC_SETAXISSTW;
+      instRTrigResetIntegrator {InstructionName := 'R_TRIG'; LibVersion := '1.0'; ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : R_TRIG;
+      instRTrigMaskMotorBlockedFault {InstructionName := 'R_TRIG'; LibVersion := '1.0'; ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : R_TRIG;
+      instRTrigDisableActive {InstructionName := 'R_TRIG'; LibVersion := '1.0'; ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : R_TRIG;
+      instFTrigMaskMotorBlockedFault {InstructionName := 'F_TRIG'; LibVersion := '1.0'; ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : F_TRIG;
+      statEnableResetIntegrator { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'; S7_SetPoint := 'True'} : Bool;
+      statEnableResetIntegratorOld { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statDisableResetIntegrator { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statResetIntegratorDone { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statResetIntegratorDoneOld { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statMaskMotorBlockedFaultActive { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statEnableMaskMotorBlockedFault { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statDisableMaskMotorBlockedFault { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statBusy { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statDisableActive { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statEnableOld { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+   END_VAR
+
+   VAR_TEMP 
+      tempRefToSpeed {InstructionName := 'TO_SpeedAxis'; LibVersion := '9.0'} : REF_TO TO_SpeedAxis;
+   END_VAR
+
+   VAR CONSTANT 
+      STW2_BIT6_TRUE : Word := 16#40;
+      STW2_BIT8_TRUE : Word := 16#100;
+      STW2_MASK_BIT8 : Word := 16#100;
+      STW2_MASK_BIT6 : Word := 16#40;
+      STW2_MASK_NO_BIT_SELECTED : Word := 16#0;
+      STW2_SELECTED_BITS_FALSE : Word := 16#0;
+   END_VAR
+
+
+BEGIN
+	REGION BLOCK INFO HEADER
+	  //===============================================================================
+	  // SIEMENS AG / (c)Copyright 2022
+	  //-------------------------------------------------------------------------------
+	  // Title:            LConSMC_SetAxisSTW
+	  // Comment/Function: This function block can be used to set/reset the bit 6 & 8 in the STW2
+	  //                   of the PROFIdrive telegram (Reset speed controller integrator & mask motor blocked fault)
+	  // Library/Family:   LConSMC
+	  // Author:           APC Erlangen
+	  // Tested with:      V 2.8
+	  // Engineering:      TIA Portal V16
+	  // Restrictions:     Can be called in any OB
+	  // Requirements:     Bit 6 of STW2 must be connected to SINAMICS p1477 (Default)
+	  //                   The integrator set value (p1478) must be set to 0.0
+	  //-------------------------------------------------------------------------------
+	  // Change log table:
+	  // Version  | Date       | Expert in charge       | Changes applied
+	  //----------|------------|------------------------|------------------------------
+	  // 01.00.00 | 2022-10-13 | APC Erlangen           | First released version
+	  //===============================================================================
+	END_REGION BLOCK INFO HEADER
+	
+	REGION DESCRIPTION
+	(/*
+	This function block can be used to set/reset the bit 6 & 8 in the STW2
+	of the PROFIdrive telegram (Reset speed controller integrator & mask motor blocked fault)
+	*/)
+	END_REGION DESCRIPTION
+	
+	REGION PROCESS INPUTS
+	  IF #enable AND NOT #statDisableActive  THEN // Enable FB
+	    #statBusy := TRUE;
+	  ELSIF NOT #enable AND #statEnableOld THEN   // Disable FB
+	    #statDisableActive := TRUE;
+	  ELSIF NOT #enable AND NOT #statDisableActive THEN // FB is disabled
+	    #statBusy := FALSE;
+	  END_IF;
+	  #statEnableOld := #enable;
+	  // Detect rising edge
+	  #instRTrigResetIntegrator(CLK := #resetSpeedInt AND #statBusy);
+	  #instRTrigMaskMotorBlockedFault(CLK := #maskMotorBlockedFault AND #statBusy);
+	  #instFTrigMaskMotorBlockedFault(CLK := #maskMotorBlockedFault AND #statBusy);
+	  #instRTrigDisableActive(CLK := #statDisableActive);
+	  
+	END_REGION
+	
+	REGION FB IS DISABLED
+	  // FB is disabled
+	  IF NOT #statBusy THEN
+	    #busy := FALSE;
+	    #integratorResetDone := FALSE;
+	    #maskMotorBlockedFaultDone := FALSE;
+	    #busy := FALSE;
+	    #error := FALSE;
+	    #errorID := 16#0;
+	    RETURN;
+	  END_IF;
+	END_REGION
+	
+	REGION RESET_INTEGRATOR
+	  // Reset speed controller integral part (Set bit 6 in STW2)
+	  IF #instRTrigResetIntegrator.Q THEN
+	    #instSetAxisSTW.STW2 := #STW2_BIT6_TRUE;
+	    #instSetAxisSTW.STW2BitMask := #STW2_MASK_BIT6;
+	    #statEnableResetIntegrator := TRUE;
+	    #statResetIntegratorDone := FALSE;
+	  ELSIF #instSetAxisSTW.Done
+	    AND #statEnableResetIntegrator
+	  THEN
+	    #statEnableResetIntegrator := FALSE;
+	    #statDisableResetIntegrator := TRUE;
+	    #instSetAxisSTW.STW2 := #STW2_SELECTED_BITS_FALSE;
+	    #instSetAxisSTW.STW2BitMask := #STW2_MASK_BIT6;
+	  ELSIF #statDisableResetIntegrator
+	    AND #instSetAxisSTW.Done
+	  THEN
+	    #statDisableResetIntegrator := FALSE;
+	    #statResetIntegratorDone := TRUE;
+	  ELSE
+	    #instSetAxisSTW.STW2 := #STW2_SELECTED_BITS_FALSE;
+	    #instSetAxisSTW.STW2BitMask := #STW2_MASK_NO_BIT_SELECTED;
+	  END_IF;
+	END_REGION
+	
+	REGION MASK MOTOR BLOCKED FAULT
+	  // Mask motor block fault (Set bit 8 in STW2)
+	  IF #instRTrigMaskMotorBlockedFault.Q THEN
+	    #statMaskMotorBlockedFaultActive := FALSE;
+	    #statEnableMaskMotorBlockedFault := TRUE;
+	    #instSetAxisSTW.STW2BitMask := #instSetAxisSTW.STW2BitMask OR #STW2_MASK_BIT8;
+	    #instSetAxisSTW.STW2 := #instSetAxisSTW.STW2 OR #STW2_BIT8_TRUE;
+	  ELSIF #statEnableMaskMotorBlockedFault
+	    AND #instSetAxisSTW.Done
+	  THEN
+	    #statMaskMotorBlockedFaultActive    := TRUE;
+	    #statEnableMaskMotorBlockedFault  := FALSE;
+	  ELSIF #instFTrigMaskMotorBlockedFault.Q
+	    OR #instRTrigDisableActive.Q
+	  THEN
+	    #statDisableMaskMotorBlockedFault := TRUE;
+	    #instSetAxisSTW.STW2BitMask := #instSetAxisSTW.STW2BitMask OR #STW2_MASK_BIT8;
+	    #instSetAxisSTW.STW2 := #instSetAxisSTW.STW2 OR #STW2_SELECTED_BITS_FALSE;
+	  ELSIF #statDisableMaskMotorBlockedFault
+	    AND #instSetAxisSTW.Done
+	  THEN
+	    #statDisableActive := FALSE;
+	    #statMaskMotorBlockedFaultActive := FALSE;
+	  END_IF;
+	END_REGION
+	
+	REGION CALL MC-COMMAND
+	  // Trigger execute command
+	  #instSetAxisSTW.Execute :=
+	  #instRTrigResetIntegrator.Q
+	  OR #instRTrigMaskMotorBlockedFault.Q
+	  OR #instFTrigMaskMotorBlockedFault.Q
+	  OR #instRTrigDisableActive.Q
+	  OR (NOT #statEnableResetIntegrator AND #statEnableResetIntegratorOld);
+	  
+	  #statEnableResetIntegratorOld := #statEnableResetIntegrator;
+	  // Call MC-command
+	  #tempRefToSpeed ?= #axis;
+	  IF #tempRefToSpeed <> NULL THEN
+	    #instSetAxisSTW(Axis := #tempRefToSpeed^);
+	  END_IF;
+	  
+	END_REGION
+	
+	REGION SET OUTPUTS
+	  //Set outputs
+	  IF #statResetIntegratorDone
+	    AND NOT #statResetIntegratorDoneOld
+	  THEN
+	    #integratorResetDone := TRUE;
+	  ELSE
+	    #integratorResetDone := #statResetIntegratorDone AND #resetSpeedInt;
+	  END_IF;
+	  #statResetIntegratorDoneOld := #statResetIntegratorDone;
+	  #maskMotorBlockedFaultDone := #statMaskMotorBlockedFaultActive;
+	  #busy := #statBusy;
+	  #error := #instSetAxisSTW.Error;
+	  #errorID := #instSetAxisSTW.ErrorId;
+	END_REGION
+END_FUNCTION_BLOCK
+

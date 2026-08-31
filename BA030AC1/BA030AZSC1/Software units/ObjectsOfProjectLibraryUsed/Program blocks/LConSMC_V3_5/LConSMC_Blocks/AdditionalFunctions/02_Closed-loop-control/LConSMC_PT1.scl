@@ -1,0 +1,129 @@
+﻿FUNCTION_BLOCK "LConSMC_PT1"
+{ S7_Optimized_Access := 'TRUE' ; Published := 'TRUE' }
+VERSION : 0.1
+//Low-pass filter function block, the function block has to be called in a cyclic interrupt, e.g. OB30.  Function block ID: 1101
+   VAR_INPUT 
+      set { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := FALSE;   // TRUE: Set output to the value of "setValue"
+      x { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 0.0;   // Input Value
+      setvalue { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 0.0;   // Set value (if "set" = TRUE)
+      smoothingTime { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Real := 100.0;   // [ms] Smoothing time constant [tCycle - 5000]
+      tCycle { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Real;   // [ms] Cycle time the function block is called
+   END_VAR
+
+   VAR_OUTPUT 
+      error { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := FALSE;   // TRUE: An error occured
+      errorID { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : DWord := 0;   // Detailed error description
+      y { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;   // Filtered output value
+   END_VAR
+
+   VAR 
+      statTmax { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statXkm1 { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statYkm1 { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statFirstRun { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := TRUE;
+      statY { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 0.0;
+   END_VAR
+
+   VAR_TEMP 
+      tmpDenom : LReal;
+      tmpEnum : LReal;
+   END_VAR
+
+   VAR CONSTANT 
+      MAX_SMOOTHING : Real := 5000.0;
+      NO_ERROR : DWord := 16#0000_0000;
+   END_VAR
+
+
+BEGIN
+	REGION BLOCK INFO HEADER
+	  //===============================================================================
+	  // SIEMENS AG / (c)Copyright 2023
+	  //-------------------------------------------------------------------------------
+	  // Title:            LConSMC_PT1
+	  // Comment/Function: PT1-Filter
+	  // Library/Family:   LConSMC
+	  // Author:           APC Erlangen
+	  // Tested with:      FW 2.8
+	  // Engineering:      TIA Portal V16
+	  // Restrictions:     Needs to be called in a cyclic task
+	  // Requirements:     -
+	  //-------------------------------------------------------------------------------
+	  // Change log table:
+	  // Version  | Date       | Expert in charge       | Changes applied
+	  //----------|------------|------------------------|------------------------------
+	  // 02.00.01 | 2023-07-04 | APC Erlangen           | Setting the output to the setValue was not possible for input "smootingTime" <= 0.0 (*c_00054*) 
+	  // 02.00.00 | 2019-05-17 | APC Erlangen           | update variables also for smoothingTime <= 0.0 (*c_00015*)
+	  // 01.01.00 | 2016-11-17 | APC Erlangen           | adapted to styleguide; warning "variable might not be initialized" removed
+	  // 01.00.00 | 2012-07-24 | APC Erlangen           | Creation
+	  //===============================================================================
+	  //
+	END_REGION BLOCK INFO HEADER
+	
+	REGION DESCRIPTION
+	(/*
+	This input value x is filtered using the time constant smoothingTime and output at the output y.
+	To precisely calculate the internal steps, the sampling time in which the block is processed is internally determined.
+	Further, it is possible to permanently set the output to the value of the input (setValue) by setting the input (set).
+	In order to generate a hold, output y should be connected to the input setValue.
+	This means that when setting set to TRUE, the output value is maintained until set is again set to FALSE.
+	If the time constant is set to zero, the filter is deactivated and the output value is equal to the input value.
+	63% of the input value is reached at the output after the time constant. 
+	95% of the input value is reached at the output after three times of the time constant.
+	For an appropriately high smoothingTime / cycleTime (smoothingTime / cycleTime > 10) the transfer function corresponds to the following characteristic:
+	
+	$ y(t) = x \cdot (1 - e^{-\frac{t}{smoothingTime}\ }) \qquad with \quad t=n \cdot cycleTime $
+	
+	The discrete values are calculated using the following algorithm:
+	
+	$ y_n = y_{n-1} + \frac{cycleTime}{smoothingTime}\ \cdot (x_n - y_{n-1}) $
+	
+	![PT1 Filter diagram](PT1_Diagram.png)
+	
+	*/)
+	END_REGION
+	
+	#error := FALSE;
+	
+	IF (#statFirstRun) THEN
+	    
+	    #statFirstRun := FALSE;                                      // reset marker
+	    #statXkm1 := 0.0;                                            // No previous value
+	END_IF;
+	
+	#error := #error OR (#tCycle = 0.0);
+	
+	IF #error THEN
+	  #errorID := "LCON_ERROR_PT1_INVALID_CYCLE_TIME";
+	ELSE
+	    #errorID := #NO_ERROR;
+	END_IF;
+	
+	IF (NOT #error) THEN
+	  IF (#set) THEN               // Check for active SET-command: if active, set Xkm1, y  to SV. (*c_00054*)                                                     
+	    #statY := #setvalue;
+	    #statXkm1 := #setvalue;
+	    #statYkm1 := #statY;
+	  ELSIF (#smoothingTime <= 0.0) THEN
+	    #statY := #x;
+	    #statXkm1 := #x;      // (*c_00015*)
+	    #statYkm1 := #statY;  // (*c_00015*)            
+	  ELSE
+	    #statTmax := REAL_TO_LREAL(2.0 * LIMIT(MN := #tCycle,                                // Tmax=2TS
+	                                                                      IN := #smoothingTime,
+	                                                                      MX := #MAX_SMOOTHING));
+	    #tmpEnum := #statTmax - #tCycle;
+	    #tmpDenom := #statTmax + #tCycle;
+	    #statY := (#tmpEnum * #statYkm1 + #tCycle * (#x + #statXkm1)) / #tmpDenom;
+	    #statXkm1 := #x;
+	    #statYkm1 := #statY;            // previous value same as present
+	  END_IF;
+	ELSE
+	  #statY := 0.0;
+	END_IF;
+	
+	// set outputs
+	#y := #statY;
+	
+END_FUNCTION_BLOCK
+

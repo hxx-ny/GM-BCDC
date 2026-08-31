@@ -1,0 +1,150 @@
+﻿FUNCTION_BLOCK "LConSMC_DT1"
+{ S7_Optimized_Access := 'TRUE' ; Published := 'TRUE' }
+VERSION : 0.1
+//DT1-filter The function block has to be called in a cyclic interrupt, e.g. OB30.  Function block ID: 1104
+   VAR_INPUT 
+      set { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := FALSE;   // TRUE: Set output = "setValue"
+      x { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 0.0;   // Input value
+      setValue { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 0.0;   // Set value (if "set" = TRUE)
+      smoothingTime { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 0.0;   // [ms] Smoothing time (tCycle - 5000)
+      diffTime { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 0.0;   // [ms] Time constant for differentator
+      tCycle { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Real;   // [ms] Cycle time the function block is called
+   END_VAR
+
+   VAR_OUTPUT 
+      error { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;   // TRUE: An error occured
+      errorID { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : DWord := 16#0000_0000;   // Detailed error description
+      y { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;   // Output value 
+      ypt { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;   // Output value of smoothing element
+   END_VAR
+
+   VAR 
+      statT1s { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statXkm1 { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statYkm1 { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statYPTkm1 { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statXFactor { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statYFactor { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statDenom { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statEnum { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statTDs { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statFirstRun { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := TRUE;
+      statError { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := FALSE;
+      statY { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 0.0;
+      statYpt { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 0.0;
+   END_VAR
+
+   VAR CONSTANT 
+      MAX_SMOOTHING : Real := 5000.0;
+      MAX_DIFF_TIME : Real := 1000.0;
+      NO_ERROR : DWord := 16#0000_0000;
+   END_VAR
+
+
+BEGIN
+	REGION BLOCK INFO HEADER
+	  //===============================================================================
+	  // SIEMENS AG / (c)Copyright 2023
+	  //-------------------------------------------------------------------------------
+	  // Title:            LConSMC_DT1
+	  // Comment/Function: DT1 Filter
+	  // Library/Family:   LConSMC
+	  // Author:           APC Erlangen
+	  // Tested with:      FW 2.8
+	  // Engineering:      TIA Portal V16
+	  // Restrictions:     Needs to be called in a cyclic task
+	  // Requirements:     -
+	  //-------------------------------------------------------------------------------
+	  // Change log table:
+	  // Version  | Date       | Expert in charge       | Changes applied
+	  //----------|------------|------------------------|------------------------------
+	  // 01.01.00 | 2016-11-17 | APC Erlangen           | Removed warning "Parameter might not be initialized"
+	  // 01.00.00 | 2012-07-24 | APC Erlangen           | Creation
+	  //===============================================================================
+	  //
+	END_REGION BLOCK INFO HEADER
+	
+	REGION DESCRIPTION
+	(/*
+	Input value x is dynamically delayed and the smoothing time constant *smoothingTime* is entered at a differentiating element and at block output *ypt*.
+	The output value *y* of the complete DT1 element is proportional to the change rate of *ypt* multiplied with differential time constant *diffTime*.
+	The input *diffTime* is internally limited: cycleTime ≤ diffTime ≤1000.
+	The input *smoothingTime* defines the gradient of the down ramp of the output value.
+	This specifies the time after which the transfer function – after smoothing and differentiation – has dropped to 37% of x-diffTime/ smoothingTime.
+	For a sufficiently high smoothingTime/cycleTime (smoothingTime /cycleTime > 10), the transfer function corresponds to a characteristic of:  
+	  
+	$ y(t)= x (\frac{diffTime}{smoothingTime}\ ) e^{\frac{-t}{smoothingTime}\ } \qquad where \: t=n(cycleTime) $
+	
+	The input smoothingTime is internally limited: cycleTime ≤ smoothingTime ≤ 5000. 
+	The discrete values are calculated using the algorithm:
+	
+	$ y1_n = \frac{diffTime}{smoothingTime}\ \cdot (x_n - ypt_{n-1}) $
+	
+	$ ypt_n = ypt_{n-1} \frac{cycleTime}{smoothingTime}\ \cdot (x_n - ypt_{n-1}) $
+	
+	The higher smoothingTime/cycleTime, the lower the amplitude changes at y and at ypt from one sampling instant to the next.  
+	The higher the diffTime/cycleTime, the higher the amplitude changes at y from one sampling instant to the next.  
+	
+	#### Setting function
+	
+	When the setting function is active, setting value setValue is transferred to output y; the output of the smoothing element is obtained as follows:
+	
+	$ ypt_n = x_n - \frac{smoothingTime}{diffTime}\ \cdot setValue_n \qquad for \: diffTime \not= 0 $
+	
+	In this case, the internal limits for smoothingTime and diffTime apply. For diffTime = 0, the output values remain unchanged as long as set = TRUE.
+	
+	![DT1 Diagram](DT1_Diagram.png)
+	
+	*/)
+	END_REGION
+	
+	IF (#statFirstRun) THEN// only at the first Run      
+	    #statFirstRun := FALSE;
+	    #statXkm1 := 0.0;
+	END_IF;
+	#statError := #statError OR (#tCycle = 0.0);                                           // Cycle time identified as zero
+	
+	IF (#statError) THEN
+	  #errorID := "LCON_ERROR_DT1_INVALID_CYCLE_TIME";                                       // FB NOT running IN cyclic task (81)
+	ELSE
+	    #errorID := #NO_ERROR;
+	END_IF;
+	
+	IF (NOT #statError) THEN                                                         // execute code if below error priority 1
+	    #statT1s := LIMIT(MN := #tCycle,
+	                      IN := #smoothingTime,
+	                      MX := #MAX_SMOOTHING);                                        // Check for T being not smaller than cycle time. Set it to cycle time otherwise.
+	    #statTDs := LIMIT(MN := #tCycle,                                                      // Ensure TD being not negative
+	                      IN := #diffTime,                                                  // Check for active set-Cmd and (TD<>0): set y , Xeknm1 to SV
+	                      MX := #MAX_DIFF_TIME);                                            // and compute ypt
+	    
+	    IF (#set) THEN                                                           // set is active
+	        IF (#statTDs > 0.0) THEN                                                 // change values only if TD > 0
+	            #statY := #setValue;
+	            #statYpt := #x - #setValue * #statT1s / #statTDs;
+	            #statXkm1 := #setValue;
+	        END_IF;
+	    ELSE                                                                    // Implement algorithm: dt1, trapezoid integration ("Tustin")
+	        #statDenom := 2.0 * #statT1s;                                              // plus algorythm: pt1, trapezoid integration ("Tustin")
+	        #statEnum := #statDenom - #tCycle;                                           // 2T1 - Ta
+	        #statDenom := #statDenom + #tCycle;                                           // 2T1 + Ta
+	        #statXFactor := 2.0 * #statTDs / #statDenom;                                      // 2TD/(2T1+Ta)
+	        #statYFactor := #statEnum / #statDenom;                                           // (2T1-Ta)/(2T1+Ta)
+	        #statY := #statYFactor * #statYkm1 + #statXFactor * (#x - #statXkm1);              //Integrating values over time
+	        #statYpt := #statYFactor * #statYPTkm1 + #tCycle / #statDenom * (#x + #statXkm1);
+	        #statXkm1 := #x;
+	    END_IF;
+	    #statYkm1 := #statY;
+	    #statYPTkm1 := #statYpt;
+	ELSE
+	    #statY := 0.0;
+	    #statYpt := 0.0;
+	END_IF;
+	
+	// set outputs
+	#error := #statError;
+	#y := #statY;
+	#ypt := #statYpt;
+	
+END_FUNCTION_BLOCK
+

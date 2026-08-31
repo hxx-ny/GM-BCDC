@@ -1,0 +1,273 @@
+﻿FUNCTION_BLOCK "LConSMC_SumCalc"
+{ S7_Optimized_Access := 'TRUE' ; Published := 'TRUE' }
+VERSION : 0.1
+   VAR_INPUT 
+      enable { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      inputSignal { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      inSubsetLength { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : UInt := #INIT_SUBSET_LENGTH;
+      inRateOfSumCalc { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : UInt := 1;
+   END_VAR
+
+   VAR_OUTPUT 
+      sumCalcUpdated { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      sum { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      shiftedInputSignal { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      outSubsetLength { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : UInt := #INIT_SUBSET_LENGTH;
+   END_VAR
+
+   VAR_IN_OUT 
+      signalBuffer : Array[*] of LReal;
+   END_VAR
+
+   VAR 
+      statSumCalcUpdated { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statEnableOld { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statInitDone { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statIncreaseWindow { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statDecreaseWindow { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statEnableSumCalc { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statBufferPos { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : UInt := 1;
+      statBufferPosResizeWindow { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : UInt;
+      statOldSubsetLength { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : UInt;
+      statChangedInSubsetLength { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : UInt := #INIT_SUBSET_LENGTH;
+      statRateCounter { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : UInt := 1;
+      statPosOfCenteredValue { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : DInt;
+      statOutSubsetLength { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : UInt;
+      statShiftedInputSignal { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statSum { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+   END_VAR
+
+   VAR CONSTANT 
+      INIT_SUBSET_LENGTH : UInt := 10;
+   END_VAR
+
+
+BEGIN
+	//===========================================================================================================
+	// SIEMENS AG
+	// (c)Copyright 2019  All Rights Reserved
+	//-----------------------------------------------------------------------------------------------------------
+	//  file name:      LConSMC_SumCalc (Motion Control Application Cycle)
+	//  library:        LConSMC
+	//  system:         SIMATIC TIA PORTAL V15
+	//  version:        V1.0.0   
+	//  restrictions:   Must be called in PreIpo
+	//  requirements:   /
+	//  functionality:  This function block is designed to determine the sum of a input signal's specified subset
+	//                  and the centered input signal.
+	//------------------------------------------------------------------------------------------------------------
+	//  change log table:
+	//  version     date            experts in charge           changes applied
+	//  01.00.00    15.03.19        APC Erlangen                create
+	//  01.00.01    28.01.21        APC Erlangen                Removed warning "Parameters might not be initialized"
+	//============================================================================================================
+	
+	//----------------------------------------------------------------------
+	//RESET OF THE FUNCTION BLOCK
+	//----------------------------------------------------------------------
+	// Detect rising edge of Enable
+	IF (NOT #enable) THEN
+	    
+	    #statEnableOld := #enable;
+	    
+	ELSIF (#enable AND NOT #statEnableOld) THEN
+	    
+	    //Reset all values
+	    #statEnableOld := #enable;
+	    #statInitDone := FALSE;
+	    #statDecreaseWindow := FALSE;
+	    #statIncreaseWindow := FALSE;
+	    #statEnableSumCalc := FALSE;
+	    #statSum := 0.0;
+	    #statBufferPos := 1;
+	    #statRateCounter := 1;
+	    #statChangedInSubsetLength := #inSubsetLength;
+	    
+	END_IF;
+	
+	//----------------------------------------------------------------------
+	//ENABLE/DISABLE COMPLETE FUNCTION BLOCK
+	//----------------------------------------------------------------------
+	//Enable Function Block
+	IF (#enable) THEN
+	    
+	    //----------------------------------------------------------------------
+	    //ENABLE/DISABLE SUM CALCULATION TO REACHED THE DESIRED SAMPLE RATE
+	    //----------------------------------------------------------------------
+	    IF (#statRateCounter = 1) THEN
+	        #statEnableSumCalc := TRUE;
+	        IF (#inRateOfSumCalc <> 1) THEN
+	            #statRateCounter := #statRateCounter + 1;
+	        END_IF;
+	    ELSIF (#statRateCounter >= #inRateOfSumCalc) THEN
+	        #statEnableSumCalc := FALSE;
+	        #statRateCounter := 1;
+	    ELSE
+	        #statEnableSumCalc := FALSE;
+	        #statRateCounter := #statRateCounter + 1;
+	    END_IF;
+	    
+	    #statSumCalcUpdated := #statEnableSumCalc;
+	    
+	    IF (#statEnableSumCalc) THEN
+	        
+	        //----------------------------------------------------------------------
+	        // SAVE CHANGED SUBSET LENGTH OF INPUT
+	        //----------------------------------------------------------------------
+	        // Save and hold the new subset length given by user for decreasing window routine constant
+	        // to prevent errors in the integration
+	        IF (#statOutSubsetLength = #statChangedInSubsetLength AND NOT #statDecreaseWindow AND NOT #statIncreaseWindow) THEN
+	            #statChangedInSubsetLength := #inSubsetLength;
+	        END_IF;
+	        
+	        
+	        //----------------------------------------------------------------------
+	        //CHOOSE ROUTINE
+	        //----------------------------------------------------------------------
+	        // Init-Routine - Increase window after reset
+	        IF (NOT #statInitDone) THEN
+	            
+	            // While initialisation both values are equal
+	            #statOutSubsetLength := #statBufferPos;
+	            
+	            // Refit Window if neccessary
+	        ELSE
+	            
+	            // Increase window without reset, by user change
+	            IF (#statOutSubsetLength < #statChangedInSubsetLength) THEN
+	                
+	                // boIncreaseWindow stays true as long the increasing is necessary
+	                #statIncreaseWindow := TRUE;
+	                
+	                // Increase window when oldsubset length is reached
+	                // ohterwise old values will be overwritten if you start at any position to increase
+	                IF (#statBufferPos > #statOutSubsetLength) THEN
+	                    
+	                    #statOutSubsetLength := #statOutSubsetLength + 1;
+	                ELSE
+	                    // substract old value of sum
+	                    #statSum := #statSum - #signalBuffer[#statBufferPos];
+	                END_IF;
+	                
+	                // Decrease window without reset
+	            ELSIF (#statOutSubsetLength > #statChangedInSubsetLength OR #statDecreaseWindow) THEN
+	                
+	                // boDecreaseWindow stays true as long the decreasing is necessary
+	                IF (NOT #statDecreaseWindow) THEN
+	                    #statDecreaseWindow := TRUE;
+	                    #statOldSubsetLength := #statOutSubsetLength;
+	                    #statBufferPosResizeWindow := #statBufferPos;
+	                END_IF;
+	                
+	                // Decreasing sum with one value more than usually
+	                IF (#statOutSubsetLength <> #statChangedInSubsetLength) THEN
+	                    
+	                    IF (#statBufferPosResizeWindow <= (#statOldSubsetLength - 2)) THEN
+	                        #statSum := #statSum - #signalBuffer[#statBufferPosResizeWindow] - #signalBuffer[#statBufferPosResizeWindow + 1];
+	                        #statBufferPosResizeWindow := #statBufferPosResizeWindow + 2;
+	                    ELSIF (#statBufferPosResizeWindow = #statOldSubsetLength - 1) THEN
+	                        #statSum := #statSum - #signalBuffer[#statBufferPosResizeWindow] - #signalBuffer[#statBufferPosResizeWindow + 1];
+	                        #statBufferPosResizeWindow := 1;
+	                    ELSIF (#statBufferPosResizeWindow = #statOldSubsetLength) THEN
+	                        #statSum := #statSum - #signalBuffer[#statBufferPosResizeWindow] - #signalBuffer[1];
+	                        #statBufferPosResizeWindow := 2;
+	                    END_IF;
+	                    
+	                    #statOutSubsetLength := #statOutSubsetLength - 1;
+	                    
+	                    // Decreasing of sum and output subset length done                
+	                ELSE
+	                    
+	                    //Buffer length stays on old value
+	                    #statSum := #statSum - #signalBuffer[#statBufferPosResizeWindow];
+	                    IF (#statBufferPosResizeWindow = #statOldSubsetLength) THEN
+	                        #statBufferPosResizeWindow := 1;
+	                    ELSE
+	                        #statBufferPosResizeWindow := #statBufferPosResizeWindow + 1;
+	                    END_IF;
+	                    
+	                    // Buffer length will be completely resized and terminate the decreasing routine
+	                    IF (#statBufferPos = #statChangedInSubsetLength) THEN
+	                        #statDecreaseWindow := FALSE;
+	                    END_IF;
+	                END_IF;
+	                
+	                // static window
+	            ELSE
+	                
+	                // substract old value of sum (Position of Oldest Value and new value are the same)
+	                #statSum := #statSum - #signalBuffer[#statBufferPos];
+	                
+	            END_IF;
+	            
+	        END_IF;
+	        
+	        //----------------------------------------------------------------------
+	        //CALCULATE SUM AND OUTPUT-SIGNAL
+	        //----------------------------------------------------------------------
+	        // bufferPos points at current signal value in buffer
+	        #signalBuffer[#statBufferPos] := #inputSignal;
+	        
+	        // sum of current and previous input signals
+	        #statSum := #statSum + #signalBuffer[#statBufferPos];
+	        
+	        // get Position of centered output Value
+	        #statPosOfCenteredValue := UINT_TO_DINT(#statBufferPos) - ((#statOutSubsetLength - 1) / 2);
+	        
+	        IF (#statPosOfCenteredValue < 1) THEN
+	            #statPosOfCenteredValue := #statOutSubsetLength + #statPosOfCenteredValue;
+	        END_IF;
+	        
+	        // centered shiftedInputSignal
+	        #statShiftedInputSignal := #signalBuffer[#statPosOfCenteredValue];
+	        
+	        // still in the decreasing mode
+	        IF (#statDecreaseWindow) THEN
+	            
+	            //increment buffer position
+	            IF (#statBufferPos = #statOldSubsetLength) THEN
+	                // Go back to beginning of array 
+	                #statBufferPos := 1;
+	            ELSE
+	                #statBufferPos := #statBufferPos + 1;
+	            END_IF;
+	            
+	            // still in the increasing mode    
+	        ELSIF (#statIncreaseWindow) THEN
+	            
+	            //increment buffer position
+	            IF (#statBufferPos = #statChangedInSubsetLength) THEN
+	                // Go back to beginning of array 
+	                #statBufferPos := 1;
+	                // new subset length reached, increasing done
+	                #statIncreaseWindow := FALSE;
+	            ELSE
+	                #statBufferPos := #statBufferPos + 1;
+	            END_IF;
+	            
+	            // normal mode or increasing/init mode
+	        ELSE
+	            //increment buffer position
+	            IF (#statBufferPos = #statChangedInSubsetLength) THEN
+	                // Go back to beginning of array 
+	                #statBufferPos := 1;
+	                //End Init Routine
+	                #statInitDone := TRUE;
+	            ELSE
+	                #statBufferPos := #statBufferPos + 1;
+	            END_IF;
+	        END_IF;
+	    END_IF;
+	ELSE
+	    #statSumCalcUpdated := FALSE;
+	END_IF;
+	
+	REGION Set outputs
+	    #sumCalcUpdated := #statSumCalcUpdated;
+	    #sum := #statSum;
+	    #shiftedInputSignal := #statShiftedInputSignal;
+	    #outSubsetLength := #statOutSubsetLength;
+	END_REGION
+	
+END_FUNCTION_BLOCK
+

@@ -1,0 +1,293 @@
+﻿FUNCTION_BLOCK "LConSMC_Taper"
+{ S7_Optimized_Access := 'TRUE' ; Published := 'TRUE' }
+VERSION : 0.1
+//Calculation of a reduction factor for the tension setpoint of a winder as a function of the diameter. The function block can be called in any cyclic task.  Function block ID: 4101
+   VAR_INPUT 
+      enable { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := FALSE;   // TRUE: Enable function block
+      taperMode { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Int;   // Tension taper characteristik  0: No taper  1: Linear taper characteristic  2:  Hyperbolic taper characteristic (max. reduction at target diameter)  3: Hyperbolic taper characteristic (max. reduction at infinite diameter)  4: Breakpoint table
+      diamActVal { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 0.0;   // [m or inch] Actual diameter value
+      upperLimitTaper { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 100.0;   // [%] Maximum tension reduction
+      lowerLimitTaper { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 0.0;   // [%] Minimum tension reduction
+      taperRatio { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 0.0;   // [%] Maximum tension reduction at "taperDiameterMax" (0-100%) Only used if "taperMode" = 1-3
+      taperDiameterStart { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 0.2;   // [m or inch] Diameter starting value for the tension reduction
+      taperDiameterMax { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 1.0;   // [m or inch] Maximum diameter value. Diameter at which the maximum tension reduction is active for "taperMode" = 1 or 2
+      NoOfBreakpoints { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Int := 20;   // Number of break points for breakpoint table if "taperMode" = 4
+      tensionValues { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : "LConSMC_typeBreakPointTable" := ([20(0.0)]);   // Breakpoint table for tension reduction values if "taperMode" = 4.  NOTE: The values are interpreted as percent value and will be devided by 100 internally
+      diametervalues { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : "LConSMC_typeBreakPointTable" := ([20(0.0)]);   // Breakpoint table for diameter values if "taperMode" = 4  (Unit must be the same as the input “diamActValue”)
+   END_VAR
+
+   VAR_OUTPUT 
+      busy { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;   // TRUE: The function block is active
+      error { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := FALSE;   // TRUE: An error occured
+      errorID { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : DWord := 16#0000_0000;   // Detailed error description
+      tensionTaper { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 1.0;   // Multiplicative value for tension reduction (0-1.0). The value must be multiplied with the tension setpoint
+   END_VAR
+
+   VAR 
+      instTableChar { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'; S7_SetPoint := 'False'} : "LConSMC_TableChar";
+      statEnableOld { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statBusy { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := FALSE;
+      statTensionTaper { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 1.0;
+   END_VAR
+
+   VAR CONSTANT 
+      TAP_CHAR_NO_TAPER : Int;
+      TAP_CHAR_LINEAR : Int := 1;
+      TAP_CHAR_HYPERLIC_1 : Int := 2;
+      TAP_CHAR_HYPERLIC_2 : Int := 3;
+      NO_ERROR : DWord := 16#0000_0000;
+   END_VAR
+
+
+BEGIN
+	REGION BLOCK INFO HEADER
+	  //===============================================================================
+	  // SIEMENS AG / (c)Copyright 2023
+	  //-------------------------------------------------------------------------------
+	  // Title:            LConSMC_Taper
+	  // Comment/Function: Tension taper for winder
+	  // Library/Family:   LConSMC
+	  // Author:           APC Erlangen
+	  // Tested with:      FW 2.8
+	  // Engineering:      TIA Portal V16
+	  // Restrictions:     Needs to be called in a cyclic OB
+	  // Requirements:     -
+	  //-------------------------------------------------------------------------------
+	  // Change log table:
+	  // Version  | Date       | Expert in charge       | Changes applied
+	  //----------|------------|------------------------|------------------------------
+	  // 01.01.00 | 2016-11-03 | APC Erlangen           | adapted to styleguide; warning "variable might not be initialized" removed
+	  // 01.00.00 | 2012-08-17 | APC Erlangen           | Creation
+	  //===============================================================================
+	END_REGION BLOCK INFO HEADER
+	
+	REGION DESCRIPTION
+	(/*
+	The tension taper characteristic is used to define with which tension the material should be wound onto the roll as a function of the roll diameter.
+	It only makes sense to use the tension taper characteristic while actually rewinding in order to wind the inner layers tightly.
+	For dancer roll controls, the tension taper characteristic can be used to reduce the pressure setpoint for the dancer roll support.
+	In this case, the output of the characteristic must be multiplied with the tension setpoint and made available for the dancer system interface, e.g. analog output.
+	The block is activated using the enable input. Depending on the mode selected at input tensionTaperMode,
+	the tension reduction factor is calculated as a function of the diameter present at diamActVal and output in tensionTaper.
+	The way in which the reduction factor is processed depends on the mode that has been selected.
+	
+	#### Calculation modes
+	
+	* No Taper (mode = 0)
+	
+	No tension taper mode is defined, the function block outputs 1.0 (no reduction factor).
+	
+	* Linear taper characteristic (mode = 1)
+	
+	From a starting diameter that must be entered (taperDiameterStart), the reduction factor is linearly reduced to the maximum diameter (taperDiameterMax) with a reduction defined by the parameter taperRatio.
+	
+	   * diamActVal < taperDiameterStart
+	
+	---
+	
+	$ tensionTaper = 1.0 $
+	
+	---
+	
+	   * taperDiameterStart < diamActVal < taperDiameterMax
+	
+	---
+	
+	$ tensionTaper = (1.0 - \frac{taperRatio}{100.0}\ \cdot \frac{diamActVal - taperDiameterStart}{taperDiameterMax - taperDiameterStart}\ ) $
+	
+	---
+	
+	   * diamActVal > taperDiameterMax
+	
+	---
+	
+	$ tensionTaper = (1.0 - \frac{taperRatio}{100.0}\ ) $
+	
+	---
+	
+	* Hyperbolic taper characteristic 1 (mode = 2)
+	
+	From a starting diameter that has to be entered (taperDiameterStart) the reduction factor is reduced as hyperbolic function with taperRatio to the maximum diameter (taperDiameterMax).
+	In this case, the reduction is at a maximum when the maximum diameter has been reached.
+	
+	   * diamActVal < taperDiameterStart
+	
+	---
+	
+	$ tensionTaper = 1.0 $
+	
+	---
+	
+	   * taperDiameterStart < diamActVal < taperDiameterMax
+	
+	---
+	
+	$ tensionTaper = 1.0 - \frac{taperRatio}{100.0}\ \cdot \frac{diamActVal - taperDiameterStart}{diamActVal}\ \cdot \frac{taperDiameterMax}{taperDiameterMax-taperDiameterStart}\ $
+	
+	---
+	
+	   * diamActVal > taperDiameterMax
+	
+	---
+	
+	$ tensionTaper = (1.0 - \frac{taperRatio}{100.0}\ ) $
+	
+	---
+	
+	* Hyperbolic taper characteristic 2 (mode = 3)
+	
+	From a starting diameter that must be entered (taperDiameterStart) the reduction factor is reduced as hyperbolic
+	function with taperRatio to the maximum diameter (taperDiameterMax). In this case, full reduction is never reached.
+	
+	   * diamActVal < taperDiameterStart
+	
+	---
+	
+	$ tensionTaper = 1.0 $
+	
+	---
+	
+	   * taperDiameterStart < diamActVal
+	
+	---
+	
+	$ tensionTaper = 1- \frac{taperRatio}{100}\ \cdot (1- \frac{taperDiameterStart}{diamActVal}\ ) $
+	
+	---
+	
+	* Breakpoint table (mode = 4)
+	
+	The reduction factor is determined by characteristic defined as breakpoint table.
+	The breakpoint table consists of pairs of values diameter / reduction factor.
+	The factor is linearly interpolated between the breakpoints of the characteristic.
+	
+	#### Graphical representation
+	
+	![Taper diagram](Taper_Diagram.png)
+	*/)
+	END_REGION
+	
+	IF #enable AND NOT #statEnableOld THEN
+	    #instTableChar(enable := False,
+	                   x := #diamActVal,
+	                   sizeOfArray := #NoOfBreakpoints,
+	                   xn := #diametervalues,
+	                   yn := #tensionValues);
+	    #error := ((#taperMode < 0) OR (#taperMode > 4) OR (#upperLimitTaper < #lowerLimitTaper) OR (#lowerLimitTaper < 0.0)
+	    OR (((#taperDiameterStart < 0.0)
+	    OR (#taperDiameterMax <= #taperDiameterStart)
+	    OR (#taperRatio < 0.0)
+	    OR (#taperRatio > 100.0)
+	    )
+	    AND
+	    ((#taperMode = #TAP_CHAR_LINEAR)
+	    OR (#taperMode = #TAP_CHAR_HYPERLIC_1)
+	    OR (#taperMode = #TAP_CHAR_HYPERLIC_2)
+	    ))
+	    )
+	    AND (#taperMode <> 0);
+	    IF (#error) THEN
+	        #statBusy := FALSE;
+	        #errorID :="LCON_ERROR_TAPER_INVALID_CONFIGURATION";                  // diameter Max must be higher than diameter start
+	        #statTensionTaper := 1.0;
+	    ELSE
+	        #statBusy := TRUE;
+	        #errorID := #NO_ERROR;
+	    END_IF;
+	    #statEnableOld := #enable;
+	    RETURN;
+	END_IF;
+	
+	IF NOT (#enable) AND #statEnableOld THEN                                           // falling edge, disable
+	    #instTableChar(enable := False,
+	                   x := #diamActVal,
+	                   sizeOfArray := #NoOfBreakpoints,
+	                   xn := #diametervalues,
+	                   yn := #tensionValues);
+	    #statBusy := FALSE;
+	    #error := FALSE;
+	    #errorID := #NO_ERROR;
+	    #statTensionTaper := 1.0;
+	    #statEnableOld := #enable;
+	    RETURN;
+	END_IF;
+	
+	IF #statBusy THEN
+	    IF (#diamActVal <= 0.0) AND #taperMode <> #TAP_CHAR_NO_TAPER THEN
+	      #errorID := "LCON_ERROR_TAPER_INVALID_INPUT";                             // Calculated diameter Value is not plausible
+	        #error := TRUE;
+	        #statBusy := FALSE;
+	        #statTensionTaper := 1.0;
+	    END_IF;
+	    
+	    CASE #taperMode OF
+	            
+	        0:                  // #TAP_CHAR_NO_TAPER:                                   // No tension taper characteristic
+	            #statTensionTaper := 1.0;
+	            
+	            
+	        1:                 // #TAP_CHAR_LINEAR:                                      // Linear taper form
+	            IF (#diamActVal <= #taperDiameterStart) THEN
+	                #statTensionTaper := 1.0;
+	            ELSIF (#diamActVal >= #taperDiameterMax) THEN
+	                #statTensionTaper := 1.0 - #taperRatio / 100.0;
+	            ELSE
+	                #statTensionTaper := (1.0 - #taperRatio / 100.0 * (#diamActVal - #taperDiameterStart)
+	                / (#taperDiameterMax - #taperDiameterStart));
+	            END_IF;
+	            
+	            
+	            
+	        2:                // #TAP_CHAR_HYPERLIC_1:                                    // Hyperlic taper form 1 reach full ratio with diamMax
+	            IF (#diamActVal < #taperDiameterStart) THEN
+	                #statTensionTaper := 1.0;
+	            ELSIF (#diamActVal >= #taperDiameterMax) THEN
+	                #statTensionTaper := 1.0 - #taperRatio / 100.0;
+	            ELSE
+	                #statTensionTaper := (1.0 - #taperRatio / 100.0 * ((#diamActVal - #taperDiameterStart) / #diamActVal) *
+	                (#taperDiameterMax / (#taperDiameterMax - #taperDiameterStart)));
+	            END_IF;
+	            
+	            
+	            
+	        3:              // #TAP_CHAR_HYPERLIC_2:                                   // Hyperlic taper form 2 never reach full ratio  
+	            IF (#diamActVal < #taperDiameterStart) THEN
+	                #statTensionTaper := 1.0;
+	            ELSE
+	                #statTensionTaper := (1.0 - #taperRatio / 100.0 * (1.0 - (#taperDiameterStart / #diamActVal)));
+	            END_IF;
+	            
+	            
+	            
+	        4:               //#TAP_CHAR_TABLE:                                        // Linear interpolation from a table  
+	            #instTableChar(enable := True,
+	                           x := #diamActVal,
+	                           sizeOfArray := #NoOfBreakpoints,
+	                           xn := #diametervalues,
+	                           yn := #tensionValues);
+	            IF (#instTableChar.error) THEN
+	                #statTensionTaper := 1.0;
+	                #error := TRUE;
+	                #errorID := #instTableChar.errorID;
+	            ELSE
+	                #statTensionTaper := #instTableChar.y / 100.0;
+	            END_IF;
+	            
+	        ELSE
+	            #error := TRUE;
+	            #errorID := "LCON_ERROR_TAPER_INVALID_INPUT";
+	            #statBusy := FALSE;
+	            #statTensionTaper := 1.0;
+	    END_CASE;
+	    
+	    #statTensionTaper := LIMIT(MN := #lowerLimitTaper / 100.0,
+	                               IN := #statTensionTaper,
+	                               MX := #upperLimitTaper / 100.0);
+	END_IF;
+	
+	// set outputs
+	#busy := #statBusy;
+	#tensionTaper := #statTensionTaper;
+	
+END_FUNCTION_BLOCK
+

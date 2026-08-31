@@ -1,0 +1,857 @@
+﻿FUNCTION_BLOCK "LConSMC_SectionalDrive"
+{ S7_Optimized_Access := 'TRUE' ; Published := 'TRUE' }
+VERSION : 0.1
+//This function block is used to control a converting line sectional drive from the PLC 
+//program. The function block was designed to handle the requirements of a tension 
+//or ratio adjusted driven section. The function block must be called in a cyclic interrupt, e.g. OB30, OB95.  Function block ID: 7102
+   VAR_INPUT 
+      enable { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := FALSE;   // TRUE: Enable function block. WIth rising edge a validation of parameter is done and communication with drive is started  FALSE: Disable the function block
+      speedMatch { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;   // True: Enable web velocity setpoint ("lineAxisMotionVector"). The drive will synchronize up to web velocity using syncronization dynamics. If the velocity is reached the output "inSync" will become TRUE.  FALSE: Drive will decelerate to standstill using stop dynamics
+      CntrlEnable { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := FALSE;   // TRUE: Enable web tension control (enable torque limits, dancer position setpoint etc.)
+      jogPos { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := FALSE;   // TRUE: Drive is jogged in positive direction (see config.dynamics.jogDynamics)
+      jogNeg { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := FALSE;   // TRUE: Drive is jogged in negative direction (see config.dynamics.jogDynamics)
+      lineAxisMotionVector { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : "LConSMC_typeMotionVector";   // Setpoint of the web (position/velocity/acceleration)
+      additionalVelocity { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 0.0;   // [m/min] / [ft/min] Additional web velocity (always enabled)
+      draw { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 1.0;   // Draw factor for control mode 4 (DRAW CONTROL). Velocity setpoint = webVelocity * draw
+      typeOfDrive { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Int := 0;   // Definition of web tension direction  0: Web tension bevor the roll is controlled (Pull)  1: Web tension after the roll is controlled (Push)
+      controlMode { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Int := 0;   // Tension control mode  0: Dancer via speed setpoint adaption  1: Load cell via speed setpoint adaption  2: Load cell via torque limits  3: Indirect tension control  4: Speed setpoint relation (Draw)  5: Indirect tension control vis speed setpoint adaption
+      CntrlSetpoint { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 0.0;   // Tension setpoint [N]/[Lbf] / Dancer position setpoint [%]
+      CntrlActual { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 0.0;   // Tension actual value [N]/[Lbf] / Dancer actual position [%]
+      tCycle { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Real := 0.0;   // [ms] Cycle time the function block is called
+   END_VAR
+
+   VAR_OUTPUT 
+      busy { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := FALSE;   // TRUE : Function block is executed
+      active { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := FALSE;   // TRUE: Setpoints are send to the drive
+      ctrlBusy { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := FALSE;   // TRUE: Tension control is active
+      inSync { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;   // TRUE: The drive has reached the web velocity and is synchronous
+      error { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := FALSE;   // TRUE: Function block has detected an error
+      errorID { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : DWord := 16#0000_0000;   // Further information on occured error (<> 16#0000_0000)
+   END_VAR
+
+   VAR_IN_OUT 
+      axis { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : DB_ANY;   // Section drive axis
+      sectionalConfig : "LConSMC_typeSectionalDriveConfig";   // Sectional drive configuration structure
+      sectionalDiag : "LConSMC_typeSectionalDriveDiag";   // Sectional drive diagnostic structure
+   END_VAR
+
+   VAR 
+      statTel750Active { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statDancerControl { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statEnableWebBreakDetection { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statEnableWebBreakDetectionOld { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statJogSectionalDrive { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statEnableOld { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statTorqueLimitUpperActive { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statTorqueLimitLowerActive { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statError { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := FALSE;
+      statStartupError { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statAxisCtrl { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statCtrlBusyInternal { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statActive { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statInSync { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statDeactivateJogDyn { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statBusy { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statDisableAdditiveTorque { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statCtrlBusyInternalOld { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statNumberOfSamplesInternal { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : UInt;
+      statNumberOfSamplesOld { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : UInt;
+      statFLineSpeed { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Int := 1;
+      statFPIDTorque { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Int;
+      statFPIDSpeed { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Int;
+      statFOverride { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Int;
+      statVeloUnit { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : UDInt;
+      statTorqueUnit { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : UDInt;
+      statLengthUnit { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : UDInt;
+      statActualTorque { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statLTCTotaltorque { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statLeadScrew { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statTensionSpeedLUPerMin { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statTensionSetpoint { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statControlMode { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statTypeOfDrive { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statActShaftSpeed1PerMin { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 0.0;
+      statDrawFactor { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 0.0;
+      statVelocityLUPerMin { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 0.0;
+      statIntDiameter { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 0.0;
+      statCircumference { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 0.0;
+      statVelocitySetpointOld { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statAxisUnitIntoRPM { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statLineVelocityInternalLUPerMin { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statLineAccelerationInternal { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statReferenceTorque { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statSetDriveSpeed1PerMin { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 0.0;
+      statVsync { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statSectionalDriveShaftSpeedSetpointPreCtrl1PerMin { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statVDiff { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statActDriveSpeed1PerMin { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statSetShaftSpeed1PerMin { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statActSpeedOverride1PerMin { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statUpperTorqueLimit { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statLowerTorqueLimit { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statUpperTorqueLimitLimited { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statLowerTorqueLimiLimited { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statGearRatioInternal { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 1.0;   // (*c_00060*)
+      statConvTorqueUnitToTO { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statCommandMoveVelocityTOUnit { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statReferenceVelocityTOUnit { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statOverride { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statAxisDefaultAcc { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Real;
+      statAxisDefaultJerk { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Real;
+      statGearInternal { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'; S7_SetPoint := 'False'} : "LConSMC_typeLoadGear";
+      statTorqueValues { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'; S7_SetPoint := 'False'} : "LConSMC_typeTorqueValues";
+      statDynamicsInternalTOUnit { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'; S7_SetPoint := 'False'} : "LConSMC_typeInternalDynamics";
+      statSectionalDriveMV { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'; S7_SetPoint := 'False'} : "LConSMC_typeActualDynamics";
+      instTPID { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'; S7_SetPoint := 'False'} : "LConSMC_TPID";
+      instTorquePrecontrol { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'; S7_SetPoint := 'False'} : "LConSMC_TorquePrecontrol";
+      instEnableInterface { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'; S7_SetPoint := 'False'} : "LConSMC_EnableInterface";
+      instLevelControl { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'; S7_SetPoint := 'False'} : "LConSMC_LevelControl";
+      instMoveAvg { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'; S7_SetPoint := 'False'} : "LConSMC_MovAverage";
+      instSetAxisSTW { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : "LConSMC_SetAxisSTW";
+      instGetActualTension { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : "LConSMC_CalcActualTension";
+      instOverspeedMonitoring { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : "LConSMC_OverspeedDetection";
+      statPIDActualValue { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+   END_VAR
+
+   VAR_TEMP 
+      tempAxisStartupData : "LConSMC_typeAxisStartupData";
+      tempAxisCyclicData : "LConSMC_typeAxisCyclicData";
+   END_VAR
+
+   VAR CONSTANT 
+      PERCENT_SCALE : Real := 100.0;
+      NO_ERROR : DWord := 16#0000_0000;
+   END_VAR
+
+
+BEGIN
+	REGION BLOCK INFO HEADER
+	  //===============================================================================
+	  // SIEMENS AG / (c)Copyright 2023
+	  //-------------------------------------------------------------------------------
+	  // Title:            LConSMC_SectionalDrive
+	  // Comment/Function: This function block realizes the control of a sectional drive with differen tension control modes (e.g. dancer, load cell, indirect)
+	  // Library/Family:   LConSMC
+	  // Author:           APC Erlangen
+	  // Tested with:      FW 2.8
+	  // Engineering:      TIA Portal V16
+	  // Restrictions:     Must be called in a cyclic OB (E.g. OB6x,OB3x)
+	  // Requirements:     -
+	  //-------------------------------------------------------------------------------
+	  // Change log table:
+	  // Version  | Date       | Expert in charge       | Changes applied
+	  //----------|------------|------------------------|------------------------------
+	  // 03.02.01 | 2024-02-27 | APC Erlangen           | New function: Monitoring of drive runaway for torque-controlled modes. In case of a detection the torque pre-control of friction and acceleration is disabled and a warning 16#7102_4006 is generated (*c_00061*)
+	  //                                                  Bugfix: Initializing internal variables (*c_00060*)
+	  // 03.02.00 | 2023-09-18 | APC Erlangen           | Bugfix: Possible error during startup was overwritten (*c_00056*)
+	  //                                                  Under some conditions the calculation of the output signal "inSync" was incorrect (*c_00058*)
+	  //                                                  With this version linear axes are supported
+	  //                                                  New control mode "Indirect tension control via speed setpoint adaption" (controlMode = 5)
+	  // 03.01.00 | 2022-10-13 | APC Erlangen           | see LConSMC_aVersion V3.3.0
+	  // 03.00.02 | 2022-09-05 | APC Erlangen           | Bugfix calculating the output signal "inSync"
+	  // 03.00.01 | 2022-04-27 | APC Erlangen           | Bugfix: For some conditions the output "error" was not set correct
+	  //                                                  Error occured when using the winder with the TO setting "Use position values with higher resolution" enabled (*c_00044*)
+	  //                                                  New #errorID if the FB is enabled but the drive is disabled (#error = TRUE & #errorID = 5105_8010)
+	  // 03.00.00 | 2022-01-11 | APC Erlangen           | Adaption of FB structure (Deleted FB for each axis type)
+	  // 02.00.03 | 2021-06-22 | APC Erlangen           | see LConSMC_aVersion
+	  // 02.00.02 | 2021-01-29 | APC Erlangen           | Changed input "axis" to from input paramter to InOut parameter
+	  // 02.00.01 | 2020-04-29 | APC Erlangen           | Bugfix: Parametrizable deceleration possible via new datatype for sectionalDriveMotionVector (*c_00025*)
+	  //                                                  Bugfix: Webbreak: Relationfactor multiplied in Numerator not longer in Denumerator (*c_00027*)
+	  //                                                  Enhancement: New Warning "LCON_WARNING_MAXVELOCITY_EXCEEDED" to  determine if the
+	  //                                                  lineVelocity + additionalVvelocity is higher then the configurated maxVelocity (*c_00031*)
+	  // 02.00.00 | 2019-10-23 | APC Erlangen           | new diag structure
+	  //                                                  new in- and outputs
+	  //                                                  communication of torque data via TO and not applicative
+	  //                                                  Kp_Adaption as a seperate function block
+	  //                                                  drive commands not via LAxisCtrl, now internal
+	  //                                                  No UserMode. If needed, LAxisCtrl can be downloaded in SIOS
+	  //                                                  new dynamic structures
+	  //                                                  webbreak detection implemented
+	  //                                                  Bugfix: the set web tension is maintained at maximum speed
+	  //                                                  FBs are called via DB_Any.
+	  // 01.00.00 | 2017-08-22 | APC Erlangen           | First released version
+	  //===============================================================================
+	END_REGION BLOCK INFO HEADER
+	
+	REGION DESCRIPTION
+	(/*
+	This function block utilizes the LConSMC_TorquePrecontrol and LConSMC_TechPID function blocks of the SIMATIC Converting library for a sectional drive.
+	This function block checks for valid configuration data and calls the individual function blocks to minimize application development time. 
+	With the *enable* set to TRUE, a plausibility check is done on the configuration data and will display an error with corresponding error ID should invalid data be entered.
+	
+	---
+	
+	NOTE
+	:    Enabling of the axis (MC_Power) is not part of the standard application and must be done in the user program.
+	
+	---
+	
+	With the *enable* set TRUE the sectional drive will follow the sum of the lineVelocity and additionalVelocity times the draw factor (Only for draw control mode).
+	Sectional drives are typically made to follow the master without any ramps. The programmer is responsible for proper interlocks to prevent unwanted behavior.  
+	The configuration data has diameter, gear ratio and max line speed parameters which are utilized to calculate the correct surface velocity of the driven roll
+	to match the section to the master line velocity.  
+	The configuration data also has parameters for torque precontrol. Torque precontrol is necessary for torque-based tension control modes and is optional for speed-based tension control modes.  
+	With the *enable* set to TRUE and the axis being enabled and *CntrlEnable* then the CntrlSetpoint will be ramped up based on configuration data.
+	The Tension controller correction value will be added to the total speed setpoint or additional torque, scaled and sent to the drive using the telegram extension as required.
+	The function block diagnostic structure allows the user to view the calculated velocity/ torque setpoints as well the tension controller parameters or the status of the web break detection. 
+	
+	---
+	NOTE
+	:    A detailed description of further technological add-ons the function block offers is described at the LConSMC_Winder function block description.
+	
+	---
+	
+	#### Tension operating modes
+	
+	The following overview shows the tension operation modes depending on the position of the dancer
+	or tension measuring device location in accordance to the web axis as well as the orientation so the setting variables (speed, force, torque).
+	The tension operating mode is selected by the *typeOfDrive* input of the function block.
+	The following table shows the different tension operating modes and the orientation of velocity, tension, and torque.
+	At commissioning of the application, it must be ensured that the direction convention and signs of the process variables are aligned.
+	Eventually it might be necessary to change the direction of rotation in the drive system (p1821).
+	
+	---
+	
+	![Tension mode](SectionalDrive_TensionMode.png)
+	
+	---
+	
+	![TypeOfDrive](SectionalDrive_TypeOfDrive.png)
+	
+	*/)
+	END_REGION DESCRIPTION
+	//----------------------------------------------------------------------------------------------------------------------
+	//-                                              Start LTC                                                             -
+	//----------------------------------------------------------------------------------------------------------------------
+	REGION Start LTC
+	  IF #enable AND NOT #statEnableOld THEN
+	    #tempAxisStartupData := "LConSMC_GetAxisStartupData"(axis := #axis, getAxisConfigAtStart := #sectionalConfig.getAxisConfigAtStart);
+	    #sectionalDiag.typeOfAxis := #tempAxisStartupData.typeOfAxis;
+	    #sectionalDiag.diameterFactor := 100.0;
+	    #sectionalDiag.referenceVelocity := 0.0;
+	    IF #sectionalDiag.typeOfAxis = "LCON_INVALID_AXIS_TYPE" THEN
+	      #statStartupError := TRUE;
+	      #statError := TRUE;
+	      #error := TRUE;
+	      #errorID := "LCON_ERROR_SECTIONAL_DRIVE_INVALID_TYPE_OF_AXIS";
+	      RETURN;
+	    ELSIF NOT #tempAxisStartupData.inOperation THEN
+	      #statStartupError := TRUE;
+	      #statError := TRUE;
+	      #error := TRUE;
+	      #errorID := "LCON_ERROR_SECTIONAL_DRIVE_DRIVE_NOT_ENABLED";
+	      RETURN;
+	    END_IF;
+	    
+	    IF #sectionalConfig.getAxisConfigAtStart THEN
+	      IF #tempAxisStartupData.communicationOK
+	        AND (#tempAxisStartupData.adaptionState = 2  // ADAPTED
+	        OR #tempAxisStartupData.adaptionState = 3)   // NOT APPLICABLE
+	      THEN
+	        #statReferenceTorque := #tempAxisStartupData.referenceTorque;
+	        #statGearInternal.numerator := #tempAxisStartupData.loadGear.numerator;
+	        #statGearInternal.denominator := #tempAxisStartupData.loadGear.denominator;
+	        #statVeloUnit := #tempAxisStartupData.velocityUnit;
+	        #statTorqueUnit := #tempAxisStartupData.torqueUnit;
+	      ELSIF #tempAxisStartupData.adaptionState = 4 THEN  //APDATION_ERROR
+	        #statStartupError := TRUE;
+	        #statError := TRUE;
+	        #error := TRUE;
+	        #errorID := "LCON_ERROR_SECTIONAL_DRIVE_DATA_ADAPTION";
+	        RETURN;
+	      ELSE
+	        RETURN;
+	      END_IF;
+	    ELSE
+	      #statReferenceTorque := #sectionalConfig.torquePrecontrolConfig.referenceTorque;
+	      #statGearInternal.numerator := #sectionalConfig.torquePrecontrolConfig.loadGear.numerator;
+	      #statGearInternal.denominator := #sectionalConfig.torquePrecontrolConfig.loadGear.denominator;
+	      #statVeloUnit := #sectionalConfig.unitConfiguration.axisVelocityUnit;
+	      #statTorqueUnit := #sectionalConfig.unitConfiguration.axisTorqueUnit;
+	    END_IF;
+	    #statLengthUnit := #tempAxisStartupData.axisLengthUnit;
+	    #statLeadScrew := #tempAxisStartupData.leadScrew;
+	    #statTel750Active := #tempAxisStartupData.torqueDataEnabled;
+	    #statAxisDefaultAcc := LREAL_TO_REAL(#tempAxisStartupData.axisDefaultAcceleration);
+	    #statAxisDefaultJerk := LREAL_TO_REAL(#tempAxisStartupData.axisDefaultJerk);
+	    #sectionalDiag.torquePreControlDiag.referenceTorque := #statReferenceTorque;
+	    #sectionalDiag.torquePreControlDiag.loadGear := #statGearInternal;
+	    #statGearRatioInternal := UDINT_TO_LREAL(#statGearInternal.numerator) / UDINT_TO_LREAL(#statGearInternal.denominator); (*c_00020*)
+	    #statStartupError := FALSE;
+	    #statError := FALSE;
+	    #errorID := #NO_ERROR;
+	    #statControlMode := #controlMode;
+	    #statTypeOfDrive := #typeOfDrive;
+	    #statAxisCtrl := #sectionalConfig.axisCtrl;
+	    #statSectionalDriveMV.s := 0.0;
+	    #statSectionalDriveMV.v := 0.0;
+	    #statSectionalDriveMV.a := 0.0;
+	    #statSectionalDriveMV.d := 0.0; (*c_00029*)
+	    #statVDiff := 0.0;
+	    #statVsync := 0.0;
+	    #statVelocitySetpointOld := 0.0;
+	    #statActive := FALSE;
+	    #statBusy := FALSE;
+	    #active := FALSE;
+	    IF #tCycle = 0.0 THEN
+	      #statStartupError := TRUE;
+	      #error := TRUE;
+	      #statError := TRUE;
+	      #errorID := "LCON_ERROR_SECTIONAL_DRIVE_INVALID_CYCLE_TIME";
+	      RETURN;
+	    ELSE
+	      "LConSMC_SetUnits"(lengthUnit            := #statLengthUnit,
+	                         velocityUnit          := #statVeloUnit,
+	                         unitForSectionalDrive := TRUE,
+	                         leadScrew             := #statLeadScrew,
+	                         axisVeloIntoRPM       => #statAxisUnitIntoRPM,
+	                         error                 => #statStartupError);
+	      #statConvTorqueUnitToTO := "LConSMC_TorqueConverter"(torqueUnitInput := SEL(G := #sectionalConfig.unitConfiguration.metricUnits, IN0 := 1530, IN1 := 1126)
+	                                                           , torqueUnitOutput := #statTorqueUnit);
+	      #statStartupError :=
+	      #statStartupError
+	      OR #statControlMode < 0
+	      OR #statControlMode > 5
+	      OR #statTypeOfDrive < 0
+	      OR #statTypeOfDrive > 1
+	      OR #sectionalConfig.diameter <= 0.0
+	      OR #statGearRatioInternal = 0.0;
+	    END_IF;
+	    REGION SectionalDrivetype dependent calculation
+	      // Define signs
+	      IF #statTypeOfDrive = "LCON_TYPE_OF_DRIVE_PULL" THEN
+	        #statTorqueLimitUpperActive := TRUE;
+	        #statTorqueLimitLowerActive := FALSE;
+	        #statFPIDTorque := 1;
+	        #statFOverride := 1;
+	        #statFPIDSpeed := 1;
+	        #statFLineSpeed := 1;
+	      ELSE // mytypeOfDrive = HELD THEN
+	        #statTorqueLimitUpperActive := FALSE;
+	        #statTorqueLimitLowerActive := TRUE;
+	        #statFPIDTorque := 1;
+	        #statFOverride := -1;
+	        #statFPIDSpeed := -1;
+	        #statFLineSpeed := 1;
+	      END_IF;
+	    END_REGION
+	    REGION Control mode dependent calculation
+	      // Set options
+	      IF #statControlMode = "LCON_CONTROL_MODE_DANCER_SPEED"
+	        OR #statControlMode = "LCON_CONTROL_MODE_TENSION_SPEED"
+	        OR #statControlMode = "LCON_CONTROL_MODE_INDIRECT_TENSION_SPEED_ADAPT"
+	      THEN // no torque limits, no override
+	        #statTorqueLimitUpperActive := FALSE;
+	        #statTorqueLimitLowerActive := FALSE;
+	        #statFOverride := 0;
+	        #statFPIDTorque := 0;
+	      ELSIF #statControlMode = "LCON_CONTROL_MODE_TENSION_TORQUE" THEN
+	        #statStartupError := #statStartupError OR NOT #statTel750Active;  //(*c_00056*)
+	        #statFPIDSpeed := 0;
+	      ELSIF #statControlMode = "LCON_CONTROL_MODE_INDIRECT_TENSION" THEN
+	        #statStartupError := #statStartupError OR NOT #statTel750Active;  //(*c_00056*)
+	        #statFPIDSpeed := 0;
+	        #statFPIDTorque := 0;
+	      ELSE // DRAW_CONTROL, no PID, no override
+	        #statTorqueLimitUpperActive := FALSE;
+	        #statTorqueLimitLowerActive := FALSE;
+	        #statFOverride := 0;
+	        #statFPIDSpeed := 0;
+	        #statFPIDTorque := 0;
+	      END_IF;
+	    END_REGION
+	    IF #statStartupError THEN
+	      #statError := TRUE;
+	      #error := TRUE;
+	      #errorID := "LCON_ERROR_SECTIONAL_DRIVE_INVALID_CONFIGURATION";
+	      RETURN;
+	    END_IF;
+	    
+	    IF #statControlMode = "LCON_CONTROL_MODE_DANCER_SPEED"
+	    THEN
+	      #statDancerControl := TRUE;
+	    ELSE
+	      #statDancerControl := FALSE;
+	    END_IF;
+	    //for lower cyclic load
+	    #statEnableOld := #enable;
+	    RETURN;
+	  END_IF; // End init
+	  #statEnableOld := #enable;
+	END_REGION
+	//----------------------------------------------------------------------------------------------------------------------
+	//-                                      Calculate input parameters                                                    -
+	//----------------------------------------------------------------------------------------------------------------------
+	REGION Calculate input parameters
+	    #tempAxisCyclicData := "LConSMC_GetAxisDataCyclic"(axis := #axis);
+	    #statActDriveSpeed1PerMin   := #tempAxisCyclicData.actualSpeed;                                     //  [1/min] Drive side
+	    #statActShaftSpeed1PerMin   := LREAL_TO_REAL(#statActDriveSpeed1PerMin / #statGearRatioInternal);   //  [1/min] Load side
+	    #statSetShaftSpeed1PerMin   := #tempAxisCyclicData.velocity * #statAxisUnitIntoRPM;                 //  [1/min] Load side 
+	    #statSetDriveSpeed1PerMin   := #statSetShaftSpeed1PerMin * #statGearRatioInternal;                  //  [1/min] Drive side;
+	    #statActualTorque           := #tempAxisCyclicData.actualTorque;                                    //  [Nm] Drive torque actual
+	END_REGION
+	//----------------------------------------------------------------------------------------------------------------------
+	//-                                               Webbreak Detection                                                    -
+	//----------------------------------------------------------------------------------------------------------------------
+	REGION Webbreak
+	    #statEnableWebBreakDetection := #statActive
+	    AND #sectionalConfig.webbreakDetectionConfig.enableDetection
+	    AND ABS(#lineAxisMotionVector.v) > #sectionalConfig.webbreakDetectionConfig.minLineVelocity
+	    AND NOT (#statControlMode = "LCON_CONTROL_MODE_DRAW_CONTROL");
+	    
+	    
+	    IF #statEnableWebBreakDetection
+	        OR (NOT #statEnableWebBreakDetection AND #statEnableWebBreakDetectionOld)
+	    THEN
+	        #instLevelControl(run := #statEnableWebBreakDetection,
+	                          x := SEL(G := #statControlMode = "LCON_CONTROL_MODE_INDIRECT_TENSION",
+	                                   IN0 := #CntrlActual,
+	                                   IN1 := (#sectionalDiag.torquePreControlDiag.totalTorquePreControl - #statActualTorque) / LREAL_TO_REAL(#statReferenceTorque) * 100.0),(*c_00027*)
+	                          alarmHigh := #sectionalConfig.webbreakDetectionConfig.upperLimitError,
+	                          warningHigh := 0.0,
+	                          warningLow := 0.0,
+	                          alarmLow := #sectionalConfig.webbreakDetectionConfig.lowerLimitError,
+	                          hyst := 0.0,
+	                          delayTime := #sectionalConfig.webbreakDetectionConfig.delayTime);
+	        
+	        #sectionalDiag.webbreakDiag.webBreak := #instLevelControl.alarmUpperLimit OR #instLevelControl.alarmLowerLimit;
+	    ELSE
+	        #sectionalDiag.webbreakDiag.webBreak := FALSE;
+	    END_IF;
+	    #statEnableWebBreakDetectionOld := #statEnableWebBreakDetection;
+	    #sectionalDiag.webbreakDiag.webbreakDetectionActive := #statEnableWebBreakDetection;
+	END_REGION ;
+	//----------------------------------------------------------------------------------------------------------------------
+	//-                                               Call TechPID                                                         -
+	//----------------------------------------------------------------------------------------------------------------------
+	REGION TechPID
+	  //scale the percent torque into a real setpoint value
+	  IF #sectionalConfig.technologyControllerConfig.tensionReference <= 0.0 THEN
+	    #statTensionSetpoint := #CntrlSetpoint;
+	  ELSE
+	    #statTensionSetpoint := #CntrlSetpoint / #PERCENT_SCALE * #sectionalConfig.technologyControllerConfig.tensionReference;
+	  END_IF;
+	  // Define sign of tension torque
+	  IF #statTypeOfDrive = "LCON_TYPE_OF_DRIVE_PULL" THEN
+	    // Positive torque is used to generate web tension
+	    #instGetActualTension.positiveTensionTorque := TRUE;
+	  ELSE
+	    // Negative torque is used to generate web tension
+	    #instGetActualTension.positiveTensionTorque := FALSE;
+	  END_IF;
+	  // Calculate actual tension from actual torque value
+	  // It is necessary that the acceleration torque and friction torque is precontrolled
+	  #instGetActualTension(enable                := #statControlMode = "LCON_CONTROL_MODE_INDIRECT_TENSION_SPEED_ADAPT" AND #statActive,
+	                        preCtrlMotor          := #instTorquePrecontrol.preCtrlMotor,
+	                        diameter              := #sectionalConfig.diameter,
+	                        actualTorque          := #statActualTorque,
+	                        gearRatio             := #statGearRatioInternal);
+	  
+	  // Forward PID actual value 
+	  IF #statControlMode = "LCON_CONTROL_MODE_INDIRECT_TENSION" THEN
+	    #statPIDActualValue := 0.0;
+	  ELSIF #statControlMode = "LCON_CONTROL_MODE_INDIRECT_TENSION_SPEED_ADAPT" THEN
+	    #statPIDActualValue := #instGetActualTension.tensionActual;
+	  ELSE
+	    #statPIDActualValue := #CntrlActual;
+	  END_IF;
+	  
+	  #instTPID(
+	            enable          := (#statActive AND #CntrlEnable AND (NOT #sectionalDiag.webbreakDiag.webBreak OR #statControlMode = "LCON_CONTROL_MODE_INDIRECT_TENSION") AND NOT (#statControlMode = "LCON_CONTROL_MODE_DRAW_CONTROL") AND NOT #statJogSectionalDrive),
+	            openLoopCtrl    := #statControlMode = "LCON_CONTROL_MODE_INDIRECT_TENSION",
+	            setpointValue   := SEL(G := #statDancerControl,
+	                                   IN0 := #statTensionSetpoint,
+	                                   IN1 := #CntrlSetpoint),
+	            actualValue     := #statPIDActualValue,// SEL(G := #statControlMode = "LCON_CONTROL_MODE_INDIRECT_TENSION", IN0 := #CntrlActual, IN1 := 0.0),
+	            preControl      := 0.0,
+	            adaptionValue   := #sectionalConfig.technologyControllerConfig.KpAdaptionValue,
+	            holdIntChannel  := #sectionalConfig.technologyControllerConfig.holdIntChannel,
+	            setIntChannel   := #sectionalConfig.technologyControllerConfig.setIntChannel,
+	            x1              := #sectionalConfig.technologyControllerConfig.x1,
+	            Kp1             := #sectionalConfig.technologyControllerConfig.Kp1,
+	            x2              := #sectionalConfig.technologyControllerConfig.x2,
+	            Kp2             := #sectionalConfig.technologyControllerConfig.Kp2,
+	            limRampTime     := #sectionalConfig.technologyControllerConfig.limRampTime,
+	            setNominalValue := #sectionalConfig.technologyControllerConfig.setNominalValue,
+	            setRampTime     := #sectionalConfig.technologyControllerConfig.setRampTime,
+	            integTime       := #sectionalConfig.technologyControllerConfig.integTime,
+	            derivTime       := #sectionalConfig.technologyControllerConfig.derivTime,
+	            filterTime      := #sectionalConfig.technologyControllerConfig.filterTime,
+	            intSetValue     := #sectionalConfig.technologyControllerConfig.intSetValue,
+	            controlMode     := #sectionalConfig.technologyControllerConfig.derivControlMode,
+	            deadBand        := #sectionalConfig.technologyControllerConfig.deadBand,
+	            outValueFactor  := #sectionalConfig.technologyControllerConfig.outValueFactor,
+	            upperLimit      := #sectionalConfig.technologyControllerConfig.upperLimit,
+	            lowerLimit      := #sectionalConfig.technologyControllerConfig.lowerLimit,
+	            tCycle          := #tCycle);
+	  
+	  #sectionalDiag.technologyControllerDiag.#pidUpperLimitReached := #instTPID.upperLimReached;
+	  #sectionalDiag.technologyControllerDiag.#pidLowerLimitReached := #instTPID.lowerLimReached;
+	  #sectionalDiag.technologyControllerDiag.#pidRFGSetpointReached := #instTPID.RFGSetpointReached;
+	  #sectionalDiag.technologyControllerDiag.#pidoutValue := #instTPID.outValue;
+	  #sectionalDiag.technologyControllerDiag.#pidEffectiveKp := #instTPID.effectiveKp;
+	  
+	  IF #instTPID.busy THEN //V1.3
+	    #statTensionSpeedLUPerMin := #sectionalConfig.overrideVelocity * #statFOverride + #instTPID.outValue * #statFPIDSpeed;
+	  ELSE
+	    #statTensionSpeedLUPerMin := 0.0;
+	  END_IF;
+	  
+	  REGION Calculate circumference
+	    IF NOT #sectionalConfig.unitConfiguration.metricUnits THEN
+	      IF (#sectionalConfig.diameter <= 0) THEN                                  // Check diameter Value
+	        #statIntDiameter := LREAL_TO_REAL(0.31831) * 12.0;                                     // [inch] Setpoint will be in RPM
+	      ELSE
+	        #statIntDiameter := #sectionalConfig.diameter;                          // [inch]
+	      END_IF;
+	      //Speed in FPM AND diameter in Inches convert TO motor RPM 
+	      #statCircumference := #statIntDiameter * "LCON_PI" / 12.0;                      // [Feet]
+	    ELSE
+	      IF (#sectionalConfig.diameter <= 0) THEN                                  // Check diameter Value
+	        #statIntDiameter := 0.31831;                                            // Setpoint will be in RPM
+	      ELSE
+	        #statIntDiameter := #sectionalConfig.diameter;                          // [m]
+	      END_IF;
+	      // Speed in MPM AND diameter in meters convert TO motor RPM
+	      #statCircumference := #statIntDiameter * "LCON_PI";                             // [m]
+	    END_IF;
+	  END_REGION
+	END_REGION
+	//----------------------------------------------------------------------------------------------------------------------
+	//-                                         Calculate speed setpoint                                                   -
+	//----------------------------------------------------------------------------------------------------------------------
+	REGION Calculate speed setpoint
+	    // Addition setpoint velocity
+	    #statLineVelocityInternalLUPerMin := #lineAxisMotionVector.v;
+	    #statLineAccelerationInternal := #lineAxisMotionVector.a;
+	    #statJogSectionalDrive := ((((#jogPos AND NOT #jogNeg) OR (#jogNeg AND NOT #jogPos)) AND NOT #speedMatch AND NOT #CntrlEnable)) AND #enable;
+	    IF #statControlMode = "LCON_CONTROL_MODE_DRAW_CONTROL" THEN
+	        #statDrawFactor := #draw;
+	    ELSE
+	        #statDrawFactor := 1.0;
+	    END_IF;
+	    // Add Speed Setpoints
+	    IF #statDeactivateJogDyn = FALSE THEN
+	        IF NOT #jogPos AND NOT #jogNeg THEN //jog was active bevore and it should decelerate
+	            #statVelocityLUPerMin := 0.0;
+	        END_IF;
+	        //Window for standstill
+	        IF #statSetShaftSpeed1PerMin = 0.0 THEN // set other dynamics only if axis is in standstill
+	            #statDeactivateJogDyn := TRUE; //in next cycle new dynamics can be set
+	        END_IF;
+	    END_IF;
+	    IF #statDeactivateJogDyn = TRUE THEN //if JOG was active bevore, then no other dynamics should be written until axis has not stopped
+	        IF #enable AND #speedMatch AND #CntrlEnable AND NOT #statJogSectionalDrive THEN
+	            #statDynamicsInternalTOUnit.abortAcceleration := FALSE;
+	            #statDynamicsInternalTOUnit.acceleration := SEL(G := #sectionalConfig.SectionalDriveDynamics.operationDynamics.acceleration < 0.0, IN0 := #sectionalConfig.SectionalDriveDynamics.operationDynamics.acceleration, IN1 := #statAxisDefaultAcc); (*c_00058*)
+	            #statDynamicsInternalTOUnit.deceleration := #sectionalConfig.SectionalDriveDynamics.operationDynamics.deceleration;
+	            #statDynamicsInternalTOUnit.jerk := SEL(G := #sectionalConfig.SectionalDriveDynamics.operationDynamics.jerk < 0.0, IN0 := #sectionalConfig.SectionalDriveDynamics.operationDynamics.jerk, IN1 := #statAxisDefaultJerk); (*c_00058*)
+	            #statVelocityLUPerMin := LIMIT(MN := - #sectionalConfig.maxVelocity, IN := #statFLineSpeed * (#statLineVelocityInternalLUPerMin + #additionalVelocity), MX := #sectionalConfig.maxVelocity);    // [LU/min] (*c_00039*)
+	            #statVelocityLUPerMin *= #statDrawFactor;
+	            #statInSync := TRUE;
+	        ELSIF #enable AND #speedMatch AND NOT #statJogSectionalDrive THEN
+	            #statDynamicsInternalTOUnit.abortAcceleration := #sectionalConfig.SectionalDriveDynamics.syncDynamics.abortAcceleration;
+	            #statDynamicsInternalTOUnit.acceleration := SEL(G := #sectionalConfig.SectionalDriveDynamics.syncDynamics.acceleration < 0.0, IN0 := #sectionalConfig.SectionalDriveDynamics.syncDynamics.acceleration, IN1 := #statAxisDefaultAcc);
+	            #statDynamicsInternalTOUnit.deceleration := #sectionalConfig.SectionalDriveDynamics.syncDynamics.deceleration;
+	            #statDynamicsInternalTOUnit.jerk := SEL(G := #sectionalConfig.SectionalDriveDynamics.syncDynamics.jerk < 0.0, IN0 := #sectionalConfig.SectionalDriveDynamics.syncDynamics.jerk, IN1 := #statAxisDefaultJerk);
+	            #statVelocityLUPerMin := LIMIT(MN := - #sectionalConfig.maxVelocity, IN := #statFLineSpeed * (#statLineVelocityInternalLUPerMin + #additionalVelocity), MX := #sectionalConfig.maxVelocity);    // [LU/min] (*c_00039*)
+	            #statVelocityLUPerMin *= #statDrawFactor;
+	        ELSIF #enable AND #statJogSectionalDrive THEN //use jog dynamics because it shouldn´t be synchronized to line and no controlmode is active
+	            #statDeactivateJogDyn := FALSE;
+	            #statDynamicsInternalTOUnit.abortAcceleration := FALSE;
+	            #statDynamicsInternalTOUnit.acceleration := #sectionalConfig.SectionalDriveDynamics.jogDynamics.acceleration;
+	            #statDynamicsInternalTOUnit.deceleration := #sectionalConfig.SectionalDriveDynamics.jogDynamics.deceleration;
+	            #statDynamicsInternalTOUnit.jerk := #sectionalConfig.SectionalDriveDynamics.jogDynamics.jerk;
+	            #statInSync := FALSE;
+	            IF #jogPos AND NOT #jogNeg THEN
+	                #statVelocityLUPerMin := ABS(#sectionalConfig.jogVelocity);
+	            ELSIF #jogNeg AND NOT #jogPos THEN
+	                #statVelocityLUPerMin := - ABS(#sectionalConfig.jogVelocity);
+	            ELSE
+	                #statVelocityLUPerMin := 0.0;
+	            END_IF;
+	        ELSIF NOT #enable THEN //stop with stopdynamics
+	            //sectionaldrive will stop with MC_Halt, because of missing enable
+	            #statDynamicsInternalTOUnit.abortAcceleration := #sectionalConfig.SectionalDriveDynamics.stopDynamics.abortAcceleration;
+	            #statDynamicsInternalTOUnit.acceleration := #sectionalConfig.SectionalDriveDynamics.stopDynamics.deceleration;
+	            #statDynamicsInternalTOUnit.deceleration := #sectionalConfig.SectionalDriveDynamics.stopDynamics.deceleration;
+	            #statDynamicsInternalTOUnit.jerk := #sectionalConfig.SectionalDriveDynamics.stopDynamics.jerk;
+	            #statVelocityLUPerMin := 0.0;
+	            #statTensionSpeedLUPerMin := 0.0;
+	            #statInSync := FALSE;
+	        ELSE //speedMatch = False -> no linevelocity is active , but TensionSpeed is
+	            #statDynamicsInternalTOUnit.abortAcceleration := #sectionalConfig.SectionalDriveDynamics.stopDynamics.abortAcceleration;
+	            #statDynamicsInternalTOUnit.acceleration := #sectionalConfig.SectionalDriveDynamics.stopDynamics.deceleration;
+	            #statDynamicsInternalTOUnit.deceleration := #sectionalConfig.SectionalDriveDynamics.stopDynamics.deceleration;
+	            #statDynamicsInternalTOUnit.jerk := #sectionalConfig.SectionalDriveDynamics.stopDynamics.jerk;
+	            #statVelocityLUPerMin := 0.0;
+	            #statInSync := FALSE;
+	        END_IF;
+	    END_IF;
+	    // Moving average for line speed setpoint only in speedMatch mode
+	    #statNumberOfSamplesInternal := MAX(IN1 := 1, IN2 := #sectionalConfig.noOfSamplesLineVelocity);
+	    #instMoveAvg(enable := #enable AND #speedMatch AND NOT #statJogSectionalDrive,
+	                 updateConfig := #statNumberOfSamplesInternal <> #statNumberOfSamplesOld,
+	                 sampleMode := "LCON_SAMPLEBASED_MODE",
+	                 inputSignal := #statVelocityLUPerMin,
+	                 subsetLength := #statNumberOfSamplesInternal,
+	                 cycleTime := REAL_TO_UDINT(#tCycle) * UDINT#1000000);
+	    #statNumberOfSamplesOld := #statNumberOfSamplesInternal;
+	    IF #instMoveAvg.enable AND NOT #instMoveAvg.error THEN
+	        #statVelocityLUPerMin := #instMoveAvg.movingAverage;
+	    END_IF;
+	    REGION Generate motion vector for MC Commands
+	        //actual sectionaldrive speed for MC Command
+	        #statSectionalDriveMV.v := (#statVelocityLUPerMin + #statTensionSpeedLUPerMin) / #statCircumference * 1.0 / #statAxisUnitIntoRPM; // statVelocity  and statTension Speed [LU/min] / statCircumference = [1/min] / statWinderAxisIntoRPM = TO Unit;
+	        #statSectionalDriveMV.a := #statDynamicsInternalTOUnit.acceleration;
+	        #statSectionalDriveMV.d := #statDynamicsInternalTOUnit.deceleration; (*c_00029*)
+	        #statSectionalDriveMV.j := #statDynamicsInternalTOUnit.jerk;
+	        
+	        //Reduction of reference speed using the override
+	        //Maximum sectionaldrive veocity [TO Unit]
+	        //(*c_00036*)
+	        IF #sectionalConfig.unitConfiguration.metricUnits THEN
+	            #statReferenceVelocityTOUnit := (#sectionalConfig.maxVelocity + #sectionalConfig.overrideVelocity * ABS(#statFOverride))
+	            / (LREAL_TO_REAL(#sectionalConfig.diameter * #statAxisUnitIntoRPM) * "LCON_PI");
+	        ELSE // no metric units -> diameter from inch to feet
+	            #statReferenceVelocityTOUnit := (#sectionalConfig.maxVelocity + #sectionalConfig.overrideVelocity * ABS(#statFOverride))
+	            / (LREAL_TO_REAL(#sectionalConfig.diameter / 12.0 * #statAxisUnitIntoRPM) * "LCON_PI");
+	        END_IF;
+	        //override only positive value -> taking care about directiondepentency
+	        IF #statSectionalDriveMV.v < 0.0 THEN //negative direction [TO Unit]
+	            #statCommandMoveVelocityTOUnit := - ABS(#statReferenceVelocityTOUnit); //[TO Unit]
+	        ELSE //positive direction
+	            #statCommandMoveVelocityTOUnit := ABS(#statReferenceVelocityTOUnit); //[TO Unit]
+	        END_IF;
+	        IF #enable THEN
+	            #statOverride := (ABS(#statSectionalDriveMV.v) / (ABS(#statReferenceVelocityTOUnit))) * 100.0;
+	        ELSE //reset override to standard
+	            #statOverride := 100.0;
+	            #statCommandMoveVelocityTOUnit := 0.0;
+	        END_IF;
+	    END_REGION
+	    REGION Calculate inSync if sectional drive is in syncing mode
+	        IF #instMoveAvg.enable AND NOT #instMoveAvg.error THEN
+	            IF #statDynamicsInternalTOUnit.jerk = 0.0 THEN
+	                #statVsync := #statDynamicsInternalTOUnit.acceleration * #tCycle / 1.0e3 * #sectionalConfig.SectionalDriveDynamics.syncDynamics.syncToleranceFactor; //  [TOUnit]
+	            ELSE
+	                #statVsync := (#statDynamicsInternalTOUnit.jerk * (#tCycle / 1.0e3) ** 2) / 2.0 * #sectionalConfig.SectionalDriveDynamics.syncDynamics.syncToleranceFactor; //  [TOUnit]
+	            END_IF;
+	            #statVDiff := ABS((#statSetShaftSpeed1PerMin / #statAxisUnitIntoRPM) - (#statVelocityLUPerMin / #statCircumference * 1.0 / #statAxisUnitIntoRPM)); // [TOUnit]
+	            #statInSync := #statVDiff <= #statVsync;
+	        END_IF;
+	    END_REGION
+	END_REGION
+	//----------------------------------------------------------------------------------------------------------------------
+	//-                                             Torque precontrol                                                      -
+	//----------------------------------------------------------------------------------------------------------------------
+	REGION Torque precontrol
+	  // c_00008 : Choose setpoint or actual speed value for friction compensation
+	  IF #sectionalConfig.unitConfiguration.metricUnits THEN
+	    #statActSpeedOverride1PerMin := (#sectionalConfig.overrideVelocity * #statFOverride) / (#statIntDiameter * "LCON_PI") * #statGearRatioInternal;
+	  ELSE
+	    #statActSpeedOverride1PerMin := (#sectionalConfig.overrideVelocity * #statFOverride) / (#statIntDiameter / 12.0 * "LCON_PI") * #statGearRatioInternal;
+	  END_IF;
+	  IF #sectionalConfig.torquePrecontrolConfig.useSetValForFrictionComp THEN
+	    IF (#lineAxisMotionVector.v <> 0.0) OR ((#statCtrlBusyInternal AND (#statFOverride = 0)) OR (#statControlMode = "LCON_CONTROL_MODE_DRAW_CONTROL")) THEN
+	      #statSectionalDriveShaftSpeedSetpointPreCtrl1PerMin := #statSetDriveSpeed1PerMin - #statActSpeedOverride1PerMin;
+	    ELSE
+	      #statSectionalDriveShaftSpeedSetpointPreCtrl1PerMin := 0.0;
+	    END_IF;
+	  ELSE
+	    #statSectionalDriveShaftSpeedSetpointPreCtrl1PerMin := #statActDriveSpeed1PerMin;
+	  END_IF;
+	  
+	  // Detection of a drive runaway in torque controlled modes (*c_00062*)
+	  // If the deviation between the actual circumference velocity and the line velocity setpoint is too high the torque pre-control of friction and acceleration is disabled
+	  #instOverspeedMonitoring(enable                 := #enable AND (#statTorqueLimitUpperActive OR #statTorqueLimitLowerActive) AND #statCtrlBusyInternal,
+	                           vLine                  := #statVelocityLUPerMin,
+	                           vOverride              := #statTensionSpeedLUPerMin,
+	                           vAct                   := #statActShaftSpeed1PerMin * "LCON_PI" * SEL(G := #sectionalConfig.unitConfiguration.metricUnits, IN0 := #sectionalConfig.diameter / 12.0, IN1 := #sectionalConfig.diameter),
+	                           velocityDeviationLimit := "LCON_VELO_MONITORING_ADJUSTMENT_PERCENT",
+	                           tCycle                 := #tCycle);
+	  #instTorquePrecontrol(
+	                        enable                 := (#statCtrlBusyInternal
+	                        OR ((#statControlMode = "LCON_CONTROL_MODE_DRAW_CONTROL") AND #statBusy)
+	                        (*AND (#statTorqueAdditive OR #statTorqueLimitUpper OR #statTorqueLimitLower)*)) (*c_00021*)
+	                        AND #statTel750Active,
+	                        metricUnits            := #sectionalConfig.unitConfiguration.metricUnits,
+	                        typeOfDrive            := #typeOfDrive,
+	                        drivespeed             := LREAL_TO_REAL(IN := #statSectionalDriveShaftSpeedSetpointPreCtrl1PerMin),
+	                        lineAcceleration       := #statLineAccelerationInternal,
+	                        diameter               := #sectionalConfig.diameter,
+	                        tensionSetpoint        := SEL(G := #statDancerControl OR (#statControlMode = "LCON_CONTROL_MODE_DRAW_CONTROL"),
+	                                                      IN0 := (#instTPID.RFGSetpointValue + #instTPID.outValue * #statFPIDTorque), // (*c_00053*)
+	                                                      IN1 := 0.0),
+	                        JFix                   := #sectionalConfig.torquePrecontrolConfig.JFixed,
+	                        JMandrel               := #sectionalConfig.torquePrecontrolConfig.JMandrel,
+	                        JMot                   := #sectionalConfig.torquePrecontrolConfig.JMotor,
+	                        gearRatio              := LREAL_TO_REAL(#statGearRatioInternal),
+	                        frictionAdjustment     := #sectionalConfig.torquePrecontrolConfig.frictionAdjustment * LREAL_TO_REAL(#instOverspeedMonitoring.preControlAdjust),     (*c_00062*)
+	                        tensionAdjustment      := #sectionalConfig.torquePrecontrolConfig.tensionAdjustment,
+	                        xn_speedValues         := #sectionalConfig.torquePrecontrolConfig.xn_speedValues,
+	                        yn_torqueValues        := #sectionalConfig.torquePrecontrolConfig.yn_torqueValues,
+	                        sizeOfArray            := #sectionalConfig.torquePrecontrolConfig.sizeOfArray,
+	                        accelerationAdjustment := #sectionalConfig.torquePrecontrolConfig.accelerationAdjustment * LREAL_TO_REAL(#instOverspeedMonitoring.preControlAdjust));(*c_00062*)
+	  
+	  IF #sectionalConfig.torquePrecontrolConfig.upperTorqueLimit > 2.0
+	    OR #sectionalConfig.torquePrecontrolConfig.upperTorqueLimit < 0.0
+	    OR #sectionalConfig.torquePrecontrolConfig.lowerTorqueLimit < -2.0
+	    OR #sectionalConfig.torquePrecontrolConfig.lowerTorqueLimit > 0
+	  THEN
+	    #statError := FALSE;
+	    #errorID := "LCON_WARNING_SECTIONAL_DRIVE_OUTPUT_LIMITED";
+	    #statUpperTorqueLimit := LIMIT(MN := 0.0, IN := #sectionalConfig.torquePrecontrolConfig.upperTorqueLimit, MX := 2.0) * #statReferenceTorque;  // [Nm]
+	    #statLowerTorqueLimit := LIMIT(MN := -2.0, IN := #sectionalConfig.torquePrecontrolConfig.lowerTorqueLimit, MX := 0.0) * #statReferenceTorque; // [Nm]
+	  ELSE
+	    #errorID := #NO_ERROR;
+	    #statUpperTorqueLimit := #sectionalConfig.torquePrecontrolConfig.upperTorqueLimit * #statReferenceTorque;
+	    #statLowerTorqueLimit := #sectionalConfig.torquePrecontrolConfig.lowerTorqueLimit * #statReferenceTorque;
+	  END_IF;
+	  #sectionalDiag.torquePreControlDiag.totalTorquePreControl := #instTorquePrecontrol.totalTorquePreCtrl * #statConvTorqueUnitToTO;
+	  #sectionalDiag.torquePreControlDiag.totalInertia := #instTorquePrecontrol.totalinertia;
+	  #statLTCTotaltorque := #sectionalDiag.torquePreControlDiag.totalTorquePreControl;
+	END_REGION
+	//----------------------------------------------------------------------------------------------------------------------
+	//-                                        Enable interface                                                            -
+	//----------------------------------------------------------------------------------------------------------------------
+	REGION Enable Inteface
+	    IF #statTorqueLimitUpperActive THEN
+	        #statUpperTorqueLimitLimited := LIMIT(MN := #statLowerTorqueLimit, IN := #statLTCTotaltorque, MX := #statUpperTorqueLimit);
+	        IF #instTPID.busy THEN
+	            #statCtrlBusyInternal := TRUE;
+	        ELSE
+	            IF #statSetDriveSpeed1PerMin = 0.0 AND #statCtrlBusyInternal THEN
+	                #statCtrlBusyInternal := FALSE;
+	            END_IF;
+	            IF NOT #statCtrlBusyInternal THEN
+	                #statUpperTorqueLimitLimited := #statUpperTorqueLimit;
+	            END_IF;
+	        END_IF;
+	        #statLowerTorqueLimiLimited := #statLowerTorqueLimit;
+	    ELSIF #statTorqueLimitLowerActive THEN
+	        #statLowerTorqueLimiLimited := LIMIT(MN := #statLowerTorqueLimit, IN := #statLTCTotaltorque, MX := #statUpperTorqueLimit);
+	        IF #instTPID.busy  THEN
+	            #statCtrlBusyInternal := TRUE;
+	        ELSE
+	            IF #statSetDriveSpeed1PerMin = 0.0 AND #statCtrlBusyInternal THEN
+	                #statCtrlBusyInternal := FALSE;
+	            END_IF;
+	            IF NOT #statCtrlBusyInternal THEN
+	                #statLowerTorqueLimiLimited := #statLowerTorqueLimit;
+	            END_IF;
+	        END_IF;
+	        #statUpperTorqueLimitLimited := #statUpperTorqueLimit;
+	    ELSE
+	        #statCtrlBusyInternal           := #instTPID.busy;
+	        #statUpperTorqueLimitLimited    := #statUpperTorqueLimit;
+	        #statLowerTorqueLimiLimited     := #statLowerTorqueLimit;
+	    END_IF;
+	    
+	    // Mask motor blocked fault for torque controlled modes and reset speed controller integrator after disabling tension control in torque controlled modes
+	    #instSetAxisSTW(enable                := #statActive,
+	                    resetSpeedInt         := (NOT #statCtrlBusyInternal AND #statCtrlBusyInternalOld AND (#statTorqueLimitUpperActive OR #statTorqueLimitLowerActive)),// (*c_00052*)
+	                    maskMotorBlockedFault := #statTorqueLimitUpperActive OR #statTorqueLimitLowerActive,  //(*c_00051*)
+	                    axis                  := #axis);
+	    #statCtrlBusyInternalOld := #statCtrlBusyInternal;
+	    
+	    // Disable torque precontrol if the sign of the torque limit is changing (Only torque limit is active) and torque controlled mode is active
+	    // E.g. Winder is operating at the upper torque limit but its value becomes negative (friction + acceleration torque > tension torque)
+	    // --> Otherwise the resulting torque is too big (torque limit + torque precontrol)
+	    // (*c_00047*)
+	    #statDisableAdditiveTorque := FALSE;
+	    IF (#statTorqueLimitUpperActive OR #statTorqueLimitLowerActive)
+	        AND ((#statTypeOfDrive = "LCON_TYPE_OF_DRIVE_HELD" AND #statLTCTotaltorque > 0.0)
+	        OR (#statTypeOfDrive = "LCON_TYPE_OF_DRIVE_PULL" AND #statLTCTotaltorque < 0.0))
+	    THEN
+	        #statDisableAdditiveTorque  := TRUE;
+	        #statLTCTotaltorque         := 0.0;
+	    END_IF;
+	    #statTorqueValues.additiveTorque    := #statLTCTotaltorque;
+	    #statTorqueValues.upperTorqueLimit  := #statUpperTorqueLimitLimited;
+	    #statTorqueValues.lowerTorqueLimit  := #statLowerTorqueLimiLimited;
+	    
+	    #instEnableInterface(enable              := #statAxisCtrl AND #enable,
+	                         enableVelocityInterface := #statAxisCtrl AND #enable,
+	                         writeTorqueLimit    := #statTel750Active,
+	                         writeAdditiveTorque := #statTel750Active,
+	                         positionControlled  := #sectionalConfig.positionControlled,
+	                         referenceVelocity   := #statCommandMoveVelocityTOUnit,
+	                         override            := #statOverride,
+	                         motionVector        := #statSectionalDriveMV,
+	                         torqueValues        := #statTorqueValues,
+	                         axis                := #axis);
+	END_REGION
+	//----------------------------------------------------------------------------------------------------------------------
+	//-                                        Calculate OUTPUT/Command values                                             -
+	//----------------------------------------------------------------------------------------------------------------------
+	REGION Calculate output/interface values
+	    #statBusy := #enable;
+	    #busy := #statBusy;
+	    #statActive := (#statAxisCtrl
+	    AND (#instEnableInterface.MCInterfaceActive) (*c_00026*)
+	    AND ((#instEnableInterface.torqueLimitActive AND #instEnableInterface.writeTorqueLimit) OR NOT #instEnableInterface.writeTorqueLimit)
+	    AND ((#instEnableInterface.additiveTorqueActive AND #instEnableInterface.writeAdditiveTorque) OR NOT #instEnableInterface.writeAdditiveTorque))
+	    OR (NOT #statAxisCtrl AND #busy);
+	    
+	    #sectionalDiag.torquePreControlDiag.lowerTorqueLimit := LREAL_TO_REAL(#statLowerTorqueLimiLimited);
+	    #sectionalDiag.torquePreControlDiag.upperTorqueLimit := LREAL_TO_REAL(#statUpperTorqueLimitLimited);
+	    #sectionalDiag.referenceVelocity    := #statCommandMoveVelocityTOUnit;
+	    #sectionalDiag.diameterFactor       := #statOverride;
+	    IF #statActive THEN
+	        #sectionalDiag.torquePreControlDiag.totalTorquePreControl := #statLTCTotaltorque;
+	    ELSE
+	        #sectionalDiag.torquePreControlDiag.totalTorquePreControl := 0.0;
+	    END_IF;
+	    #active     := #statActive;
+	    #inSync     := #statInSync AND #enable;
+	    #ctrlBusy   := #statCtrlBusyInternal;
+	END_REGION
+	//----------------------------------------------------------------------------------------------------------------------
+	//-                                              Error handling                                                        -
+	//----------------------------------------------------------------------------------------------------------------------
+	REGION Error handling
+	  IF #statStartupError THEN
+	    IF NOT (#enable) THEN
+	      #statError := FALSE;
+	      #statStartupError := FALSE;
+	      #errorID := #NO_ERROR;
+	    END_IF;
+	  ELSIF #instTorquePrecontrol.error THEN
+	    #statError := #instTorquePrecontrol.error;
+	    #errorID := #instTorquePrecontrol.errorID;
+	  ELSIF #instTPID.error THEN
+	    #statError := #instTPID.error;
+	    #errorID := #instTPID.errorId;
+	  ELSIF #instEnableInterface.error THEN
+	    #statError := #instEnableInterface.error;
+	    #errorID := #instEnableInterface.status;
+	  ELSIF #instGetActualTension.error THEN
+	    #statError := #instGetActualTension.error;
+	    #errorID := WORD_TO_DWORD(#instGetActualTension.status);
+	  ELSE
+	    #statError := FALSE;
+	    #errorID := #NO_ERROR;
+	  END_IF;
+	    
+	  // Warning handling
+	  IF NOT #statError AND #enable THEN
+	    IF #instTorquePrecontrol.errorID <> #NO_ERROR THEN
+	      #errorID := #instTorquePrecontrol.errorID;
+	    ELSIF #instTPID.errorId <> #NO_ERROR THEN
+	      #errorID := #instTPID.errorId;
+	    ELSIF ABS(#statVelocityLUPerMin) > ABS(#sectionalConfig.maxVelocity) THEN (*c_00031*)
+	      #errorID := "LCON_WARNING_SECTIONAL_DRIVE_MAX_VELOCITY_EXCEEDED";
+	    ELSIF #statDisableAdditiveTorque THEN
+	      #errorID := "LCON_WARNING_SECTIONAL_DRIVE_TORQUE_PRECONTROL_DISABLED";
+	    ELSIF #instOverspeedMonitoring.statRunAwayDetected THEN  (*c_00062*)
+	      #errorID := "LCON_WARNING_WINDER_RUN_AWAY_DETECTED";
+	    ELSE
+	      #statError := FALSE;
+	      #errorID := #NO_ERROR;
+	    END_IF;
+	  END_IF;
+	    #error := #statError;
+	END_REGION
+END_FUNCTION_BLOCK
+

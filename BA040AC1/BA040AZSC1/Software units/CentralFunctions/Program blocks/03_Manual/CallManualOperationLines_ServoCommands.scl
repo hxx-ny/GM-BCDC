@@ -1,0 +1,28 @@
+﻿FUNCTION "CallManualOperationLines_ServoCommands" : Void
+{ S7_Optimized_Access := 'TRUE' ; Published := 'FALSE' }
+VERSION : 0.1
+   VAR_INPUT 
+      ManualOperationControl : "LBC_typeAxisControlManualCommands";
+   END_VAR
+
+   VAR_OUTPUT 
+      HmiInterface : "LBC_typeAxisControlManualCommands";
+   END_VAR
+
+
+BEGIN
+	REGION Commands Mapping
+	    //#HmiInterface.enableAxis := #ManualOperationControl.enableAxis;
+	    //#HmiInterface.resetAxis := #ManualOperationControl.resetAxis;
+	    
+	    #HmiInterface.jogForward := #ManualOperationControl.jogForward;
+	    #HmiInterface.jogBackward := #ManualOperationControl.jogBackward;
+	    
+	    //#HmiInterface.moveVelocity := #ManualOperationControl.moveVelocity;
+	    //#HmiInterface.stop := #ManualOperationControl.stop;
+	    //#HmiInterface.posRelative := #ManualOperationControl.posRelative;
+	    //#HmiInterface.posAbsolute := #ManualOperationControl.posAbsolute;
+	END_REGION
+	
+END_FUNCTION
+

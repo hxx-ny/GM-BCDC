@@ -1,0 +1,123 @@
+﻿FUNCTION_BLOCK "LConSMC_LevelControl"
+{ S7_Optimized_Access := 'TRUE' ; Published := 'TRUE' }
+VERSION : 0.1
+//Limit value monitor. The function block can be called in any cyclic task.  Function block ID: 0104
+   VAR_INPUT 
+      run { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := FALSE;   // TRUE: Enable function block
+      x { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 0.0;   // Input value
+      alarmHigh { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 100.0;   // Alarm, upper limit value
+      warningHigh { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 80.0;   // Warning, upper limit value
+      warningLow { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := -80.0;   // Warning, lower limit value
+      alarmLow { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := -100.0;   // Alarm, lower limit value
+      hyst { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 0.0;   // Hysteresis (Absolute value is used)
+      delayTime { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Time := T#3S;   // [ s ] Output delay time  delayTime = 0, signal delay is disabled
+   END_VAR
+
+   VAR_OUTPUT 
+      busy { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := FALSE;   // TRUE: Function block is activated
+      alarmUpperLimit { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;   // TRUE: Upper alarm limit value exceeded
+      alarmLowerLimit { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;   // TRUE: Lower alarm limit value exceeded
+      warningUpperLimit { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := FALSE;   // TRUE: Upper warning limit value exceeded
+      warningLowerLimit { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := FALSE;   // TRUE: Lower warning limit value exceeded
+   END_VAR
+
+   VAR 
+      statAlarmUpperLimitSafe { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := FALSE;
+      statWarningUpperLimitSafe { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := FALSE;
+      statWarningLowerLimitSafe { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := FALSE;
+      statAlarmLowerLimitSafe { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := FALSE;
+      instTONalUp {InstructionName := 'TON_TIME'; LibVersion := '1.0'; ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'; S7_SetPoint := 'False'} : TON_TIME;
+      instTONwaUp {InstructionName := 'TON_TIME'; LibVersion := '1.0'; ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'; S7_SetPoint := 'False'} : TON_TIME;
+      instTONwaLo {InstructionName := 'TON_TIME'; LibVersion := '1.0'; ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'; S7_SetPoint := 'False'} : TON_TIME;
+      instTONalLo {InstructionName := 'TON_TIME'; LibVersion := '1.0'; ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'; S7_SetPoint := 'False'} : TON_TIME;
+      statAlarmUpperLimit { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := FALSE;
+      statAlarmLowerLimit { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := FALSE;
+      statWarningUpperLimit { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := FALSE;
+      statWarningLowerLimit { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := FALSE;
+   END_VAR
+
+
+BEGIN
+	REGION BLOCK INFO HEADER
+	  //===============================================================================
+	  // SIEMENS AG / (c)Copyright 2023
+	  //-------------------------------------------------------------------------------
+	  // Title:            LConSMC_LevelControl
+	  // Comment/Function: Limit value evaluation with warning level and alarm level
+	  // Library/Family:   LConSMC
+	  // Author:           APC Erlangen
+	  // Tested with:      FW 2.8
+	  // Engineering:      TIA Portal V16
+	  // Restrictions:     Needs to be called in a cyclic task
+	  // Requirements:     -
+	  //-------------------------------------------------------------------------------
+	  // Change log table:
+	  // Version  | Date       | Expert in charge       | Changes applied
+	  //----------|------------|------------------------|------------------------------
+	  // 01.01.00 | 2016-11-17 | APC Erlangen           | adapted to styleguide; warning "variable might not be initialized" removed
+	  // 01.00.00 | 2012-07-23 | APC Erlangen           | Creation
+	  //===============================================================================
+	  //
+	END_REGION BLOCK INFO HEADER
+	
+	REGION DESCRIPTION
+	(/*
+	This function block monitors an input value (x) to identify whether it violates (exceeds, falls below) parameterized limit values as long as it is active with run = TRUE.
+	If the block is enabled, then this can be identified using the busy output.
+	When the warningHigh value is exceeded, output warningUpperLimit is set after the delayTime.
+	The same applies when the alarmHigh value is exceeded with the associated output alarmUpperLimit.
+	If the input value drops below the limit value warningHigh or alarmHigh minus the hysteresis value (hyst), the particular output is reset.
+	The same applies for the lower limit monitoring with the limits warningLow and alarmLow as well as the associated outputs warningLowerLimit and alarmLowerLimit.
+	However, in this case, the hysteresis (hyst) is added to the limit value. 
+	Warnings are not reset as a result of alarms.
+	
+	![Level control diagram](LevelControl_Diagram.png)
+	
+	*/)
+	END_REGION
+	
+	#busy := #run;
+	
+	// UPPER LIMIT ALARM EVALUATION
+	#statAlarmUpperLimitSafe := (#run) AND
+	((#x > #alarmHigh) OR
+	((#statAlarmUpperLimit) AND (#x > #alarmHigh - ABS(#hyst))));
+	#instTONalUp(IN := #statAlarmUpperLimitSafe,
+	             PT := #delayTime);
+	#statAlarmUpperLimit := #instTONalUp.Q;
+	
+	// UPPER LIMIT WARNING EVALUATION
+	#statWarningUpperLimitSafe := (#run) AND
+	((#x > #warningHigh) OR
+	((#statWarningUpperLimit) AND (#x > #warningHigh - ABS(#hyst))));
+	#instTONwaUp(IN := #statWarningUpperLimitSafe,
+	             PT := #delayTime);
+	#statWarningUpperLimit := #instTONwaUp.Q;
+	
+	
+	// LOWER LIMIT WARNING EVALUATION
+	#statWarningLowerLimitSafe := (#run) AND
+	((#x < #warningLow) OR
+	((#statWarningLowerLimit) AND (#x < #warningLow + ABS(#hyst))));
+	
+	#instTONwaLo(IN := #statWarningLowerLimitSafe,
+	             PT := #delayTime);
+	#statWarningLowerLimit := #instTONwaLo.Q;
+	
+	// LOWER LIMIT ALARM  EVALUATION
+	#statAlarmLowerLimitSafe := (#run) AND
+	((#x < #alarmLow) OR
+	((#statAlarmLowerLimit) AND (#x < #alarmLow + ABS(#hyst))));
+	
+	#instTONalLo(IN := #statAlarmLowerLimitSafe,
+	             PT := #delayTime);
+	#statAlarmLowerLimit := #instTONalLo.Q;
+	
+	// set outputs
+	#alarmUpperLimit := #statAlarmUpperLimit;
+	#alarmLowerLimit := #statAlarmLowerLimit;
+	#warningUpperLimit := #statWarningUpperLimit;
+	#warningLowerLimit := #statWarningLowerLimit;
+	
+END_FUNCTION_BLOCK
+

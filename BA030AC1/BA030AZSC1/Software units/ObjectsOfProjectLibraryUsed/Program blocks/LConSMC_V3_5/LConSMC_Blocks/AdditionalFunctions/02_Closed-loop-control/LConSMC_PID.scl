@@ -1,0 +1,279 @@
+﻿FUNCTION_BLOCK "LConSMC_PID"
+{ S7_Optimized_Access := 'TRUE' ; Published := 'TRUE' }
+VERSION : 0.1
+//PID controller with actual value smoothing and optional D component in the actual value branch, the function block has to be called in a cyclic interrupt, e.g. OB30.  Function block ID: 1105
+   VAR_INPUT 
+      enable { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := FALSE;   // TRUE: Enable function block
+      reset { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := FALSE;   // TRUE: Reset function block
+      setpointValue { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 0.0;   // [-] Setpoint
+      actualValue { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 0.0;   // [-] Actual value
+      preControl { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 0.0;   // Controler pre control value
+      propGain { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 2.0;   // Proportional gain. A value of 0 disables the P-part
+      integTime { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 999.0;   // [ms] Time constant for integrator. A value of 0 disables the I-part
+      derivTime { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 0.0;   // [ms] Time constant for differentiator. A value of 0 disables the D-part
+      filterTime { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 10.0;   // [ms] PT1- Filter for actual value. A value of 0 disables the filter
+      upperLimit { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 100.0;   // Upper limit of the controller output
+      lowerLimit { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 0.0;   // Lower limit of the controller output
+      intSetValue { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 0.0;   // Integrator set value (if "setIntChannel" = TRUE)
+      holdIntChannel { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := FALSE;   // TRUE: Integrator is hold
+      setIntChannel { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := FALSE;   // TRUE: The output of the integrator is set to "intSetValue"
+      controlMode { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := FALSE;   // TRUE: D component active in actual value branch  FALSE: D component in controller deviation
+      deadBand { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 0.0;   // Value of the dead band (symmetrical). A value of 0 disables the deadband
+      actualValueFactor { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 1.0;   // Multiplicative scaling of the actual value
+      actualValueOffset { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 0.0;   // Additive scaling of the actual value
+      outValueFactor { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 1.0;   // Multiplicative scaling of the controller output
+      outValueOffset { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 0.0;   // Additive scaling of the controller output
+      tCycle { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Real := 0.0;   // [ms] Cycle time the function block is called
+   END_VAR
+
+   VAR_OUTPUT 
+      busy { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := FALSE;   // TRUE: Function block is active
+      error { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := FALSE;   // TRUE: An error occured
+      errorID { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : DWord := 16#0000_0000;   // Detailed error description
+      upperLimitReached { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := FALSE;   // TRUE: Upper limit reached
+      lowerLimitReached { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := FALSE;   // TRUE: Lower limit reached
+      deviationValue { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 0.0;   // Controller deviation after the deadband filter
+      pOutValue { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 0.0;   // P component output before limitation
+      iOutValue { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;   // I component output before limitation
+      dOutValue { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;   // D component output before limitation
+      outValue { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 0.0;   // Controller output after limitation and scaling
+   END_VAR
+
+   VAR 
+      statDeviationPrev { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 0.0;
+      statActPT1Prev { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 0.0;
+      statFirstRun { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := TRUE;
+      statError { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statBusy { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statUpperLimitReached { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statLowerLimitReached { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statErrorID { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : DWord;
+      statDiff { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statActualVal { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statTi { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statTd { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statEnableOld { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statY { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 0.0;
+      statPOutValue { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statIOutValue { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 0.0;
+      statDOutValue { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 0.0;
+      statOutValue { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statDeviationValue { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      instPT1 { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'; S7_SetPoint := 'False'} : "LConSMC_PT1";
+   END_VAR
+
+   VAR CONSTANT 
+      NO_ERROR : DWord := 16#0000_0000;
+   END_VAR
+
+
+BEGIN
+	REGION BLOCK INFO HEADER
+	  //===============================================================================
+	  // SIEMENS AG / (c)Copyright 2023
+	  //-------------------------------------------------------------------------------
+	  // Title:            LConSMC_PID
+	  // Comment/Function: PID controller
+	  // Library/Family:   LConSMC
+	  // Author:           APC Erlangen
+	  // Tested with:      FW 2.8
+	  // Engineering:      TIA Portal V16
+	  // Restrictions:     Needs to be called in a cyclic task
+	  // Requirements:     -
+	  //-------------------------------------------------------------------------------
+	  // Change log table:
+	  // Version  | Date       | Expert in charge       | Changes applied
+	  //----------|------------|------------------------|------------------------------
+	  // 02.00.00 | 2022-08-02 | APC Erlangen           | see LConSMC_aVersion 
+	  // 01.01.00 | 2016-11-17 | APC Erlangen           | adapted to styleguide; warning "variable might not be initialized" removed
+	  // 01.00.00 | 2012-07-10 | APC Erlangen           | Creation
+	  //===============================================================================
+	  //
+	END_REGION BLOCK INFO HEADER
+	
+	REGION DESCRIPTION
+	(/*
+	The function block is used to implement a universal PID controller that can be switched over to the P controller or I controller modes.
+	The D component can either be calculated in the actual value branch or in the system deviation.
+	The integrator can be set using the inputs intSetValue (setting value) and setIntChannel.
+	In addition, the instantaneous value of the integrator can be held using holdIntChannel (P controller).
+	Internally, the I component is limited, based on the controller output limits (“anti-windup”).
+	The integrator is set to zero at switch-on. All of the block parameters can be changed in operation.
+	The scaled and smoothed actual value (actualValue) is subtracted from the setpoint (setpointValue) corresponding to the following equation:
+	
+	$ deviationValue = [(actualValue \cdot actualValueFactor)+actualValueOffset] \cdot (1-e^{-\frac{t}{T}} \ )-setpointValue $
+	
+	The result is the system deviationValue (after the deadband) and is then multiplied with the proportional coefficient propGain.
+	The result is transferred to the integrator – and optionally to the D component.
+	The settable integral time integTime as well as the time constant of the D component derivTime (optional) define the controller behavior.
+	
+	* P component
+	
+	$ pOutValue_n = propGain * deviationValue_n $
+	
+	* I component
+	
+	$ iOutValue_n = iOutValue_{n-1} + (\frac{pOutValue_n + pOutValue_{n-1}}{2}\ ) \cdot \frac{cycleTime}{integTime}\ $
+	
+	The integrator includes "anti-windup" functionality, i.e. if the controller output is limited, the integrator cannot continue to integrate in the same direction.
+	The inputs setIntChannel and holdIntchannel can be used to set the integrator (intSetValue) – or manually hold it. The integrator is set to zero 
+	using reset or with a rising edge for enable.
+	
+	* D component (if activated)
+	
+	$ dOutValue_n = (pOutValue_n + pOutValue_{n-1}) \cdot \frac{derivTime}{cycleTime}\ $
+	
+	The controller output is first scaled and is then limited.
+	
+	{.pageWidth}
+	![PID Block diagram](PID_BlockDiagram.png)
+	
+	*/)
+	END_REGION
+	
+	IF (#enable AND NOT #statEnableOld) OR #reset THEN  //Function block activated or reset
+	    #statBusy       := TRUE;
+	    #statError      := FALSE;
+	    #statErrorID    := #NO_ERROR;
+	    #statFirstRun   := TRUE;
+	    #statUpperLimitReached := FALSE;                                         // upper limit of output reached
+	    #statLowerLimitReached := FALSE;                                         // lower limit of output reached
+	    #statDeviationValue := 0.0;                                         // error signal difference bteween setpoint and actual
+	    #statPOutValue  := 0.0;                                         // proportionality component
+	    #statIOutValue  := 0.0;                                         // integral component
+	    #statDOutValue  := 0.0;                                         // derivative component
+	    #statOutValue   := 0.0;                                         // manipulated value
+	    #statDeviationPrev  := 0.0;                                         // deviation value from previous cycle
+	    
+	    // PT1 filtering of input signal
+	    #instPT1(set           := TRUE,
+	             x             := #actualValue * #actualValueFactor + #actualValueOffset,
+	             setvalue      := #actualValue * #actualValueFactor + #actualValueOffset,
+	             smoothingTime := LREAL_TO_REAL(#filterTime),
+	             tCycle        := #tCycle,
+	             y             => #statActPT1Prev);
+	END_IF;
+	
+	IF (#statEnableOld = false) AND (#enable = false) THEN       //When FB not enabled then reset all outputs and return
+	    #busy := FALSE;
+	    #error := false;
+	    #errorID := #NO_ERROR;
+	    #upperLimitReached := false;
+	    #lowerLimitReached := false;
+	    #deviationValue := 0.0;
+	    #pOutValue := 0.0;
+	    #iOutValue := 0.0;
+	    #dOutValue := 0.0;
+	    #outValue := 0.0;
+	    RETURN;
+	END_IF;
+	
+	
+	IF #statFirstRun THEN
+	    #statFirstRun := false;
+	    #statDeviationPrev := 0.0;                                         //No previous values 
+	    #statActPT1Prev := 0.0;
+	END_IF;
+	
+	
+	
+	IF (#tCycle = 0.0) THEN
+	    #statError := TRUE;
+	    #statErrorID := "LCON_ERROR_PID_INVALID_CYCLE_TIME";                             // FB NOT running IN cyclic task (81)
+	END_IF;
+	
+	
+	IF (#lowerLimit > #upperLimit) THEN                                           // Defined limiting not valid, error
+	    #statError := TRUE;
+	    #statErrorID := "LCON_ERROR_PID_INVALID_CONFIGURATION";
+	END_IF;
+	
+	
+	IF NOT (#statError) AND #statBusy THEN                                                   // Determine integration and derivation time constant
+	    #statTd := ABS(#derivTime);
+	    #statTi := ABS(#integTime);
+	    
+	    // PT1 filtering of input signal
+	    #instPT1(set           := (#reset OR (#enable AND NOT #statEnableOld)),
+	             x             := #actualValue * #actualValueFactor + #actualValueOffset,
+	             setvalue      := #actualValue * #actualValueFactor + #actualValueOffset,
+	             smoothingTime := LREAL_TO_REAL(#filterTime),
+	             tCycle        := #tCycle,
+	             y             => #statY);
+	    
+	    IF ((#controlMode) AND (#statTd > 0.0)) THEN                                            //Derivative in actual value branch activation
+	        #statActualVal := #statY + (#statY - #statActPT1Prev) * #statTd / #tCycle;
+	    ELSE
+	        #statActualVal := #statY;                                                        //Td equal to zero
+	    END_IF;
+	    
+	    #statActPT1Prev := #statY;
+	    
+	    
+	    #statDeviationValue := "LConSMC_DeadBand"(x := (#setpointValue - #statActualVal),              // Evaluate dead-zone
+	                                              bandborder := #deadBand);
+	    
+	    #statPOutValue := #statDeviationValue * #propGain;                                       //Output for contolmode=true
+	    
+	    IF (#statTd > 0.0)                                                           // Calculate D-channel
+	        AND ((#statPOutValue + #preControl) < #upperLimit)
+	        AND ((#statPOutValue + #preControl) > #lowerLimit)
+	        AND NOT (#controlMode)
+	    THEN                                                                    // Disable derivative action if P-channel in limit
+	        #statDOutValue := (#statPOutValue - #statDeviationPrev) * #statTd / #tCycle;
+	    ELSE
+	        #statDOutValue := 0.0;
+	    END_IF;
+	    IF (#statTi > 0.0) THEN                                                      // Calculate I-channel
+	        IF (#setIntChannel) THEN                                            // Setting initial value for I-channel
+	            #statIOutValue := #intSetValue;
+	        ELSE
+	            #statDiff := ((#tCycle / #statTi) * ((#statPOutValue + #statDeviationPrev) * 0.5));// Integrating with trapeze rule
+	            IF #holdIntChannel THEN
+	                #statDiff := 0.0;
+	            END_IF;
+	            
+	            #statIOutValue := LIMIT(MX := #upperLimit - #statPOutValue,// Refresh I channel output
+	                                    IN := #statIOutValue + #statDiff,
+	                                    MN := #lowerLimit - #statPOutValue);
+	        END_IF;
+	    ELSE
+	        #statIOutValue := 0.0;
+	    END_IF;
+	    #statDeviationPrev := #statPOutValue;                                              // Save for next cycle
+	    
+	    #statOutValue := #statPOutValue + #statIOutValue + #statDOutValue + #preControl;             // Add together the output of different channels
+	    #statOutValue := #statOutValue * #outValueFactor + #outValueOffset;                // Normalize
+	    
+	    #statOutValue := "LConSMC_Limiter"(x := #statOutValue,
+	                                       UpperLimit := #upperLimit,
+	                                       LowerLimit := #lowerLimit,
+	                                       UpperLimitReached => #statUpperLimitReached,
+	                                       LowerLimitReached => #statLowerLimitReached);
+	ELSIF #statError THEN
+	    #statBusy := FALSE;
+	    #statUpperLimitReached := FALSE;
+	    #statLowerLimitReached := FALSE;
+	    #statDeviationValue := 0.0;
+	    #statPOutValue := 0.0;
+	    #statIOutValue := 0.0;
+	    #statDOutValue := 0.0;
+	    #statOutValue := 0.0;
+	END_IF;
+	
+	// set outputs
+	#outValue   := #statOutValue;
+	#pOutValue  := #statPOutValue;
+	#iOutValue  := #statIOutValue;
+	#dOutValue  := #statDOutValue;
+	#error      := #statError;
+	#errorID    := #statErrorID;
+	#busy       := #statBusy;
+	#deviationValue := #statDeviationValue;
+	#upperLimitReached := #statUpperLimitReached;
+	#lowerLimitReached := #statLowerLimitReached;
+	#statEnableOld := #enable;
+	
+	
+END_FUNCTION_BLOCK
+

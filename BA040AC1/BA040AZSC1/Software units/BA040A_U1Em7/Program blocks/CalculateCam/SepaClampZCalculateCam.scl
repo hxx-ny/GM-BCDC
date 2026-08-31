@@ -1,0 +1,172 @@
+﻿NAMESPACE Unit1.Em7
+FUNCTION_BLOCK "SepaClampZCalculateCam"
+{ S7_Optimized_Access := 'TRUE' ; Published := 'FALSE' }
+VERSION : 0.1
+   VAR_INPUT 
+      execute : Bool;
+      length : LReal;
+      heigth : LReal;
+   END_VAR
+
+   VAR_OUTPUT 
+      busy : Bool;
+      done : Bool;
+      error : Bool;
+      errorID : Word;
+   END_VAR
+
+   VAR_IN_OUT 
+      cam : DB_ANY;
+   END_VAR
+
+   VAR 
+      instMCInterpolateCam {InstructionName := 'MC_INTERPOLATECAM'; LibVersion := '9.0'; S7_SetPoint := 'False'} : Array[1..1] of MC_INTERPOLATECAM;
+      CalCamState { S7_SetPoint := 'True'} : DInt;
+      CalTrigger {InstructionName := 'R_TRIG'; LibVersion := '1.0'; S7_SetPoint := 'False'} : R_TRIG;
+   END_VAR
+
+   VAR_TEMP 
+      tempCam {InstructionName := 'TO_Cam_10k'; LibVersion := '9.0'} : REF_TO TO_Cam_10k;
+      tempFCount : DInt;
+      tempStartTime : LReal;
+      tempCycleTime : LReal;
+      tempResetTime : LReal;
+      tempTime : Array[1..50] of LReal;
+      tempPos : Array[1..50] of LReal;
+      tempVel : Array[1..50] of LReal;
+      tempAcc : Array[1..50] of LReal;
+      tempJerk : Array[1..50] of LReal;
+      tempX : Array[1..50] of LReal;
+      tempCalAcc : Array[1..50] of LReal;
+      tempCalVel : Array[1..50] of LReal;
+      tempCalPos : Array[1..50] of LReal;
+      tempA3 : Array[1..50] of LReal;
+      tempA2 : Array[1..50] of LReal;
+      tempA1 : Array[1..50] of LReal;
+      tempA0 : Array[1..50] of LReal;
+      tempHypotenuse : LReal;
+      tempStartRad : LReal;
+      tempRealTheta : LReal;
+      tempStartDeg : LReal;
+   END_VAR
+
+   VAR CONSTANT 
+      CC_ERROR : DInt := 99;
+      CC_IDLE : DInt := 0;
+      CC_RESET : DInt := 12;
+      CC_CALCULATE : DInt := 1;
+      CC_INTERPOLATE : DInt := 11;
+      CC_DONE : DInt := 13;
+      pi : LReal := 3.1415926536;
+   END_VAR
+
+
+BEGIN
+	REGION Axis Config
+	    // Statement section REGION
+	    #tempCam ?= #cam;
+	END_REGION
+	
+	REGION Alram Check
+	    IF #instMCInterpolateCam[1].Error THEN
+	        #CalCamState := #CC_ERROR;
+	        #errorID := #instMCInterpolateCam[1].ErrorId;
+	    END_IF;
+	END_REGION
+	
+	REGION #CalCamState Check
+	    IF NOT #execute THEN
+	        #CalCamState := #CC_IDLE;
+	    END_IF;
+	END_REGION
+	
+	REGION CalCalTrigger Check
+	    #CalTrigger(CLK := #execute);
+	    IF #CalTrigger.Q THEN
+	        #CalCamState := #CC_RESET;
+	    END_IF;
+	END_REGION
+	REGION CalculateCam
+	    CASE #CalCamState OF
+	        #CC_IDLE:  // Statement section case 1
+	            ;
+	        #CC_RESET:
+	            // Point reset
+	            #tempFCount := 0;
+	            FOR #tempFCount := 1 TO 10000 DO
+	                #tempCam^.Point[#tempFCount].x := 0.0;
+	                #tempCam^.Point[#tempFCount].y := 0.0;
+	                #tempCam^.ValidPoint[#tempFCount] := FALSE;
+	            END_FOR;
+	            // segment reset
+	            #tempFCount := 0;
+	            FOR #tempFCount := 1 TO 50 DO
+	                #tempCam^.Segment[#tempFCount].a0 := 0.0;
+	                #tempCam^.Segment[#tempFCount].a1 := 0.0;
+	                #tempCam^.Segment[#tempFCount].a2 := 0.0;
+	                #tempCam^.Segment[#tempFCount].a3 := 0.0;
+	                #tempCam^.Segment[#tempFCount].a4 := 0.0;
+	                #tempCam^.Segment[#tempFCount].a5 := 0.0;
+	                #tempCam^.Segment[#tempFCount].a6 := 0.0;
+	                #tempCam^.Segment[#tempFCount].sineAmplitude := 0.0;
+	                #tempCam^.Segment[#tempFCount].sinePeriod := 0.0;
+	                #tempCam^.Segment[#tempFCount].sinePhase := 0.0;
+	                #tempCam^.Segment[#tempFCount].xmax := 0.0;
+	                #tempCam^.Segment[#tempFCount].xmin := 0.0;
+	                #tempCam^.ValidSegment[#tempFCount] := FALSE;
+	            END_FOR;
+	            #CalCamState := #CC_CALCULATE;
+	            
+	        #CC_CALCULATE:
+	            #tempHypotenuse := SQRT_LREAL(#length * #length + #heigth * #heigth);
+	            #tempStartRad := ACOS_LREAL(#length / #tempHypotenuse);
+	            #tempStartDeg := #tempStartRad * 180.0 / #pi;
+	
+	            
+	            #tempFCount := 0;
+	            FOR #tempFCount := 1 TO 9001 DO
+	                #tempCam^.Point[#tempFCount].x := 180.0 / 9000.0 * DINT_TO_LREAL(#tempFCount - 1);
+	                #tempRealTheta := #tempCam^.Point[#tempFCount].x;
+	                
+	                IF #tempRealTheta <= 90.0 THEN
+	                    #tempCam^.Point[#tempFCount].y := #tempHypotenuse * (SIN_REAL((#tempStartDeg + #tempRealTheta) * #pi / 180.0) - SIN_REAL(#tempStartDeg * #pi / 180.0));
+	                ELSE
+	                    IF #tempRealTheta <= 180.0 AND #tempRealTheta > 90.0 THEN
+	                        #tempCam^.Point[#tempFCount].y := #tempHypotenuse * (SIN_REAL((#tempStartDeg + (180.0 - #tempRealTheta)) * #pi / 180.0) - SIN_REAL(#tempStartDeg * #pi / 180.0));
+	                    END_IF;
+	                END_IF;
+	                #tempCam^.ValidPoint[#tempFCount] := TRUE;
+	                
+	            END_FOR;
+	            #CalCamState := #CC_INTERPOLATE;
+	        #CC_INTERPOLATE:
+	            IF #instMCInterpolateCam[1].Done
+	            THEN
+	                #CalCamState := #CC_DONE;
+	            END_IF;
+	            
+	        #CC_DONE:
+	            ;
+	            
+	        #CC_ERROR:
+	            ;
+	    END_CASE;
+	    
+	END_REGION
+	REGION Instance
+	    
+	    #instMCInterpolateCam[1](Cam := #tempCam^,
+	                             Execute := #CalCamState = #CC_INTERPOLATE);
+	    
+	    
+	END_REGION
+	
+	REGION Outputs
+	    #busy := #CalCamState = #CC_RESET OR #CalCamState = #CC_CALCULATE OR #CalCamState = #CC_INTERPOLATE;
+	    #error := #CalCamState = #CC_ERROR;
+	    #done := #CalCamState = #CC_DONE;
+	END_REGION
+	
+END_FUNCTION_BLOCK
+END_NAMESPACE
+

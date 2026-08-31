@@ -1,0 +1,49 @@
+﻿FUNCTION "LER_SoftCam_Interface_FC_PLC" : Void
+{ S7_Optimized_Access := 'TRUE' ; Published := 'TRUE' }
+VERSION : 0.1
+   VAR_INPUT 
+      range : LReal;
+      actualPosition : LReal;
+      configSetPosition : Array[0..15] of "LBC_typeAxis64PosSetPosition";
+   END_VAR
+
+   VAR_IN_OUT 
+      softCam : "LER_typeSoftCamInterface";
+   END_VAR
+
+   VAR_TEMP 
+      tempLoopCount : Int;
+      tempPostivePos : LReal;
+      tempNegativePos : LReal;
+   END_VAR
+
+
+BEGIN
+	REGION Call_SoftCam
+	    // Target & Actual Position Mapping
+	    #softCam.ActualPosition := #actualPosition;
+	    
+	    FOR #tempLoopCount := 0 TO 15 DO
+	        // Result Initialize
+	        #softCam.position[#tempLoopCount].ProcessValue.inPos := FALSE;
+	        #softCam.position[#tempLoopCount].ProcessValue.isBefore := FALSE;
+	        #softCam.position[#tempLoopCount].ProcessValue.isAfter := FALSE;
+	        
+	        // Set Pos Mapping
+	        #softCam.position[#tempLoopCount].ProcessValue.SetPos := #configSetPosition[#tempLoopCount].position;
+	        
+	        // Postive PV & Negative PV Mapping
+	        #tempPostivePos := #configSetPosition[#tempLoopCount].position + #range;
+	        #tempNegativePos := #configSetPosition[#tempLoopCount].position - #range;
+	        
+	        IF #tempNegativePos <= #softCam.ActualPosition AND #tempPostivePos >= #softCam.ActualPosition THEN
+	            #softCam.position[#tempLoopCount].ProcessValue.inPos := TRUE;
+	        ELSIF #tempNegativePos > #softCam.ActualPosition THEN
+	            #softCam.position[#tempLoopCount].ProcessValue.isBefore := TRUE;
+	        ELSIF #tempPostivePos < #softCam.ActualPosition THEN
+	            #softCam.position[#tempLoopCount].ProcessValue.isAfter := TRUE;
+	        END_IF;
+	    END_FOR;
+	END_REGION
+END_FUNCTION
+

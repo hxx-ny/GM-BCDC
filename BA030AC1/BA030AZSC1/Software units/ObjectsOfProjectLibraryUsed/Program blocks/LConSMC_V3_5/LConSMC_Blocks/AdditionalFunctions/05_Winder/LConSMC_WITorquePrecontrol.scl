@@ -1,0 +1,389 @@
+﻿FUNCTION_BLOCK "LConSMC_WITorquePrecontrol"
+{ S7_Optimized_Access := 'TRUE' ; Published := 'TRUE' }
+VERSION : 0.1
+//Torque pre-control calculation for winder. The function block has to be called in a cyclic task.  Function block ID: 4102 
+   VAR_INPUT 
+      enable { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := FALSE;   // TRUE: Enable function block
+      torqueOn { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := FALSE;   // TRUE: Calculation of torque and intertia values  FALSE: Calculation of intertia values
+      metricUnits { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := TRUE;   // TRUE: Use metric system [m] / [m/min] / [m/s^2] / [N]  FALSE: Use angloamerican system [inch] / [ft/min] / [ft/s^2] / [Lbf]
+      typeOfWinder { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Int := 0;   // Definition of winding direction  0: Rewind from above  1: Rewind from below  2: Unwind from above  3: Unwind from below
+      drivespeed { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 0.0;   // [RPM] Drive speed for the friction characteristic
+      lineSpeed { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;   // [m/min or ft/min] Web velocity
+      lineAcceleration { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 0.0;   // [m/s^2]/[ft/s^2] Web acceleration
+      diamActVal { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 0.0;   // [m] / [inch] Diameter of sectional drive
+      tensionSetpoint { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 0.0;   // [N] / [lbf] Tension setpoint
+      additiveTorque { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;   // [Nm or Lbf ft] Additive torque value on drive side for rewinder (.e.g. compensation of breakawy torque). The torque is in rewinding directio and only active of "typeOfWinder" = 0/1
+      density { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;   // [kg/m^3 or lb / ft^3 ] Material density
+      diamMin { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;   // [m or inch] Minimum diameter
+      diamMax { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;   // [m or inch] Maximum diameter
+      width { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;   // [m or inch] Material width
+      fillFactor { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;   // Material fill factor (1.0-100%)  Scaling factor for calculation of the material intertia (e.g. no solid material is winded)
+      JFix { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;   // [kgm^2] / [lbft^2] Inertia on drive side (without drive, e.g. gear box)
+      JMandrel { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;   // [kgm^2] / [lbft^2] Inertia on load side (e.g. mandrel)
+      JMot { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;   // [kgm^2] / [lbft^2] Drive inertia
+      gearRatio { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;   // Gear ratio
+      frictionAdjustment { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;   // Multiplicative adaption factor for friction torque (1.0 = 100%)
+      tensionAdjustment { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;   // Multiplicative adaption factor for tension torque (1.0 = 100%)
+      accelerationAdjustment { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 1.0;   // Multiplicative adaption factor for acceleration torque from web acceleration (1.0 = 100%)
+      dDdTAdjustment { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;   // Multiplicative adaption factor for acceleration torque based on diameter change (1.0 = 100%)
+      sizeOfArray { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Int := 20;   // Number of breakpoints that should be used for the friction characteristic
+      xn_speedValues { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : "LConSMC_typeBreakPointTable" := ([20(0.0)]);   // Numer of breakpoints that should be used from the friction characteristic
+      yn_torqueValues { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : "LConSMC_typeBreakPointTable" := ([20(0.0)]);   // Speed breakpoints for friction characteristic
+      tCycle { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;   // [ms] Cycle time the function block is called
+   END_VAR
+
+   VAR_OUTPUT 
+      busy { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;   // TRUE : Function block is executed
+      error { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := FALSE;   // TRUE: Function block has detected an error
+      errorID { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : DWord := 16#0000_0000;   // Detailed error description
+      totalinertia { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 0.0;   // [kgm^2] / [lbft^2] Total inertia on the drive side
+      mass { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 0.0;   // [kg or lbft] Mass of the material
+      preCtrlMotor { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 0.0;   // [Nm] / [Lbf ft] Drive torque from friction and acceleration
+      totalTorquePreCtrl { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 0.0;   // [Nm] / [Lbf ft] Total torque precontrol value on drive side
+      variableInertia { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 0.0;   // [kgm^2 or lbft /s^2] Inertia of the material on drive side
+      maxInertia { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 0.0;   // [kgm^2 or lbft /s^2] Maximum interia (at maximum diameter "diamMax")
+      tensionTorque { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 0.0;   // [Nm] / [Lbf ft] Tension torque on drive side
+   END_VAR
+
+   VAR 
+      instTableChar { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'; S7_SetPoint := 'False'} : "LConSMC_TableChar";
+      statAlpha { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statMfrict { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statMAccel { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statDiamActVal2 { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statDiamMin2 { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statDiamMax2 { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statGearRatio2 { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statWidth2 { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statSignWinderspeed { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Int;
+      statEnableold { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statBusy { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := FALSE;
+      statMdDdt { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statDiamActOld { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statMConstRewinder { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+   END_VAR
+
+   VAR CONSTANT 
+      PI : Real := 3.141592;
+      NO_ERROR : DWord := 16#0000_0000;
+   END_VAR
+
+
+BEGIN
+	REGION BLOCK INFO HEADER
+	  //===============================================================================
+	  // SIEMENS AG / (c)Copyright 2023
+	  //-------------------------------------------------------------------------------
+	  // Title:            LConSMC_WITorquePrecontrol
+	  // Comment/Function: Torque Precontrol Calculation for axial winder
+	  // Library/Family:   LConSMC
+	  // Author:           APC Erlangen
+	  // Tested with:      FW 2.8
+	  // Engineering:      TIA Portal V16
+	  // Restrictions:     Needs to be called in a cyclic OB
+	  // Requirements:     -
+	  //-------------------------------------------------------------------------------
+	  // Change log table:
+	  // Version  | Date       | Expert in charge       | Changes applied
+	  //----------|------------|------------------------|------------------------------
+	  // 02.01.00 | 2022-02-22 | APC Erlangen           | New parameter "winderConfig.torquePrecontrolConfig.rewinderTorqueAdditive" to add a constant torque value to the torque precontrol / torque limit (e.g. compensate static friction) (*c_00042*)
+	  // 02.00.00 | 2021-06-21 | APC Erlangen           | New inputs "tCycle" and "dDdTAdjustment"
+	  //                                                  New functionality to precontrol acceleration torque based on diameter change (*c_00035*)
+	  // 01.03.00 | 2019-09-05 | APC Erlangen           | correct calculation of tension torque in anglo american units
+	  // 01.02.00 | 2018-07-20 | APC Erlangen           | additional input "accelerationAdjustment"
+	  // 01.01.00 | 2016-11-17 | APC Erlangen           | adapted to styleguide; warning "variable might not be initialized" removed
+	  // 01.00.00 | 2012-08-06 | APC Erlangen           | Creation
+	  //===============================================================================
+	END_REGION BLOCK INFO HEADER
+	
+	REGION DESCRIPTION
+	(/*
+	The block determines the following: 
+	* The variable moment of inertia for Kp adaptation of the speed and tension controller 
+	* The pre-controlled torque for Δv/Δt and ΔD/Δt  
+	  
+	The torque pre-control outputs the following torque setpoints to pre-control the winder drive:
+	* A torque setpoint as a function of the acceleration setpoint of the machine/system ramp-function generator and the inertia 
+	* A torque setpoint as a function of the changing diameter and the current line speed. This precontrol is for example needed if thick material wound on a thin sleeve after a flying roll change. As a result of the fast-changing diameter at constant web velocity high acceleration values can occur.
+	* Friction torque setpoint is generated depending on the shaft speed of the winder using a characteristic.
+	* Tension torque based on the tension setpoint and the diameter  
+	* Constant torque offset for rewinders (e.g. to compensate breakaway torque)
+	  
+	To quickly compensate for disturbances and to implement the closed-loop control in the first place (for a replacing speed control),
+	the torque to be provided from the drive must be specified as accurately as possible.
+	Depending on the control type, this is either realized additively after the speed controller or by dynamically adjusting the torque limits.
+	In both cases, starting from the weight of the wound material, the appropriate torque must be calculated using its moment of inertia (wound material) and transferred to the drive.
+	
+	NOTE
+	:    The precise setting of the compensation is especially important for indirect tension control. 
+	This is so that the torque-generating current emulates, as far as possible, the material tension.
+	
+	---
+	
+	#### Calculations
+	
+	* Mass of the wound material
+	
+	$ Mass = \frac{\pi \cdot Density \cdot width \cdot (diamActVal^2 \cdot diamMin^2)}{4}\ $
+	
+	* Moment of inertia of the wound material
+	
+	$ VariableInertia = Mass \cdot \frac{diamActVal^2 + diamMinVal^2}{8 \cdot GearRatio^2}\ $
+	
+	* Total moment of inertia
+	
+	$ TotalInertia = \frac{J_{Mandrel}}{GearRatio^2} + VariableInertia + J_{Mot} + J_{Fix} $
+	
+	* Maximum mass of the wound material
+	
+	$ Mass_{Max} = \frac{\pi \cdot Density \cdot width \cdot (diamMax^2 - diamMin^2)}{4}\ $
+	
+	* Maximum moment of inertia of the wound material
+	
+	$ VariableInertia_{Max} = Mass_{Max} \cdot \frac{diamMax^2 + diamMin^2}{8 \cdot GearRatio^2}\ $
+	
+	* Maximum moment of inertia
+	
+	$ TotalInertia = \frac{J_{Mandrel}}{GearRatio^2}\ + VariableInertia + J_{Mot} + J_{Fix} $
+	
+	* Angular acceleration of the roll
+	
+	$ \alpha = 2 \cdot \frac{lineAcceleration \cdot GearRatio}{diamActVal}\ $
+	
+	* Acceleration torque (based on diameter change)
+	
+	$ M_{dDdT} = \frac{2 \cdot TotalInertia \cdot GearRatio \cdot lineSpeed}{\frac{tCycle}{1000}\ }\ \cdot (\frac{1}{diamAct_n}\ - \frac{1}{diamAct_{n-1}}\ ) \cdot dDdtAdjustment  $
+	
+	* Acceleration torque
+	
+	$ M_{accel} = TotalInertia \cdot \alpha \cdot accelerationAdjustment $
+	
+	* Friction torque
+	
+	$ M_{fric} = f(n) \cdot frictionAdjustment $
+	
+	* Tension torque
+	
+	$ M_{tension} = \frac{tensionSetpoint \cdot tensionAdjustment \cdot diamActVal}{2 \cdot GearRatio}\ $
+	
+	  
+	This friction torque is internally determined using the function block LConSMC_TableChar.
+	The user is responsible for providing valid and sensible values in the appropriate data fields.
+	If the factor FrictionAdjustment is set to 0.0, LConSMC_TableChar is not called and therefore a frictional torque is not added.
+	The pre-control torque of the motor, the sum of all pre-control torques and the tension torque are calculated depending on the winder type.
+	The total torque is always the sum of the preCtrlMotor and tensionTorque.
+	The winding mode is always defined assuming a positive line speed.
+	If the leading value becomes negative the winding mode will be inverted automatically (a rewinder becomes an unwinder and vice versa).
+	The same applies for winding from above and from below. This inversion is automatic.
+	
+	NOTE
+	:    The optional additive torque value (e.g. to compensate a breakaway torque for rewinders) is directly effective on the drive side always in rewinding direction
+	
+	---
+	
+	#### Winding modes
+	
+	* Rewind from above
+	
+	$ M_{preCtrlMotor} = M_{acc} - M_{dDdt} + M_{fric} + M_{add} \qquad M_{TensionTorque} = M_{TensionTorque} $
+	
+	* Rewind from below
+	
+	$ M_{preCtrlMotor} = -M_{acc} + M_{dDdt} + M_{fric} - M_{add} \qquad M_{TensionTorque} = -M_{TensionTorque} $
+	
+	* Unwind from above
+	
+	$ M_{preCtrlMotor} = M_{acc} + M_{dDdt} + M_{fric} \qquad M_{TensionTorque} = -M_{TensionTorque} $
+	
+	* Unwind from below
+	
+	$ M_{preCtrlMotor} = -M_{acc} - M_{dDdt} + M_{fric} \qquad M_{TensionTorque} = M_{TensionTorque} $
+	
+	*/)
+	END_REGION
+	
+	#preCtrlMotor := 0.0;
+	#totalTorquePreCtrl := 0.0;
+	#tensionTorque := 0.0;
+	#totalinertia := 0.0;
+	#variableInertia := 0.0;
+	#maxInertia := 0.0;
+	#mass := 0.0;
+	
+	
+	IF #enable AND NOT (#statEnableold) THEN                                           // Rising edge init
+	    #instTableChar(enable := false,
+	                   x := LREAL_TO_REAL((ABS(#drivespeed))),
+	                   sizeOfArray := #sizeOfArray,
+	                   xn := #xn_speedValues,
+	                   yn := #yn_torqueValues);
+	    
+	    #error := (#gearRatio <= 0.0)
+	    OR (#density < 0.0)
+	    OR (#diamMin <= 0.0)
+	    OR (#diamMax <= #diamMin)
+	    OR (#width < 0.0)
+	    OR (#fillFactor <= 0.0)
+	    OR (#JFix < 0.0)
+	    OR (#JMandrel < 0.0)
+	    OR (#JMot < 0.0)
+	    OR #typeOfWinder < 0
+	    OR #typeOfWinder > 3;
+	    
+	    IF #error THEN
+	        #statBusy := FALSE;
+	        #errorID := "LCON_ERROR_WI_TORQUE_PRECONTROL_INVALID_CONFIGURATION";   // One or more Configuration Data are wrong or not plausible
+	    ELSIF #tCycle < 0.0 THEN
+	        #statBusy := FALSE;
+	        #error := TRUE;
+	        #errorID :="LCON_ERROR_WI_TORQUE_PRECONTROL_INVALID_CYCLE_TIME";   // Invalid cycle time
+	    ELSE
+	        #statBusy := TRUE;
+	        #errorID := #NO_ERROR;
+	    END_IF;
+	    #statEnableold := #enable;
+	    #statDiamActOld := #diamActVal;
+	    RETURN;
+	END_IF;
+	
+	IF NOT (#enable) AND #statEnableold THEN            // falling edge, disable
+	    #instTableChar(enable := false,
+	                   x := LREAL_TO_REAL((ABS(#drivespeed))),
+	                   sizeOfArray := #sizeOfArray,
+	                   xn := #xn_speedValues,
+	                   yn := #yn_torqueValues);
+	    
+	    #statBusy := FALSE;
+	    #error := FALSE;
+	    #errorID := #NO_ERROR;
+	    #statEnableold := #enable;
+	    RETURN;
+	END_IF;
+	
+	
+	IF #statBusy THEN
+	    IF (#diamActVal <= 0.0) OR (#diamActVal < #diamMin) THEN
+	      #errorID := "LCON_ERROR_WI_TORQUE_PRECONTROL_INVALID_INPUT";                             // Calculated diameter Value is not plausible
+	        #error := TRUE;
+	        #statBusy := FALSE;
+	    END_IF;
+	    
+	    IF #metricUnits THEN
+	        #statDiamActVal2 := #diamActVal * #diamActVal;
+	        #statDiamMin2 := #diamMin * #diamMin;
+	        #statDiamMax2 := #diamMax * #diamMax;
+	        #statWidth2 := #width;
+	    ELSE
+	        #statDiamActVal2 := #diamActVal * #diamActVal / 144.0;                     // Conversion from inches to Foot
+	        #statDiamMin2 := #diamMin * #diamMin / 144.0;
+	        #statDiamMax2 := #diamMax * #diamMax / 144.0;
+	        #statWidth2 := #width / 12.0;
+	    END_IF;
+	    //SQUARE OF GEAR RATIO
+	    #statGearRatio2 := #gearRatio * #gearRatio;
+	    //CALCULATION OF MASS
+	    #mass := (#statDiamActVal2 - #statDiamMin2) / 4.0                     // mass = PI * width * fillFactor * density * (diamActVal**2 - diamMin **2) / 4.0 [m]
+	    * (#density * #statWidth2)
+	    * (#fillFactor * #PI);
+	    
+	    // CALCULATION OF VARIABLE INERTIA                       
+	    #variableInertia := (#statDiamActVal2 + #statDiamMin2) / 8.0
+	    * (#mass / #statGearRatio2);                                 // totalinertia = mass * (diamActVal**2 + diamMin **2) / 8.0  
+	    
+	    //CALCULATION OF TOTAL INERTIA                        
+	    #totalinertia := #variableInertia                                      // totalInertia = ( jV + jMandrel + jFix ) / gearRatio**2  + jMot
+	    + #JMandrel / #statGearRatio2
+	    + #JMot
+	    + #JFix;
+	    //CALCULATION OF MAX INERTIA                          
+	    #maxInertia := ((((#statDiamMax2 - #statDiamMin2) / 4.0
+	    * #density * #statWidth2 * #fillFactor * #PI)
+	    * (#statDiamMax2 + #statDiamMin2) / 8.0) + #JMandrel) / #statGearRatio2
+	    + #JMot
+	    + #JFix;
+	    
+	    
+	    IF #torqueOn THEN
+	        
+	        // CONSTANT TORQUE FOR REWINDER (*c_00042*)
+	        IF #typeOfWinder = "LCON_TYPE_OF_WINDER_REWIND_FROM_BELOW" OR #typeOfWinder = "LCON_TYPE_OF_WINDER_REWIND_FROM_ABOVE" THEN
+	            #statMConstRewinder := ABS(#additiveTorque);
+	        ELSE
+	            #statMConstRewinder := 0.0;
+	        END_IF;
+	        
+	        // ACCELERATION PRECONTROL
+	        IF #metricUnits THEN
+	            #statAlpha := (#lineAcceleration * #gearRatio / (#diamActVal / 2.0));    // alpha = (acceleration * gearRatio) / ( diamActVal / 2.0 ) [ 1/s ]
+	        ELSE
+	            #statAlpha := (#lineAcceleration * #gearRatio / (#diamActVal / 2.0 / 12.0));    // alpha = (acceleration * gearRatio) / ( diamActVal / 2.0 ) [ 1/s]  
+	        END_IF;
+	        #statMAccel := #statAlpha * #totalinertia * #accelerationAdjustment;      // [Nm / lbf ft]
+	        
+	        // FRICTION CONTROL
+	        IF #drivespeed <> 0.0 THEN
+	            #statSignWinderspeed := LREAL_TO_INT(#drivespeed / ABS(#drivespeed));
+	        ELSE
+	            #statSignWinderspeed := 0;
+	        END_IF;
+	        
+	        IF (#frictionAdjustment <> 0.0) THEN
+	            #instTableChar(enable := true,
+	                           x := LREAL_TO_REAL((ABS(#drivespeed))),
+	                           sizeOfArray := #sizeOfArray,
+	                           xn := #xn_speedValues,
+	                           yn := #yn_torqueValues);
+	            
+	            IF (#instTableChar.error) THEN                                            // If there's no error yet or its prio is below new prio
+	                #statMfrict := 0.0;
+	                #error := TRUE;
+	                #errorID := #instTableChar.errorID;
+	            ELSE
+	                #statMfrict := #instTableChar.y * #frictionAdjustment * #statSignWinderspeed;    // [Nm / lbf ft]
+	            END_IF;
+	        ELSE
+	            #statMfrict := 0.0;
+	        END_IF;
+	        
+	        // dD/dT PRECONTROL (*c_00035*)
+	        IF #dDdTAdjustment > 0.0 THEN
+	            IF #metricUnits THEN
+	                #statMdDdt := ((2.0 * #gearRatio * #totalinertia * #lineSpeed / 60.0) / (#tCycle / 1000.0)) * (1.0 / #diamActVal - 1.0 / #statDiamActOld);
+	            ELSE
+	                #statMdDdt := ((2.0 * #gearRatio * #totalinertia * #lineSpeed / 60.0) / (#tCycle / 1000.0)) * (1.0 / (#diamActVal / 12.0) - 1.0 / (#statDiamActOld / 12.0));
+	            END_IF;
+	            #statMdDdt *= #dDdTAdjustment;
+	        ELSE
+	            #statMdDdt := 0.0;
+	        END_IF;
+	        #statDiamActOld := #diamActVal;
+	        
+	        // TENSION PRECONTROL
+	        IF #metricUnits THEN
+	            #tensionTorque := ((#tensionSetpoint * #tensionAdjustment) * (#diamActVal / 2.0)) / #gearRatio;     // [M] Motor torque (Nm) required for tension =[tension(N) * radius(M)/gear ratio i.e.T=F*r]
+	        ELSE
+	            #tensionTorque := ((#tensionSetpoint * #tensionAdjustment) * (#diamActVal / 2.0 / 12.0)) / #gearRatio;  // [lbf ft]
+	            //#tensionTorque := (((#tensionSetpoint * #tensionAdjustment) * 4.448222) * ((#diamActVal / 2.0) * 0.0254) / #gearRatio);
+	        END_IF;
+	        
+	        // TORQUE ADDITION
+	        // Invert MAccel for _BELOW
+	        IF #typeOfWinder = "LCON_TYPE_OF_WINDER_REWIND_FROM_BELOW" OR #typeOfWinder = "LCON_TYPE_OF_WINDER_UNWIND_FROM_BELOW" THEN
+	            #statMAccel := - #statMAccel;
+	            #statMdDdt := - #statMdDdt;
+	        END_IF;
+	        // Invert tensionTorque
+	        IF #typeOfWinder = "LCON_TYPE_OF_WINDER_REWIND_FROM_BELOW" OR #typeOfWinder = "LCON_TYPE_OF_WINDER_UNWIND_FROM_ABOVE" THEN
+	            #tensionTorque := - #tensionTorque;
+	            #statMConstRewinder := - #statMConstRewinder;
+	        END_IF;
+	        #preCtrlMotor := #statMAccel + #statMfrict + #statMdDdt;                        // Friction, acceleration and dD/dt compensation
+	        #totalTorquePreCtrl := #preCtrlMotor + #tensionTorque + #statMConstRewinder;    // Add tension torque and constant torque
+	    END_IF;
+	END_IF;
+	
+	// set outputs
+	#busy := #statBusy;
+	
+END_FUNCTION_BLOCK
+

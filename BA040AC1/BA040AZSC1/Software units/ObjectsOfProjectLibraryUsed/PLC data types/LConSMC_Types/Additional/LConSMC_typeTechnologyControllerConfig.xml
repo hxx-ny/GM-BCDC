@@ -1,0 +1,260 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Document>
+  <Engineering version="V20" />
+  <SW.Types.PlcStruct ID="0">
+    <AttributeList>
+      <Access>Published</Access>
+      <Interface><Sections xmlns="http://www.siemens.com/automation/Openness/SW/Interface/v5">
+  <Section Name="None">
+    <Member Name="x1" Datatype="LReal">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">Stützpunkt 1 - X-Achse für P-Adaption  (Wenn x1=x2 ist die Adaption deaktiviert)</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">Breakpoint 1 x-axis for P-adaption (if x1=x2 the adaption is deactivated)</MultiLanguageText>
+      </Comment>
+      <StartValue>0.0</StartValue>
+    </Member>
+    <Member Name="Kp1" Datatype="LReal">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">Stützpunkt 1 - P-Verstärkung für P-Adaption (Wenn x1=x2 ist die Adaption deaktiviert)</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">Breakpoint 1 P-gain for P-adaption (if x1=x2 the adaption is deactivated)</MultiLanguageText>
+      </Comment>
+      <StartValue>1.0</StartValue>
+    </Member>
+    <Member Name="x2" Datatype="LReal">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">Stützpunkt 2 - X-Achse für P-Adaption (Wenn x1=x2 ist die Adaption deaktiviert)</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">Breakpoint 2 x-axis for P-adaption (if x1=x2 the adaption is deactivated)</MultiLanguageText>
+      </Comment>
+    </Member>
+    <Member Name="Kp2" Datatype="LReal">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">Stützpunkt 2 - P-Verstärkung für P-Adaption (Wenn x1=x2 ist die Adaption deaktiviert)</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">Breakpoint 2 P-gain for P-adaption (if x1=x2 the adaption is deactivated)</MultiLanguageText>
+      </Comment>
+      <StartValue>1.0</StartValue>
+    </Member>
+    <Member Name="KpAdaptionValue" Datatype="LReal">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">Adaptionswert x-Achse für die Adaption der P-Verstärkung des Reglers</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">Adaption value for P-Gain adaption of the controller</MultiLanguageText>
+      </Comment>
+      <StartValue>0.0</StartValue>
+    </Member>
+    <Member Name="integTime" Datatype="LReal">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">[ms] Integrationszeitkonstante  Ein Wert von 0 deaktiviert den I-Anteil</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">[ms] Time constant for integrator. A value of 0 disables the I-part</MultiLanguageText>
+      </Comment>
+      <StartValue>2000.0</StartValue>
+    </Member>
+    <Member Name="derivTime" Datatype="LReal">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">[ms] Differentationszeitkonstante  Ein Wert von 0 deaktiviert den D-Anteil</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">[ms] Time constant for differentiator. A value of 0 disables the D-part</MultiLanguageText>
+      </Comment>
+      <StartValue>0.0</StartValue>
+    </Member>
+    <Member Name="derivControlMode" Datatype="Bool">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">TRUE: D-Komponente aktiv im Istwert-Pfad  FALSE: D-Komponente aktiv in der Reglerabweichung</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">TRUE: D component active in actual value branch  FALSE: D component in controller deviation</MultiLanguageText>
+      </Comment>
+      <StartValue>FALSE</StartValue>
+    </Member>
+    <Member Name="setNominalValue" Datatype="LReal">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">Normierungswert für die Hochlaufzeit des Sollwertkanals  (Rampen von 0 auf "setNominalValue" in "setRampTime")</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">Reference value for ramp time of setpoint channel (Ramp from 0 to "setNominalValue" in "setRampTime")</MultiLanguageText>
+      </Comment>
+      <StartValue>100.0</StartValue>
+    </Member>
+    <Member Name="setRampTime" Datatype="LReal">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">[ms] Rampenzeit für Sollwertkanal</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">[ms] Ramp time for setpoint ramp generator</MultiLanguageText>
+      </Comment>
+      <StartValue>1000.0</StartValue>
+    </Member>
+    <Member Name="filterTime" Datatype="LReal">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">[ms] PT1 - Istwertfilter  Ein Wert von 0 deaktiviert den Filter</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">[ms] PT1- Filter for actual value. A value of 0 disables the filter</MultiLanguageText>
+      </Comment>
+      <StartValue>10.0</StartValue>
+    </Member>
+    <Member Name="intSetValue" Datatype="LReal">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">Setzwert des Integrators (wenn "setIntChannel" = TRUE)</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">Integrator set value (if "setIntChannel" = TRUE)</MultiLanguageText>
+      </Comment>
+      <StartValue>0.0</StartValue>
+    </Member>
+    <Member Name="setIntChannel" Datatype="Bool">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">TRUE: Der Wert des Integrators wird auf "intSetValue" gesetzt</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">TRUE: The output of the integrator is set to "intSetValue"</MultiLanguageText>
+      </Comment>
+      <StartValue>FALSE</StartValue>
+    </Member>
+    <Member Name="holdIntChannel" Datatype="Bool">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">TRUE: Der Ausgang des Integrators wird gehalten  FALSE: Der Integrator ist freigegeben</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">TRUE: The output of the integrator is hold  FALSE: The output is integrated</MultiLanguageText>
+      </Comment>
+      <StartValue>FALSE</StartValue>
+    </Member>
+    <Member Name="deadBand" Datatype="LReal">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">Breite des Totbandes (symmetrisch). Ein Wert von 0 deaktiviert das Totband</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">Value of the dead band (symmetrical). A value of 0 disables the deadband</MultiLanguageText>
+      </Comment>
+      <StartValue>0.0</StartValue>
+    </Member>
+    <Member Name="outValueFactor" Datatype="LReal">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">Multiplikativer Skalierungsfaktor des Reglerausgangs</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">Multiplicative scaling of the controller output</MultiLanguageText>
+      </Comment>
+      <StartValue>1.0</StartValue>
+    </Member>
+    <Member Name="upperLimit" Datatype="LReal">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">Oberer Grenze des Reglerausgangs</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">Upper limit of the controller output</MultiLanguageText>
+      </Comment>
+      <StartValue>20.0</StartValue>
+    </Member>
+    <Member Name="lowerLimit" Datatype="LReal">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">Untere Grenze des Reglerausgangs</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">Lower limit of the controller output</MultiLanguageText>
+      </Comment>
+      <StartValue>-20.0</StartValue>
+    </Member>
+    <Member Name="limRampTime" Datatype="LReal">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">[ms] Hoch-/Rücklaufzeit für die Reglerausgangsbegrenzungen</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">[ms] Ramp time for output value limitation</MultiLanguageText>
+      </Comment>
+      <StartValue>0.0</StartValue>
+    </Member>
+    <Member Name="tensionReference" Datatype="LReal">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">[N oder lbf] Bezugswert für Zug-Sollwert  Wenn der Wert 0 ist, wird der Sollwert als Absolutwert statt als Prozentwert interpretiert.</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">[N or lbf] Reference value for tension setpoint  If the value is 0 the setpoint is interpreted as an abolute value and not percentage</MultiLanguageText>
+      </Comment>
+      <StartValue>0.0</StartValue>
+    </Member>
+  </Section>
+</Sections></Interface>
+      <Name>LConSMC_typeTechnologyControllerConfig</Name>
+      <Namespace />
+    </AttributeList>
+    <ObjectList>
+      <MultilingualText ID="1" CompositionName="Comment">
+        <ObjectList>
+          <MultilingualTextItem ID="2" CompositionName="Items">
+            <AttributeList>
+              <Culture>de-DE</Culture>
+              <Text>Konfiguration des Technologiereglers (Tänzer oder Zugmessdose)</Text>
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="3" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-GB</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="4" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-US</Culture>
+              <Text>Configuration parameters for technology controller (Dancer or load cell)</Text>
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="5" CompositionName="Items">
+            <AttributeList>
+              <Culture>es-ES</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="6" CompositionName="Items">
+            <AttributeList>
+              <Culture>fr-FR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="7" CompositionName="Items">
+            <AttributeList>
+              <Culture>it-IT</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="8" CompositionName="Items">
+            <AttributeList>
+              <Culture>ko-KR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="9" CompositionName="Items">
+            <AttributeList>
+              <Culture>zh-CN</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+        </ObjectList>
+      </MultilingualText>
+      <MultilingualText ID="A" CompositionName="Title">
+        <ObjectList>
+          <MultilingualTextItem ID="B" CompositionName="Items">
+            <AttributeList>
+              <Culture>de-DE</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="C" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-GB</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="D" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-US</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="E" CompositionName="Items">
+            <AttributeList>
+              <Culture>es-ES</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="F" CompositionName="Items">
+            <AttributeList>
+              <Culture>fr-FR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="10" CompositionName="Items">
+            <AttributeList>
+              <Culture>it-IT</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="11" CompositionName="Items">
+            <AttributeList>
+              <Culture>ko-KR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="12" CompositionName="Items">
+            <AttributeList>
+              <Culture>zh-CN</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+        </ObjectList>
+      </MultilingualText>
+    </ObjectList>
+  </SW.Types.PlcStruct>
+</Document>

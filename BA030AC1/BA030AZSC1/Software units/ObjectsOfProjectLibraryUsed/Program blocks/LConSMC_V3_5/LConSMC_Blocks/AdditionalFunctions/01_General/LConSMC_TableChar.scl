@@ -1,0 +1,219 @@
+﻿FUNCTION_BLOCK "LConSMC_TableChar"
+{ S7_Optimized_Access := 'TRUE' ; Published := 'TRUE' }
+VERSION : 0.1
+//Interpolation from breakpoint table, the function block can be called in any cyclic task.  Function block ID: 0106
+   VAR_INPUT 
+      enable { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;   // TRUE: FB is activated
+      x { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;   // Input value (x-axis)
+      sizeOfArray { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Int := #MAX_SIZE_OF_ARRAY;   // Number of breakpoints that should be used
+      xn { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : "LConSMC_typeBreakPointTable" := ([20(0.0)]);   // breakpoint table for x-axis
+      yn { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : "LConSMC_typeBreakPointTable" := ([20(0.0)]);   // breakpoint table for y-axis
+   END_VAR
+
+   VAR_OUTPUT 
+      busy { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;   // TRUE: FB is active
+      error { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;   // TRUE: An error has occurred, refer to "errorID"
+      errorID { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : DWord := 16#0000_0000;   // Error identification, refer to error messages
+      y { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 0.0;   // Output value
+   END_VAR
+
+   VAR 
+      statEnableOld { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := FALSE;
+      statLimitedSize { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Int;
+      statXval { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Array[0..20] of LReal;
+      statYval { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Array[0..20] of LReal;
+      statArrayCounter { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Int := 0;
+      statMaxValueReached { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := FALSE;
+      statReal1 { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statReal2 { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statReal3 { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statReal4 { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statFound { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statSegmentIndex { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Int;
+      statInt1 { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Int;
+      statEqualValues { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := FALSE;
+      statError { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := FALSE;
+      statBusy { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := FALSE;
+   END_VAR
+
+   VAR CONSTANT 
+      NO_ERROR : DWord := 16#0000_0000;
+      MAX_SIZE_OF_ARRAY : Int := 20;
+   END_VAR
+
+
+BEGIN
+	REGION BLOCK INFO HEADER
+	  //===============================================================================
+	  // SIEMENS AG / (c)Copyright 2023
+	  //-------------------------------------------------------------------------------
+	  // Title:            LConSMC_TableChar
+	  // Comment/Function: Breakpoint table
+	  // Library/Family:   LConSMC
+	  // Author:           APC Erlangen
+	  // Tested with:      FW 2.8
+	  // Engineering:      TIA Portal V16
+	  // Restrictions:     -
+	  // Requirements:     -
+	  //-------------------------------------------------------------------------------
+	  // Change log table:
+	  // Version  | Date       | Expert in charge       | Changes applied
+	  //----------|------------|------------------------|------------------------------
+	  // 01.03.00 | 2023-09-04 | APC Erlangen           | For input value "sizeOfArray" = 2 an invalid array access occured (*c00055*)
+	  // 01.02.00 | 2018-03-29 | APC Erlangen           | Bugfix for x values smaller than first x coordinate *c_00004*
+	  // 01.01.00 | 2016-11-17 | APC Erlangen           | adapted to styleguide; warning "variable might not be initialized" removed
+	  // 01.00.00 | 2012-07-19 | APC Erlangen           | Creation
+	  //===============================================================================
+	  //
+	END_REGION BLOCK INFO HEADER
+	
+	REGION DESCRIPTION
+	(/*
+	The function blocks adapts the output value y corresponding to the input value x based on a breakpoint table of flexible size.
+	Between the breakpoints the values are interpolated linearly.  
+	
+	Purpose of the function block is to e.g.:
+	* Linear characteristic curves 
+	* Simulation of non-linear transfer elements 
+	* Minimum number of breakpoint elements is two  
+	  
+	The x values of the curve must increase monotonically; the y values have no limitation.
+	The total number of breakpoints is defined by the size of the data reference.
+	The data type of the addressed data area must be LREAL. Is x lower than the x value of the first coordinate,
+	the output y value will maintain the level of the y value of the first coordinate.
+	The same applies if x is bigger than the last x coordinate of the table.
+	
+	![Linear characteristic](TableChar.png)
+	
+	*/)
+	END_REGION
+	
+	IF (#enable) AND NOT (#statEnableOld) THEN
+	  #statBusy := True;
+	  #statEnableOld := True;
+	  #y := 0.0;
+	  #statError := FALSE;
+	  #errorID := #NO_ERROR;
+	  #statEqualValues := False;
+	ELSIF NOT (#enable) AND (#statEnableOld) THEN
+	  #statEnableOld := False;
+	  #statBusy := False;
+	  #y := 0.0;
+	  #statError := FALSE;
+	  #errorID := #NO_ERROR;
+	END_IF;
+	
+	IF #statBusy AND NOT (#statError) THEN
+	  
+	  #statLimitedSize := LIMIT(MN := 1,
+	                            IN := #sizeOfArray,
+	                            MX := #MAX_SIZE_OF_ARRAY);
+	  #statArrayCounter := 0;
+	  #statMaxValueReached := False;
+	  
+	  REPEAT
+	    IF (#statArrayCounter <= (#statLimitedSize - 1)) THEN
+	      #statXval[#statArrayCounter] := #xn.values[#statArrayCounter];
+	      #statYval[#statArrayCounter] := #yn.values[#statArrayCounter];
+	      #statArrayCounter := #statArrayCounter + 1;
+	    ELSIF (#statArrayCounter > (#statLimitedSize - 1)) THEN
+	      #statArrayCounter := 0;
+	      #statMaxValueReached := True;
+	    END_IF;
+	  UNTIL
+	    #statMaxValueReached
+	  END_REPEAT;
+	  
+	  #statReal1 := #statXval[#statArrayCounter];
+	  #statReal2 := #statXval[#statArrayCounter + (#statLimitedSize - 1)];
+	  
+	  IF (#statReal1 = #statReal2) THEN                                               // First and Last values equal
+	    #errorID := "LCON_ERROR_TABLE_CHAR_ENTRIES_NOT_MONOTONIC";                                        // Table-entries not monotonic 
+	    #statError := True;
+	    #y := 0.0;
+	    RETURN;
+	  END_IF;
+	  
+	  IF (#x < #statReal1) THEN
+	    #statFound := True;
+	    #statSegmentIndex := 0;
+	  ELSIF (#x > #statReal2) THEN
+	    #statFound := True;
+	    #statSegmentIndex := (#statLimitedSize);
+	  ELSE
+	    #statFound := False;
+	    
+	    IF #statLimitedSize = 2 THEN  // (*c00055*)
+	      // Set index if only two elements have been selected 
+	      #statSegmentIndex := 1;
+	    ELSE
+	      #statSegmentIndex := (#statLimitedSize - 1) / 2;
+	    END_IF;
+	    
+	    REPEAT
+	      #statInt1 := #statSegmentIndex;
+	      #statReal1 := #statXval[#statInt1 - 1];
+	      #statReal2 := #statXval[#statInt1];
+	      
+	      IF (#statReal1 = #statReal2) THEN
+	        #errorID := "LCON_ERROR_TABLE_CHAR_ENTRIES_NOT_MONOTONIC";                                     // table-entries not monotonic 
+	        #statError := FALSE;
+	        #statEqualValues := True;
+	        #statFound := True;
+	      ELSE
+	        #statEqualValues := False;
+	        IF (#x < #statReal1) THEN                                                      //x in lower part
+	          #statSegmentIndex := #statSegmentIndex - 1;
+	          #statSegmentIndex := LIMIT(MN := 0, IN := #statSegmentIndex, MX := (#statLimitedSize - 1));
+	          
+	        ELSIF (#x > #statReal2) THEN                                                    //x in upper part
+	          #statSegmentIndex := #statSegmentIndex + 1;
+	          #statSegmentIndex := LIMIT(MN := 0, IN := #statSegmentIndex, MX := (#statLimitedSize - 1));
+	        ELSE
+	          #statFound := True;
+	        END_IF;
+	      END_IF;
+	    UNTIL #statSegmentIndex = 0 OR #statFound OR (#statSegmentIndex > (#statLimitedSize - 1))
+	    END_REPEAT;
+	  END_IF;
+	  
+	  IF NOT (#statFound) THEN
+	    #statError := False;
+	    #errorID := "LCON_WARNING_TABLE_CHAR_NO_VALUE_FOUND";
+	    #y := 0.0;
+	  ELSE
+	    #statInt1 := #statSegmentIndex;
+	    #statReal3 := #statYval[MAX(IN1 := 0, IN2 := #statInt1 - 1)];                //start #y *c_00004*
+	    #statReal4 := #statYval[#statInt1];                                      //end y
+	    
+	    IF #statEqualValues = True THEN
+	      #y := #statReal3;
+	      //END LIMIT VALUES         
+	    ELSIF (#statSegmentIndex <= 0) THEN
+	      #y := #statYval[0];
+	    ELSIF (#statSegmentIndex >= (#statLimitedSize)) THEN
+	      #y := #statYval[#statLimitedSize - 1];
+	    ELSE
+	      #y := (#x - #statReal1) * ((#statReal4 - #statReal3) / (#statReal2 - #statReal1)) + #statReal3;
+	      #statError := FALSE;
+	      #errorID := #NO_ERROR;
+	    END_IF;
+	    IF #sizeOfArray < 2 THEN
+	      #statError := TRUE;                                                 //No. of points less than 2
+	      #errorID := "LCON_ERROR_TABLE_CHAR_INVALID_CONFIGURATION";
+	      RETURN;
+	    END_IF;
+	    IF #sizeOfArray > #MAX_SIZE_OF_ARRAY THEN
+	      #statError := True;                                                    // Statement section IF
+	      #errorID := "LCON_ERROR_TABLE_CHAR_INVALID_CONFIGURATION";
+	      RETURN;
+	    END_IF;
+	  END_IF;
+	END_IF;
+	
+	// set outputs
+	#busy := #statBusy;
+	#error := #statError;
+	
+END_FUNCTION_BLOCK
+

@@ -1,0 +1,27 @@
+﻿FUNCTION "LER_telemetryContent" : Void
+{ S7_Optimized_Access := 'TRUE' ; Published := 'TRUE' }
+VERSION : 0.1
+   VAR_INPUT 
+      enable : Bool;
+      max : DInt;
+      offset : UDInt;
+   END_VAR
+
+   VAR_OUTPUT 
+      TelemetryContent_data : "LPFE_typeTelemetryContent";
+   END_VAR
+
+   VAR_TEMP 
+      index : Int;
+   END_VAR
+
+
+BEGIN
+	IF #enable THEN
+	    FOR #index := 1 TO #max DO
+	        #TelemetryContent_data.KVP[#index].Key := #index + #offset;
+	    END_FOR;
+	END_IF;
+	
+END_FUNCTION
+

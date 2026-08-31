@@ -1,0 +1,1630 @@
+﻿FUNCTION_BLOCK "2205_StackReset"
+{ S7_Optimized_Access := 'TRUE' ; Published := 'FALSE' }
+VERSION : 0.1
+   VAR_INPUT 
+      Execute : Bool;
+      CPM : LReal;
+      StageWidth : LReal;
+   END_VAR
+
+   VAR_OUTPUT 
+      Done : Bool;
+      Busy : Bool;
+      Error : Bool;
+      ErrorID : DWord;
+      StatusID : DWord;
+      NowCmd : DInt;
+      BeforeCmd : DInt;
+   END_VAR
+
+   VAR_IN_OUT 
+      Axis : Struct
+         MasterVirtual : DB_ANY;
+         UnwinderVirtual : DB_ANY;
+         UnwinderTop : DB_ANY;
+         UnwinderBottom : DB_ANY;
+         FinalRoller : DB_ANY;
+         Compensator : DB_ANY;
+         AnodePnPX1 : DB_ANY;
+         AnodePnPX2 : DB_ANY;
+         AnodePnPZ1 : DB_ANY;
+         AnodePnPZ2 : DB_ANY;
+         CathodePnPX1 : DB_ANY;
+         CathodePnPX2 : DB_ANY;
+         CathodePnPZ1 : DB_ANY;
+         CathodePnPZ2 : DB_ANY;
+         AnodeMandrelYFront : DB_ANY;
+         AnodeMandrelYRear : DB_ANY;
+         AnodeMandrelZFront : DB_ANY;
+         AnodeMandrelZRear : DB_ANY;
+         CathodeMandrelYFront : DB_ANY;
+         CathodeMandrelYRear : DB_ANY;
+         CathodeMandrelZFront : DB_ANY;
+         CathodeMandrelZRear : DB_ANY;
+         SepaGripperX : DB_ANY;
+      END_STRUCT;
+      Cam : Struct
+         FinalRollerCam : DB_ANY;
+         CompensatorCam : DB_ANY;
+         AnodePnPX1Cam : DB_ANY;
+         AnodePnPX2Cam : DB_ANY;
+         AnodePnPZ1Cam : DB_ANY;
+         AnodePnPZ2Cam : DB_ANY;
+         CathodePnPX1Cam : DB_ANY;
+         CathodePnPX2Cam : DB_ANY;
+         CathodePnPZ1Cam : DB_ANY;
+         CathodePnPZ2Cam : DB_ANY;
+         AnodeMandrelYFrontCam : DB_ANY;
+         AnodeMandrelYRearCam : DB_ANY;
+         AnodeMandrelZFrontCam : DB_ANY;
+         AnodeMandrelZRearCam : DB_ANY;
+         CathodeMandrelYFrontCam : DB_ANY;
+         CathodeMandrelYRearCam : DB_ANY;
+         CathodeMandrelZFrontCam : DB_ANY;
+         CathodeMandrelZRearCam : DB_ANY;
+      END_STRUCT;
+      OutputCam : Struct
+         FinalRollerXFwdOutputCam : DB_ANY;
+         FinalRollerXBwdOutputCam : DB_ANY;
+         FinalRollerXStackTableDownOutputCam : DB_ANY;
+         FinalRollerXStackAnodeVisionOutputCam : DB_ANY;
+         FinalRollerXStackCathodeVisionOutputCam : DB_ANY;
+         AnodePnPX1FwdOutputCam : DB_ANY;
+         AnodePnPX1BwdOutputCam : DB_ANY;
+         AnodePnPX2FwdOutputCam : DB_ANY;
+         AnodePnPX2BwdOutputCam : DB_ANY;
+         AnodePnPZ1Down1OutputCam : DB_ANY;
+         AnodePnPZ1Up1OutputCam : DB_ANY;
+         AnodePnPZ2Down1OutputCam : DB_ANY;
+         AnodePnPZ2Up1OutputCam : DB_ANY;
+         AnodePnPZ1Down2OutputCam : DB_ANY;
+         AnodePnPZ1Up2OutputCam : DB_ANY;
+         AnodePnPZ2Down2OutputCam : DB_ANY;
+         AnodePnPZ2Up2OutputCam : DB_ANY;
+         AnodePnPZ1SuctionOnOutputCam : DB_ANY;
+         AnodePnPZ1SuctionOffOutputCam : DB_ANY;
+         AnodePnPZ1ReelCutBlowOutputCam : DB_ANY;
+         AnodePnPZ2SuctionOnOutputCam : DB_ANY;
+         AnodePnPZ2SuctionOffOutputCam : DB_ANY;
+         AnodeAlignSuctionOnOutputCam : DB_ANY;
+         AnodeAlignSuctionOffOutputCam : DB_ANY;
+         AnodePnPZ1ReelCutDataDeleteOnOutputCam : DB_ANY;
+         AnodePnP1XReelCutDataDeleteOffOutputCam : DB_ANY;
+         AnodeAlignVisionOutputCam : DB_ANY;
+         CathodePnPX1FwdOutputCam : DB_ANY;
+         CathodePnPX1BwdOutputCam : DB_ANY;
+         CathodePnPX2FwdOutputCam : DB_ANY;
+         CathodePnPX2BwdOutputCam : DB_ANY;
+         CathodePnPZ1Down1OutputCam : DB_ANY;
+         CathodePnPZ1Up1OutputCam : DB_ANY;
+         CathodePnPZ2Down1OutputCam : DB_ANY;
+         CathodePnPZ2Up1OutputCam : DB_ANY;
+         CathodePnPZ1Down2OutputCam : DB_ANY;
+         CathodePnPZ1Up2OutputCam : DB_ANY;
+         CathodePnPZ2Down2OutputCam : DB_ANY;
+         CathodePnPZ2Up2OutputCam : DB_ANY;
+         CathodePnPZ1SuctionOnOutputCam : DB_ANY;
+         CathodePnPZ1SuctionOffOutputCam : DB_ANY;
+         CathodePnPZ1ReelCutBlowOutputCam : DB_ANY;
+         CathodePnPZ2SuctionOnOutputCam : DB_ANY;
+         CathodePnPZ2SuctionOffOutputCam : DB_ANY;
+         CathodeAlignSuctionOnOutputCam : DB_ANY;
+         CathodeAlignSuctionOffOutputCam : DB_ANY;
+         CathodePnPZ1ReelCutDataDeleteOnOutputCam : DB_ANY;
+         CathodePnP1XReelCutDataDeleteOffOutputCam : DB_ANY;
+         CathodeAlignVisionOutputCam : DB_ANY;
+      END_STRUCT;
+   END_VAR
+
+   VAR 
+      statNowCmd : DInt;
+      statBeforeCmd : DInt;
+      statPosition : LReal;
+      statTimeTable : Array[1..50] of Time;
+      statStartTime : Time;
+      statEndTime : Time;
+      instTriggerExecute {InstructionName := 'R_TRIG'; LibVersion := '1.0'; S7_SetPoint := 'False'} : R_TRIG;
+      instMoveAbsMasterVirtual {InstructionName := 'MC_MOVEABSOLUTE'; LibVersion := '9.0'} : MC_MOVEABSOLUTE;
+      instHaltMasterVirtual {InstructionName := 'MC_HALT'; LibVersion := '9.0'} : MC_HALT;
+      instHaltSlaveUnwinderVirtual {InstructionName := 'MC_HALT'; LibVersion := '9.0'} : MC_HALT;
+      instHaltFinalRoller {InstructionName := 'MC_HALT'; LibVersion := '9.0'} : MC_HALT;
+      instHaltCompensator {InstructionName := 'MC_HALT'; LibVersion := '9.0'} : MC_HALT;
+      instHaltAnodePnPX1 {InstructionName := 'MC_HALT'; LibVersion := '9.0'} : MC_HALT;
+      instHaltAnodePnPX2 {InstructionName := 'MC_HALT'; LibVersion := '9.0'} : MC_HALT;
+      instHaltAnodePnPZ1 {InstructionName := 'MC_HALT'; LibVersion := '9.0'} : MC_HALT;
+      instHaltAnodePnPZ2 {InstructionName := 'MC_HALT'; LibVersion := '9.0'} : MC_HALT;
+      instHaltCathodePnPX1 {InstructionName := 'MC_HALT'; LibVersion := '9.0'} : MC_HALT;
+      instHaltCathodePnPX2 {InstructionName := 'MC_HALT'; LibVersion := '9.0'} : MC_HALT;
+      instHaltCathodePnPZ1 {InstructionName := 'MC_HALT'; LibVersion := '9.0'} : MC_HALT;
+      instHaltCathodePnPZ2 {InstructionName := 'MC_HALT'; LibVersion := '9.0'} : MC_HALT;
+      instHaltAnodeMandrelYFront {InstructionName := 'MC_HALT'; LibVersion := '9.0'} : MC_HALT;
+      instHaltAnodeMandrelYRear {InstructionName := 'MC_HALT'; LibVersion := '9.0'} : MC_HALT;
+      instHaltAnodeMandrelZFront {InstructionName := 'MC_HALT'; LibVersion := '9.0'} : MC_HALT;
+      instHaltAnodeMandrelZRear {InstructionName := 'MC_HALT'; LibVersion := '9.0'} : MC_HALT;
+      instHaltCathodeMandrelYFront {InstructionName := 'MC_HALT'; LibVersion := '9.0'} : MC_HALT;
+      instHaltCathodeMandrelYRear {InstructionName := 'MC_HALT'; LibVersion := '9.0'} : MC_HALT;
+      instHaltCathodeMandrelZFront {InstructionName := 'MC_HALT'; LibVersion := '9.0'} : MC_HALT;
+      instHaltCathodeMandrelZRear {InstructionName := 'MC_HALT'; LibVersion := '9.0'} : MC_HALT;
+      instResetMasterVirtualAxis {InstructionName := 'MC_RESET'; LibVersion := '9.0'} : MC_RESET;
+      instResetUnwinderVirtualAxis {InstructionName := 'MC_RESET'; LibVersion := '9.0'} : MC_RESET;
+      instResetFinalRoller {InstructionName := 'MC_RESET'; LibVersion := '9.0'} : MC_RESET;
+      instResetCompensator {InstructionName := 'MC_RESET'; LibVersion := '9.0'} : MC_RESET;
+      instResetAnodePnPX1 {InstructionName := 'MC_RESET'; LibVersion := '9.0'} : MC_RESET;
+      instResetAnodePnPX2 {InstructionName := 'MC_RESET'; LibVersion := '9.0'} : MC_RESET;
+      instResetAnodePnPZ1 {InstructionName := 'MC_RESET'; LibVersion := '9.0'} : MC_RESET;
+      instResetAnodePnPZ2 {InstructionName := 'MC_RESET'; LibVersion := '9.0'} : MC_RESET;
+      instResetCathodePnPX1 {InstructionName := 'MC_RESET'; LibVersion := '9.0'} : MC_RESET;
+      instResetCathodePnPX2 {InstructionName := 'MC_RESET'; LibVersion := '9.0'} : MC_RESET;
+      instResetCathodePnPZ1 {InstructionName := 'MC_RESET'; LibVersion := '9.0'} : MC_RESET;
+      instResetCathodePnPZ2 {InstructionName := 'MC_RESET'; LibVersion := '9.0'} : MC_RESET;
+      instResetAnodeMandrelYFront {InstructionName := 'MC_RESET'; LibVersion := '9.0'} : MC_RESET;
+      instResetAnodeMandrelYRear {InstructionName := 'MC_RESET'; LibVersion := '9.0'} : MC_RESET;
+      instResetAnodeMandrelZFront {InstructionName := 'MC_RESET'; LibVersion := '9.0'} : MC_RESET;
+      instResetAnodeMandrelZRear {InstructionName := 'MC_RESET'; LibVersion := '9.0'} : MC_RESET;
+      instResetCathodeMandrelYFront {InstructionName := 'MC_RESET'; LibVersion := '9.0'} : MC_RESET;
+      instResetCathodeMandrelYRear {InstructionName := 'MC_RESET'; LibVersion := '9.0'} : MC_RESET;
+      instResetCathodeMandrelZFront {InstructionName := 'MC_RESET'; LibVersion := '9.0'} : MC_RESET;
+      instResetCathodeMandrelZRear {InstructionName := 'MC_RESET'; LibVersion := '9.0'} : MC_RESET;
+      instResetFinalRollerCam {InstructionName := 'MC_RESET'; LibVersion := '9.0'} : MC_RESET;
+      instResetCompensatorCam {InstructionName := 'MC_RESET'; LibVersion := '9.0'} : MC_RESET;
+      instResetAnodePnPX1Cam {InstructionName := 'MC_RESET'; LibVersion := '9.0'} : MC_RESET;
+      instResetAnodePnPX2Cam {InstructionName := 'MC_RESET'; LibVersion := '9.0'} : MC_RESET;
+      instResetAnodePnPZ1Cam {InstructionName := 'MC_RESET'; LibVersion := '9.0'} : MC_RESET;
+      instResetAnodePnPZ2Cam {InstructionName := 'MC_RESET'; LibVersion := '9.0'} : MC_RESET;
+      instResetCathodePnPX1Cam {InstructionName := 'MC_RESET'; LibVersion := '9.0'} : MC_RESET;
+      instResetCathodePnPX2Cam {InstructionName := 'MC_RESET'; LibVersion := '9.0'} : MC_RESET;
+      instResetCathodePnPZ1Cam {InstructionName := 'MC_RESET'; LibVersion := '9.0'} : MC_RESET;
+      instResetCathodePnPZ2Cam {InstructionName := 'MC_RESET'; LibVersion := '9.0'} : MC_RESET;
+      instResetAnodeMandrelYFrontCam {InstructionName := 'MC_RESET'; LibVersion := '9.0'} : MC_RESET;
+      instResetAnodeMandrelYRearCam {InstructionName := 'MC_RESET'; LibVersion := '9.0'} : MC_RESET;
+      instResetAnodeMandrelZFrontCam {InstructionName := 'MC_RESET'; LibVersion := '9.0'} : MC_RESET;
+      instResetAnodeMandrelZRearCam {InstructionName := 'MC_RESET'; LibVersion := '9.0'} : MC_RESET;
+      instResetCathodeMandrelYFrontCam {InstructionName := 'MC_RESET'; LibVersion := '9.0'} : MC_RESET;
+      instResetCathodeMandrelYRearCam {InstructionName := 'MC_RESET'; LibVersion := '9.0'} : MC_RESET;
+      instResetCathodeMandrelZFrontCam {InstructionName := 'MC_RESET'; LibVersion := '9.0'} : MC_RESET;
+      instResetCathodeMandrelZRearCam {InstructionName := 'MC_RESET'; LibVersion := '9.0'} : MC_RESET;
+      instResetAnodePnPX1FwdOutputCam {InstructionName := 'MC_RESET'; LibVersion := '9.0'} : MC_RESET;
+      instResetAnodePnPX1BwdOutputCam {InstructionName := 'MC_RESET'; LibVersion := '9.0'} : MC_RESET;
+      instResetAnodePnPX2FwdOutputCam {InstructionName := 'MC_RESET'; LibVersion := '9.0'} : MC_RESET;
+      instResetAnodePnPX2BwdOutputCam {InstructionName := 'MC_RESET'; LibVersion := '9.0'} : MC_RESET;
+      instResetAnodePnPZ1Down1OutputCam {InstructionName := 'MC_RESET'; LibVersion := '9.0'} : MC_RESET;
+      instResetAnodePnPZ1Up1OutputCam {InstructionName := 'MC_RESET'; LibVersion := '9.0'} : MC_RESET;
+      instResetAnodePnPZ2Down1OutputCam {InstructionName := 'MC_RESET'; LibVersion := '9.0'} : MC_RESET;
+      instResetAnodePnPZ2Up1OutputCam {InstructionName := 'MC_RESET'; LibVersion := '9.0'} : MC_RESET;
+      instResetAnodePnPZ1Down2OutputCam {InstructionName := 'MC_RESET'; LibVersion := '9.0'} : MC_RESET;
+      instResetAnodePnPZ1Up2OutputCam {InstructionName := 'MC_RESET'; LibVersion := '9.0'} : MC_RESET;
+      instResetAnodePnPZ2Down2OutputCam {InstructionName := 'MC_RESET'; LibVersion := '9.0'} : MC_RESET;
+      instResetAnodePnPZ2Up2OutputCam {InstructionName := 'MC_RESET'; LibVersion := '9.0'} : MC_RESET;
+      instResetAnodePnPZ1SuctionOnOutputCam {InstructionName := 'MC_RESET'; LibVersion := '9.0'} : MC_RESET;
+      instResetAnodePnPZ1SuctionOffOutputCam {InstructionName := 'MC_RESET'; LibVersion := '9.0'} : MC_RESET;
+      instResetAnodePnPZ1ReelCutBlowOutputCam {InstructionName := 'MC_RESET'; LibVersion := '9.0'} : MC_RESET;
+      instResetAnodePnPZ2SuctionOnOutputCam {InstructionName := 'MC_RESET'; LibVersion := '9.0'} : MC_RESET;
+      instResetAnodePnPZ2SuctionOffOutputCam {InstructionName := 'MC_RESET'; LibVersion := '9.0'} : MC_RESET;
+      instResetAnodeAlignSuctionOnOutputCam {InstructionName := 'MC_RESET'; LibVersion := '9.0'} : MC_RESET;
+      instResetAnodeAlignSuctionOffOutputCam {InstructionName := 'MC_RESET'; LibVersion := '9.0'} : MC_RESET;
+      instResetCathodePnPX1FwdOutputCam {InstructionName := 'MC_RESET'; LibVersion := '9.0'} : MC_RESET;
+      instResetCathodePnPX1BwdOutputCam {InstructionName := 'MC_RESET'; LibVersion := '9.0'} : MC_RESET;
+      instResetCathodePnPX2FwdOutputCam {InstructionName := 'MC_RESET'; LibVersion := '9.0'} : MC_RESET;
+      instResetCathodePnPX2BwdOutputCam {InstructionName := 'MC_RESET'; LibVersion := '9.0'} : MC_RESET;
+      instResetCathodePnPZ1Down1OutputCam {InstructionName := 'MC_RESET'; LibVersion := '9.0'} : MC_RESET;
+      instResetCathodePnPZ1Up1OutputCam {InstructionName := 'MC_RESET'; LibVersion := '9.0'} : MC_RESET;
+      instResetCathodePnPZ2Down1OutputCam {InstructionName := 'MC_RESET'; LibVersion := '9.0'} : MC_RESET;
+      instResetCathodePnPZ2Up1OutputCam {InstructionName := 'MC_RESET'; LibVersion := '9.0'} : MC_RESET;
+      instResetCathodePnPZ1Down2OutputCam {InstructionName := 'MC_RESET'; LibVersion := '9.0'} : MC_RESET;
+      instResetCathodePnPZ1Up2OutputCam {InstructionName := 'MC_RESET'; LibVersion := '9.0'} : MC_RESET;
+      instResetCathodePnPZ2Down2OutputCam {InstructionName := 'MC_RESET'; LibVersion := '9.0'} : MC_RESET;
+      instResetCathodePnPZ2Up2OutputCam {InstructionName := 'MC_RESET'; LibVersion := '9.0'} : MC_RESET;
+      instResetCathodePnPZ1SuctionOnOutputCam {InstructionName := 'MC_RESET'; LibVersion := '9.0'} : MC_RESET;
+      instResetCathodePnPZ1SuctionOffOutputCam {InstructionName := 'MC_RESET'; LibVersion := '9.0'} : MC_RESET;
+      instResetCathodePnPZ1ReelCutBlowOutputCam {InstructionName := 'MC_RESET'; LibVersion := '9.0'} : MC_RESET;
+      instResetCathodePnPZ2SuctionOnOutputCam {InstructionName := 'MC_RESET'; LibVersion := '9.0'} : MC_RESET;
+      instResetCathodePnPZ2SuctionOffOutputCam {InstructionName := 'MC_RESET'; LibVersion := '9.0'} : MC_RESET;
+      instResetCathodeAlignSuctionOnOutputCam {InstructionName := 'MC_RESET'; LibVersion := '9.0'} : MC_RESET;
+      instResetCathodeAlignSuctionOffOutputCam {InstructionName := 'MC_RESET'; LibVersion := '9.0'} : MC_RESET;
+      instResetFinalRollerXFwdOutputCam {InstructionName := 'MC_RESET'; LibVersion := '9.0'} : MC_RESET;
+      instResetFinalRollerXBwdOutputCam {InstructionName := 'MC_RESET'; LibVersion := '9.0'} : MC_RESET;
+      instResetFinalRollerXStackTableDownOutputCam {InstructionName := 'MC_RESET'; LibVersion := '9.0'} : MC_RESET;
+      instResetFinalRollerXStackAnodeVisionOutputCam {InstructionName := 'MC_RESET'; LibVersion := '9.0'} : MC_RESET;
+      instResetFinalRollerXStackCathodeVisionOutputCam {InstructionName := 'MC_RESET'; LibVersion := '9.0'} : MC_RESET;
+      instResetAnodePnPZ1ReelCutDataDeleteOnOutputCam {InstructionName := 'MC_RESET'; LibVersion := '9.0'} : MC_RESET;
+      instResetAnodePnP1XReelCutDataDeleteOffOutputCam {InstructionName := 'MC_RESET'; LibVersion := '9.0'} : MC_RESET;
+      instResetAnodeAlignVisionOutputCam {InstructionName := 'MC_RESET'; LibVersion := '9.0'} : MC_RESET;
+      instResetCathodePnPZ1ReelCutDataDeleteOnOutputCam {InstructionName := 'MC_RESET'; LibVersion := '9.0'} : MC_RESET;
+      instResetCathodePnP1XReelCutDataDeleteOffOutputCam {InstructionName := 'MC_RESET'; LibVersion := '9.0'} : MC_RESET;
+      instResetCathodeAlignVisionOutputCam {InstructionName := 'MC_RESET'; LibVersion := '9.0'} : MC_RESET;
+   END_VAR
+
+   VAR_TEMP 
+      tempMasterVirtualAxis {InstructionName := 'TO_SynchronousAxis'; LibVersion := '9.0'} : REF_TO TO_SynchronousAxis;
+      tempSlaveUnwinderVirtualAxis {InstructionName := 'TO_SynchronousAxis'; LibVersion := '9.0'} : REF_TO TO_SynchronousAxis;
+      tempSynchronousAxis {InstructionName := 'TO_SynchronousAxis'; LibVersion := '9.0'} : REF_TO TO_SynchronousAxis;
+      tempCam10k {InstructionName := 'TO_Cam_10k'; LibVersion := '9.0'} : REF_TO TO_Cam_10k;
+      tempOutputCam {InstructionName := 'TO_OutputCam'; LibVersion := '9.0'} : REF_TO TO_OutputCam;
+      tempDistances : LReal;
+      tempRemain : LReal;
+      tempCount : LReal;
+      tempLineSpeed : LReal;
+      tempTime : LReal;
+   END_VAR
+
+   VAR CONSTANT 
+      STAT_IDLE : DInt := 0;
+      STAT_ERROR : DInt := 99;
+      STAT_START : DInt := 100;
+      STAT_RESET : DInt := 110;
+      STAT_DONE : DInt := 10000;
+   END_VAR
+
+
+BEGIN
+	REGION TECHNOLOGY OBJECT
+	    REGION AXIS                                                                         // Axis Mapping 영역
+	        #tempMasterVirtualAxis ?= #Axis.MasterVirtual;                                       // Master Virtual Axis 할당
+	        #tempSlaveUnwinderVirtualAxis ?= #Axis.UnwinderVirtual;                              // Slave Unwinder Virtual Axis 할당
+	    END_REGION
+	END_REGION
+	
+	REGION INPUT SIGNAL
+	    REGION EXECUTE
+	        IF NOT #Execute THEN                                                            // Execute := False 상태 시 IDLE 상태로 초기화
+	            #statBeforeCmd := #statNowCmd;                                              // 이전 명령 모니터링
+	            #statNowCmd := #STAT_IDLE;                                                  // STAT_IDLE 상태로 이동 
+	        END_IF;
+	        
+	        #instTriggerExecute(CLK := #Execute);                                           // 상승 에지 검출
+	        
+	        IF #instTriggerExecute.Q THEN                                                   // 상승 에지 검출 시
+	            #statStartTime := TIME_TCK();
+	            #statBeforeCmd := #statNowCmd;                                              // 이전 명령 모니터링
+	            #statNowCmd := #STAT_START;                                                 // STAT_START 상태 돌입
+	        END_IF;
+	    END_REGION
+	END_REGION
+	
+	REGION COMMAND
+	    CASE #statNowCmd OF
+	        #STAT_IDLE:
+	            REGION IDLE
+	                ;
+	            END_REGION
+	            
+	        #STAT_ERROR:
+	            REGION ERROR
+	                ;
+	            END_REGION
+	            
+	        #STAT_START:
+	            REGION START
+	                #statEndTime := TIME_TCK();
+	                #statTimeTable[#STAT_START / 10 - 9] := #statEndTime - #statStartTime;
+	                #statStartTime := TIME_TCK();
+	                #statBeforeCmd := #statNowCmd;                                          // 이전 명령 모니터링
+	                #statNowCmd := #STAT_RESET;                                              // STAT_AUTO_CHECK 상태 돌입
+	            END_REGION
+	    
+	        #STAT_RESET:
+	            REGION RESET
+	                REGION DONE                                                             // 모든 축의 Reset 동작이 완료 시
+	                    IF #instResetMasterVirtualAxis.Done
+	                        AND #instResetUnwinderVirtualAxis.Done
+	                        AND #instResetFinalRoller.Done
+	                        AND #instResetCompensator.Done
+	                        AND #instResetAnodePnPX1.Done
+	                        AND #instResetAnodePnPX2.Done
+	                        AND #instResetAnodePnPZ1.Done
+	                        AND #instResetAnodePnPZ2.Done
+	                        AND #instResetCathodePnPX1.Done
+	                        AND #instResetCathodePnPX2.Done
+	                        AND #instResetCathodePnPZ1.Done
+	                        AND #instResetCathodePnPZ2.Done
+	                        AND #instResetAnodeMandrelYFront.Done
+	                        AND #instResetAnodeMandrelYRear.Done
+	                        AND #instResetAnodeMandrelZFront.Done
+	                        AND #instResetAnodeMandrelZRear.Done
+	                        AND #instResetCathodeMandrelYFront.Done
+	                        AND #instResetCathodeMandrelYRear.Done
+	                        AND #instResetCathodeMandrelZFront.Done
+	                        AND #instResetCathodeMandrelZRear.Done
+	                        AND #instResetFinalRollerCam.Done
+	                        AND #instResetCompensatorCam.Done
+	                        AND #instResetAnodePnPX1Cam.Done
+	                        AND #instResetAnodePnPX2Cam.Done
+	                        AND #instResetAnodePnPZ1Cam.Done
+	                        AND #instResetAnodePnPZ2Cam.Done
+	                        AND #instResetCathodePnPX1Cam.Done
+	                        AND #instResetCathodePnPX2Cam.Done
+	                        AND #instResetCathodePnPZ1Cam.Done
+	                        AND #instResetCathodePnPZ2Cam.Done
+	                        AND #instResetAnodeMandrelYFrontCam.Done
+	                        AND #instResetAnodeMandrelYRearCam.Done
+	                        AND #instResetAnodeMandrelZFrontCam.Done
+	                        AND #instResetAnodeMandrelZRearCam.Done
+	                        AND #instResetCathodeMandrelYFrontCam.Done
+	                        AND #instResetCathodeMandrelYRearCam.Done
+	                        AND #instResetCathodeMandrelZFrontCam.Done
+	                        AND #instResetCathodeMandrelZRearCam.Done
+	                        AND #instResetFinalRollerXFwdOutputCam.Done
+	                        AND #instResetFinalRollerXBwdOutputCam.Done
+	                        AND #instResetFinalRollerXStackTableDownOutputCam.Done
+	                        AND #instResetFinalRollerXStackAnodeVisionOutputCam.Done
+	                        AND #instResetFinalRollerXStackCathodeVisionOutputCam.Done
+	                        AND #instResetAnodePnPX1FwdOutputCam.Done
+	                        AND #instResetAnodePnPX1BwdOutputCam.Done
+	                        AND #instResetAnodePnPX2FwdOutputCam.Done
+	                        AND #instResetAnodePnPX2BwdOutputCam.Done
+	                        AND #instResetAnodePnPZ1Down1OutputCam.Done
+	                        AND #instResetAnodePnPZ1Up1OutputCam.Done
+	                        AND #instResetAnodePnPZ2Down1OutputCam.Done
+	                        AND #instResetAnodePnPZ2Up1OutputCam.Done
+	                        AND #instResetAnodePnPZ1Down2OutputCam.Done
+	                        AND #instResetAnodePnPZ1Up2OutputCam.Done
+	                        AND #instResetAnodePnPZ2Down2OutputCam.Done
+	                        AND #instResetAnodePnPZ2Up2OutputCam.Done
+	                        AND #instResetAnodePnPZ1SuctionOnOutputCam.Done
+	                        AND #instResetAnodePnPZ1SuctionOffOutputCam.Done
+	                        AND #instResetAnodePnPZ1ReelCutBlowOutputCam.Done
+	                        AND #instResetAnodePnPZ2SuctionOnOutputCam.Done
+	                        AND #instResetAnodePnPZ2SuctionOffOutputCam.Done
+	                        AND #instResetAnodeAlignSuctionOnOutputCam.Done
+	                        AND #instResetAnodeAlignSuctionOffOutputCam.Done
+	                        AND #instResetAnodePnPZ1ReelCutDataDeleteOnOutputCam.Done
+	                        AND #instResetAnodePnP1XReelCutDataDeleteOffOutputCam.Done
+	                        AND #instResetAnodeAlignVisionOutputCam.Done
+	                        AND #instResetCathodePnPX1FwdOutputCam.Done
+	                        AND #instResetCathodePnPX1BwdOutputCam.Done
+	                        AND #instResetCathodePnPX2FwdOutputCam.Done
+	                        AND #instResetCathodePnPX2BwdOutputCam.Done
+	                        AND #instResetCathodePnPZ1Down1OutputCam.Done
+	                        AND #instResetCathodePnPZ1Up1OutputCam.Done
+	                        AND #instResetCathodePnPZ2Down1OutputCam.Done
+	                        AND #instResetCathodePnPZ2Up1OutputCam.Done
+	                        AND #instResetCathodePnPZ1Down2OutputCam.Done
+	                        AND #instResetCathodePnPZ1Up2OutputCam.Done
+	                        AND #instResetCathodePnPZ2Down2OutputCam.Done
+	                        AND #instResetCathodePnPZ2Up2OutputCam.Done
+	                        AND #instResetCathodePnPZ1SuctionOnOutputCam.Done
+	                        AND #instResetCathodePnPZ1SuctionOffOutputCam.Done
+	                        AND #instResetCathodePnPZ1ReelCutBlowOutputCam.Done
+	                        AND #instResetCathodePnPZ2SuctionOnOutputCam.Done
+	                        AND #instResetCathodePnPZ2SuctionOffOutputCam.Done
+	                        AND #instResetCathodeAlignSuctionOnOutputCam.Done
+	                        AND #instResetCathodeAlignSuctionOffOutputCam.Done
+	                        AND #instResetCathodePnPZ1ReelCutDataDeleteOnOutputCam.Done
+	                        AND #instResetCathodePnP1XReelCutDataDeleteOffOutputCam.Done
+	                        AND #instResetCathodeAlignVisionOutputCam.Done
+	                    THEN
+	                        #statEndTime := TIME_TCK();
+	                        #statTimeTable[#STAT_RESET / 10 - 9] := #statEndTime - #statStartTime;
+	                        #statStartTime := TIME_TCK();
+	                        #statBeforeCmd := #statNowCmd;                                  // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_DONE;                                      // STAT_DONE 상태 돌입
+	                    END_IF;
+	                END_REGION
+	                
+	                REGION ERROR                                                                            // 모든 축 및 Cam의 Reset 동작 중 에러 발생 시
+	                    IF #instResetMasterVirtualAxis.Error THEN                                           // Master Virtual 축의 Reset 동작 중 에러 발생 시
+	                        #ErrorID := #instResetMasterVirtualAxis.ErrorId;                                // Master Reset 에러ID 출력
+	                        #StatusID := 16#0200_2320;
+	                        #statBeforeCmd := #statNowCmd;                                                  // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                     // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instResetUnwinderVirtualAxis.Error THEN                                         // Unwinder Virtual 축의 Reset 동작 중 에러 발생 시
+	                        #ErrorID := #instResetUnwinderVirtualAxis.ErrorId;                              // Unwinder Reset 에러ID 출력
+	                        #StatusID := 16#0200_2320;
+	                        #statBeforeCmd := #statNowCmd;                                                  // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                     // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instResetFinalRoller.Error THEN                                                 // Final Roller 축의 Reset 동작 중 에러 발생 시
+	                        #ErrorID := #instResetFinalRoller.ErrorId;                                      // Final Roller Reset 에러ID 출력
+	                        #StatusID := 16#2600_2320;
+	                        #statBeforeCmd := #statNowCmd;                                                  // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                     // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instResetCompensator.Error THEN                                                 // Compensator 축의 Reset 동작 중 에러 발생 시
+	                        #ErrorID := #instResetCompensator.ErrorId;                                      // Compensator Reset 에러ID 출력
+	                        #StatusID := 16#0600_2320;
+	                        #statBeforeCmd := #statNowCmd;                                                  // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                     // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instResetAnodePnPX1.Error THEN                                                  // Anode PnP X1 축의 Reset 동작 중 에러 발생 시
+	                        #ErrorID := #instResetAnodePnPX1.ErrorId;                                       // Anode PnP X1 Reset 에러ID 출력
+	                        #StatusID := 16#0800_2320;
+	                        #statBeforeCmd := #statNowCmd;                                                  // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                     // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instResetAnodePnPX2.Error THEN                                                  // Anode PnP X2 축의 Reset 동작 중 에러 발생 시
+	                        #ErrorID := #instResetAnodePnPX2.ErrorId;                                       // Anode PnP X2 Reset 에러ID 출력
+	                        #StatusID := 16#0900_2320;
+	                        #statBeforeCmd := #statNowCmd;                                                  // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                     // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instResetAnodePnPZ1.Error THEN                                                  // Anode PnP Z1 축의 Reset 동작 중 에러 발생 시
+	                        #ErrorID := #instResetAnodePnPZ1.ErrorId;                                       // Anode PnP Z1 Reset 에러ID 출력
+	                        #StatusID := 16#1200_2320;
+	                        #statBeforeCmd := #statNowCmd;                                                  // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                     // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instResetAnodePnPZ2.Error THEN                                                  // Anode PnP Z2 축의 Reset 동작 중 에러 발생 시
+	                        #ErrorID := #instResetAnodePnPZ2.ErrorId;                                       // Anode PnP Z2 Reset 에러ID 출력
+	                        #StatusID := 16#1300_2320;
+	                        #statBeforeCmd := #statNowCmd;                                                  // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                     // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instResetCathodePnPX1.Error THEN                                                // Cathode PnP X1 축의 Reset 동작 중 에러 발생 시
+	                        #ErrorID := #instResetCathodePnPX1.ErrorId;                                     // Cathode PnP X1 Reset 에러ID 출력
+	                        #StatusID := 16#1400_2320;
+	                        #statBeforeCmd := #statNowCmd;                                                  // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                     // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instResetCathodePnPX2.Error THEN                                                // Cathode PnP X2 축의 Reset 동작 중 에러 발생 시
+	                        #ErrorID := #instResetCathodePnPX2.ErrorId;                                     // Cathode PnP X2 Reset 에러ID 출력
+	                        #StatusID := 16#1500_2320;
+	                        #statBeforeCmd := #statNowCmd;                                                  // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                     // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instResetCathodePnPZ1.Error THEN                                                // Cathode PnP Z1 축의 Reset 동작 중 에러 발생 시
+	                        #ErrorID := #instResetCathodePnPZ1.ErrorId;                                     // Cathode PnP Z1 Reset 에러ID 출력
+	                        #StatusID := 16#1800_2320;
+	                        #statBeforeCmd := #statNowCmd;                                                  // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                     // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instResetCathodePnPZ2.Error THEN                                                // Cathode PnP Z2 축의 Reset 동작 중 에러 발생 시
+	                        #ErrorID := #instResetCathodePnPZ2.ErrorId;                                     // Cathode PnP Z2 Reset 에러ID 출력
+	                        #StatusID := 16#1900_2320;
+	                        #statBeforeCmd := #statNowCmd;                                                  // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                     // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instResetAnodeMandrelYFront.Error THEN                                          // Anode Mandrel YFront 축의 Reset 동작 중 에러 발생 시
+	                        #ErrorID := #instResetAnodeMandrelYFront.ErrorId;                               // Anode Mandrel YFront Reset 에러ID 출력
+	                        #StatusID := 16#2800_2320;
+	                        #statBeforeCmd := #statNowCmd;                                                  // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                     // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instResetAnodeMandrelYRear.Error THEN                                           // Anode Mandrel YRear 축의 Reset 동작 중 에러 발생 시
+	                        #ErrorID := #instResetAnodeMandrelYRear.ErrorId;                                // Anode Mandrel YRear Reset 에러ID 출력
+	                        #StatusID := 16#3000_2320;
+	                        #statBeforeCmd := #statNowCmd;                                                  // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                     // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instResetAnodeMandrelZFront.Error THEN                                          // Anode Mandrel ZFront 축의 Reset 동작 중 에러 발생 시
+	                        #ErrorID := #instResetAnodeMandrelZFront.ErrorId;                               // Anode Mandrel ZFront Reset 에러ID 출력
+	                        #StatusID := 16#2900_2320;
+	                        #statBeforeCmd := #statNowCmd;                                                  // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                     // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instResetAnodeMandrelZRear.Error THEN                                           // Anode Mandrel ZRear 축의 Reset 동작 중 에러 발생 시
+	                        #ErrorID := #instResetAnodeMandrelZRear.ErrorId;                                // Anode Mandrel ZRear Reset 에러ID 출력
+	                        #StatusID := 16#3100_2320;
+	                        #statBeforeCmd := #statNowCmd;                                                  // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                     // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instResetCathodeMandrelYFront.Error THEN                                        // Cathode Mandrel YFront 축의 Reset 동작 중 에러 발생 시
+	                        #ErrorID := #instResetCathodeMandrelYFront.ErrorId;                             // Cathode Mandrel YFront Reset 에러ID 출력
+	                        #StatusID := 16#3200_2320;
+	                        #statBeforeCmd := #statNowCmd;                                                  // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                     // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instResetCathodeMandrelYRear.Error THEN                                         // Cathode Mandrel YRear 축의 Reset 동작 중 에러 발생 시
+	                        #ErrorID := #instResetCathodeMandrelYRear.ErrorId;                              // Cathode Mandrel YRear Reset 에러ID 출력
+	                        #StatusID := 16#3400_2320;
+	                        #statBeforeCmd := #statNowCmd;                                                  // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                     // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instResetCathodeMandrelZFront.Error THEN                                        // Cathode Mandrel ZFront 축의 Reset 동작 중 에러 발생 시
+	                        #ErrorID := #instResetCathodeMandrelZFront.ErrorId;                             // Cathode Mandrel ZFront Reset 에러ID 출력
+	                        #StatusID := 16#3300_2320;
+	                        #statBeforeCmd := #statNowCmd;                                                  // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                     // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instResetCathodeMandrelZRear.Error THEN                                         // Cathode Mandrel ZRear 축의 Reset 동작 중 에러 발생 시
+	                        #ErrorID := #instResetCathodeMandrelZRear.ErrorId;                              // Cathode Mandrel ZRear Reset 에러ID 출력
+	                        #StatusID := 16#3400_2320;
+	                        #statBeforeCmd := #statNowCmd;                                                  // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                     // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instResetFinalRollerCam.Error THEN                                              // Final Roller Cam의 Reset 동작 중 에러 발생 시
+	                        #ErrorID := #instResetFinalRollerCam.ErrorId;                                   // Final Roller Cam Reset 에러ID 출력
+	                        #StatusID := 16#2603_2320;
+	                        #statBeforeCmd := #statNowCmd;                                                  // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                     // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instResetCompensatorCam.Error THEN                                              // Compensator Cam의 Reset 동작 중 에러 발생 시
+	                        #ErrorID := #instResetCompensatorCam.ErrorId;                                   // Compensator Cam Reset 에러ID 출력
+	                        #StatusID := 16#0603_2320;
+	                        #statBeforeCmd := #statNowCmd;                                                  // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                     // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instResetAnodePnPX1Cam.Error THEN                                               // Anode PnP X1 Cam의 Reset 동작 중 에러 발생 시
+	                        #ErrorID := #instResetAnodePnPX1Cam.ErrorId;                                    // Anode PnP X1 Cam Reset 에러ID 출력
+	                        #StatusID := 16#0803_2320;
+	                        #statBeforeCmd := #statNowCmd;                                                  // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                     // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instResetAnodePnPX2Cam.Error THEN                                               // Anode PnP X2 Cam의 Reset 동작 중 에러 발생 시
+	                        #ErrorID := #instResetAnodePnPX2Cam.ErrorId;                                    // Anode PnP X2 Cam Reset 에러ID 출력
+	                        #StatusID := 16#0903_2320;
+	                        #statBeforeCmd := #statNowCmd;                                                  // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                     // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instResetAnodePnPZ1Cam.Error THEN                                               // Anode PnP Z1 Cam의 Reset 동작 중 에러 발생 시
+	                        #ErrorID := #instResetAnodePnPZ1Cam.ErrorId;                                    // Anode PnP Z1 Cam Reset 에러ID 출력
+	                        #StatusID := 16#1203_2320;
+	                        #statBeforeCmd := #statNowCmd;                                                  // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                     // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instResetAnodePnPZ2Cam.Error THEN                                               // Anode PnP Z2 Cam의 Reset 동작 중 에러 발생 시
+	                        #ErrorID := #instResetAnodePnPZ2Cam.ErrorId;                                    // Anode PnP Z2 Cam Reset 에러ID 출력
+	                        #StatusID := 16#1303_2320;
+	                        #statBeforeCmd := #statNowCmd;                                                  // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                     // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instResetCathodePnPX1Cam.Error THEN                                             // Cathode PnP X1 Cam의 Reset 동작 중 에러 발생 시
+	                        #ErrorID := #instResetCathodePnPX1Cam.ErrorId;                                  // Cathode PnP X1 Cam Reset 에러ID 출력
+	                        #StatusID := 16#1403_2320;
+	                        #statBeforeCmd := #statNowCmd;                                                  // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                     // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instResetCathodePnPX2Cam.Error THEN                                             // Cathode PnP X2 Cam의 Reset 동작 중 에러 발생 시
+	                        #ErrorID := #instResetCathodePnPX2Cam.ErrorId;                                  // Cathode PnP X2 Cam Reset 에러ID 출력
+	                        #StatusID := 16#1503_2320;
+	                        #statBeforeCmd := #statNowCmd;                                                  // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                     // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instResetCathodePnPZ1Cam.Error THEN                                             // Cathode PnP Z1 Cam의 Reset 동작 중 에러 발생 시
+	                        #ErrorID := #instResetCathodePnPZ1Cam.ErrorId;                                  // Cathode PnP Z1 Cam Reset 에러ID 출력
+	                        #StatusID := 16#1803_2320;
+	                        #statBeforeCmd := #statNowCmd;                                                  // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                     // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instResetCathodePnPZ2Cam.Error THEN                                             // Cathode PnP Z2 Cam의 Reset 동작 중 에러 발생 시
+	                        #ErrorID := #instResetCathodePnPZ2Cam.ErrorId;                                  // Cathode PnP Z2 Cam Reset 에러ID 출력
+	                        #StatusID := 16#1903_2320;
+	                        #statBeforeCmd := #statNowCmd;                                                  // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                     // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instResetAnodeMandrelYFrontCam.Error THEN                                       // Anode Mandrel YFront Cam의 Reset 동작 중 에러 발생 시
+	                        #ErrorID := #instResetAnodeMandrelYFrontCam.ErrorId;                            // Anode Mandrel YFront Cam Reset 에러ID 출력
+	                        #StatusID := 16#2803_2320;
+	                        #statBeforeCmd := #statNowCmd;                                                  // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                     // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instResetAnodeMandrelYRearCam.Error THEN                                        // Anode Mandrel YRear Cam의 Reset 동작 중 에러 발생 시
+	                        #ErrorID := #instResetAnodeMandrelYRearCam.ErrorId;                             // Anode Mandrel YRear Cam Reset 에러ID 출력
+	                        #StatusID := 16#3003_2320;
+	                        #statBeforeCmd := #statNowCmd;                                                  // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                     // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instResetAnodeMandrelZFrontCam.Error THEN                                       // Anode Mandrel ZFront Cam의 Reset 동작 중 에러 발생 시
+	                        #ErrorID := #instResetAnodeMandrelZFrontCam.ErrorId;                            // Anode Mandrel ZFront Cam Reset 에러ID 출력
+	                        #StatusID := 16#2903_2320;
+	                        #statBeforeCmd := #statNowCmd;                                                  // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                     // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instResetAnodeMandrelZRearCam.Error THEN                                        // Anode Mandrel ZRear Cam의 Reset 동작 중 에러 발생 시
+	                        #ErrorID := #instResetAnodeMandrelZRearCam.ErrorId;                             // Anode Mandrel ZRear Cam Reset 에러ID 출력
+	                        #StatusID := 16#3003_2320;
+	                        #statBeforeCmd := #statNowCmd;                                                  // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                     // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instResetCathodeMandrelYFrontCam.Error THEN                                     // Cathode Mandrel YFront Cam의 Reset 동작 중 에러 발생 시
+	                        #ErrorID := #instResetCathodeMandrelYFrontCam.ErrorId;                          // Cathode Mandrel YFront Cam Reset 에러ID 출력
+	                        #StatusID := 16#3203_2320;
+	                        #statBeforeCmd := #statNowCmd;                                                  // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                     // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instResetCathodeMandrelYRearCam.Error THEN                                      // Cathode Mandrel YRear Cam의 Reset 동작 중 에러 발생 시
+	                        #ErrorID := #instResetCathodeMandrelYRearCam.ErrorId;                           // Cathode Mandrel YRear Cam Reset 에러ID 출력
+	                        #StatusID := 16#3403_2320;
+	                        #statBeforeCmd := #statNowCmd;                                                  // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                     // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instResetCathodeMandrelZFrontCam.Error THEN                                     // Cathode Mandrel ZFront Cam의 Reset 동작 중 에러 발생 시
+	                        #ErrorID := #instResetCathodeMandrelZFrontCam.ErrorId;                          // Cathode Mandrel ZFront Cam Reset 에러ID 출력
+	                        #StatusID := 16#3303_2320;
+	                        #statBeforeCmd := #statNowCmd;                                                  // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                     // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instResetCathodeMandrelZRearCam.Error THEN                                      // Cathode Mandrel ZRear Cam의 Reset 동작 중 에러 발생 시
+	                        #ErrorID := #instResetCathodeMandrelZRearCam.ErrorId;                           // Cathode Mandrel ZRear Cam Reset 에러ID 출력
+	                        #StatusID := 16#3503_2320;
+	                        #statBeforeCmd := #statNowCmd;                                                  // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                     // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instResetFinalRollerXFwdOutputCam.Error THEN                                    // Final Roller X Fwd Output Cam의 Reset 동작 중 에러 발생 시
+	                        #ErrorID := #instResetFinalRollerXFwdOutputCam.ErrorId;                         // Final Roller X Fwd Output Cam Reset 에러ID 출력
+	                        #StatusID := 16#2601_2320;
+	                        #statBeforeCmd := #statNowCmd;                                                  // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                     // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instResetFinalRollerXBwdOutputCam.Error THEN                                    // Final Roller X Bwd Output Cam의 Reset 동작 중 에러 발생 시
+	                        #ErrorID := #instResetFinalRollerXBwdOutputCam.ErrorId;                         // Final Roller X Bwd Output Cam Reset 에러ID 출력
+	                        #StatusID := 16#2601_2320;
+	                        #statBeforeCmd := #statNowCmd;                                                  // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                     // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instResetFinalRollerXStackTableDownOutputCam.Error THEN                         // Final Roller X Stack Table Down Output Cam의 Reset 동작 중 에러 발생 시
+	                        #ErrorID := #instResetFinalRollerXStackTableDownOutputCam.ErrorId;              // Final Roller X Stack Table Down Output Cam Reset 에러ID 출력
+	                        #StatusID := 16#2601_2320;
+	                        #statBeforeCmd := #statNowCmd;                                                  // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                     // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instResetFinalRollerXStackAnodeVisionOutputCam.Error THEN                       // Final Roller X Stack Anode Vision Output Cam의 Reset 동작 중 에러 발생 시
+	                        #ErrorID := #instResetFinalRollerXStackAnodeVisionOutputCam.ErrorId;            // Final Roller X Stack Anode Vision Output Cam Reset 에러ID 출력
+	                        #StatusID := 16#2601_2320;
+	                        #statBeforeCmd := #statNowCmd;                                                  // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                     // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instResetFinalRollerXStackCathodeVisionOutputCam.Error THEN                     // Final Roller X Stack Cathode Vision Output Cam의 Reset 동작 중 에러 발생 시
+	                        #ErrorID := #instResetFinalRollerXStackCathodeVisionOutputCam.ErrorId;          // Final Roller X Stack Cathode Vision Output Cam Reset 에러ID 출력
+	                        #StatusID := 16#2601_2320;
+	                        #statBeforeCmd := #statNowCmd;                                                  // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                     // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instResetAnodePnPX1FwdOutputCam.Error THEN                                      // Anode PnP X1 FwdOutput Cam의 Reset 동작 중 에러 발생 시
+	                        #ErrorID := #instResetAnodePnPX1FwdOutputCam.ErrorId;                           // Anode PnP X1 FwdOutput Cam Reset 에러ID 출력
+	                        #StatusID := 16#0801_2320;
+	                        #statBeforeCmd := #statNowCmd;                                                  // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                     // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instResetAnodePnPX1BwdOutputCam.Error THEN                                      // Anode PnP X1 BwdOutput Cam의 Reset 동작 중 에러 발생 시
+	                        #ErrorID := #instResetAnodePnPX1BwdOutputCam.ErrorId;                           // Anode PnP X1 BwdOutput Cam Reset 에러ID 출력
+	                        #StatusID := 16#0801_2320;
+	                        #statBeforeCmd := #statNowCmd;                                                  // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                     // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instResetAnodePnPX2FwdOutputCam.Error THEN                                      // Anode PnP X2 FwdOutput Cam의 Reset 동작 중 에러 발생 시
+	                        #ErrorID := #instResetAnodePnPX2FwdOutputCam.ErrorId;                           // Anode PnP X2 FwdOutput Cam Reset 에러ID 출력
+	                        #StatusID := 16#0901_2320;
+	                        #statBeforeCmd := #statNowCmd;                                                  // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                     // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instResetAnodePnPX2BwdOutputCam.Error THEN                                      // Anode PnP X2 BwdOutput Cam의 Reset 동작 중 에러 발생 시
+	                        #ErrorID := #instResetAnodePnPX2BwdOutputCam.ErrorId;                           // Anode PnP X2 BwdOutput Cam Reset 에러ID 출력
+	                        #StatusID := 16#0901_2320;
+	                        #statBeforeCmd := #statNowCmd;                                                  // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                     // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instResetAnodePnPZ1Down1OutputCam.Error THEN                                    // Anode PnP Z1 Down1 Output Cam의 Reset 동작 중 에러 발생 시
+	                        #ErrorID := #instResetAnodePnPZ1Down1OutputCam.ErrorId;                         // Anode PnP Z1 Down1 Output Cam Reset 에러ID 출력
+	                        #StatusID := 16#1201_2320;
+	                        #statBeforeCmd := #statNowCmd;                                                  // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                     // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instResetAnodePnPZ1Up1OutputCam.Error THEN                                      // Anode PnP Z1 Up1 Output Cam의 Reset 동작 중 에러 발생 시
+	                        #ErrorID := #instResetAnodePnPZ1Up1OutputCam.ErrorId;                           // Anode PnP Z1 Up1 Output Cam Reset 에러ID 출력
+	                        #StatusID := 16#1201_2320;
+	                        #statBeforeCmd := #statNowCmd;                                                  // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                     // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instResetAnodePnPZ2Down1OutputCam.Error THEN                                    // Anode PnP Z2 Down1 Output Cam의 Reset 동작 중 에러 발생 시
+	                        #ErrorID := #instResetAnodePnPZ2Down1OutputCam.ErrorId;                         // Anode PnP Z2 Down1 Output Cam Reset 에러ID 출력
+	                        #StatusID := 16#1301_2320;
+	                        #statBeforeCmd := #statNowCmd;                                                  // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                     // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instResetAnodePnPZ2Up1OutputCam.Error THEN                                      // Anode PnP Z2 Up1 Output Cam의 Reset 동작 중 에러 발생 시
+	                        #ErrorID := #instResetAnodePnPZ2Up1OutputCam.ErrorId;                           // Anode PnP Z2 Up1 Output Cam Reset 에러ID 출력
+	                        #StatusID := 16#1301_2320;
+	                        #statBeforeCmd := #statNowCmd;                                                  // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                     // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instResetAnodePnPZ1Down2OutputCam.Error THEN                                    // Anode PnP Z1 Down2 Output Cam의 Reset 동작 중 에러 발생 시
+	                        #ErrorID := #instResetAnodePnPZ1Down2OutputCam.ErrorId;                         // Anode PnP Z1 Down2 Output Cam Reset 에러ID 출력
+	                        #StatusID := 16#1201_2320;
+	                        #statBeforeCmd := #statNowCmd;                                                  // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                     // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instResetAnodePnPZ1Up2OutputCam.Error THEN                                      // Anode PnP Z1 Up2 Output Cam의 Reset 동작 중 에러 발생 시
+	                        #ErrorID := #instResetAnodePnPZ1Up2OutputCam.ErrorId;                           // Anode PnP Z1 Up2 Output Cam Reset 에러ID 출력
+	                        #StatusID := 16#1201_2320;
+	                        #statBeforeCmd := #statNowCmd;                                                  // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                     // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instResetAnodePnPZ2Down2OutputCam.Error THEN                                    // Anode PnP Z2 Down2 Output Cam의 Reset 동작 중 에러 발생 시
+	                        #ErrorID := #instResetAnodePnPZ2Down2OutputCam.ErrorId;                         // Anode PnP Z2 Down2 Output Cam Reset 에러ID 출력
+	                        #StatusID := 16#1301_2320;
+	                        #statBeforeCmd := #statNowCmd;                                                  // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                     // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instResetAnodePnPZ2Up2OutputCam.Error THEN                                      // Anode PnP Z2 Up2 Output Cam의 Reset 동작 중 에러 발생 시
+	                        #ErrorID := #instResetAnodePnPZ2Up2OutputCam.ErrorId;                           // Anode PnP Z2 Up2 Output Cam Reset 에러ID 출력
+	                        #StatusID := 16#1301_2320;
+	                        #statBeforeCmd := #statNowCmd;                                                  // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                     // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instResetAnodePnPZ1SuctionOnOutputCam.Error THEN                                // Anode PnP Z1 Suction On Output Cam의 Reset 동작 중 에러 발생 시
+	                        #ErrorID := #instResetAnodePnPZ1SuctionOnOutputCam.ErrorId;                     // Anode PnP Z1 Suction On Output Cam Reset 에러ID 출력
+	                        #StatusID := 16#1201_2320;
+	                        #statBeforeCmd := #statNowCmd;                                                  // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                     // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instResetAnodePnPZ1SuctionOffOutputCam.Error THEN                               // Anode PnP Z1 Suction Off Output Cam의 Reset 동작 중 에러 발생 시
+	                        #ErrorID := #instResetAnodePnPZ1SuctionOffOutputCam.ErrorId;                    // Anode PnP Z1 Suction Off Output Cam Reset 에러ID 출력
+	                        #StatusID := 16#1201_2320;
+	                        #statBeforeCmd := #statNowCmd;                                                  // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                     // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instResetAnodePnPZ1ReelCutBlowOutputCam.Error THEN                              // Anode PnP Z1 Reel Cut Blow Output Cam의 Reset 동작 중 에러 발생 시
+	                        #ErrorID := #instResetAnodePnPZ1ReelCutBlowOutputCam.ErrorId;                   // Anode PnP Z1 Reel Cut Blow Output Cam Reset 에러ID 출력
+	                        #StatusID := 16#1201_2320;
+	                        #statBeforeCmd := #statNowCmd;                                                  // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                     // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instResetAnodePnPZ2SuctionOnOutputCam.Error THEN                                // Anode PnP Z2 Suction On Output Cam의 Reset 동작 중 에러 발생 시
+	                        #ErrorID := #instResetAnodePnPZ2SuctionOnOutputCam.ErrorId;                     // Anode PnP Z2 Suction On Output Cam Reset 에러ID 출력
+	                        #StatusID := 16#1301_2320;
+	                        #statBeforeCmd := #statNowCmd;                                                  // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                     // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instResetAnodePnPZ2SuctionOffOutputCam.Error THEN                               // Anode PnP Z2 Suction Off Output Cam의 Reset 동작 중 에러 발생 시
+	                        #ErrorID := #instResetAnodePnPZ2SuctionOffOutputCam.ErrorId;                    // Anode PnP Z2 Suction Off Output Cam Reset 에러ID 출력
+	                        #StatusID := 16#1301_2320;
+	                        #statBeforeCmd := #statNowCmd;                                                  // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                     // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instResetAnodeAlignSuctionOnOutputCam.Error THEN                                // Anode Align Suction On Output Cam의 Reset 동작 중 에러 발생 시
+	                        #ErrorID := #instResetAnodeAlignSuctionOnOutputCam.ErrorId;                     // Anode Align Suction On Output Cam Reset 에러ID 출력
+	                        #StatusID := 16#2001_2320;
+	                        #statBeforeCmd := #statNowCmd;                                                  // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                     // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instResetAnodeAlignSuctionOffOutputCam.Error THEN                               // Anode Align Suction Off Output Cam의 Reset 동작 중 에러 발생 시
+	                        #ErrorID := #instResetAnodeAlignSuctionOffOutputCam.ErrorId;                    // Anode Align Suction Off Output Cam Reset 에러ID 출력
+	                        #StatusID := 16#2001_2320;
+	                        #statBeforeCmd := #statNowCmd;                                                  // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                     // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instResetAnodePnPZ1ReelCutDataDeleteOnOutputCam.Error THEN                      // Anode PnP Z1 Reel Cut Data Delete On Output Cam의 Reset 동작 중 에러 발생 시
+	                        #ErrorID := #instResetAnodePnPZ1ReelCutDataDeleteOnOutputCam.ErrorId;           // Anode PnP Z1 Reel Cut Data Delete On Output Cam Reset 에러ID 출력
+	                        #StatusID := 16#1201_2320;
+	                        #statBeforeCmd := #statNowCmd;                                                  // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                     // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instResetAnodePnP1XReelCutDataDeleteOffOutputCam.Error THEN                     // Anode PnP 1X Reel Cut Data Delete Off Output Cam의 Reset 동작 중 에러 발생 시
+	                        #ErrorID := #instResetAnodePnP1XReelCutDataDeleteOffOutputCam.ErrorId;          // Anode PnP 1X Reel Cut Data Delete Off Output Cam Reset 에러ID 출력
+	                        #StatusID := 16#0801_2320;
+	                        #statBeforeCmd := #statNowCmd;                                                  // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                     // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instResetAnodeAlignVisionOutputCam.Error THEN                                   // Anode Align Vision Output Cam의 Reset 동작 중 에러 발생 시
+	                        #ErrorID := #instResetAnodeAlignVisionOutputCam.ErrorId;                        // Anode Align Vision Output Cam Reset 에러ID 출력
+	                        #StatusID := 16#2001_2320;
+	                        #statBeforeCmd := #statNowCmd;                                                  // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                     // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instResetCathodePnPX1FwdOutputCam.Error THEN                                    // Cathode PnP X1 Fwd Output Cam의 Reset 동작 중 에러 발생 시
+	                        #ErrorID := #instResetCathodePnPX1FwdOutputCam.ErrorId;                         // Cathode PnP X1 Fwd Output Cam Reset 에러ID 출력
+	                        #StatusID := 16#1401_2320;
+	                        #statBeforeCmd := #statNowCmd;                                                  // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                     // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instResetCathodePnPX1BwdOutputCam.Error THEN                                    // Cathode PnP X1 Bwd Output Cam의 Reset 동작 중 에러 발생 시
+	                        #ErrorID := #instResetCathodePnPX1BwdOutputCam.ErrorId;                         // Cathode PnP X1 Bwd Output Cam Reset 에러ID 출력
+	                        #StatusID := 16#1401_2320;
+	                        #statBeforeCmd := #statNowCmd;                                                  // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                     // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instResetCathodePnPX2FwdOutputCam.Error THEN                                    // Cathode PnP X2 Fwd Output Cam의 Reset 동작 중 에러 발생 시
+	                        #ErrorID := #instResetCathodePnPX2FwdOutputCam.ErrorId;                         // Cathode PnP X2 Fwd Output Cam Reset 에러ID 출력
+	                        #StatusID := 16#1501_2320;
+	                        #statBeforeCmd := #statNowCmd;                                                  // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                     // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instResetCathodePnPX2BwdOutputCam.Error THEN                                    // Cathode PnP X2 Bwd Output Cam의 Reset 동작 중 에러 발생 시
+	                        #ErrorID := #instResetCathodePnPX2BwdOutputCam.ErrorId;                         // Cathode PnP X2 Bwd Output Cam Reset 에러ID 출력
+	                        #StatusID := 16#1501_2320;
+	                        #statBeforeCmd := #statNowCmd;                                                  // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                     // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instResetCathodePnPZ1Down1OutputCam.Error THEN                                  // Cathode PnP Z1 Down1 Output Cam의 Reset 동작 중 에러 발생 시
+	                        #ErrorID := #instResetCathodePnPZ1Down1OutputCam.ErrorId;                       // Cathode PnP Z1 Down1 Output Cam Reset 에러ID 출력
+	                        #StatusID := 16#1801_2320;
+	                        #statBeforeCmd := #statNowCmd;                                                  // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                     // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instResetCathodePnPZ1Up1OutputCam.Error THEN                                    // Cathode PnP Z1 Up1 Output Cam의 Reset 동작 중 에러 발생 시
+	                        #ErrorID := #instResetCathodePnPZ1Up1OutputCam.ErrorId;                         // Cathode PnP Z1 Up1 Output Cam Reset 에러ID 출력
+	                        #StatusID := 16#1801_2320;
+	                        #statBeforeCmd := #statNowCmd;                                                  // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                     // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instResetCathodePnPZ2Down1OutputCam.Error THEN                                  // Cathode PnP Z2 Down1 Output Cam의 Reset 동작 중 에러 발생 시
+	                        #ErrorID := #instResetCathodePnPZ2Down1OutputCam.ErrorId;                       // Cathode PnP Z2 Down1 Output Cam Reset 에러ID 출력
+	                        #StatusID := 16#1901_2320;
+	                        #statBeforeCmd := #statNowCmd;                                                  // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                     // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instResetCathodePnPZ2Up1OutputCam.Error THEN                                    // Cathode PnP Z2 Up1 Output Cam의 Reset 동작 중 에러 발생 시
+	                        #ErrorID := #instResetCathodePnPZ2Up1OutputCam.ErrorId;                         // Cathode PnP Z2 Up1 Output Cam Reset 에러ID 출력
+	                        #StatusID := 16#1901_2320;
+	                        #statBeforeCmd := #statNowCmd;                                                  // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                     // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instResetCathodePnPZ1Down2OutputCam.Error THEN                                  // Cathode PnP Z1 Down2 Output Cam의 Reset 동작 중 에러 발생 시
+	                        #ErrorID := #instResetCathodePnPZ1Down2OutputCam.ErrorId;                       // Cathode PnP Z1 Down2 Output Cam Reset 에러ID 출력
+	                        #StatusID := 16#1801_2320;
+	                        #statBeforeCmd := #statNowCmd;                                                  // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                     // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instResetCathodePnPZ1Up2OutputCam.Error THEN                                    // Cathode PnP Z1 Up2 Output Cam의 Reset 동작 중 에러 발생 시
+	                        #ErrorID := #instResetCathodePnPZ1Up2OutputCam.ErrorId;                         // Cathode PnP Z1 Up2 Output Cam Reset 에러ID 출력
+	                        #StatusID := 16#1801_2320;
+	                        #statBeforeCmd := #statNowCmd;                                                  // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                     // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instResetCathodePnPZ2Down2OutputCam.Error THEN                                  // Cathode PnP Z2 Down2 Output Cam의 Reset 동작 중 에러 발생 시
+	                        #ErrorID := #instResetCathodePnPZ2Down2OutputCam.ErrorId;                       // Cathode PnP Z2 Down2 Output Cam Reset 에러ID 출력
+	                        #StatusID := 16#1901_2320;
+	                        #statBeforeCmd := #statNowCmd;                                                  // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                     // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instResetCathodePnPZ2Up2OutputCam.Error THEN                                    // Cathode PnP Z2 Up2 Output Cam의 Reset 동작 중 에러 발생 시
+	                        #ErrorID := #instResetCathodePnPZ2Up2OutputCam.ErrorId;                         // Cathode PnP Z2 Up2 Output Cam Reset 에러ID 출력
+	                        #StatusID := 16#1901_2320;
+	                        #statBeforeCmd := #statNowCmd;                                                  // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                     // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instResetCathodePnPZ1SuctionOnOutputCam.Error THEN                              // Cathode PnP Z1 Suction On Output Cam의 Reset 동작 중 에러 발생 시
+	                        #ErrorID := #instResetCathodePnPZ1SuctionOnOutputCam.ErrorId;                   // Cathode PnP Z1 Suction On Output Cam Reset 에러ID 출력
+	                        #StatusID := 16#1801_2320;
+	                        #statBeforeCmd := #statNowCmd;                                                  // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                     // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instResetCathodePnPZ1SuctionOffOutputCam.Error THEN                             // Cathode PnP Z1 Suction Off Output Cam의 Reset 동작 중 에러 발생 시
+	                        #ErrorID := #instResetCathodePnPZ1SuctionOffOutputCam.ErrorId;                  // Cathode PnP Z1 Suction Off Output Cam Reset 에러ID 출력
+	                        #StatusID := 16#1801_2320;
+	                        #statBeforeCmd := #statNowCmd;                                                  // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                     // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instResetCathodePnPZ1ReelCutBlowOutputCam.Error THEN                            // Cathode PnP Z1 Reel Cut Blow Output Cam의 Reset 동작 중 에러 발생 시
+	                        #ErrorID := #instResetCathodePnPZ1ReelCutBlowOutputCam.ErrorId;                 // Cathode PnP Z1 Reel Cut Blow Output Cam Reset 에러ID 출력
+	                        #StatusID := 16#1801_2320;
+	                        #statBeforeCmd := #statNowCmd;                                                  // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                     // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instResetCathodePnPZ2SuctionOnOutputCam.Error THEN                              // Cathode PnP Z2 Suction On Output Cam의 Reset 동작 중 에러 발생 시
+	                        #ErrorID := #instResetCathodePnPZ2SuctionOnOutputCam.ErrorId;                   // Cathode PnP Z2 Suction On Output Cam Reset 에러ID 출력
+	                        #StatusID := 16#1901_2320;
+	                        #statBeforeCmd := #statNowCmd;                                                  // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                     // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instResetCathodePnPZ2SuctionOffOutputCam.Error THEN                             // Cathode PnP Z2 Suction Off Output Cam의 Reset 동작 중 에러 발생 시
+	                        #ErrorID := #instResetCathodePnPZ2SuctionOffOutputCam.ErrorId;                  // Cathode PnP Z2 Suction Off Output Cam Reset 에러ID 출력
+	                        #StatusID := 16#1901_2320;
+	                        #statBeforeCmd := #statNowCmd;                                                  // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                     // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instResetCathodeAlignSuctionOnOutputCam.Error THEN                              // Cathode Align Suction On Output Cam의 Reset 동작 중 에러 발생 시
+	                        #ErrorID := #instResetCathodeAlignSuctionOnOutputCam.ErrorId;                   // Cathode Align Suction On Output Cam Reset 에러ID 출력
+	                        #StatusID := 16#2301_2320;
+	                        #statBeforeCmd := #statNowCmd;                                                  // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                     // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instResetCathodeAlignSuctionOffOutputCam.Error THEN                             // Cathode Align Suction Off Output Cam의 Reset 동작 중 에러 발생 시
+	                        #ErrorID := #instResetCathodeAlignSuctionOffOutputCam.ErrorId;                  // Cathode Align Suction Off Output Cam Reset 에러ID 출력
+	                        #StatusID := 16#2301_2320;
+	                        #statBeforeCmd := #statNowCmd;                                                  // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                     // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instResetCathodePnPZ1ReelCutDataDeleteOnOutputCam.Error THEN                    // Cathode PnP Z1 Reel Cut Data Delete On Output Cam의 Reset 동작 중 에러 발생 시
+	                        #ErrorID := #instResetCathodePnPZ1ReelCutDataDeleteOnOutputCam.ErrorId;         // Cathode PnP Z1 Reel Cut Data Delete On Output Cam Reset 에러ID 출력
+	                        #StatusID := 16#1801_2320;
+	                        #statBeforeCmd := #statNowCmd;                                                  // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                     // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instResetCathodePnP1XReelCutDataDeleteOffOutputCam.Error THEN                   // Cathode PnP 1X Reel Cut Data Delete Off Output Cam의 Reset 동작 중 에러 발생 시
+	                        #ErrorID := #instResetCathodePnP1XReelCutDataDeleteOffOutputCam.ErrorId;        // Cathode PnP 1X Reel Cut Data Delete Off Output Cam Reset 에러ID 출력
+	                        #StatusID := 16#1801_2320;
+	                        #statBeforeCmd := #statNowCmd;                                                  // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                     // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                    
+	                    IF #instResetCathodeAlignVisionOutputCam.Error THEN                                 // Cathode Align Vision Output Cam의 Reset 동작 중 에러 발생 시
+	                        #ErrorID := #instResetCathodeAlignVisionOutputCam.ErrorId;                      // Cathode Align Vision Output Cam Reset 에러ID 출력
+	                        #StatusID := 16#2301_2320;
+	                        #statBeforeCmd := #statNowCmd;                                                  // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                                                     // STAT_ERROR 상태 돌입
+	                    END_IF;
+	                END_REGION
+	            END_REGION
+	            
+	        #STAT_DONE:
+	            REGION DONE
+	                ;
+	            END_REGION
+	    END_CASE;
+	END_REGION
+	
+	REGION INSTANCES                                                                        // 각 커맨드에 따른 인스턴스DB 호출 영역
+	    #tempLineSpeed := #StageWidth * #CPM / 60.0;                                        // 선속[mm/s] 계산
+	    #tempTime := 60.0 / #CPM;                                                           // 셀 1개당 소요되는 시간[s] 계산
+	
+	    REGION RESET                                                                        // 각 축에 따른 RESET 동작 인스턴스DB 호출 영역
+	        REGION MASTER VIRTUAL AXIS
+	            #instResetMasterVirtualAxis(Axis := #tempMasterVirtualAxis^,
+	                                        Execute := #statNowCmd = #STAT_RESET,
+	                                        Restart:= NOT #tempMasterVirtualAxis^.StatusWord.%X0);
+	        END_REGION
+	        
+	        REGION UNWINDER VIRTUAL AXIS
+	            #instResetUnwinderVirtualAxis(Axis := #tempSlaveUnwinderVirtualAxis^,
+	                                          Execute := #statNowCmd = #STAT_RESET,
+	                                          Restart:= NOT #tempSlaveUnwinderVirtualAxis^.StatusWord.%X0);
+	        END_REGION
+	        
+	        REGION FINAL ROLLER
+	            #tempSynchronousAxis ?= #Axis.FinalRoller;
+	            #instResetFinalRoller(Axis := #tempSynchronousAxis^,
+	                                  Execute := #statNowCmd = #STAT_RESET,
+	                                  Restart:= NOT #tempSynchronousAxis^.StatusWord.%X0);
+	        END_REGION
+	        
+	        REGION COMPENSATOR
+	            #tempSynchronousAxis ?= #Axis.Compensator;
+	            #instResetCompensator(Axis := #tempSynchronousAxis^,
+	                                  Execute := #statNowCmd = #STAT_RESET,
+	                                  Restart:= NOT #tempSynchronousAxis^.StatusWord.%X0);
+	        END_REGION
+	        
+	        REGION ANODE PNP X1
+	            #tempSynchronousAxis ?= #Axis.AnodePnPX1;
+	            #instResetAnodePnPX1(Axis := #tempSynchronousAxis^,
+	                                 Execute := #statNowCmd = #STAT_RESET,
+	                                 Restart:= NOT #tempSynchronousAxis^.StatusWord.%X0);
+	        END_REGION
+	        
+	        REGION ANODE PNP X2
+	            #tempSynchronousAxis ?= #Axis.AnodePnPX2;
+	            #instResetAnodePnPX2(Axis := #tempSynchronousAxis^,
+	                                 Execute := #statNowCmd = #STAT_RESET,
+	                                 Restart:= NOT #tempSynchronousAxis^.StatusWord.%X0);
+	        END_REGION
+	        
+	        REGION ANODE PNP Z1
+	            #tempSynchronousAxis ?= #Axis.AnodePnPZ1;
+	            #instResetAnodePnPZ1(Axis := #tempSynchronousAxis^,
+	                                 Execute := #statNowCmd = #STAT_RESET,
+	                                 Restart:= NOT #tempSynchronousAxis^.StatusWord.%X0);
+	        END_REGION
+	        
+	        REGION ANODE PNP Z2
+	            #tempSynchronousAxis ?= #Axis.AnodePnPZ2;
+	            #instResetAnodePnPZ2(Axis := #tempSynchronousAxis^,
+	                                 Execute := #statNowCmd = #STAT_RESET,
+	                                 Restart:= NOT #tempSynchronousAxis^.StatusWord.%X0);
+	        END_REGION
+	        
+	        REGION CATHODE PNP X1
+	            #tempSynchronousAxis ?= #Axis.CathodePnPX1;
+	            #instResetCathodePnPX1(Axis := #tempSynchronousAxis^,
+	                                   Execute := #statNowCmd = #STAT_RESET,
+	                                   Restart:= NOT #tempSynchronousAxis^.StatusWord.%X0);
+	        END_REGION
+	        
+	        REGION CATHODE PNP X2
+	            #tempSynchronousAxis ?= #Axis.CathodePnPX2;
+	            #instResetCathodePnPX2(Axis := #tempSynchronousAxis^,
+	                                   Execute := #statNowCmd = #STAT_RESET,
+	                                   Restart:= NOT #tempSynchronousAxis^.StatusWord.%X0);
+	        END_REGION
+	        
+	        REGION CATHODE PNP Z1
+	            #tempSynchronousAxis ?= #Axis.CathodePnPZ1;
+	            #instResetCathodePnPZ1(Axis := #tempSynchronousAxis^,
+	                                   Execute := #statNowCmd = #STAT_RESET,
+	                                   Restart:= NOT #tempSynchronousAxis^.StatusWord.%X0);
+	        END_REGION
+	        
+	        REGION CATHODE PNP Z2
+	            #tempSynchronousAxis ?= #Axis.CathodePnPZ2;
+	            #instResetCathodePnPZ2(Axis := #tempSynchronousAxis^,
+	                                   Execute := #statNowCmd = #STAT_RESET,
+	                                   Restart:= NOT #tempSynchronousAxis^.StatusWord.%X0);
+	        END_REGION
+	        
+	        REGION ANODE MANDREL Y FRONT
+	            #tempSynchronousAxis ?= #Axis.AnodeMandrelYFront;
+	            #instResetAnodeMandrelYFront(Axis := #tempSynchronousAxis^,
+	                                         Execute := #statNowCmd = #STAT_RESET,
+	                                         Restart:= NOT #tempSynchronousAxis^.StatusWord.%X0);
+	        END_REGION
+	        
+	        REGION ANODE MANDREL Y REAR
+	            #tempSynchronousAxis ?= #Axis.AnodeMandrelYRear;
+	            #instResetAnodeMandrelYRear(Axis := #tempSynchronousAxis^,
+	                                        Execute := #statNowCmd = #STAT_RESET,
+	                                        Restart:= NOT #tempSynchronousAxis^.StatusWord.%X0);
+	        END_REGION
+	        
+	        REGION ANODE MANDREL Z FRONT
+	            #tempSynchronousAxis ?= #Axis.AnodeMandrelZFront;
+	            #instResetAnodeMandrelZFront(Axis := #tempSynchronousAxis^,
+	                                         Execute := #statNowCmd = #STAT_RESET,
+	                                         Restart:= NOT #tempSynchronousAxis^.StatusWord.%X0);
+	        END_REGION
+	        
+	        REGION ANODE MANDREL Z REAR
+	            #tempSynchronousAxis ?= #Axis.AnodeMandrelZRear;
+	            #instResetAnodeMandrelZRear(Axis := #tempSynchronousAxis^,
+	                                        Execute := #statNowCmd = #STAT_RESET,
+	                                        Restart:= NOT #tempSynchronousAxis^.StatusWord.%X0);
+	        END_REGION
+	        
+	        REGION CATHODE MANDREL Y FRONT
+	            #tempSynchronousAxis ?= #Axis.CathodeMandrelYFront;
+	            #instResetCathodeMandrelYFront(Axis := #tempSynchronousAxis^,
+	                                           Execute := #statNowCmd = #STAT_RESET,
+	                                           Restart:= NOT #tempSynchronousAxis^.StatusWord.%X0);
+	        END_REGION
+	        
+	        REGION CATHODE MANDREL Y REAR
+	            #tempSynchronousAxis ?= #Axis.CathodeMandrelYRear;
+	            #instResetCathodeMandrelYRear(Axis := #tempSynchronousAxis^,
+	                                          Execute := #statNowCmd = #STAT_RESET,
+	                                          Restart:= NOT #tempSynchronousAxis^.StatusWord.%X0);
+	        END_REGION
+	        
+	        REGION CATHODE MANDREL Z FRONT
+	            #tempSynchronousAxis ?= #Axis.CathodeMandrelZFront;
+	            #instResetCathodeMandrelZFront(Axis := #tempSynchronousAxis^,
+	                                           Execute := #statNowCmd = #STAT_RESET,
+	                                           Restart:= NOT #tempSynchronousAxis^.StatusWord.%X0);
+	        END_REGION
+	        
+	        REGION CATHODE MANDREL Z REAR
+	            #tempSynchronousAxis ?= #Axis.CathodeMandrelZRear;
+	            #instResetCathodeMandrelZRear(Axis := #tempSynchronousAxis^,
+	                                          Execute := #statNowCmd = #STAT_RESET,
+	                                          Restart:= NOT #tempSynchronousAxis^.StatusWord.%X0);
+	        END_REGION
+	        
+	        REGION FINAL ROLLER CAM
+	            #tempCam10k ?= #Cam.FinalRollerCam;
+	            #instResetFinalRollerCam(Axis := #tempCam10k^,
+	                                     Execute := #statNowCmd = #STAT_RESET);
+	        END_REGION
+	        
+	        REGION COMPENSATOR CAM
+	            #tempCam10k ?= #Cam.CompensatorCam;
+	            #instResetCompensatorCam(Axis := #tempCam10k^,
+	                                     Execute := #statNowCmd = #STAT_RESET);
+	        END_REGION
+	        
+	        REGION ANODE PNP X1 CAM
+	            #tempCam10k ?= #Cam.AnodePnPX1Cam;
+	            #instResetAnodePnPX1Cam(Axis := #tempCam10k^,
+	                                    Execute := #statNowCmd = #STAT_RESET);
+	        END_REGION
+	        
+	        REGION ANODE PNP X2 CAM
+	            #tempCam10k ?= #Cam.AnodePnPX2Cam;
+	            #instResetAnodePnPX2Cam(Axis := #tempCam10k^,
+	                                    Execute := #statNowCmd = #STAT_RESET);
+	        END_REGION
+	        
+	        REGION ANODE PNP Z1 CAM
+	            #tempCam10k ?= #Cam.AnodePnPZ1Cam;
+	            #instResetAnodePnPZ1Cam(Axis := #tempCam10k^,
+	                                    Execute := #statNowCmd = #STAT_RESET);
+	        END_REGION
+	        
+	        REGION ANODE PNP Z2 CAM
+	            #tempCam10k ?= #Cam.AnodePnPZ2Cam;
+	            #instResetAnodePnPZ2Cam(Axis := #tempCam10k^,
+	                                    Execute := #statNowCmd = #STAT_RESET);
+	        END_REGION
+	        
+	        REGION CATHODE PNP X1 CAM
+	            #tempCam10k ?= #Cam.CathodePnPX1Cam;
+	            #instResetCathodePnPX1Cam(Axis := #tempCam10k^,
+	                                      Execute := #statNowCmd = #STAT_RESET);
+	        END_REGION
+	        
+	        REGION CATHODE PNP X2 CAM
+	            #tempCam10k ?= #Cam.CathodePnPX2Cam;
+	            #instResetCathodePnPX2Cam(Axis := #tempCam10k^,
+	                                      Execute := #statNowCmd = #STAT_RESET);
+	        END_REGION
+	        
+	        REGION CATHODE PNP Z1 CAM
+	            #tempCam10k ?= #Cam.CathodePnPZ1Cam;
+	            #instResetCathodePnPZ1Cam(Axis := #tempCam10k^,
+	                                      Execute := #statNowCmd = #STAT_RESET);
+	        END_REGION
+	        
+	        REGION CATHODE PNP Z2 CAM
+	            #tempCam10k ?= #Cam.CathodePnPZ2Cam;
+	            #instResetCathodePnPZ2Cam(Axis := #tempCam10k^,
+	                                      Execute := #statNowCmd = #STAT_RESET);
+	        END_REGION
+	        
+	        REGION ANODE MANDREL Y FRONT CAM
+	            #tempCam10k ?= #Cam.AnodeMandrelYFrontCam;
+	            #instResetAnodeMandrelYFrontCam(Axis := #tempCam10k^,
+	                                            Execute := #statNowCmd = #STAT_RESET);
+	        END_REGION
+	        
+	        REGION ANODE MANDREL Y REAR CAM
+	            #tempCam10k ?= #Cam.AnodeMandrelYRearCam;
+	            #instResetAnodeMandrelYRearCam(Axis := #tempCam10k^,
+	                                           Execute := #statNowCmd = #STAT_RESET);
+	        END_REGION
+	        
+	        REGION ANODE MANDREL Z FRONT CAM
+	            #tempCam10k ?= #Cam.AnodeMandrelZFrontCam;
+	            #instResetAnodeMandrelZFrontCam(Axis := #tempCam10k^,
+	                                            Execute := #statNowCmd = #STAT_RESET);
+	        END_REGION
+	        
+	        REGION ANODE MANDREL Z REAR CAM
+	            #tempCam10k ?= #Cam.AnodeMandrelZRearCam;
+	            #instResetAnodeMandrelZRearCam(Axis := #tempCam10k^,
+	                                           Execute := #statNowCmd = #STAT_RESET);
+	        END_REGION
+	        
+	        REGION CATHODE MANDREL Y FRONT CAM
+	            #tempCam10k ?= #Cam.CathodeMandrelYFrontCam;
+	            #instResetCathodeMandrelYFrontCam(Axis := #tempCam10k^,
+	                                              Execute := #statNowCmd = #STAT_RESET);
+	        END_REGION
+	        
+	        REGION CATHODE MANDREL Y REAR CAM
+	            #tempCam10k ?= #Cam.CathodeMandrelYRearCam;
+	            #instResetCathodeMandrelYRearCam(Axis := #tempCam10k^,
+	                                             Execute := #statNowCmd = #STAT_RESET);
+	        END_REGION
+	        
+	        REGION CATHODE MANDREL Z FRONT CAM
+	            #tempCam10k ?= #Cam.CathodeMandrelZFrontCam;
+	            #instResetCathodeMandrelZFrontCam(Axis := #tempCam10k^,
+	                                              Execute := #statNowCmd = #STAT_RESET);
+	        END_REGION
+	        
+	        REGION CATHODE MANDREL Z REAR CAM
+	            #tempCam10k ?= #Cam.CathodeMandrelZRearCam;
+	            #instResetCathodeMandrelZRearCam(Axis := #tempCam10k^,
+	                                             Execute := #statNowCmd = #STAT_RESET);
+	        END_REGION
+	        
+	        REGION ANODE PNP X1 FWD OUTPUT CAM
+	            #tempOutputCam ?= #OutputCam.AnodePnPX1FwdOutputCam;
+	            #instResetAnodePnPX1FwdOutputCam(Axis := #tempOutputCam^,
+	                                             Execute := #statNowCmd = #STAT_RESET,
+	                                             Restart:= NOT #tempOutputCam^.StatusWord.%X0);
+	        END_REGION
+	        
+	        REGION ANODE PNP X1 BWD OUTPUT CAM
+	            #tempOutputCam ?= #OutputCam.AnodePnPX1BwdOutputCam;
+	            #instResetAnodePnPX1BwdOutputCam(Axis := #tempOutputCam^,
+	                                             Execute := #statNowCmd = #STAT_RESET,
+	                                             Restart:= NOT #tempOutputCam^.StatusWord.%X0);
+	        END_REGION
+	        
+	        REGION ANODE PNP X2 FWD OUTPUT CAM
+	            #tempOutputCam ?= #OutputCam.AnodePnPX2FwdOutputCam;
+	            #instResetAnodePnPX2FwdOutputCam(Axis := #tempOutputCam^,
+	                                             Execute := #statNowCmd = #STAT_RESET,
+	                                             Restart:= NOT #tempOutputCam^.StatusWord.%X0);
+	        END_REGION
+	        
+	        REGION ANODE PNP X2 BWD OUTPUT CAM
+	            #tempOutputCam ?= #OutputCam.AnodePnPX2BwdOutputCam;
+	            #instResetAnodePnPX2BwdOutputCam(Axis := #tempOutputCam^,
+	                                             Execute := #statNowCmd = #STAT_RESET,
+	                                             Restart:= NOT #tempOutputCam^.StatusWord.%X0);
+	        END_REGION
+	        
+	        REGION ANODE PNP Z1 DOWN 1 OUTPUT CAM
+	            #tempOutputCam ?= #OutputCam.AnodePnPZ1Down1OutputCam;
+	            #instResetAnodePnPZ1Down1OutputCam(Axis := #tempOutputCam^,
+	                                               Execute := #statNowCmd = #STAT_RESET,
+	                                               Restart:= NOT #tempOutputCam^.StatusWord.%X0);
+	        END_REGION
+	        
+	        REGION ANODE PNP Z1 UP 1 OUTPUT CAM
+	            #tempOutputCam ?= #OutputCam.AnodePnPZ1Up1OutputCam;
+	            #instResetAnodePnPZ1Up1OutputCam(Axis := #tempOutputCam^,
+	                                             Execute := #statNowCmd = #STAT_RESET,
+	                                             Restart:= NOT #tempOutputCam^.StatusWord.%X0);
+	        END_REGION
+	        
+	        REGION ANODE PNP Z2 DOWN 1 OUTPUT CAM
+	            #tempOutputCam ?= #OutputCam.AnodePnPZ2Down1OutputCam;
+	            #instResetAnodePnPZ2Down1OutputCam(Axis := #tempOutputCam^,
+	                                               Execute := #statNowCmd = #STAT_RESET,
+	                                               Restart:= NOT #tempOutputCam^.StatusWord.%X0);
+	        END_REGION
+	        
+	        REGION ANODE PNP Z2 UP 1 OUTPUT CAM
+	            #tempOutputCam ?= #OutputCam.AnodePnPZ2Up1OutputCam;
+	            #instResetAnodePnPZ2Up1OutputCam(Axis := #tempOutputCam^,
+	                                             Execute := #statNowCmd = #STAT_RESET,
+	                                             Restart:= NOT #tempOutputCam^.StatusWord.%X0);
+	        END_REGION
+	        
+	        REGION ANODE PNP Z1 DOWN 2 OUTPUT CAM
+	            #tempOutputCam ?= #OutputCam.AnodePnPZ1Down2OutputCam;
+	            #instResetAnodePnPZ1Down2OutputCam(Axis := #tempOutputCam^,
+	                                               Execute := #statNowCmd = #STAT_RESET,
+	                                               Restart:= NOT #tempOutputCam^.StatusWord.%X0);
+	        END_REGION
+	        
+	        REGION ANODE PNP Z1 UP 2 OUTPUT CAM
+	            #tempOutputCam ?= #OutputCam.AnodePnPZ1Up2OutputCam;
+	            #instResetAnodePnPZ1Up2OutputCam(Axis := #tempOutputCam^,
+	                                             Execute := #statNowCmd = #STAT_RESET,
+	                                             Restart:= NOT #tempOutputCam^.StatusWord.%X0);
+	        END_REGION
+	        
+	        REGION ANODE PNP Z2 DOWN 2 OUTPUT CAM
+	            #tempOutputCam ?= #OutputCam.AnodePnPZ2Down2OutputCam;
+	            #instResetAnodePnPZ2Down2OutputCam(Axis := #tempOutputCam^,
+	                                               Execute := #statNowCmd = #STAT_RESET,
+	                                               Restart:= NOT #tempOutputCam^.StatusWord.%X0);
+	        END_REGION
+	        
+	        REGION ANODE PNP Z2 UP 2 OUTPUT CAM
+	            #tempOutputCam ?= #OutputCam.AnodePnPZ2Up2OutputCam;
+	            #instResetAnodePnPZ2Up2OutputCam(Axis := #tempOutputCam^,
+	                                             Execute := #statNowCmd = #STAT_RESET,
+	                                             Restart:= NOT #tempOutputCam^.StatusWord.%X0);
+	        END_REGION
+	        
+	        REGION ANODE PNP Z1 SUCTION ON OUTPUT CAM
+	            #tempOutputCam ?= #OutputCam.AnodePnPZ1SuctionOnOutputCam;
+	            #instResetAnodePnPZ1SuctionOnOutputCam(Axis := #tempOutputCam^,
+	                                                   Execute := #statNowCmd = #STAT_RESET,
+	                                                   Restart:= NOT #tempOutputCam^.StatusWord.%X0);
+	        END_REGION
+	        
+	        REGION ANODE PNP Z1 SUCTION OFF OUTPUT CAM
+	            #tempOutputCam ?= #OutputCam.AnodePnPZ1SuctionOffOutputCam;
+	            #instResetAnodePnPZ1SuctionOffOutputCam(Axis := #tempOutputCam^,
+	                                                    Execute := #statNowCmd = #STAT_RESET,
+	                                                    Restart:= NOT #tempOutputCam^.StatusWord.%X0);
+	        END_REGION
+	        
+	        REGION ANODE PNP Z1 REEL CUT BLOW OUTPUT CAM
+	            #tempOutputCam ?= #OutputCam.AnodePnPZ1ReelCutBlowOutputCam;
+	            #instResetAnodePnPZ1ReelCutBlowOutputCam(Axis := #tempOutputCam^,
+	                                                     Execute := #statNowCmd = #STAT_RESET,
+	                                                     Restart:= NOT #tempOutputCam^.StatusWord.%X0);
+	        END_REGION
+	        
+	        REGION ANODE PNP Z2 SUCTION ON OUTPUT CAM
+	            #tempOutputCam ?= #OutputCam.AnodePnPZ2SuctionOnOutputCam;
+	            #instResetAnodePnPZ2SuctionOnOutputCam(Axis := #tempOutputCam^,
+	                                                   Execute := #statNowCmd = #STAT_RESET,
+	                                                   Restart:= NOT #tempOutputCam^.StatusWord.%X0);
+	        END_REGION
+	        
+	        REGION ANODE PNP Z2 SUCTION OFF OUTPUT CAM
+	            #tempOutputCam ?= #OutputCam.AnodePnPZ2SuctionOffOutputCam;
+	            #instResetAnodePnPZ2SuctionOffOutputCam(Axis := #tempOutputCam^,
+	                                                    Execute := #statNowCmd = #STAT_RESET,
+	                                                    Restart:= NOT #tempOutputCam^.StatusWord.%X0);
+	        END_REGION
+	        
+	        REGION ANODE ALIGN SUCTION ON OUTPUT CAM
+	            #tempOutputCam ?= #OutputCam.AnodeAlignSuctionOnOutputCam;
+	            #instResetAnodeAlignSuctionOnOutputCam(Axis := #tempOutputCam^,
+	                                                   Execute := #statNowCmd = #STAT_RESET,
+	                                                   Restart:= NOT #tempOutputCam^.StatusWord.%X0);
+	        END_REGION
+	        
+	        REGION ANODE ALIGN SUCTION OFF OUTPUT CAM
+	            #tempOutputCam ?= #OutputCam.AnodeAlignSuctionOffOutputCam;
+	            #instResetAnodeAlignSuctionOffOutputCam(Axis := #tempOutputCam^,
+	                                                    Execute := #statNowCmd = #STAT_RESET,
+	                                                    Restart:= NOT #tempOutputCam^.StatusWord.%X0);
+	        END_REGION
+	        
+	        REGION CATHODE PNP X1 FWD OUTPUT CAM
+	            #tempOutputCam ?= #OutputCam.CathodePnPX1FwdOutputCam;
+	            #instResetCathodePnPX1FwdOutputCam(Axis := #tempOutputCam^,
+	                                               Execute := #statNowCmd = #STAT_RESET,
+	                                               Restart:= NOT #tempOutputCam^.StatusWord.%X0);
+	        END_REGION
+	        
+	        REGION CATHODE PNP X1 BWD OUTPUT CAM
+	            #tempOutputCam ?= #OutputCam.CathodePnPX1BwdOutputCam;
+	            #instResetCathodePnPX1BwdOutputCam(Axis := #tempOutputCam^,
+	                                               Execute := #statNowCmd = #STAT_RESET,
+	                                               Restart:= NOT #tempOutputCam^.StatusWord.%X0);
+	        END_REGION
+	        
+	        REGION CATHODE PNP X2 FWD OUTPUT CAM
+	            #tempOutputCam ?= #OutputCam.CathodePnPX2FwdOutputCam;
+	            #instResetCathodePnPX2FwdOutputCam(Axis := #tempOutputCam^,
+	                                               Execute := #statNowCmd = #STAT_RESET,
+	                                               Restart:= NOT #tempOutputCam^.StatusWord.%X0);
+	        END_REGION
+	        
+	        REGION CATHODE PNP X2 BWD OUTPUT CAM
+	            #tempOutputCam ?= #OutputCam.CathodePnPX2BwdOutputCam;
+	            #instResetCathodePnPX2BwdOutputCam(Axis := #tempOutputCam^,
+	                                               Execute := #statNowCmd = #STAT_RESET,
+	                                               Restart:= NOT #tempOutputCam^.StatusWord.%X0);
+	        END_REGION
+	        
+	        REGION CATHODE PNP Z1 DOWN 1 OUTPUT CAM
+	            #tempOutputCam ?= #OutputCam.CathodePnPZ1Down1OutputCam;
+	            #instResetCathodePnPZ1Down1OutputCam(Axis := #tempOutputCam^,
+	                                                 Execute := #statNowCmd = #STAT_RESET,
+	                                                 Restart:= NOT #tempOutputCam^.StatusWord.%X0);
+	        END_REGION
+	        
+	        REGION CATHODE PNP Z1 UP 1 OUTPUT CAM
+	            #tempOutputCam ?= #OutputCam.CathodePnPZ1Up1OutputCam;
+	            #instResetCathodePnPZ1Up1OutputCam(Axis := #tempOutputCam^,
+	                                               Execute := #statNowCmd = #STAT_RESET,
+	                                               Restart:= NOT #tempOutputCam^.StatusWord.%X0);
+	        END_REGION
+	        
+	        REGION CATHODE PNP Z2 DOWN 1 OUTPUT CAM
+	            #tempOutputCam ?= #OutputCam.CathodePnPZ2Down1OutputCam;
+	            #instResetCathodePnPZ2Down1OutputCam(Axis := #tempOutputCam^,
+	                                                 Execute := #statNowCmd = #STAT_RESET,
+	                                                 Restart:= NOT #tempOutputCam^.StatusWord.%X0);
+	        END_REGION
+	        
+	        REGION CATHODE PNP Z2 UP 1 OUTPUT CAM
+	            #tempOutputCam ?= #OutputCam.CathodePnPZ2Up1OutputCam;
+	            #instResetCathodePnPZ2Up1OutputCam(Axis := #tempOutputCam^,
+	                                               Execute := #statNowCmd = #STAT_RESET,
+	                                               Restart:= NOT #tempOutputCam^.StatusWord.%X0);
+	        END_REGION
+	        
+	        REGION CATHODE PNP Z1 DOWN 2 OUTPUT CAM
+	            #tempOutputCam ?= #OutputCam.CathodePnPZ1Down2OutputCam;
+	            #instResetCathodePnPZ1Down2OutputCam(Axis := #tempOutputCam^,
+	                                                 Execute := #statNowCmd = #STAT_RESET,
+	                                                 Restart:= NOT #tempOutputCam^.StatusWord.%X0);
+	        END_REGION
+	        
+	        REGION CATHODE PNP Z1 UP 2 OUTPUT CAM
+	            #tempOutputCam ?= #OutputCam.CathodePnPZ1Up2OutputCam;
+	            #instResetCathodePnPZ1Up2OutputCam(Axis := #tempOutputCam^,
+	                                               Execute := #statNowCmd = #STAT_RESET,
+	                                               Restart:= NOT #tempOutputCam^.StatusWord.%X0);
+	        END_REGION
+	        
+	        REGION CATHODE PNP Z2 DOWN 2 OUTPUT CAM
+	            #tempOutputCam ?= #OutputCam.CathodePnPZ2Down2OutputCam;
+	            #instResetCathodePnPZ2Down2OutputCam(Axis := #tempOutputCam^,
+	                                                 Execute := #statNowCmd = #STAT_RESET,
+	                                                 Restart:= NOT #tempOutputCam^.StatusWord.%X0);
+	        END_REGION
+	        
+	        REGION CATHODE PNP Z2 UP 2 OUTPUT CAM
+	            #tempOutputCam ?= #OutputCam.CathodePnPZ2Up2OutputCam;
+	            #instResetCathodePnPZ2Up2OutputCam(Axis := #tempOutputCam^,
+	                                               Execute := #statNowCmd = #STAT_RESET,
+	                                               Restart:= NOT #tempOutputCam^.StatusWord.%X0);
+	        END_REGION
+	        
+	        REGION CATHODE PNP Z1 SUCTION ON OUTPUT CAM
+	            #tempOutputCam ?= #OutputCam.CathodePnPZ1SuctionOnOutputCam;
+	            #instResetCathodePnPZ1SuctionOnOutputCam(Axis := #tempOutputCam^,
+	                                                     Execute := #statNowCmd = #STAT_RESET,
+	                                                     Restart:= NOT #tempOutputCam^.StatusWord.%X0);
+	        END_REGION
+	        
+	        REGION CATHODE PNP Z1 SUCTION OFF OUTPUT CAM
+	            #tempOutputCam ?= #OutputCam.CathodePnPZ1SuctionOffOutputCam;
+	            #instResetCathodePnPZ1SuctionOffOutputCam(Axis := #tempOutputCam^,
+	                                                      Execute := #statNowCmd = #STAT_RESET,
+	                                                      Restart:= NOT #tempOutputCam^.StatusWord.%X0);
+	        END_REGION
+	        
+	        REGION CATHODE PNP Z1 REEL CUT BLOW OUTPUT CAM
+	            #tempOutputCam ?= #OutputCam.CathodePnPZ1ReelCutBlowOutputCam;
+	            #instResetCathodePnPZ1ReelCutBlowOutputCam(Axis := #tempOutputCam^,
+	                                                       Execute := #statNowCmd = #STAT_RESET,
+	                                                       Restart:= NOT #tempOutputCam^.StatusWord.%X0);
+	        END_REGION
+	        
+	        REGION CATHODE PNP Z2 SUCTION ON OUTPUT CAM
+	            #tempOutputCam ?= #OutputCam.CathodePnPZ2SuctionOnOutputCam;
+	            #instResetCathodePnPZ2SuctionOnOutputCam(Axis := #tempOutputCam^,
+	                                                     Execute := #statNowCmd = #STAT_RESET,
+	                                                     Restart:= NOT #tempOutputCam^.StatusWord.%X0);
+	        END_REGION
+	        
+	        REGION CATHODE PNP Z2 SUCTION OFF OUTPUT CAM
+	            #tempOutputCam ?= #OutputCam.CathodePnPZ2SuctionOffOutputCam;
+	            #instResetCathodePnPZ2SuctionOffOutputCam(Axis := #tempOutputCam^,
+	                                                      Execute := #statNowCmd = #STAT_RESET,
+	                                                      Restart:= NOT #tempOutputCam^.StatusWord.%X0);
+	        END_REGION
+	        
+	        REGION CATHODE ALIGN SUCTION ON OUTPUT CAM
+	            #tempOutputCam ?= #OutputCam.CathodeAlignSuctionOnOutputCam;
+	            #instResetCathodeAlignSuctionOnOutputCam(Axis := #tempOutputCam^,
+	                                                     Execute := #statNowCmd = #STAT_RESET,
+	                                                     Restart:= NOT #tempOutputCam^.StatusWord.%X0);
+	        END_REGION
+	        
+	        REGION CATHODE ALIGN SUCTION OFF OUTPUT CAM
+	            #tempOutputCam ?= #OutputCam.CathodeAlignSuctionOffOutputCam;
+	            #instResetCathodeAlignSuctionOffOutputCam(Axis := #tempOutputCam^,
+	                                                      Execute := #statNowCmd = #STAT_RESET,
+	                                                      Restart:= NOT #tempOutputCam^.StatusWord.%X0);
+	        END_REGION
+	        
+	        REGION FINAL ROLLER X FWD OUTPUT CAM
+	            #tempOutputCam ?= #OutputCam.FinalRollerXFwdOutputCam;
+	            #instResetFinalRollerXFwdOutputCam(Axis := #tempOutputCam^,
+	                                               Execute := #statNowCmd = #STAT_RESET,
+	                                               Restart := NOT #tempOutputCam^.StatusWord.%X0);
+	        END_REGION
+	        
+	        REGION FINAL ROLLER X BWD OUTPUT CAM
+	            #tempOutputCam ?= #OutputCam.FinalRollerXBwdOutputCam;
+	            #instResetFinalRollerXBwdOutputCam(Axis := #tempOutputCam^,
+	                                               Execute := #statNowCmd = #STAT_RESET,
+	                                               Restart := NOT #tempOutputCam^.StatusWord.%X0);
+	        END_REGION
+	        
+	        REGION FINAL ROLLER X STACK TABLE DOWN OUTPUT CAM
+	            #tempOutputCam ?= #OutputCam.FinalRollerXStackTableDownOutputCam;
+	            #instResetFinalRollerXStackTableDownOutputCam(Axis := #tempOutputCam^,
+	                                                          Execute := #statNowCmd = #STAT_RESET,
+	                                                          Restart := NOT #tempOutputCam^.StatusWord.%X0);
+	        END_REGION
+	        
+	        REGION FINAL ROLLER X STACK ANODE VISION OUTPUT CAM
+	            #tempOutputCam ?= #OutputCam.FinalRollerXStackAnodeVisionOutputCam;
+	            #instResetFinalRollerXStackAnodeVisionOutputCam(Axis := #tempOutputCam^,
+	                                                            Execute := #statNowCmd = #STAT_RESET,
+	                                                            Restart := NOT #tempOutputCam^.StatusWord.%X0);
+	        END_REGION
+	        
+	        REGION FINAL ROLLER X STACK CATHODE VISION OUTPUT CAM
+	            #tempOutputCam ?= #OutputCam.FinalRollerXStackCathodeVisionOutputCam;
+	            #instResetFinalRollerXStackCathodeVisionOutputCam(Axis := #tempOutputCam^,
+	                                                              Execute := #statNowCmd = #STAT_RESET,
+	                                                              Restart := NOT #tempOutputCam^.StatusWord.%X0);
+	        END_REGION
+	        
+	        REGION ANODE PNP Z1 REEL CUT DATA DELETE ON OUTPUT CAM
+	            #tempOutputCam ?= #OutputCam.AnodePnPZ1ReelCutDataDeleteOnOutputCam;
+	            #instResetAnodePnPZ1ReelCutDataDeleteOnOutputCam(Axis := #tempOutputCam^,
+	                                                             Execute := #statNowCmd = #STAT_RESET,
+	                                                             Restart := NOT #tempOutputCam^.StatusWord.%X0);
+	        END_REGION
+	        
+	        REGION ANODE PNP 1X REEL CUT DATA DELETE OFF OUTPUT CAM
+	            #tempOutputCam ?= #OutputCam.AnodePnP1XReelCutDataDeleteOffOutputCam;
+	            #instResetAnodePnP1XReelCutDataDeleteOffOutputCam(Axis := #tempOutputCam^,
+	                                                              Execute := #statNowCmd = #STAT_RESET,
+	                                                              Restart := NOT #tempOutputCam^.StatusWord.%X0);
+	        END_REGION
+	        
+	        REGION ANODE ALIGN VISION OUTPUT CAM
+	            #tempOutputCam ?= #OutputCam.AnodeAlignVisionOutputCam;
+	            #instResetAnodeAlignVisionOutputCam(Axis := #tempOutputCam^,
+	                                                Execute := #statNowCmd = #STAT_RESET,
+	                                                Restart := NOT #tempOutputCam^.StatusWord.%X0);
+	        END_REGION
+	        
+	        REGION CATHODE PNP Z1 REEL CUT DATA DELETE ON OUTPUT CAM
+	            #tempOutputCam ?= #OutputCam.CathodePnPZ1ReelCutDataDeleteOnOutputCam;
+	            #instResetCathodePnPZ1ReelCutDataDeleteOnOutputCam(Axis := #tempOutputCam^,
+	                                                               Execute := #statNowCmd = #STAT_RESET,
+	                                                               Restart := NOT #tempOutputCam^.StatusWord.%X0);
+	        END_REGION
+	        
+	        REGION CATHODE PNP 1X REEL CUT DATA DELETE OFF OUTPUT CAM
+	            #tempOutputCam ?= #OutputCam.CathodePnP1XReelCutDataDeleteOffOutputCam;
+	            #instResetCathodePnP1XReelCutDataDeleteOffOutputCam(Axis := #tempOutputCam^,
+	                                                                Execute := #statNowCmd = #STAT_RESET,
+	                                                                Restart := NOT #tempOutputCam^.StatusWord.%X0);
+	        END_REGION
+	        
+	        REGION CATHODE ALIGN VISION OUTPUT CAM
+	            #tempOutputCam ?= #OutputCam.CathodeAlignVisionOutputCam;
+	            #instResetCathodeAlignVisionOutputCam(Axis := #tempOutputCam^,
+	                                                  Execute := #statNowCmd = #STAT_RESET,
+	                                                  Restart := NOT #tempOutputCam^.StatusWord.%X0);
+	        END_REGION
+	        
+	    END_REGION
+	END_REGION
+	
+	REGION OUTPUT SIGNAL                                                                    // 각 커맨드 동작 시 상태 표시 출력
+	    #Busy := #statNowCmd = #STAT_START
+	    OR #statNowCmd = #STAT_RESET;
+	    #Done := #statNowCmd = #STAT_DONE;
+	    #Error := #statNowCmd = #STAT_ERROR;
+	    #NowCmd := #statNowCmd;
+	    #BeforeCmd := #statBeforeCmd;
+	END_REGION
+	
+END_FUNCTION_BLOCK
+

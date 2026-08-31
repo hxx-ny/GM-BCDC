@@ -1,0 +1,119 @@
+﻿FUNCTION_BLOCK "LConSMC_AverageValue"
+{ S7_Optimized_Access := 'TRUE' ; Published := 'TRUE' }
+VERSION : 0.1
+//Average value filter. The function block must be called in a cyclic task.  Function block ID: 0105
+   VAR_INPUT 
+      enable { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := FALSE;   // TRUE: Enable function block 
+      x { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 0.0;   // Input value
+      sizeOfArray { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Int := 20;   // Number of values to calculate avarage value of [1-20]
+      reset { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := FALSE;   // TRUE: Reset avarage value calculation
+   END_VAR
+
+   VAR_OUTPUT 
+      busy { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := FALSE;   // TRUE: Function block is active
+      error { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := FALSE;   // TRUE: An error occured
+      errorID { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : DWord := 16#0000_0000;   // Detailed error description
+      averageValue { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 0.0;   // Average value
+      maxValuereached { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := FALSE;   // Defined number of values are used for average value calculation (internal array is filled)
+   END_VAR
+
+   VAR 
+      statMaxValueReached { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      instTrigEn {InstructionName := 'R_TRIG'; LibVersion := '1.0'; ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'; S7_SetPoint := 'False'} : R_TRIG;
+      statAverageArray { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'; S7_SetPoint := 'False'} : "LConSMC_typeBreakPointTable" := ([20(0.0)]);
+      statArrayCounter { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Int;
+      statLimitedSize { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Int;
+      statMaxValue { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Int;
+      statTotalValue { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+   END_VAR
+
+   VAR CONSTANT 
+      MAX_LENGTH_AVERAGE_VALUE : Int := 20;
+      NO_ERROR : DWord := 16#0000_0000;
+   END_VAR
+
+
+BEGIN
+	REGION BLOCK INFO HEADER
+	  //===============================================================================
+	  // SIEMENS AG / (c)Copyright 2023
+	  //-------------------------------------------------------------------------------
+	  // Title:            LConSMC_AverageValue
+	  // Comment/Function: Floating avarage value calculation
+	  // Library/Family:   LConSMC
+	  // Author:           APC Erlangen
+	  // Tested with:      FW 2.8
+	  // Engineering:      TIA Portal V16
+	  // Restrictions:     Needs to be called in a cyclic task
+	  // Requirements:     -
+	  //-------------------------------------------------------------------------------
+	  // Change log table:
+	  // Version  | Date       | Expert in charge       | Changes applied
+	  //----------|------------|------------------------|------------------------------
+	  // 01.01.01 | 2021-01-28 | APC Erlangen           | Removed warning "Parameter might not be initialized"
+	  // 01.01.00 | 2016-11-17 | APC Erlangen           | Adapted to styleguide
+	  // 01.00.00 | 2012-07-03 | APC Erlangen           | Creation
+	  //===============================================================================
+	  //
+	END_REGION BLOCK INFO HEADER
+	
+	REGION DESCRIPTION
+	(/*
+	The function block calculates the moving average value (averageValue) of the input values that are entered.
+	Each time the block is called, the value (x) currently present is saved in an array.
+	The values stored in the array are deleted upon deactivation of the function block.
+	The function block is activated via the input enable and calculates values from that instant.
+	The output maxValueReached is set if the amount of values in an array reaches the defined number sizeOfArray.
+	*/)
+	END_REGION
+	
+	#instTrigEn(CLK := #enable);
+	
+	IF #enable THEN
+	    IF #reset OR #instTrigEn.Q THEN                                            //Reset values on reset command or on rising trigger pulse
+	        #statLimitedSize := LIMIT(MN := 1,
+	                                  IN := #sizeOfArray,
+	                                  MX := #MAX_LENGTH_AVERAGE_VALUE);
+	        #error := FALSE;
+	        #errorID := #NO_ERROR;
+	        #statArrayCounter := 0;
+	        #statMaxValueReached := False;
+	        #statTotalValue := 0.0;
+	    END_IF;
+	    
+	    //ERRORS
+	    IF #sizeOfArray > #MAX_LENGTH_AVERAGE_VALUE
+	        OR #sizeOfArray < 2
+	    THEN
+	        #error := true;
+	        #errorID := "LCON_ERROR_AVARAGE_INVALID_CONFIGURATION";
+	        RETURN;
+	    END_IF;
+	    
+	    IF (#statArrayCounter > (#statLimitedSize - 1)) THEN                 // Fill Array with Input Value
+	        #statArrayCounter := 0;                                      // Begin at Zero
+	        #statMaxValueReached := TRUE;
+	    END_IF;
+	    
+	    IF (#statMaxValueReached) THEN
+	        #statTotalValue := #statTotalValue - #statAverageArray.values[#statArrayCounter];
+	    END_IF;
+	    
+	    #statAverageArray.values[#statArrayCounter] := #x;                              // Write new Value in ARRAY
+	    #statArrayCounter := #statArrayCounter + 1;                                      // Set counter up
+	    IF (#statMaxValueReached) THEN                                           // Choose max index
+	        #statMaxValue := #statLimitedSize;
+	    ELSE
+	        #statMaxValue := #statArrayCounter;
+	    END_IF;
+	    
+	    #statTotalValue := #statTotalValue + #statAverageArray.values[#statArrayCounter - 1];       //(arrayCounter-1)----->present value
+	    #averageValue := #statTotalValue / #statMaxValue;                                // Calc Average
+	    
+	    #maxValuereached := #statMaxValueReached;
+	END_IF;
+	
+	
+	
+END_FUNCTION_BLOCK
+

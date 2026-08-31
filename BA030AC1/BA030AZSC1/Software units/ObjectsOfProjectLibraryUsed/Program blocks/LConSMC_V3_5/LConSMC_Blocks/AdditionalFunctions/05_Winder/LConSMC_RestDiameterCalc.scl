@@ -1,0 +1,91 @@
+﻿FUNCTION "LConSMC_RestDiameterCalc" : LReal
+{ S7_Optimized_Access := 'TRUE' ; Published := 'TRUE' }
+VERSION : 0.1
+//Calculation of the rest diameter of the coil. The function can be called in any task.  Function ID: 4002
+   VAR_INPUT 
+      webThickness : LReal;   // [m or inch] Thickness of material
+      actualDiameter : LReal;   // [m or inch] Actual diameter of coil
+      length : LReal;   // [m or inch] Length to un/rewind
+      rewind : Bool;   // TRUE: Rewinder  FALSE: Unwinder
+   END_VAR
+
+   VAR_TEMP 
+      tmpTempReal : LReal;
+   END_VAR
+
+   VAR CONSTANT 
+      Pi : Real := 3.141592;
+   END_VAR
+
+
+BEGIN
+	REGION BLOCK INFO HEADER
+	  //===============================================================================
+	  // SIEMENS AG / (c)Copyright 2023
+	  //-------------------------------------------------------------------------------
+	  // Title:            LConSMC_RestDiameterCalc
+	  // Comment/Function: Target diameter calculation
+	  // Library/Family:   LConSMC
+	  // Author:           APC Erlangen
+	  // Tested with:      FW 2.8
+	  // Engineering:      TIA Portal V16
+	  // Restrictions:     -
+	  // Requirements:     -
+	  //-------------------------------------------------------------------------------
+	  // Change log table:
+	  // Version  | Date       | Expert in charge       | Changes applied
+	  //----------|------------|------------------------|------------------------------
+	  // 01.01.00 | 2016-11-17 | APC Erlangen           | adapted to styleguide
+	  // 01.00.00 | 2012-07-10 | APC Erlangen           | First released version
+	  //===============================================================================
+	END_REGION BLOCK INFO HEADER
+	
+	REGION DESCRIPTION
+	(/*
+	The function uses the input parameters to calculate the target diameter of a roll.
+	The calculation relies on the material thickness (webThickness), the actual roll diameter (actualDiameter) and the material length to be wound or unwound (length).
+	The winding mode is defined using the windingMode input.
+	The material thickness (webThickness) is internally limited (MIN_THICKNESS, MAX_THICKNESS).
+	In case of a too high material length input of the function result is zero.  
+	  
+	* Rewinder
+	
+	$ RestDiameterCalc = 2 \cdot \sqrt{ \frac{actualDiameter^2}{4}\  + \frac{webThickness \cdot length}{\pi}\  } $
+	
+	* Unwinder
+	
+	$ RestDiameterCalc = 2 \cdot \sqrt{ \frac{actualDiameter^2}{4}\  - \frac{webThickness \cdot length}{\pi}\  } $
+	
+	---
+	
+	![Rest length](RestDiameterCalc_Diagram.png)
+	
+	---
+	
+	|Winder mode|Actual diameter|Target diameter                |
+	|-----------|---------------|-------------------------------|
+	|Rewinder   | d1 < d2       | d2 (full roll, max. diameter) |
+	|Uwinder    | d2 < d1       | d1 (empty roll, min. diameter |
+	
+	*/)
+	END_REGION DESCRIPTION
+	
+	IF #rewind THEN
+	    #tmpTempReal := (#actualDiameter * #actualDiameter) / 4 + (#webThickness * #length) / #Pi;
+	    IF #tmpTempReal > 0.0 THEN
+	        #LConSMC_RestDiameterCalc := 2.0 * SQRT(#tmpTempReal);
+	    ELSE
+	        #LConSMC_RestDiameterCalc := 0.0;
+	    END_IF;
+	ELSE
+	    #tmpTempReal := (#actualDiameter * #actualDiameter) / 4 - (#webThickness * #length) / #Pi;
+	    
+	    IF #tmpTempReal > 0.0 THEN
+	        #LConSMC_RestDiameterCalc := 2.0 * SQRT(#tmpTempReal);
+	    ELSE
+	        #LConSMC_RestDiameterCalc := 0.0;
+	    END_IF;
+	END_IF;
+	
+END_FUNCTION
+

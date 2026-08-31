@@ -1,0 +1,70 @@
+﻿FUNCTION_BLOCK "LER_Calculate_Out"
+{ S7_Optimized_Access := 'TRUE' ; Published := 'TRUE' }
+VERSION : 0.1
+   VAR_INPUT 
+      simulation { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      cellParameter { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LER.Size;
+      winderAxisB { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : "LBC_typeAxis64PosConfiguration";
+   END_VAR
+
+   VAR_IN_OUT 
+      sepaClampCutterAxisX : "LBC_typeAxis64PosConfiguration";
+      sepaClampCutterAxisZ : "LBC_typeAxis64PosConfiguration";
+      pusherAxisZ : "LBC_typeAxis64PosConfiguration";
+   END_VAR
+
+   VAR 
+      start : Bool;
+      travelDistance : LReal;
+      OneLapDistance : LReal;
+      point : LReal;
+      angleDistance : LReal;
+      masterAxisSpeed : LReal;
+      subStartAxisSpeed : LReal;
+   END_VAR
+
+
+BEGIN
+	REGION
+	    IF #"simulation" THEN
+	        #OneLapDistance := (#cellParameter.Anode.length + #cellParameter.Cathode.length) + ((#cellParameter.Anode.thickness * 25) + (#cellParameter.Cathode.thickness * 24) + (#cellParameter.Offset * 49) * 2);
+	        #point := #OneLapDistance / 4;
+	        #angleDistance := #OneLapDistance / 360;
+	        #masterAxisSpeed := #winderAxisB.setPositions[1].velocity * #angleDistance;
+	        #subStartAxisSpeed := #masterAxisSpeed;
+	    // ELSE
+	    //     #masterAxisSpeed := 0;
+	    //     #subStartAxisSpeed := 0;
+	    END_IF;
+	END_REGION
+	    
+	REGION
+	    #sepaClampCutterAxisX.setPositions[3].position := #sepaClampCutterAxisX.setPositions[2].position + (#OneLapDistance / 4);
+	    #sepaClampCutterAxisX.setPositions[4].position := #sepaClampCutterAxisX.setPositions[3].position + (#OneLapDistance / 4);
+	    #sepaClampCutterAxisX.setPositions[5].position := #sepaClampCutterAxisX.setPositions[4].position + (#OneLapDistance / 4);
+	    #sepaClampCutterAxisX.setPositions[6].position := #sepaClampCutterAxisX.setPositions[5].position + (#OneLapDistance / 4);
+	    #sepaClampCutterAxisX.setPositions[3].velocity := #subStartAxisSpeed;
+	    #sepaClampCutterAxisX.setPositions[4].velocity := #subStartAxisSpeed;
+	    #sepaClampCutterAxisX.setPositions[5].velocity := #subStartAxisSpeed;
+	    #sepaClampCutterAxisX.setPositions[6].velocity := #subStartAxisSpeed;
+	    #sepaClampCutterAxisX.setPositions[3].acceleration := #sepaClampCutterAxisX.setPositions[3].deceleration := #subStartAxisSpeed * 10;
+	    #sepaClampCutterAxisX.setPositions[4].acceleration := #sepaClampCutterAxisX.setPositions[4].deceleration := #subStartAxisSpeed * 10;
+	    #sepaClampCutterAxisX.setPositions[5].acceleration := #sepaClampCutterAxisX.setPositions[5].deceleration := #subStartAxisSpeed * 10;
+	    #sepaClampCutterAxisX.setPositions[6].acceleration := #sepaClampCutterAxisX.setPositions[6].deceleration := #subStartAxisSpeed * 10;
+	    
+	    #sepaClampCutterAxisZ.setPositions[3].position := #sepaClampCutterAxisZ.setPositions[2].position - #point;
+	    #sepaClampCutterAxisZ.setPositions[4].position := #sepaClampCutterAxisZ.setPositions[2].position;
+	    #sepaClampCutterAxisZ.setPositions[3].velocity := #subStartAxisSpeed;
+	    #sepaClampCutterAxisZ.setPositions[4].velocity := #subStartAxisSpeed;
+	    #sepaClampCutterAxisZ.setPositions[3].acceleration := #sepaClampCutterAxisZ.setPositions[3].deceleration := #subStartAxisSpeed * 10;
+	    #sepaClampCutterAxisZ.setPositions[4].acceleration := #sepaClampCutterAxisZ.setPositions[4].deceleration := #subStartAxisSpeed * 10;
+	    
+	    #pusherAxisZ.setPositions[2].position := #pusherAxisZ.setPositions[1].position - #point;
+	    #pusherAxisZ.setPositions[3].position := #pusherAxisZ.setPositions[1].position;
+	    #pusherAxisZ.setPositions[2].velocity := #subStartAxisSpeed;
+	    #pusherAxisZ.setPositions[3].velocity := #subStartAxisSpeed;
+	    #pusherAxisZ.setPositions[2].acceleration := #pusherAxisZ.setPositions[2].deceleration := #subStartAxisSpeed * 10;
+	    #pusherAxisZ.setPositions[3].acceleration := #pusherAxisZ.setPositions[3].deceleration := #subStartAxisSpeed * 10;
+	END_REGION
+END_FUNCTION_BLOCK
+

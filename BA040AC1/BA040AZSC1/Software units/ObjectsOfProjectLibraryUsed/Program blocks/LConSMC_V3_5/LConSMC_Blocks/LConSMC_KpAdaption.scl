@@ -1,0 +1,199 @@
+﻿FUNCTION_BLOCK "LConSMC_KpAdaption"
+{ S7_Optimized_Access := 'TRUE' ; Published := 'TRUE' }
+VERSION : 0.1
+//The function block is used adapt the Kp value of the speed controller as a function of the current diameter or the current intertia of a winder.  Function block ID: 3109
+   VAR_INPUT 
+      enable { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;   // TRUE: Start function block
+      adaptionMode { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;   // TRUE: User diameter ratio for adaption (dAct/dMax)  FALSE: User inertia ratio for adaption  (JAct/JMax)
+      externalMode { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;   // TRUE: Calculation of adaption value but value will not be written to telegram (input "HWAddress" not needed)  FALSE: Adaption value will be calculated and written to the telegram (input "HWAddress" necessary)
+      diameter { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;   // [m]/[inch] Current diameter
+      HWAddress { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : HW_SUBMODULE;   // HW-Address of telegram extension which is used to send adaption value to the drive (Only needed if externalMode = FALSE)
+      offset { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : DInt := 6;   // Byte offset with the telegram to write the Kp-Adaption value (if externalMode = FALSE).  If "offset" = 0, the value will be written at the begining of the telegram
+   END_VAR
+
+   VAR_OUTPUT 
+      busy { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;   // TRUE: Function block is in operation
+      kpAdaptionValue { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Real;   // [0-100%] Adaption value  This value will be multiplied with the speed controler Kp value
+      error { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;   // TRUE: Error has occured
+      errorID { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : DWord;   // Detailed error description
+   END_VAR
+
+   VAR_IN_OUT 
+      winderDiag : "LConSMC_typeWinderDiag";   // Winder diagnostic structure
+      winderConfig : "LConSMC_typeWinderConfig";   // Winder configuration structure
+   END_VAR
+
+   VAR 
+      statError { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statEnableOld { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statBusy { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statExternalMode { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statKpAdaptionNormalized { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Word;
+      statErrorID { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : DWord;
+      statReturn { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Int;
+      statICount { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : UInt;
+      statQCount { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : UInt;
+      statAddIn { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : UDInt;
+      statAddOut { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : UDInt;
+      statAdaptionValuePercent { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Real;
+   END_VAR
+
+   VAR CONSTANT 
+      INT_SCALE : Real := 16384.0;
+   END_VAR
+
+
+BEGIN
+	REGION BLOCK INFO HEADER
+	  //===============================================================================
+	  // SIEMENS AG / (c)Copyright 2023
+	  //-------------------------------------------------------------------------------
+	  // Title:            LConSMC_KpAdaption
+	  // Comment/Function: Calculate adaption factor for speed controller Kp value
+	  // Library/Family:   LConSMC
+	  // Author:           APC Erlangen
+	  // Tested with:      FW 2.8
+	  // Engineering:      TIA Portal V16
+	  // Restrictions:     -
+	  // Requirements:     -
+	  //-------------------------------------------------------------------------------
+	  // Change log table:
+	  // Version  | Date       | Expert in charge       | Changes applied
+	  //----------|------------|------------------------|------------------------------
+	  // 01.00.01 | 2021-01-27 | APC Erlangen           | Removed warning "Parameter may not be initialized"
+	  // 01.00.00 | 2019-10-23 | APC Erlangen           | Creation
+	  //===============================================================================
+	END_REGION BLOCK INFO HEADER
+	
+	REGION DESCRIPTION
+	(/*
+	The diameter – and therefore also the moment of inertia of the wound roll –
+	permanently changes as the roll is wound. This is the reason that it is necessary to 
+	adapt the controller gain of the speed controller to the mechanical relationships at 
+	the winder (especially for speed controlled winding types).This function block 
+	calculates a Kp-Adaption value for the speed controller as a function of the current 
+	diameter or the current inertia according to the following formular (depends on 
+	input parameter *adaptionMode*):  
+	  
+	* $ kpAdaptionValue = \frac{current \, Diameter}{maximum \, Diameter}\ \cdot 100 \% $
+	* $ kpAdaptionValue = \frac{current \, Inertia}{maximum \, Inertia}\ \cdot 100 \% $  
+	  
+	In general, the speed controller of the winder must be optimized once for a fully 
+	wounded roll and once for an empty roll.
+	The interconnection to the drive depends on the input parameter *externalMode*:  
+	
+	---
+	
+	+----------------+-------------------------------------------------------------------------+
+	| externalMode   | Function description                                                    |
+	+================+=========================================================================+
+	| TRUE           | The function block is just calculating an adaption value, which is displayed at the output *kPAdaptionValue*.
+	|                | The output equals 100% if the current diameter/intertia equals the maximum diameter/intertia.
+	|                | The value itself will not be forwared to the drive via the function block.
+	+================+=========================================================================+
+	| FALSE          | For the mode externalMode = FALSE the Kp adaption value is additionally sent to the drive.
+	|                | Therefore, a telegram extension with a sending length of at least two bytes is necessary.
+	|                | The HW-Address and the byte offset within the telegram must be forwarded to the function block.
+	+================+=========================================================================+
+	
+	---
+	
+	#### Settings in the SINAMICS S120
+	
+	The SINAMICS S120 provides a speed controller Kp-Adaption parameter (p1455) which can be used. Follow the descriped steps to activate the adaption in the drive:  
+	1. Connect the Kp-Adaption value in the telegram to parameter p1455
+	2. The Kp adaptation must be parameterized in the configuration dialog box “Adaptation”; in this case, the x axis reflects the diameter/inertia ratio and the y axis, the controller gain.
+	These should be parameterized corresponding to your application or determined by optimizing the controller.
+	The ratio becomes 100% if the diameter/inertia has reached the maximum value.
+	The Kp (p1460) for the maximum diameter/inertia must be correspondingly set-up.
+	In order to achieve a certain Kp at the minimum diameter, the scaling must be calculated.  
+	The following figure shows an example of the Kp-adaption settings in the S120:
+	
+	---
+	
+	![Speed controller Kp adaption](KpAdaption.png)
+	
+	---
+	
+	For an adaption signal of 5% (e.g. current diameter/inertia = 5% of maximum diameter/inertia) the scaling factor for the entered speed controller Kp value is 20%:  
+	$ Effective \, Kp = 20 \% \cdot Kp (p1466) $ 
+	For the maximum diameter/inertia, 100% of the enterd speed controller Kp value is effective.
+	*/)
+	END_REGION DESCRIPTION
+	
+	REGION Initialization
+	    IF #enable AND NOT #statEnableOld THEN
+	        #statExternalMode := #externalMode;
+	        IF NOT #statExternalMode THEN
+	            #statReturn := RD_ADDR(LADDR := #HWAddress, PIADDR => #statAddIn, PICount => #statICount, PQADDR => #statAddOut, PQCount => #statQCount);
+	            IF #statReturn <> 0
+	                OR #statQCount < 2
+	            THEN
+	                #statError := TRUE;
+	                #statErrorID := "LCON_ERROR_KP_ADAPTION_TELEGRAM_EXTENSION";
+	            ELSE
+	                #statError := FALSE;
+	                #statErrorID := 16#0000_0000;
+	            END_IF;
+	        ELSE
+	            #statError := FALSE;
+	            #statErrorID := 16#0000_0000;
+	        END_IF;
+	    END_IF;
+	END_REGION ;
+	REGION Cyclic part
+	    IF #enable
+	        OR (NOT #enable AND #statEnableOld)
+	        AND NOT #statError
+	    THEN
+	        #statBusy := #enable;
+	        IF #statBusy THEN
+	            IF #adaptionMode THEN // Use diameter ratio
+	                IF #winderConfig.diamConfig.maxDia = 0.0
+	                    OR #winderConfig.diamConfig.maxDia <= #winderConfig.diamConfig.minDia
+	                    OR #diameter <= 0.0
+	                THEN
+	                    #statError := TRUE;
+	                    #statErrorID := "LCON_ERROR_KP_ADAPTION_INVALID_CONFIGURATION";
+	                    #statBusy := FALSE;
+	                    #statAdaptionValuePercent := 100.0;
+	                ELSE
+	                    #statAdaptionValuePercent := LREAL_TO_REAL(#diameter / #winderConfig.diamConfig.maxDia * 100.0);
+	                END_IF;
+	            ELSE  // Use inertia ration
+	                IF #winderDiag.torquePreControlDiag.maxInertia <= 0.0
+	                    OR #winderDiag.torquePreControlDiag.totalInertia <= 0.0
+	                THEN
+	                    #statError := TRUE;
+	                    #statErrorID :="LCON_ERROR_KP_ADAPTION_INVALID_CONFIGURATION";
+	                    #statBusy := FALSE;
+	                    #statAdaptionValuePercent := 100.0;
+	                ELSE
+	                    #statAdaptionValuePercent := LREAL_TO_REAL(#winderDiag.torquePreControlDiag.totalInertia / #winderDiag.torquePreControlDiag.maxInertia * 100.0);
+	                END_IF;
+	            END_IF;
+	        ELSE
+	            #statAdaptionValuePercent := 100.0;
+	        END_IF;
+	        // Write adaption value to telegram
+	        IF NOT #statExternalMode THEN
+	            #statKpAdaptionNormalized := INT_TO_WORD(REAL_TO_INT((#statAdaptionValuePercent / 100.0) * #INT_SCALE));
+	            POKE(area := 16#82,
+	                 dbNumber := 0,
+	                 byteOffset := UDINT_TO_DINT(#statAddOut) + ABS(#offset),
+	                 value := #statKpAdaptionNormalized);
+	        END_IF;
+	    ELSIF NOT #enable THEN
+	        #statError := FALSE;
+	        #errorID := 16#0000_0000;
+	    END_IF;
+	END_REGION
+	
+	#statEnableOld := #enable;
+	#error := #statError;
+	#errorID := #statErrorID;
+	#busy := #statBusy;
+	#kpAdaptionValue := #statAdaptionValuePercent;
+	
+END_FUNCTION_BLOCK
+

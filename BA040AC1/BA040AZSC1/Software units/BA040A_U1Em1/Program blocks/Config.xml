@@ -1,0 +1,324 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Document>
+  <Engineering version="V20" />
+  <SW.Blocks.GlobalDB ID="0">
+    <AttributeList>
+      <Access>Published</Access>
+      <DBAccessibleFromOPCUA>false</DBAccessibleFromOPCUA>
+      <DBAccessibleFromWebserver>false</DBAccessibleFromWebserver>
+      <HeaderAuthor>ERsystem_FA2_DH. Kim</HeaderAuthor>
+      <Interface><Sections xmlns="http://www.siemens.com/automation/Openness/SW/Interface/v5">
+  <Section Name="Static">
+    <Member Name="em" Datatype="&quot;LAF_typeEmConfiguration&quot;" Remanence="Retain">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <Sections>
+        <Section Name="None">
+          <Member Name="referenceDesignator" Datatype="&quot;LAF_typeReferenceConfiguration&quot;">
+            <Sections>
+              <Section Name="None">
+                <Member Name="parent" Datatype="WString[128]">
+                  <StartValue>WSTRING#'U1'</StartValue>
+                </Member>
+                <Member Name="relative" Datatype="WString[25]">
+                  <StartValue>WSTRING#'EM1 SepaUnwinderBtm'</StartValue>
+                </Member>
+                <Member Name="combined" Datatype="WString[128]">
+                  <StartValue>WSTRING#'U1.EM1 SepaUnwinderBtm'</StartValue>
+                </Member>
+              </Section>
+            </Sections>
+          </Member>
+        </Section>
+      </Sections>
+    </Member>
+    <Member Name="axis" Datatype="Array[1.._.U1EM1_NO_OF_AXES] of DB_ANY" Remanence="Retain">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <Subelement Path="1">
+        <StartValue>85</StartValue>
+      </Subelement>
+      <Subelement Path="2">
+        <StartValue>141</StartValue>
+      </Subelement>
+    </Member>
+    <Member Name="cmUnwinderBtmAxisB" Datatype="&quot;LBC_typeAxis64PosConfiguration&quot;" Remanence="Retain">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="cmAirShaftBtmOnOff" Datatype="&quot;LBC_typeTwoWayActuatorConfiguration&quot;" Remanence="Retain">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <Sections>
+        <Section Name="None">
+          <Member Name="referenceDesignator" Datatype="WString[25]">
+            <StartValue>WSTRING#'cmAirShaftBtmOnOff'</StartValue>
+          </Member>
+          <Member Name="monitoringLeavingFeedback" Datatype="Time">
+            <StartValue>T#500ms</StartValue>
+          </Member>
+          <Member Name="monitoringReachingFeedback" Datatype="Time">
+            <StartValue>T#500ms</StartValue>
+          </Member>
+          <Member Name="monitoringDiscrepancy" Datatype="Time">
+            <StartValue>T#0MS</StartValue>
+          </Member>
+          <Member Name="setOutputHomeContinuously" Datatype="Bool">
+            <StartValue>TRUE</StartValue>
+          </Member>
+          <Member Name="setOutputWorkContinuously" Datatype="Bool">
+            <StartValue>TRUE</StartValue>
+          </Member>
+          <Member Name="disableHomeCommand" Datatype="Bool">
+            <StartValue>FALSE</StartValue>
+          </Member>
+          <Member Name="disableFeedbackHomePos" Datatype="Bool">
+            <StartValue>TRUE</StartValue>
+          </Member>
+          <Member Name="disableFeedbackWorkPos" Datatype="Bool">
+            <StartValue>TRUE</StartValue>
+          </Member>
+          <Member Name="disableAlarms" Datatype="Bool">
+            <StartValue>FALSE</StartValue>
+          </Member>
+          <Member Name="resetOutputsOnError" Datatype="Bool">
+            <StartValue>FALSE</StartValue>
+          </Member>
+          <Member Name="allwaysWaitOnReachingTime" Datatype="Bool">
+            <StartValue>FALSE</StartValue>
+          </Member>
+        </Section>
+      </Sections>
+    </Member>
+    <Member Name="cmRadiusMeasureBtm" Datatype="&quot;LBC_typeAnalogInputConfiguration&quot;" Remanence="Retain">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <Sections>
+        <Section Name="None">
+          <Member Name="referenceDesignator" Datatype="WString[25]">
+            <StartValue>WSTRING#'cmRadiusMeasureBtm'</StartValue>
+          </Member>
+          <Member Name="physicalUnit" Datatype="String[10]">
+            <StartValue>'unit'</StartValue>
+          </Member>
+          <Member Name="isUnipolarSignal" Datatype="Bool">
+            <StartValue>TRUE</StartValue>
+          </Member>
+          <Member Name="default" Datatype="LReal">
+            <StartValue>0.0</StartValue>
+          </Member>
+          <Member Name="limitHigh2" Datatype="LReal">
+            <StartValue>400.0</StartValue>
+          </Member>
+          <Member Name="limitHigh1" Datatype="LReal">
+            <StartValue>400.0</StartValue>
+          </Member>
+          <Member Name="limitLow1" Datatype="LReal">
+            <StartValue>0.0</StartValue>
+          </Member>
+          <Member Name="limitLow2" Datatype="LReal">
+            <StartValue>0.0</StartValue>
+          </Member>
+          <Member Name="processValueMax" Datatype="LReal">
+            <StartValue>400.0</StartValue>
+          </Member>
+          <Member Name="processValueMin" Datatype="LReal">
+            <StartValue>0.0</StartValue>
+          </Member>
+          <Member Name="scaleAnalogUppPoint" Datatype="LReal">
+            <StartValue>27648.0</StartValue>
+          </Member>
+          <Member Name="scaleAnalogLowPoint" Datatype="LReal">
+            <StartValue>0.0</StartValue>
+          </Member>
+          <Member Name="scaleProcessUppPoint" Datatype="LReal">
+            <StartValue>400.0</StartValue>
+          </Member>
+          <Member Name="scaleProcessLowPoint" Datatype="LReal">
+            <StartValue>0.0</StartValue>
+          </Member>
+          <Member Name="disableAlarms" Datatype="Bool">
+            <StartValue>TRUE</StartValue>
+          </Member>
+        </Section>
+      </Sections>
+    </Member>
+    <Member Name="cmEpcBtm" Datatype="&quot;LER_typeCON600Configuration&quot;" Remanence="Retain">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="cmBtmDirectionCheckSensor" Datatype="&quot;LBC_typeDigitalSignalConfiguration&quot;" Remanence="Retain">
+      <AttributeList>
+        <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+      </AttributeList>
+      <Sections>
+        <Section Name="None">
+          <Member Name="referenceDesignator" Datatype="WString[25]">
+            <StartValue>WSTRING#'cmBtmDirectionCheckSensor'</StartValue>
+          </Member>
+          <Member Name="onDelay" Datatype="Time">
+            <StartValue>T#0MS</StartValue>
+          </Member>
+          <Member Name="offDelay" Datatype="Time">
+            <StartValue>T#0MS</StartValue>
+          </Member>
+          <Member Name="default" Datatype="Bool">
+            <StartValue>FALSE</StartValue>
+          </Member>
+          <Member Name="invertProcessValue" Datatype="Bool">
+            <StartValue>FALSE</StartValue>
+          </Member>
+          <Member Name="disableAlarms" Datatype="Bool">
+            <StartValue>FALSE</StartValue>
+          </Member>
+        </Section>
+      </Sections>
+    </Member>
+    <Member Name="cmRadiusMeasure" Datatype="&quot;LER_typeRadiusMeasureConfiguration&quot;" Remanence="Retain">
+      <Sections>
+        <Section Name="None">
+          <Member Name="Offset" Datatype="LReal">
+            <StartValue>39.0</StartValue>
+          </Member>
+          <Member Name="DecimalPoint" Datatype="Int">
+            <StartValue>1</StartValue>
+          </Member>
+        </Section>
+      </Sections>
+    </Member>
+    <Member Name="softCam" Datatype="Struct" Remanence="Retain">
+      <Member Name="unwinderBtmAxisB" Datatype="&quot;LER_typeSoftCamInterface&quot;" />
+    </Member>
+    <Member Name="Data" Datatype="Array[0..10] of LReal" Remanence="Retain" />
+  </Section>
+</Sections></Interface>
+      <MemoryReserve>100</MemoryReserve>
+      <Name>Config</Name>
+      <Namespace>Unit1.Em1</Namespace>
+      <Number>42</Number>
+      <ProgrammingLanguage>DB</ProgrammingLanguage>
+    </AttributeList>
+    <ObjectList>
+      <MultilingualText ID="1" CompositionName="Comment">
+        <ObjectList>
+          <MultilingualTextItem ID="2" CompositionName="Items">
+            <AttributeList>
+              <Culture>de-DE</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="3" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-GB</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="4" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-US</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="5" CompositionName="Items">
+            <AttributeList>
+              <Culture>es-ES</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="6" CompositionName="Items">
+            <AttributeList>
+              <Culture>fr-FR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="7" CompositionName="Items">
+            <AttributeList>
+              <Culture>it-IT</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="8" CompositionName="Items">
+            <AttributeList>
+              <Culture>ko-KR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="9" CompositionName="Items">
+            <AttributeList>
+              <Culture>zh-CN</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+        </ObjectList>
+      </MultilingualText>
+      <MultilingualText ID="A" CompositionName="Title">
+        <ObjectList>
+          <MultilingualTextItem ID="B" CompositionName="Items">
+            <AttributeList>
+              <Culture>de-DE</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="C" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-GB</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="D" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-US</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="E" CompositionName="Items">
+            <AttributeList>
+              <Culture>es-ES</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="F" CompositionName="Items">
+            <AttributeList>
+              <Culture>fr-FR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="10" CompositionName="Items">
+            <AttributeList>
+              <Culture>it-IT</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="11" CompositionName="Items">
+            <AttributeList>
+              <Culture>ko-KR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="12" CompositionName="Items">
+            <AttributeList>
+              <Culture>zh-CN</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+        </ObjectList>
+      </MultilingualText>
+    </ObjectList>
+  </SW.Blocks.GlobalDB>
+</Document>

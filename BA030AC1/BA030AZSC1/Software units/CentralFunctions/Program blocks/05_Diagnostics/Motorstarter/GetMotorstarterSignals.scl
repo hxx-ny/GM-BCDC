@@ -1,0 +1,113 @@
+﻿FUNCTION_BLOCK "GetMotorstarterSignals"
+{ S7_Optimized_Access := 'TRUE' ; Published := 'FALSE' }
+VERSION : 0.1
+   VAR_INPUT 
+      Et200SpMotorstarterInterfaceAllUnits { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Array[0.."NO_OF_UNITS"] of "typeEmMotorStarterInterface";   // HMI: motorstarter values
+      numberOfMS : USInt;
+   END_VAR
+
+   VAR_OUTPUT 
+      selectedUnit : USInt;
+      selectedEM : USInt;
+      error : Word;
+   END_VAR
+
+   VAR_IN_OUT 
+      Et200SpMotorstarterInterfaceHmi : "typeEt200SpMotorstarterInterfaceHmi";
+   END_VAR
+
+   VAR 
+      statSelectedEMMotorStarter : USInt := 1;
+      statSelectedUnitMotorStarter : USInt := 1;   // HMI: Selected unit
+   END_VAR
+
+   VAR_TEMP 
+      tempEnable : Bool;   // Temporary value for input 'enable'
+      tempEt200SpMotorstarterCurrent : Array[0.."NO_OF_ET200SPMOTORSTARTER"] of Real;
+      tempEt200SpMotorstarterInputs : Array[0.."NO_OF_ET200SPMOTORSTARTER"] of "LSicar_typeMotorstarterIn";
+      tempEt200SpMotorstarterOutputs : Array[0.."NO_OF_ET200SPMOTORSTARTER"] of "LSicar_typeMotorstarterOut";
+      tempIndexMotorstarter : USInt;
+      tempNoOfMS : USInt;
+   END_VAR
+
+   VAR CONSTANT 
+      "INVALID UNIT" : Word := 16#7001;   // non existant unit
+      "INVALID EM" : Word := 16#7002;   // non existant em
+      OK : Word := 16#7000;
+   END_VAR
+
+
+BEGIN
+	REGION BLOCK INFO HEADER
+	    //===============================================================================
+	    // Siemens AG / (c)Copyright 2024
+	    //-------------------------------------------------------------------------------
+	    // Title:            LAF_GetMotorstarterSignals
+	    // Comment/Function: This block reads diagnostic information of a Motorstarter depending
+	    //                   on the unit and Control Module selected in the HMI by the user.
+	    // Library/Family:   Automation Framework / Motorstarter Diagnostic
+	    // Author:           Siemens Digital Industries
+	    // Tested with:      S7-1517TF V3.1
+	    // Engineering:      TIA Portal V19
+	    // Restrictions:     
+	    //                   Required UDTs: LAF_typeDriveDiagConfig, LAF_typeDriveDiagInterfaceHmi
+	    // Requirements:     S7-1500(T), MC_Version V8.0
+	    //-------------------------------------------------------------------------------
+	    // Change log table:
+	    // Version  | Date       | Expert in charge        | Changes applied
+	    //----------|------------|-------------------------|-----------------------------
+	    // 01.00.00 | 05.06.2024 | SIMATIC Systems Support | First released version
+	    //===============================================================================
+	END_REGION BLOCK INFO HEADER
+	
+	REGION DESCRIPTION
+	(/*
+	This block reads diagnostic information (control inputs and outputs) of a Motorstarter. 
+	At runtime, this block is enabled when the ET200SP Motorstarter screen is shown in the HMI. 
+	Based on the selected motorstarter object in the HMI by the user. The shown information in the HMI depends on the
+	Unit and Cotrol Module selected. 
+	*/)
+	END_REGION DESCRIPTION
+	
+	REGION INPUTS
+	    //working with static values to keep the last selected value when opening for the first time the screen  
+	  
+	    #statSelectedUnitMotorStarter := #Et200SpMotorstarterInterfaceHmi.et200SpUnitMotorstarter;
+	    #statSelectedEMMotorStarter := #Et200SpMotorstarterInterfaceHmi.et200SpEMMotorstarter;
+	
+	END_REGION INPUTS
+	
+	REGION ASSIGNING TEMPORARY VALUES
+	    // Statement section REGION
+	    IF #statSelectedUnitMotorStarter <= "NO_OF_UNITS" THEN
+	        IF #statSelectedEMMotorStarter < "NO_OF_EM" THEN
+	            #tempEt200SpMotorstarterCurrent := #Et200SpMotorstarterInterfaceAllUnits[#statSelectedUnitMotorStarter].EMmotorstarter[#statSelectedEMMotorStarter].et200SpMotorstarterCurrent;
+	            #tempEt200SpMotorstarterInputs := #Et200SpMotorstarterInterfaceAllUnits[#statSelectedUnitMotorStarter].EMmotorstarter[#statSelectedEMMotorStarter].et200SpMotorstarterInputs;
+	            #tempEt200SpMotorstarterOutputs := #Et200SpMotorstarterInterfaceAllUnits[#statSelectedUnitMotorStarter].EMmotorstarter[#statSelectedEMMotorStarter].et200SpMotorstarterOutputs;
+	            #tempNoOfMS := #numberOfMS;
+	            #error := #OK;
+	        ELSE
+	            #error := #"INVALID EM";
+	        END_IF;
+	
+	    ELSE
+	        #error := #"INVALID UNIT";
+	    END_IF;
+	
+	
+	END_REGION
+	
+	
+	REGION OUTPUTS
+	    // Statement section REGION
+	    #Et200SpMotorstarterInterfaceHmi.et200SpMotorstarterCurrent := #tempEt200SpMotorstarterCurrent;
+	    #Et200SpMotorstarterInterfaceHmi.et200SpMotorstarterInputs := #tempEt200SpMotorstarterInputs;
+	    #Et200SpMotorstarterInterfaceHmi.et200SpMotorstarterOutputs := #tempEt200SpMotorstarterOutputs;
+	    #Et200SpMotorstarterInterfaceHmi.et200SpNumberOfMotorstarters := #tempNoOfMS;
+	    #selectedEM := #statSelectedEMMotorStarter;
+	    #selectedUnit := #statSelectedUnitMotorStarter;
+	END_REGION
+	
+	
+END_FUNCTION_BLOCK
+

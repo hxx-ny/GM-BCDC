@@ -1,0 +1,228 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Document>
+  <Engineering version="V20" />
+  <SW.Types.PlcStruct ID="0">
+    <AttributeList>
+      <Access>Published</Access>
+      <Interface><Sections xmlns="http://www.siemens.com/automation/Openness/SW/Interface/v5">
+  <Section Name="None">
+    <Member Name="cmdType" Datatype="Int">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">1: MoveLinAbs; 2: MoveLinRel; 3: MoveCircAbs; 4: MoveCircRel; 5: MoveDirectAbs; 6: MoveDirectRel; 10: TrackConveyorBelt; 100: WaitTime; 40/41/42: ContourOffset; 0: FlagOnlyCmd; -1: End of List; 20-23: Frame cmds; 30-35: Zone cmds</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">1: MoveLinAbs; 2: MoveLinRel; 3: MoveCircAbs; 4: MoveCircRel; 5: MoveDirectAbs; 6: MoveDirectRel; 10: TrackConveyorBelt; 100: WaitTime; 40/41/42: ContourOffset; 0: FlagOnlyCmd; -1: End of List; 20-23: Frame cmds; 30-35: Zone cmds</MultiLanguageText>
+        <MultiLanguageText Lang="fr-FR">1: MoveLinAbs; 2: MoveLinRel; 3: MoveCircAbs; 4: MoveCircRel; 5: MoveDirectAbs; 6: MoveDirectRel; 10: TrackConveyorBelt; 100: WaitTime; 40/41/42: ContourOffset; 0: FlagOnlyCmd; -1: End of List; 20-23: Frame cmds; 30-35: Zone cmds</MultiLanguageText>
+        <MultiLanguageText Lang="zh-CN">1: MoveLinAbs; 2: MoveLinRel; 3: MoveCircAbs; 4: MoveCircRel; 5: MoveDirectAbs; 6: MoveDirectRel; 10: TrackConveyorBelt; 100: WaitTime; 40/41/42: ContourOffset; 0: FlagOnlyCmd; -1: End of List; 20-23: Frame cmds; 30-35: Zone cmds</MultiLanguageText>
+      </Comment>
+      <StartValue>-1</StartValue>
+    </Member>
+    <Member Name="cmdActivated" Datatype="Bool">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">(de)activation of command</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">(de)activation of command</MultiLanguageText>
+        <MultiLanguageText Lang="fr-FR">(de)activation of command</MultiLanguageText>
+        <MultiLanguageText Lang="zh-CN">(de)activation of command</MultiLanguageText>
+      </Comment>
+      <StartValue>TRUE</StartValue>
+    </Member>
+    <Member Name="cmdName" Datatype="String[&quot;LKINCTRL_LENGTH_OF_CMDPOINT_NAME&quot;]">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">name of command</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">name of command</MultiLanguageText>
+        <MultiLanguageText Lang="fr-FR">name of command</MultiLanguageText>
+        <MultiLanguageText Lang="zh-CN">name of command</MultiLanguageText>
+      </Comment>
+    </Member>
+    <Member Name="point" Datatype="DInt">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">reference to point table, used for cmdCoordinates</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">reference to point table, used for cmdCoordinates</MultiLanguageText>
+        <MultiLanguageText Lang="fr-FR">reference to point table, used for cmdCoordinates</MultiLanguageText>
+        <MultiLanguageText Lang="zh-CN">reference to point table, used for cmdCoordinates</MultiLanguageText>
+      </Comment>
+      <StartValue>-1</StartValue>
+    </Member>
+    <Member Name="measurementCmd" Datatype="USInt">
+      <Comment>
+        <MultiLanguageText Lang="en-US">0: deactivated; 1: without acknowledge; 2: with acknowledge</MultiLanguageText>
+      </Comment>
+    </Member>
+    <Member Name="cmdCoordinates" Datatype="&quot;LKinCtrl_typePointCoordinates&quot;">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">target coordinate definition</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">target coordinate definition</MultiLanguageText>
+        <MultiLanguageText Lang="fr-FR">target coordinate definition</MultiLanguageText>
+        <MultiLanguageText Lang="zh-CN">target coordinate definition</MultiLanguageText>
+      </Comment>
+    </Member>
+    <Member Name="cmdParameters" Datatype="&quot;LKinCtrl_typePointParameter&quot;">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">additional command parameters</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">additional command parameters</MultiLanguageText>
+        <MultiLanguageText Lang="fr-FR">additional command parameters</MultiLanguageText>
+        <MultiLanguageText Lang="zh-CN">additional command parameters</MultiLanguageText>
+      </Comment>
+      <Sections>
+        <Section Name="None">
+          <Member Name="transitionParameters" Datatype="Array[1..5] of LReal">
+            <Subelement Path="1">
+              <StartValue>-1.0</StartValue>
+            </Subelement>
+          </Member>
+        </Section>
+      </Sections>
+    </Member>
+    <Member Name="setFlags" Datatype="Array[1..&quot;LKINCTRL_NO_OF_CMD_SETFLAGS&quot;] of &quot;LKinCtrl_typeSetFlagElement_Bool&quot;">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">flags to control actuators</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">flags to control actuators</MultiLanguageText>
+        <MultiLanguageText Lang="fr-FR">flags to control actuators</MultiLanguageText>
+        <MultiLanguageText Lang="zh-CN">flags to control actuators</MultiLanguageText>
+      </Comment>
+    </Member>
+    <Member Name="valueFlags" Datatype="Array[1..&quot;LKINCTRL_NO_OF_CMD_VALUEFLAGS&quot;] of &quot;LKinCtrl_typeSetFlagElement_LReal&quot;">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">value flags to control actuators</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">value flags to control actuators</MultiLanguageText>
+        <MultiLanguageText Lang="fr-FR">value flags to control actuators</MultiLanguageText>
+        <MultiLanguageText Lang="zh-CN">value flags to control actuators</MultiLanguageText>
+      </Comment>
+    </Member>
+    <Member Name="parameterValid" Datatype="Array[1..&quot;LKINCTRL_NO_OF_VALID_BITS&quot;] of Bool">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">valid bit for cartesian position parameters</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">valid bit for cartesian position parameters</MultiLanguageText>
+        <MultiLanguageText Lang="fr-FR">valid bit for cartesian position parameters</MultiLanguageText>
+        <MultiLanguageText Lang="zh-CN">valid bit for cartesian position parameters</MultiLanguageText>
+      </Comment>
+      <Subelement Path="1">
+        <StartValue>TRUE</StartValue>
+      </Subelement>
+      <Subelement Path="2">
+        <StartValue>TRUE</StartValue>
+      </Subelement>
+      <Subelement Path="3">
+        <StartValue>TRUE</StartValue>
+      </Subelement>
+      <Subelement Path="4">
+        <StartValue>TRUE</StartValue>
+      </Subelement>
+      <Subelement Path="5">
+        <StartValue>TRUE</StartValue>
+      </Subelement>
+      <Subelement Path="6">
+        <StartValue>TRUE</StartValue>
+      </Subelement>
+    </Member>
+  </Section>
+</Sections></Interface>
+      <Name>LKinCtrl_typePathDataElement_advanced</Name>
+      <Namespace />
+    </AttributeList>
+    <ObjectList>
+      <MultilingualText ID="1" CompositionName="Comment">
+        <ObjectList>
+          <MultilingualTextItem ID="2" CompositionName="Items">
+            <AttributeList>
+              <Culture>de-DE</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="3" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-GB</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="4" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-US</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="5" CompositionName="Items">
+            <AttributeList>
+              <Culture>es-ES</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="6" CompositionName="Items">
+            <AttributeList>
+              <Culture>fr-FR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="7" CompositionName="Items">
+            <AttributeList>
+              <Culture>it-IT</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="8" CompositionName="Items">
+            <AttributeList>
+              <Culture>ko-KR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="9" CompositionName="Items">
+            <AttributeList>
+              <Culture>zh-CN</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+        </ObjectList>
+      </MultilingualText>
+      <MultilingualText ID="A" CompositionName="Title">
+        <ObjectList>
+          <MultilingualTextItem ID="B" CompositionName="Items">
+            <AttributeList>
+              <Culture>de-DE</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="C" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-GB</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="D" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-US</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="E" CompositionName="Items">
+            <AttributeList>
+              <Culture>es-ES</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="F" CompositionName="Items">
+            <AttributeList>
+              <Culture>fr-FR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="10" CompositionName="Items">
+            <AttributeList>
+              <Culture>it-IT</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="11" CompositionName="Items">
+            <AttributeList>
+              <Culture>ko-KR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="12" CompositionName="Items">
+            <AttributeList>
+              <Culture>zh-CN</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+        </ObjectList>
+      </MultilingualText>
+    </ObjectList>
+  </SW.Types.PlcStruct>
+</Document>

@@ -1,0 +1,961 @@
+﻿FUNCTION_BLOCK "2200_StackMain"
+{ S7_Optimized_Access := 'TRUE' ; Published := 'FALSE' }
+VERSION : 0.1
+   VAR_INPUT 
+      Calculate : Bool;
+      SemiStep : Bool;
+      FullStep : Bool;
+      Auto : Bool;
+      CycleStop : Bool;
+      FastStop : Bool;
+      Reset : Bool;
+      Parameter : Struct
+         Global : Struct
+            CPM : LReal := 80.0;
+            StageWidth : LReal := 244.14;
+         END_STRUCT;
+         Step : Struct
+            MandrelUse : Bool;
+            InitialPosFinalRoller : LReal := 0.0;
+            InitialPosCompensator : LReal := 0.0;
+         END_STRUCT;
+         Auto : Struct
+            SepaClean : Bool;
+            CellCount : DInt := 10;
+            Compensator : Struct
+               InitialPosCompensator : LReal;
+            END_STRUCT;
+            Anode : Struct
+               PnPX1 : Struct
+                  InitialPosAnodePnPX1 : LReal;
+                  AnodePnPX1FwdOutputCam : Struct
+                     OnPos : LReal := 10.0;
+                     OffPos : LReal := 530.0;
+                  END_STRUCT;
+                  AnodePnPX1BwdOutputCam : Struct
+                     OnPos : LReal := 10.0;
+                     OffPos : LReal := 530.0;
+                  END_STRUCT;
+                  AnodeReelCutDataDeleteOffOutputCam : Struct
+                     OnPos : LReal;
+                     OffPos : LReal;
+                  END_STRUCT;
+               END_STRUCT;
+               PnPX2 : Struct
+                  InitialPosAnodePnPX2 : LReal;
+                  AnodePnPX2FwdOutputCam : Struct
+                     OnPos : LReal := 10.0;
+                     OffPos : LReal := 530.0;
+                  END_STRUCT;
+                  AnodePnPX2BwdOutputCam : Struct
+                     OnPos : LReal := 10.0;
+                     OffPos : LReal := 530.0;
+                  END_STRUCT;
+               END_STRUCT;
+               PnPZ1 : Struct
+                  InitialPosAnodePnPZ1 : LReal := 0.0;
+                  AnodePnPZ1Down1OutputCam : Struct
+                     OnPos : LReal := 1.0;
+                     OffPos : LReal := 24.0;
+                  END_STRUCT;
+                  AnodePnPZ1Up1OutputCam : Struct
+                     OnPos : LReal := 1.0;
+                     OffPos : LReal := 24.0;
+                  END_STRUCT;
+                  AnodePnPZ1Down2OutputCam : Struct
+                     OnPos : LReal := 1.0;
+                     OffPos : LReal := 29.0;
+                  END_STRUCT;
+                  AnodePnPZ1Up2OutputCam : Struct
+                     OnPos : LReal := 1.0;
+                     OffPos : LReal := 29.0;
+                  END_STRUCT;
+                  AnodePnPZ1SuctionOnOutputCam : Struct
+                     OnPos : LReal := 23.0;
+                     OffPos : LReal := 28.0;
+                  END_STRUCT;
+                  AnodePnPZ1SuctionOffOutputCam : Struct
+                     OnPos : LReal := 23.0;
+                     OffPos : LReal := 30.0;
+                  END_STRUCT;
+                  AnodePnPZ1ReelCutBlowOutputCam : Struct
+                     OnPos : LReal := 22.0;
+                     OffPos : LReal := 28.0;
+                  END_STRUCT;
+                  AnodeAlignSuctionOnOutputCam : Struct
+                     OnPos : LReal;
+                     OffPos : LReal;
+                  END_STRUCT;
+                  AnodeReelCutDataDeleteOnOutputCam : Struct
+                     OnPos : LReal;
+                     OffPos : LReal;
+                  END_STRUCT;
+                  AnodeAlignVisionOutputCam : Struct
+                     OnPos : LReal;
+                     OffPos : LReal;
+                  END_STRUCT;
+               END_STRUCT;
+               PnPZ2 : Struct
+                  InitialPosAnodePnPZ2 : LReal := 0.0;
+                  AnodePnPZ2Down1OutputCam : Struct
+                     OnPos : LReal := 1.0;
+                     OffPos : LReal := 24.0;
+                  END_STRUCT;
+                  AnodePnPZ2Up1OutputCam : Struct
+                     OnPos : LReal := 1.0;
+                     OffPos : LReal := 24.0;
+                  END_STRUCT;
+                  AnodePnPZ2Down2OutputCam : Struct
+                     OnPos : LReal := 1.0;
+                     OffPos : LReal := 29.0;
+                  END_STRUCT;
+                  AnodePnPZ2Up2OutputCam : Struct
+                     OnPos : LReal := 1.0;
+                     OffPos : LReal := 29.0;
+                  END_STRUCT;
+                  AnodePnPZ2SuctionOnOutputCam : Struct
+                     OnPos : LReal := 23.0;
+                     OffPos : LReal := 30.0;
+                  END_STRUCT;
+                  AnodePnPZ2SuctionOffOutputCam : Struct
+                     OnPos : LReal := 22.0;
+                     OffPos : LReal := 28.0;
+                  END_STRUCT;
+                  AnodeAlignSuctionOffOutputCam : Struct
+                     OnPos : LReal := 22.0;
+                     OffPos : LReal := 30.0;
+                  END_STRUCT;
+               END_STRUCT;
+            END_STRUCT;
+            Cathode : Struct
+               PnPX1 : Struct
+                  InitialPosCathodePnPX1 : LReal;
+                  CathodePnPX1FwdOutputCam : Struct
+                     OnPos : LReal := 10.0;
+                     OffPos : LReal := 530.0;
+                  END_STRUCT;
+                  CathodePnPX1BwdOutputCam : Struct
+                     OnPos : LReal := 10.0;
+                     OffPos : LReal := 530.0;
+                  END_STRUCT;
+                  CathodeReelCutDataDeleteOffOutputCam : Struct
+                     OnPos : LReal;
+                     OffPos : LReal;
+                  END_STRUCT;
+               END_STRUCT;
+               PnPX2 : Struct
+                  InitialPosCathodePnPX2 : LReal;
+                  CathodePnPX2FwdOutputCam : Struct
+                     OnPos : LReal := 10.0;
+                     OffPos : LReal := 530.0;
+                  END_STRUCT;
+                  CathodePnPX2BwdOutputCam : Struct
+                     OnPos : LReal := 10.0;
+                     OffPos : LReal := 530.0;
+                  END_STRUCT;
+               END_STRUCT;
+               PnPZ1 : Struct
+                  InitialPosCathodePnPZ1 : LReal;
+                  CathodePnPZ1Down1OutputCam : Struct
+                     OnPos : LReal := 1.0;
+                     OffPos : LReal := 24.0;
+                  END_STRUCT;
+                  CathodePnPZ1Up1OutputCam : Struct
+                     OnPos : LReal := 1.0;
+                     OffPos : LReal := 24.0;
+                  END_STRUCT;
+                  CathodePnPZ1Down2OutputCam : Struct
+                     OnPos : LReal := 1.0;
+                     OffPos : LReal := 29.0;
+                  END_STRUCT;
+                  CathodePnPZ1Up2OutputCam : Struct
+                     OnPos : LReal := 1.0;
+                     OffPos : LReal := 29.0;
+                  END_STRUCT;
+                  CathodePnPZ1SuctionOnOutputCam : Struct
+                     OnPos : LReal := 23.0;
+                     OffPos : LReal := 28.0;
+                  END_STRUCT;
+                  CathodePnPZ1SuctionOffOutputCam : Struct
+                     OnPos : LReal := 23.0;
+                     OffPos : LReal := 30.0;
+                  END_STRUCT;
+                  CathodePnPZ1ReelCutBlowOutputCam : Struct
+                     OnPos : LReal := 22.0;
+                     OffPos : LReal := 28.0;
+                  END_STRUCT;
+                  CathodeAlignSuctionOnOutputCam : Struct
+                     OnPos : LReal := 22.0;
+                     OffPos : LReal := 30.0;
+                  END_STRUCT;
+                  CathodeReelCutDataDeleteOnOutputCam : Struct
+                     OnPos : LReal;
+                     OffPos : LReal;
+                  END_STRUCT;
+                  CathodeAlignVisionOutputCam : Struct
+                     OnPos : LReal;
+                     OffPos : LReal;
+                  END_STRUCT;
+               END_STRUCT;
+               PnPZ2 : Struct
+                  InitialPosCathodePnPZ2 : LReal;
+                  CathodePnPZ2Down1OutputCam : Struct
+                     OnPos : LReal := 1.0;
+                     OffPos : LReal := 24.0;
+                  END_STRUCT;
+                  CathodePnPZ2Up1OutputCam : Struct
+                     OnPos : LReal := 1.0;
+                     OffPos : LReal := 24.0;
+                  END_STRUCT;
+                  CathodePnPZ2Down2OutputCam : Struct
+                     OnPos : LReal := 1.0;
+                     OffPos : LReal := 29.0;
+                  END_STRUCT;
+                  CathodePnPZ2Up2OutputCam : Struct
+                     OnPos : LReal := 1.0;
+                     OffPos : LReal := 29.0;
+                  END_STRUCT;
+                  CathodePnPZ2SuctionOnOutputCam : Struct
+                     OnPos : LReal := 23.0;
+                     OffPos : LReal := 28.0;
+                  END_STRUCT;
+                  CathodePnPZ2SuctionOffOutputCam : Struct
+                     OnPos : LReal := 23.0;
+                     OffPos : LReal := 30.0;
+                  END_STRUCT;
+                  CathodeAlignSuctionOffOutputCam : Struct
+                     OnPos : LReal := 22.0;
+                     OffPos : LReal := 30.0;
+                  END_STRUCT;
+               END_STRUCT;
+            END_STRUCT;
+            FinalRoller : Struct
+               InitialPosFinalRoller : LReal;
+               FinalRollerFwdOutputCam : Struct
+                  OnPos : LReal := 220.0;
+                  OffPos : LReal := 230.0;
+               END_STRUCT;
+               FinalRollerBwdOutputCam : Struct
+                  OnPos : LReal;
+                  OffPos : LReal;
+               END_STRUCT;
+               FinalRollerStackTableDownOutputCam : Struct
+                  OnPos : LReal;
+                  OffPos : LReal;
+               END_STRUCT;
+               FinalRollerStackAnodeVisionOutputCam : Struct
+                  OnPos : LReal;
+                  OffPos : LReal;
+               END_STRUCT;
+               FinalRollerStackCathodeVisionOutputCam : Struct
+                  OnPos : LReal;
+                  OffPos : LReal;
+               END_STRUCT;
+            END_STRUCT;
+            Mandrel : Struct
+               InitialPosAnodeMandrelYFront : LReal;
+               InitialPosAnodeMandrelYRear : LReal;
+               InitialPosAnodeMandrelZFront : LReal;
+               InitialPosAnodeMandrelZRear : LReal;
+               InitialPosCathodeMandrelYFront : LReal;
+               InitialPosCathodeMandrelYRear : LReal;
+               InitialPosCathodeMandrelZFront : LReal;
+               InitialPosCathodeMandrelZRear : LReal;
+            END_STRUCT;
+         END_STRUCT;
+         StackCalculate : Struct
+            Direction : Bool := TRUE;
+            RatioOption : Bool := TRUE;
+            TimeOption : Bool;
+            PosOption : Bool;
+            DoubleOption : Bool;
+            StageHeight : LReal := 360.0;
+            StageGap : LReal := 5.0;
+            AccRatio : DInt := 3;
+            Ratio : Struct
+               FinalRollerStart : LReal := 0.0;
+               FinalRollerEnd : LReal := 75.0;
+               PnPXStart : LReal := 0.0;
+               PnPXEnd : LReal := 75.0;
+               PnPZDownStart : LReal := 65.0;
+               PnPZDownEnd : LReal := 75.0;
+               PnPZUpStart : LReal := 90.0;
+               PnPZUpEnd : LReal := 100.0;
+               MandrelBwdStart : LReal := 75.0;
+               MandrelBwdEnd : LReal := 82.5;
+               MandrelFwdStart : LReal := 82.5;
+               MandrelFwdEnd : LReal := 90.0;
+               MandrelUpStart1 : LReal := 55.0;
+               MandrelUpEnd1 : LReal := 62.5;
+               MandrelUpStart2 : LReal := 75.0;
+               MandrelUpEnd2 : LReal := 82.5;
+               MandrelDownStart : LReal := 87.0;
+               MandrelDownEnd : LReal := 90.0;
+               MandrelYTerm : LReal := 0.0;
+               MandrelZTerm : LReal := 0.0;
+               MandrelBwdOffset : LReal := 0.0;
+               MandrelFwdOffset : LReal := 0.0;
+            END_STRUCT;
+            "Time" : Struct
+               FinalRollerStart : LReal;
+               FinalRollerEnd : LReal;
+               PnPXStart : LReal;
+               PnPXEnd : LReal;
+               PnPZDownStart : LReal;
+               PnPZDownEnd : LReal;
+               PnPZUpStart : LReal;
+               PnPZUpEnd : LReal;
+               MandrelBwdStart : LReal;
+               MandrelBwdEnd : LReal;
+               MandrelFwdStart : LReal;
+               MandrelFwdEnd : LReal;
+               MandrelUpStart1 : LReal;
+               MandrelUpEnd1 : LReal;
+               MandrelUpStart2 : LReal;
+               MandrelUpEnd2 : LReal;
+               MandrelDownStart : LReal;
+               MandrelDownEnd : LReal;
+            END_STRUCT;
+            Position : Struct
+               FinalRollerBwdPos : LReal;
+               FinalRollerFwdPos : LReal;
+            END_STRUCT;
+            Distance : Struct
+               Compensator : Struct
+                  "Null" : Bool;
+               END_STRUCT;
+               Anode : Struct
+                  PnPX1Distance : LReal;
+                  PnPX2Distance : LReal;
+                  PnPZ1Distance1 : LReal;
+                  PnPZ1Distance2 : LReal;
+                  PnPZ2Distance1 : LReal;
+                  PnPZ2Distance2 : LReal;
+               END_STRUCT;
+               Cathode : Struct
+                  PnPX1Distance : LReal;
+                  PnPX2Distance : LReal;
+                  PnPZ1Distance1 : LReal;
+                  PnPZ1Distance2 : LReal;
+                  PnPZ2Distance1 : LReal;
+                  PnPZ2Distance2 : LReal;
+               END_STRUCT;
+               FinalRoller : Struct
+                  Distance : LReal;
+               END_STRUCT;
+               Mandrel : Struct
+                  AnodeMandrelYFrontDistance : LReal;
+                  AnodeMandrelYRearDistance : LReal;
+                  CathodeMandrelYFrontDistance : LReal;
+                  CathodeMandrelYRearDistance : LReal;
+                  AnodeMandrelZFrontDistance : LReal;
+                  AnodeMandrelZRearDistance : LReal;
+                  CathodeMandrelZFrontDistance : LReal;
+                  CathodeMandrelZRearDistance : LReal;
+               END_STRUCT;
+            END_STRUCT;
+         END_STRUCT;
+      END_STRUCT;
+   END_VAR
+
+   VAR_OUTPUT 
+      Busy : Struct
+         TotalBusy : Bool;
+         CalculateBusy : Bool;
+         SemiStepBusy : Bool;
+         FullStepBusy : Bool;
+         AutoBusy : Bool;
+         CycleStopBusy : Bool;
+         FastStopBusy : Bool;
+         ResetBusy : Bool;
+      END_STRUCT;
+      Done : Struct
+         TotalDone : Bool;
+         CalculateDone : Bool;
+         SemiStepDone : Bool;
+         FullStepDone : Bool;
+         AutoDone : Bool;
+         CycleStopDone : Bool;
+         FastStopDone : Bool;
+         ResetDone : Bool;
+      END_STRUCT;
+      Error : Bool;
+      ErrorID : DWord;
+      StatusID : DWord;
+      SubNowStep : DInt;
+      SubBeforeStep : DInt;
+      OutputBits : Struct
+         AnodePnP1Suction : Bool := FALSE;
+         AnodePnP1Blow : Bool := FALSE;
+         AnodePnP1ReelCutBlow : Bool := FALSE;
+         AnodePnP1RotaryWork : Bool := FALSE;
+         AnodePnP1RotaryHome : Bool := FALSE;
+         AnodeReelCutDataDelete : Bool;
+         AnodePnP2Suction : Bool := FALSE;
+         AnodePnP2Blow : Bool := FALSE;
+         AnodeAlignSuction : Bool := FALSE;
+         AnodeAlignBlow : Bool := FALSE;
+         AnodeAlignVision : Bool;
+         CathodePnP1Suction : Bool := FALSE;
+         CathodePnP1Blow : Bool := FALSE;
+         CathodePnP1ReelCutBlow : Bool := FALSE;
+         CathodePnP1RotaryWork : Bool := FALSE;
+         CathodePnP1RotaryHome : Bool := FALSE;
+         CathodeReelCutDataDelete : Bool;
+         CathodePnP2Suction : Bool := FALSE;
+         CathodePnP2Blow : Bool := FALSE;
+         CathodeAlignSuction : Bool := FALSE;
+         CathodeAlignBlow : Bool := FALSE;
+         CathodeAlignVision : Bool;
+         StackTableZAnodeDown : Bool := FALSE;
+         StackTableZCathodeDown : Bool;
+         StackAnodeVision : Bool;
+         StackCathodeVision : Bool;
+      END_STRUCT;
+      OutputData : Struct
+         StackCellCount : DInt;
+      END_STRUCT;
+   END_VAR
+
+   VAR_IN_OUT 
+      Axis : Struct
+         MasterVirtual : DB_ANY;
+         UnwinderVirtual : DB_ANY;
+         UnwinderTop : DB_ANY;
+         UnwinderBottom : DB_ANY;
+         FinalRoller : DB_ANY;
+         Compensator : DB_ANY;
+         AnodePnPX1 : DB_ANY;
+         AnodePnPX2 : DB_ANY;
+         AnodePnPZ1 : DB_ANY;
+         AnodePnPZ2 : DB_ANY;
+         CathodePnPX1 : DB_ANY;
+         CathodePnPX2 : DB_ANY;
+         CathodePnPZ1 : DB_ANY;
+         CathodePnPZ2 : DB_ANY;
+         AnodeMandrelYFront : DB_ANY;
+         AnodeMandrelYRear : DB_ANY;
+         AnodeMandrelZFront : DB_ANY;
+         AnodeMandrelZRear : DB_ANY;
+         CathodeMandrelYFront : DB_ANY;
+         CathodeMandrelYRear : DB_ANY;
+         CathodeMandrelZFront : DB_ANY;
+         CathodeMandrelZRear : DB_ANY;
+         SepaGripperX : DB_ANY;
+      END_STRUCT;
+      Cam : Struct
+         FinalRollerCam : DB_ANY;
+         CompensatorCam : DB_ANY;
+         AnodePnPX1Cam : DB_ANY;
+         AnodePnPX2Cam : DB_ANY;
+         AnodePnPZ1Cam : DB_ANY;
+         AnodePnPZ2Cam : DB_ANY;
+         CathodePnPX1Cam : DB_ANY;
+         CathodePnPX2Cam : DB_ANY;
+         CathodePnPZ1Cam : DB_ANY;
+         CathodePnPZ2Cam : DB_ANY;
+         AnodeMandrelYFrontCam : DB_ANY;
+         AnodeMandrelYRearCam : DB_ANY;
+         AnodeMandrelZFrontCam : DB_ANY;
+         AnodeMandrelZRearCam : DB_ANY;
+         CathodeMandrelYFrontCam : DB_ANY;
+         CathodeMandrelYRearCam : DB_ANY;
+         CathodeMandrelZFrontCam : DB_ANY;
+         CathodeMandrelZRearCam : DB_ANY;
+      END_STRUCT;
+      OutputCam : Struct
+         FinalRollerXFwdOutputCam : DB_ANY;
+         FinalRollerXBwdOutputCam : DB_ANY;
+         FinalRollerXStackTableDownOutputCam : DB_ANY;
+         FinalRollerXStackAnodeVisionOutputCam : DB_ANY;
+         FinalRollerXStackCathodeVisionOutputCam : DB_ANY;
+         AnodePnPX1FwdOutputCam : DB_ANY;
+         AnodePnPX1BwdOutputCam : DB_ANY;
+         AnodePnPX2FwdOutputCam : DB_ANY;
+         AnodePnPX2BwdOutputCam : DB_ANY;
+         AnodePnPZ1Down1OutputCam : DB_ANY;
+         AnodePnPZ1Up1OutputCam : DB_ANY;
+         AnodePnPZ2Down1OutputCam : DB_ANY;
+         AnodePnPZ2Up1OutputCam : DB_ANY;
+         AnodePnPZ1Down2OutputCam : DB_ANY;
+         AnodePnPZ1Up2OutputCam : DB_ANY;
+         AnodePnPZ2Down2OutputCam : DB_ANY;
+         AnodePnPZ2Up2OutputCam : DB_ANY;
+         AnodePnPZ1SuctionOnOutputCam : DB_ANY;
+         AnodePnPZ1SuctionOffOutputCam : DB_ANY;
+         AnodePnPZ1ReelCutBlowOutputCam : DB_ANY;
+         AnodePnPZ2SuctionOnOutputCam : DB_ANY;
+         AnodePnPZ2SuctionOffOutputCam : DB_ANY;
+         AnodeAlignSuctionOnOutputCam : DB_ANY;
+         AnodeAlignSuctionOffOutputCam : DB_ANY;
+         AnodePnPZ1ReelCutDataDeleteOnOutputCam : DB_ANY;
+         AnodePnP1XReelCutDataDeleteOffOutputCam : DB_ANY;
+         AnodeAlignVisionOutputCam : DB_ANY;
+         CathodePnPX1FwdOutputCam : DB_ANY;
+         CathodePnPX1BwdOutputCam : DB_ANY;
+         CathodePnPX2FwdOutputCam : DB_ANY;
+         CathodePnPX2BwdOutputCam : DB_ANY;
+         CathodePnPZ1Down1OutputCam : DB_ANY;
+         CathodePnPZ1Up1OutputCam : DB_ANY;
+         CathodePnPZ2Down1OutputCam : DB_ANY;
+         CathodePnPZ2Up1OutputCam : DB_ANY;
+         CathodePnPZ1Down2OutputCam : DB_ANY;
+         CathodePnPZ1Up2OutputCam : DB_ANY;
+         CathodePnPZ2Down2OutputCam : DB_ANY;
+         CathodePnPZ2Up2OutputCam : DB_ANY;
+         CathodePnPZ1SuctionOnOutputCam : DB_ANY;
+         CathodePnPZ1SuctionOffOutputCam : DB_ANY;
+         CathodePnPZ1ReelCutBlowOutputCam : DB_ANY;
+         CathodePnPZ2SuctionOnOutputCam : DB_ANY;
+         CathodePnPZ2SuctionOffOutputCam : DB_ANY;
+         CathodeAlignSuctionOnOutputCam : DB_ANY;
+         CathodeAlignSuctionOffOutputCam : DB_ANY;
+         CathodePnPZ1ReelCutDataDeleteOnOutputCam : DB_ANY;
+         CathodePnP1XReelCutDataDeleteOffOutputCam : DB_ANY;
+         CathodeAlignVisionOutputCam : DB_ANY;
+      END_STRUCT;
+      ReelcutInterface : Struct
+         AnodeReelcutStandby : Bool;
+         AnodeReelcutStart : Bool;
+         AnodeReelcutDone : Bool;
+         CathodeReelcutStandby : Bool;
+         CathodeReelcutStart : Bool;
+         CathodeReelcutDone : Bool;
+      END_STRUCT;
+      CalculateInterface : Struct
+         Execute : Bool;
+         Done : Bool;
+         Busy : Bool;
+         Error : Bool;
+         ErrorID : DWord;
+         NowCmd : DInt;
+         BeforeCmd : DInt;
+      END_STRUCT;
+   END_VAR
+
+   VAR 
+      statNowCmd : DInt;
+      statBeforeCmd : DInt;
+      statDone : Bool;
+      statTimeTable : Array[1..50] of Time;
+      statStartTime : Time;
+      statEndTime : Time;
+      instTriggerCalculate {InstructionName := 'R_TRIG'; LibVersion := '1.0'; S7_SetPoint := 'False'} : R_TRIG;
+      instTriggerSemiStep {InstructionName := 'R_TRIG'; LibVersion := '1.0'} : R_TRIG;
+      instTriggerFullStep {InstructionName := 'R_TRIG'; LibVersion := '1.0'} : R_TRIG;
+      instTriggerAuto {InstructionName := 'R_TRIG'; LibVersion := '1.0'} : R_TRIG;
+      instTriggerStop {InstructionName := 'R_TRIG'; LibVersion := '1.0'} : R_TRIG;
+      instTriggerReset {InstructionName := 'R_TRIG'; LibVersion := '1.0'} : R_TRIG;
+      instStackSemiStep : "2202_StackSemiStep";
+      instStackFullStepAuto : "2203_StackFullStepAuto";
+      instStackStop : "2204_StackStop";
+      instStackReset : "2205_StackReset";
+      instOutputControl : "2206_OutputControl";
+   END_VAR
+
+   VAR_TEMP 
+      tempMasterVirtual {InstructionName := 'TO_SynchronousAxis'; LibVersion := '9.0'} : REF_TO TO_SynchronousAxis;
+   END_VAR
+
+   VAR CONSTANT 
+      STAT_IDLE : DInt := 0;
+      STAT_CALCULATE : DInt := 1;
+      STAT_SEMI_STEP : DInt := 2;
+      STAT_FULL_STEP : DInt := 3;
+      STAT_AUTO : DInt := 4;
+      STAT_STOP : DInt := 10;
+      STAT_RESET : DInt := 12;
+      STAT_DONE : DInt := 10000;
+      STAT_ERROR : DInt := 99;
+   END_VAR
+
+
+BEGIN
+	REGION INPUT SIGNAL
+	    REGION CALCULATE                                                 // Cam Calculate 동작 영역
+	        #instTriggerCalculate(CLK := #Calculate);                    // 상승 에지 검출
+	        
+	        IF #instTriggerCalculate.Q AND #statNowCmd = #STAT_IDLE THEN // STAT_IDLE 상태에서 상승 에지 검출 시 동작
+	            #statStartTime := TIME_TCK();
+	            #statBeforeCmd := #statNowCmd;                           // 이전 명령 모니터링
+	            #statNowCmd := #STAT_CALCULATE;                          // STAT_CALCULATE 상태 돌입
+	            #statDone := FALSE;                                      // 동작 완료 신호 초기화
+	        END_IF;
+	    END_REGION
+	    
+	    REGION SEMI STEP                                                 // Step 동작 영역
+	        #instTriggerSemiStep(CLK := #SemiStep);                      // 상승 에지 검출
+	        
+	        IF #instTriggerSemiStep.Q AND #statNowCmd = #STAT_IDLE THEN  // STAT_IDLE 상태에서 상승 에지 검출 시 동작
+	            #statStartTime := TIME_TCK();
+	            #instStackFullStepAuto.Auto := FALSE;                    // Auto 모드 해제
+	            #statBeforeCmd := #statNowCmd;                           // 이전 명령 모니터링
+	            #statNowCmd := #STAT_SEMI_STEP;                          // STAT_SEMI_STEP 상태로 이동
+	            #statDone := FALSE;                                      // 동작 완료 신호 초기화
+	        END_IF;
+	    END_REGION
+	    
+	    REGION FULL STEP                                                 // Full Step 동작 영역
+	        #instTriggerFullStep(CLK := #FullStep);                      // 상승 에지 검출
+	        
+	        IF #instTriggerFullStep.Q AND #statNowCmd = #STAT_IDLE THEN  // STAT_IDLE 상태에서 상승 에지 검출 시 동작
+	            #statStartTime := TIME_TCK();
+	            #instStackFullStepAuto.Auto := FALSE;                    // Auto 모드 해제
+	            #statBeforeCmd := #statNowCmd;                           // 이전 명령 모니터링
+	            #statNowCmd := #STAT_FULL_STEP;                          // STAT_FULL_STEP 상태 돌입
+	            #statDone := FALSE;                                      // 동작 완료 신호 초기화
+	        END_IF;
+	    END_REGION
+	    
+	    REGION AUTO                                                      // Auto 동작 영역
+	        #instTriggerAuto(CLK := #Auto);                              // 상승 에지 검출
+	        
+	        IF #instTriggerAuto.Q AND #statNowCmd = #STAT_IDLE THEN      // STAT_IDLE 상태에서 상승 에지 검출 시 동작
+	            #statStartTime := TIME_TCK();
+	            #instStackFullStepAuto.Auto := TRUE;                     // Auto 모드 입력
+	            #statBeforeCmd := #statNowCmd;                           // 이전 명령 모니터링
+	            #statNowCmd := #STAT_AUTO;                               // STAT_AUTO 상태로 이동
+	            #statDone := FALSE;                                      // 동작 완료 신호 초기화
+	        END_IF;
+	    END_REGION
+	    
+	    REGION STOP                                                      // Stop 동작 영역
+	        #instTriggerStop(CLK := #CycleStop OR #FastStop);                              // 상승 에지 검출
+	        
+	        IF #instTriggerStop.Q AND #statNowCmd <> #STAT_STOP THEN     // STAT_STOP이 아닐 때 상승 에지 검출 시 동작
+	            #statStartTime := TIME_TCK();
+	            #instStackStop.FastStop := #FastStop;
+	            #statBeforeCmd := #statNowCmd;                           // 이전 명령 모니터링
+	            #statNowCmd := #STAT_STOP;                               // STAT_STOP 상태로 이동
+	            #statDone := FALSE;                                      // 동작 완료 신호 초기화
+	        END_IF;
+	    END_REGION
+	    
+	    REGION RESET                                                     // Reset 동작 영역
+	        #instTriggerReset(CLK := #Reset);                            // 상승 에지 검출
+	        
+	        IF #instTriggerReset.Q AND #statNowCmd = #STAT_ERROR THEN    // STAT_ERROR 상태에서 상승 에지 검출 시 동작
+	            #statStartTime := TIME_TCK();
+	            #statBeforeCmd := #statNowCmd;                           // 이전 명령 모니터링
+	            #statNowCmd := #STAT_RESET;                              // STAT_RESET 상태로 이동
+	            #statDone := FALSE;                                      // 동작 완료 신호 초기화
+	        END_IF;
+	    END_REGION
+	END_REGION
+	
+	REGION COMMAND                                                       // 각 커맨드에 따른 Done 및 Error 신호 처리
+	    CASE #statNowCmd OF
+	        #STAT_IDLE:
+	            REGION IDLE
+	                ;
+	            END_REGION
+	            
+	        #STAT_CALCULATE:                                             // STAT_Caculate 상태
+	            REGION CALCULATE                                  
+	                REGION DONE                                          // Calculate 동작 완료 시 
+	                    IF #CalculateInterface.Done THEN
+	                        #statEndTime := TIME_TCK();
+	                        #statTimeTable[#STAT_CALCULATE] := #statEndTime - #statStartTime;
+	                        #statStartTime := TIME_TCK();
+	                        #statBeforeCmd := #statNowCmd;               // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_DONE;                   // STAT_IDLE 상태로 이동
+	                        #statDone := TRUE;                           // 동작 완료 신호 출력
+	                    END_IF;
+	                END_REGION
+	                
+	                REGION ERROR                                         // Calculate 동작 중 에러 발생 시
+	                    IF #CalculateInterface.Error THEN
+	                        #statBeforeCmd := #statNowCmd;               // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                  // STAT_ERROR 상태로 이동
+	                        #ErrorID := #CalculateInterface.ErrorID;     // Calculate 에러ID 출력
+	                        #StatusID := 16#0000_3110;
+	                    END_IF;
+	                END_REGION
+	                
+	                #SubBeforeStep := #CalculateInterface.BeforeCmd;     // 이전 스텝 모니터링
+	                #SubNowStep := #CalculateInterface.NowCmd;           // 현재 스텝 모니터링
+	            END_REGION
+	            
+	        #STAT_SEMI_STEP:                                             // Semi Step 동작 영역                                    
+	            REGION SEMI STEP
+	                REGION DONE                                          // Semi Step 동작 완료 시
+	                    IF #instStackSemiStep.Done THEN
+	                        #statEndTime := TIME_TCK();
+	                        #statTimeTable[#STAT_SEMI_STEP] := #statEndTime - #statStartTime;
+	                        #statStartTime := TIME_TCK();
+	                        #statBeforeCmd := #statNowCmd;               // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_DONE;                   // STAT_IDLE 상태로 이동
+	                        #statDone := TRUE;                           // 동작 완료 신호 출력
+	                    END_IF;
+	                END_REGION
+	                
+	                REGION ERROR                                         // Semi Step 동작 중 에러 발생 시
+	                    IF #instStackSemiStep.Error THEN
+	                        #statBeforeCmd := #statNowCmd;               // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                  // STAT_ERROR 상태로 이동
+	                        #ErrorID := #instStackSemiStep.ErrorID;      // Semi Step 에러ID 출력
+	                        #StatusID := 16#0000_2400;
+	                    END_IF;
+	                    
+	                    IF #instOutputControl.Error THEN
+	                        #statBeforeCmd := #statNowCmd;               // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                  // STAT_ERROR 상태로 이동
+	                        #ErrorID := #instOutputControl.ErrorID;      // 에러ID 출력
+	                    END_IF;
+	                END_REGION
+	                
+	                #SubBeforeStep := #instStackSemiStep.BeforeCmd;      // 이전 스텝 모니터링
+	                #SubNowStep := #instStackSemiStep.NowCmd;            // 현재 스텝 모니터링
+	            END_REGION
+	            
+	        #STAT_FULL_STEP:                                             // Full Step 동작 영역
+	            REGION FULL STEP
+	                REGION DONE                                          // Full Step 동작 완료 시
+	                    IF #instStackFullStepAuto.Done THEN
+	                        #statEndTime := TIME_TCK();
+	                        #statTimeTable[#STAT_FULL_STEP] := #statEndTime - #statStartTime;
+	                        #statStartTime := TIME_TCK();
+	                        #statBeforeCmd := #statNowCmd;               // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_DONE;                   // STAT_IDLE 상태로 이동
+	                        #statDone := TRUE;                           // 동작 완료 신호 출력
+	                    END_IF;
+	                END_REGION
+	                
+	                REGION ERROR                                         // Full Step 동작 중 에러 발생 시
+	                    IF #instStackFullStepAuto.Error THEN             // Full Step 에러 신호 발생 시
+	                        #statBeforeCmd := #statNowCmd;               // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                  // STAT_ERROR 상태로 이동
+	                        #ErrorID := #instStackFullStepAuto.ErrorID;  // Full Step 에러ID 출력
+	                        #StatusID := 16#0000_2500;
+	                    END_IF;
+	                    
+	                    IF #instOutputControl.Error THEN
+	                        #statBeforeCmd := #statNowCmd;               // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                  // STAT_ERROR 상태로 이동
+	                        #ErrorID := #instOutputControl.ErrorID;      // 에러ID 출력
+	                        #StatusID := 16#0000_5100;
+	                    END_IF;
+	                END_REGION
+	                
+	                #SubBeforeStep := #instStackFullStepAuto.BeforeCmd;  // 이전 스텝 모니터링
+	                #SubNowStep := #instStackFullStepAuto.NowCmd;        // 현재 스텝 모니터링
+	            END_REGION
+	            
+	        #STAT_AUTO:                                                  // Auto 동작 영역
+	            REGION AUTO
+	                REGION DONE                                          // Auto 동작 완료 시
+	                    IF #instStackFullStepAuto.Done THEN              // Auto 완료 신호 발생 시
+	                        #statEndTime := TIME_TCK();
+	                        #statTimeTable[#STAT_AUTO] := #statEndTime - #statStartTime;
+	                        #statStartTime := TIME_TCK();
+	                        #statBeforeCmd := #statNowCmd;               // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_DONE;                   // STAT_IDLE 상태로 이동
+	                        #statDone := TRUE;                           // 동작 완료 신호 출력
+	                    END_IF;
+	                END_REGION
+	                
+	                REGION ERROR                                         // Auto 동작 중 에러 발생 시
+	                    IF #instStackFullStepAuto.Error THEN             // Auto 에러 신호 발생 시
+	                        #statBeforeCmd := #statNowCmd;               // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                  // STAT_ERROR 상태로 이동
+	                        #ErrorID := #instStackFullStepAuto.ErrorID;  // Auto 에러ID 출력
+	                        #StatusID := 16#0000_2600;
+	                    END_IF;
+	                    
+	                    IF #instOutputControl.Error THEN
+	                        #statBeforeCmd := #statNowCmd;               // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                  // STAT_ERROR 상태로 이동
+	                        #ErrorID := #instOutputControl.ErrorID;      // 에러ID 출력
+	                        #StatusID := 16#0000_5100;
+	                    END_IF;
+	                END_REGION
+	                
+	                #SubBeforeStep := #instStackFullStepAuto.BeforeCmd;  // 이전 스텝 모니터링
+	                #SubNowStep := #instStackFullStepAuto.NowCmd;        // 현재 스텝 모니터링
+	            END_REGION
+	            
+	        #STAT_STOP:                                                  // Stop 동작 영역
+	            REGION STOP
+	                REGION DONE                                          // Stop 동작 완료 시
+	                    IF #instStackStop.Done THEN
+	                        #statEndTime := TIME_TCK();
+	                        #statTimeTable[#STAT_STOP] := #statEndTime - #statStartTime;
+	                        #statStartTime := TIME_TCK();
+	                        #statBeforeCmd := #statNowCmd;               // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_DONE;                   // STAT_IDLE 상태로 이동
+	                        #statDone := TRUE;                           // 동작 완료 신호 출력
+	                    END_IF;
+	                END_REGION
+	                
+	                REGION ERROR                                         // Stop 동작 중 에러 발생 시
+	                    IF #instStackStop.Error THEN
+	                        #statBeforeCmd := #statNowCmd;               // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                  // STAT_ERROR 상태로 이동
+	                        #ErrorID := #instStackStop.ErrorID;          // Stop 에러ID 출력
+	                        #StatusID := 16#0000_2200;
+	                    END_IF;
+	                END_REGION
+	                
+	                #SubBeforeStep := #instStackStop.BeforeCmd;          // 이전 스텝 모니터링
+	                #SubNowStep := #instStackStop.NowCmd;                // 현재 스텝 모니터링
+	            END_REGION
+	            
+	        #STAT_RESET:
+	            REGION RESET                                             // Reset 동작 영역
+	                REGION DONE 
+	                    IF #instStackReset.Done THEN
+	                        #statEndTime := TIME_TCK();
+	                        #statTimeTable[#STAT_RESET] := #statEndTime - #statStartTime;
+	                        #statStartTime := TIME_TCK();
+	                        #statBeforeCmd := #statNowCmd;               // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_DONE;                   // STAT_IDLE 상태로 이동
+	                        #statDone := TRUE;                           // 동작 완료 신호 출력
+	                    END_IF;
+	                END_REGION
+	                
+	                REGION ERROR                                         // Reset 동작 중 에러 발생 시
+	                    IF #instStackReset.Error THEN
+	                        #statBeforeCmd := #statNowCmd;               // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                  // STAT_ERROR 상태로 이동
+	                        #ErrorID := #instStackReset.ErrorID;         // Reset 에러ID 출력
+	                        #StatusID := 16#0000_2300;
+	                    END_IF;
+	                END_REGION
+	                
+	                #SubBeforeStep := #instStackReset.BeforeCmd;         // 이전 스텝 모니터링
+	                #SubNowStep := #instStackReset.NowCmd;               // 현재 스텝 모니터링
+	            END_REGION
+	            
+	        #STAT_DONE:
+	            REGION DONE
+	                IF NOT #Calculate
+	                    AND NOT #SemiStep
+	                    AND NOT #FullStep
+	                    AND NOT #Auto
+	                    AND NOT #CycleStop
+	                    AND NOT #FastStop
+	                    AND NOT #Reset
+	                THEN
+	                    #statEndTime := TIME_TCK();
+	                    #statTimeTable[#STAT_DONE / 200] := #statEndTime - #statStartTime;
+	                    #statStartTime := TIME_TCK();
+	                    #statBeforeCmd := #statNowCmd;               // 이전 명령 모니터링
+	                    #statNowCmd := #STAT_IDLE;                  // #STAT_IDLE 상태로 이동
+	                END_IF;
+	            END_REGION
+	    END_CASE;
+	END_REGION
+	
+	REGION INSTANCES                                                     // 각 커맨드에 따른 인스턴스DB 호출 영역
+	    REGION SEMI STEP
+	        #instStackSemiStep(Execute := #statNowCmd = #STAT_SEMI_STEP,
+	                           MandrelUse:=#Parameter.Step.MandrelUse,
+	                           CPM := #Parameter.Global.CPM,
+	                           StageWidth := #Parameter.Global.StageWidth,
+	                           Axis:=#Axis,
+	                           Cam:=#Cam,
+	                           InitialPosFinalRoller := #Parameter.Step.InitialPosFinalRoller,
+	                           InitialPosCompensator := #Parameter.Step.InitialPosCompensator,
+	                           InitialPosAnodeMandrelYFront:=#Parameter.Auto.Mandrel.InitialPosAnodeMandrelYFront,
+	                           InitialPosAnodeMandrelYRear:=#Parameter.Auto.Mandrel.InitialPosAnodeMandrelYRear,
+	                           InitialPosAnodeMandrelZFront:=#Parameter.Auto.Mandrel.InitialPosAnodeMandrelZFront,
+	                           InitialPosAnodeMandrelZRear:=#Parameter.Auto.Mandrel.InitialPosAnodeMandrelZRear,
+	                           InitialPosCathodeMandrelYFront:=#Parameter.Auto.Mandrel.InitialPosCathodeMandrelYFront,
+	                           InitialPosCathodeMandrelYRear:=#Parameter.Auto.Mandrel.InitialPosCathodeMandrelYRear,
+	                           InitialPosCathodeMandrelZFront:=#Parameter.Auto.Mandrel.InitialPosCathodeMandrelZFront,
+	                           InitialPosCathodeMandrelZRear:=#Parameter.Auto.Mandrel.InitialPosCathodeMandrelZRear);
+	    END_REGION
+	    
+	    REGION FULL STEP AUTO
+	        #instStackFullStepAuto(Execute := #statNowCmd = #STAT_FULL_STEP OR #statNowCmd = #STAT_AUTO,
+	                               SepaClean := #Parameter.Auto.SepaClean,
+	                               Direction := #Parameter.StackCalculate.Direction,
+	                               CPM := #Parameter.Global.CPM,
+	                               StageWidth := #Parameter.Global.StageWidth,
+	                               CellCount := #Parameter.Auto.CellCount,
+	                               Axis := #Axis,
+	                               Cam := #Cam,
+	                               CamOutput := #instOutputControl.CamOutput,
+	                               ReelCutInterface := #ReelcutInterface,
+	                               InitialPosFinalRoller := #Parameter.Auto.FinalRoller.InitialPosFinalRoller,
+	                               InitialPosCompensator := #Parameter.Auto.Compensator.InitialPosCompensator,
+	                               InitialPosAnodePnPX1 := #Parameter.Auto.Anode.PnPX1.InitialPosAnodePnPX1,
+	                               InitialPosAnodePnPX2 := #Parameter.Auto.Anode.PnPX2.InitialPosAnodePnPX2,
+	                               InitialPosAnodePnPZ1 := #Parameter.Auto.Anode.PnPZ1.InitialPosAnodePnPZ1,
+	                               InitialPosAnodePnPZ2 := #Parameter.Auto.Anode.PnPZ2.InitialPosAnodePnPZ2,
+	                               InitialPosCathodePnPX1 := #Parameter.Auto.Cathode.PnPX1.InitialPosCathodePnPX1,
+	                               InitialPosCathodePnPX2 := #Parameter.Auto.Cathode.PnPX2.InitialPosCathodePnPX2,
+	                               InitialPosCathodePnPZ1 := #Parameter.Auto.Cathode.PnPZ1.InitialPosCathodePnPZ1,
+	                               InitialPosCathodePnPZ2 := #Parameter.Auto.Cathode.PnPZ2.InitialPosCathodePnPZ2,
+	                               InitialPosAnodeMandrelYFront := #Parameter.Auto.Mandrel.InitialPosAnodeMandrelYFront,
+	                               InitialPosAnodeMandrelYRear := #Parameter.Auto.Mandrel.InitialPosAnodeMandrelYRear,
+	                               InitialPosAnodeMandrelZFront := #Parameter.Auto.Mandrel.InitialPosAnodeMandrelZFront,
+	                               InitialPosAnodeMandrelZRear := #Parameter.Auto.Mandrel.InitialPosAnodeMandrelZRear,
+	                               InitialPosCathodeMandrelYFront := #Parameter.Auto.Mandrel.InitialPosCathodeMandrelYFront,
+	                               InitialPosCathodeMandrelYRear := #Parameter.Auto.Mandrel.InitialPosCathodeMandrelYRear,
+	                               InitialPosCathodeMandrelZFront := #Parameter.Auto.Mandrel.InitialPosCathodeMandrelZFront,
+	                               InitialPosCathodeMandrelZRear := #Parameter.Auto.Mandrel.InitialPosCathodeMandrelZRear);
+	    END_REGION
+	    
+	    REGION STOP
+	        #instStackStop(Execute := #statNowCmd = #STAT_STOP,
+	                       Auto := #instStackFullStepAuto.Auto,
+	                       CPM := #Parameter.Global.CPM,
+	                       StageWidth := #Parameter.Global.StageWidth,
+	                       Axis:= #Axis);
+	    END_REGION
+	    
+	    REGION RESET
+	        #instStackReset(Execute := #statNowCmd = #STAT_RESET,
+	                        CPM := #Parameter.Global.CPM,
+	                        StageWidth := #Parameter.Global.StageWidth,
+	                        Axis:= #Axis,
+	                        Cam:= #Cam,
+	                        OutputCam:= #OutputCam);
+	    END_REGION
+	END_REGION
+	
+	
+	REGION OUTPUTCAMS
+	    #instOutputControl(Execute := #statNowCmd = #STAT_FULL_STEP
+	                       OR #statNowCmd = #STAT_AUTO
+	                       OR #statNowCmd = #STAT_SEMI_STEP
+	                       OR #statNowCmd = #STAT_STOP,
+	                       Anode:= #Parameter.Auto.Anode,
+	                       Cathode:= #Parameter.Auto.Cathode,
+	                       FinalRoller:= #Parameter.Auto.FinalRoller,
+	                       Output=> #OutputBits,
+	                       Axis := #Axis,
+	                       Cam := #Cam,
+	                       OutputCam := #OutputCam);
+	END_REGION
+	
+	
+	
+	REGION OUTPUT SIGNAL                                                  // 각 커맨드 동작 시 상태 표시 출력
+	    #Busy.TotalBusy := #statNowCmd = #STAT_CALCULATE OR #statNowCmd = #STAT_SEMI_STEP OR #statNowCmd = #STAT_FULL_STEP OR #statNowCmd = #STAT_AUTO OR #statNowCmd = #STAT_STOP OR #statNowCmd = #STAT_RESET;
+	    #CalculateInterface.Execute := #statNowCmd = #STAT_CALCULATE;
+	    #Busy.CalculateBusy := #CalculateInterface.Busy;
+	    #Busy.SemiStepBusy := #instStackSemiStep.Busy;
+	    #Busy.FullStepBusy := #instStackFullStepAuto.Busy AND NOT #instStackFullStepAuto.Auto;
+	    #Busy.AutoBusy := #instStackFullStepAuto.Busy AND #instStackFullStepAuto.Auto;
+	    #Busy.CycleStopBusy := #instStackStop.Busy AND NOT #instStackStop.FastStop;
+	    #Busy.FastStopBusy := #instStackStop.Busy AND #instStackStop.FastStop;
+	    #Busy.ResetBusy := #instStackReset.Busy;
+	    
+	    #Done.TotalDone := #statNowCmd = #STAT_DONE;
+	    #Done.CalculateDone := #Calculate AND #statNowCmd = #STAT_DONE;
+	    #Done.SemiStepDone := #SemiStep AND #statNowCmd = #STAT_DONE;
+	    #Done.FullStepDone := #FullStep AND #statNowCmd = #STAT_DONE;
+	    #Done.AutoDone := #Auto AND #statNowCmd = #STAT_DONE;
+	    #Done.CycleStopDone := #CycleStop AND #statNowCmd = #STAT_DONE;
+	    #Done.FastStopDone := #FastStop AND #statNowCmd = #STAT_DONE;
+	    #Done.ResetDone := #Reset AND #statNowCmd = #STAT_DONE;
+	    
+	    #Error := #statNowCmd = #STAT_ERROR;
+	    #tempMasterVirtual ?= #Axis.MasterVirtual;
+	    #OutputData.StackCellCount := LREAL_TO_DINT(FLOOR_LREAL(#tempMasterVirtual^.Position / #Parameter.Global.StageWidth));
+	END_REGION
+	
+END_FUNCTION_BLOCK
+

@@ -1,0 +1,1126 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Document>
+  <Engineering version="V20" />
+  <SW.Blocks.GlobalDB ID="0">
+    <AttributeList>
+      <DBAccessibleFromOPCUA>false</DBAccessibleFromOPCUA>
+      <DBAccessibleFromWebserver>false</DBAccessibleFromWebserver>
+      <HeaderAuthor>ERsystem_FA2_DH. Kim</HeaderAuthor>
+      <Interface><Sections xmlns="http://www.siemens.com/automation/Openness/SW/Interface/v5">
+  <Section Name="Static">
+    <Member Name="em" Datatype="&quot;LAF_typeEmControlNode&quot;">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="cm" Datatype="Struct">
+      <Member Name="Interlock" Datatype="Struct">
+        <Member Name="suctionPadTopUpDown" Datatype="&quot;LER_typeTwoWayActInterlock&quot;" />
+        <Member Name="suctionPadBtmUpDown" Datatype="&quot;LER_typeTwoWayActInterlock&quot;" />
+        <Member Name="cutterUpDown" Datatype="&quot;LER_typeTwoWayActInterlock&quot;" />
+        <Member Name="tapeTopUpDown" Datatype="&quot;LER_typeTwoWayActInterlock&quot;" />
+        <Member Name="tapeBtmUpDown" Datatype="&quot;LER_typeTwoWayActInterlock&quot;" />
+        <Member Name="spliceHeadRotateTopFwdBwd" Datatype="&quot;LER_typeTwoWayActInterlock&quot;" />
+        <Member Name="spliceHeadRotateBtmFwdBwd" Datatype="&quot;LER_typeTwoWayActInterlock&quot;" />
+        <Member Name="suctionPadTopLeftVaccum" Datatype="&quot;LER_typeTwoWayActInterlock&quot;" />
+        <Member Name="suctionPadTopRightVaccum" Datatype="&quot;LER_typeTwoWayActInterlock&quot;" />
+        <Member Name="suctionPadBtmLeftVaccum" Datatype="&quot;LER_typeTwoWayActInterlock&quot;" />
+        <Member Name="suctionPadBtmRightVaccum" Datatype="&quot;LER_typeTwoWayActInterlock&quot;" />
+        <Member Name="suctionPadTopTapeVaccum" Datatype="&quot;LER_typeTwoWayActInterlock&quot;" />
+        <Member Name="suctionPadBtmTapeVaccum" Datatype="&quot;LER_typeTwoWayActInterlock&quot;" />
+      </Member>
+    </Member>
+    <Member Name="citiMap" Datatype="&quot;LER_OEM_Data&quot;" />
+    <Member Name="semiAutoSplice" Datatype="Struct">
+      <Member Name="jobs" Datatype="&quot;LAF_typeJobs&quot;" />
+      <Member Name="sequence" Datatype="&quot;LAF_typeSequence&quot;">
+        <AttributeList>
+          <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+        </AttributeList>
+      </Member>
+      <Member Name="step" Datatype="&quot;LER_typeStep&quot;">
+        <AttributeList>
+          <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+        </AttributeList>
+        <Sections>
+          <Section Name="None">
+            <Member Name="action1" Datatype="Array[0..9999] of Bool">
+              <Subelement Path="101">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[101] : Initial Start </MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="110">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[110] : Cutter Home</MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="111">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[111] : Suction Pad Home</MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="112">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[112] : Tape Pad Home</MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="113">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[113] : Splice Head Rotate Home</MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="114">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[114] : Vaccum Home </MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="190">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[190] : Initial Complete</MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="201">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[201] : Top to Bottom Start</MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="210">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[210] : Top Suction Pad Right Vaccum work</MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="212">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[212] : Suction Pad Top &amp; Bottom Work</MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="214">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[214] : Bottom Suction Pad right Vaccum Work</MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="216">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[216] : Cutting Work</MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="218">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[218] : Cutting Home</MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="220">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[220] : Top Suction Pad right Vaccum Home</MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="222">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[222] : Top Suction Pad Home</MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="225">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[225] : Top Unwinder rewind</MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="230">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[230] : Top Suction Pad Work</MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="232">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[232] : Top Suction Pad Left , Right Vaccum work</MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="234">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[234] : Bottom Suction Pad Left , Right Vaccum Home</MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="236">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[236] : Top Suction Pad Home</MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="238">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[238] : Bottom HEAD ROTATE Work</MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="240">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[240] : Top Suction Pad Work</MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="242">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[242] : Bottom Tapping work</MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="243">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[243] : Bottom Tape Vaccum Home</MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="247">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[247] : Bottom Tapping Home</MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="249">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[249] : Top Suction Pad Left , Right Vaccum Home</MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="251">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[251] : Top Suction Pad Home</MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="253">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[253] : Bottom HEAD ROTATE Home</MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="255">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[255] : Check EPC</MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="257">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[257] : Bottom Suction Pad Home</MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="290">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[290] : Top to Bottom Complete</MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="301">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[301] : btm to Bottom Start</MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="310">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[310] : btm Suction Pad Right Vaccum work</MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="312">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[312] : Suction Pad btm &amp; Bottom Work</MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="314">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[314] : Bottom Suction Pad right Vaccum Work</MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="316">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[316] : Cutting Work</MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="318">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[318] : Cutting Home</MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="320">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[320] : btm Suction Pad right Vaccum Home</MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="322">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[322] : btm Suction Pad Home</MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="325">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[325] : btm Unwinder rewind</MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="330">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[330] : btm Suction Pad Work</MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="332">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[332] : btm Suction Pad Left , Right Vaccum work</MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="334">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[334] : Bottom Suction Pad Left , Right Vaccum Home</MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="336">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[336] : btm Suction Pad Home</MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="338">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[338] : Bottom HEAD ROTATE Work</MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="340">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[340] : btm Suction Pad Work</MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="342">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[342] : Bottom Tapping work</MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="343">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[343] : Bottom Tape Vaccum Home</MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="347">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[347] : Bottom Tapping Home</MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="349">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[349] : btm Suction Pad Left , Right Vaccum Home</MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="351">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[351] : btm Suction Pad Home</MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="353">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[353] : Bottom HEAD ROTATE Home</MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="355">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[355] : Check EPC</MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="357">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[357] : Bottom Suction Pad Home</MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="390">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[390] : btm to Bottom Complete</MultiLanguageText>
+                </Comment>
+              </Subelement>
+            </Member>
+            <Member Name="transition1" Datatype="Array[0..9999] of Bool">
+              <Subelement Path="101">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[101] : Initial Start </MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="110">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[110] : Cutter Home</MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="111">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[111] : Suction Pad Home</MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="112">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[112] : Tape Pad Home</MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="113">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[113] : Splice Head Rotate Home</MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="114">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[114] : Vaccum Home </MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="190">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[190] : Initial Complete</MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="201">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[201] : Top to Bottom Start</MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="210">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[210] : Top Suction Pad Right Vaccum work</MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="212">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[212] : Suction Pad Top &amp; Bottom Work</MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="214">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[214] : Bottom Suction Pad right Vaccum Work</MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="216">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[216] : Cutting Work</MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="218">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[218] : Cutting Home</MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="220">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[220] : Top Suction Pad right Vaccum Home</MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="222">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[222] : Top Suction Pad Home</MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="225">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[225] : Top Unwinder rewind</MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="230">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[230] : Top Suction Pad Work</MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="232">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[232] : Top Suction Pad Left , Right Vaccum work</MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="234">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[234] : Bottom Suction Pad Left , Right Vaccum Home</MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="236">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[236] : Top Suction Pad Home</MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="238">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[238] : Bottom HEAD ROTATE Work</MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="240">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[240] : Top Suction Pad Work</MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="242">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[242] : Bottom Tapping work</MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="243">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[243] : Bottom Tape Vaccum Home</MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="247">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[247] : Bottom Tapping Home</MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="249">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[249] : Top Suction Pad Left , Right Vaccum Home</MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="251">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[251] : Top Suction Pad Home</MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="253">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[253] : Bottom HEAD ROTATE Home</MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="255">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[255] : Check EPC</MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="257">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[257] : Bottom Suction Pad Home</MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="290">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[290] : Top to Bottom Complete</MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="301">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[301] : btm to Bottom Start</MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="310">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[310] : btm Suction Pad Right Vaccum work</MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="312">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[312] : Suction Pad btm &amp; Bottom Work</MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="314">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[314] : Bottom Suction Pad right Vaccum Work</MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="316">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[316] : Cutting Work</MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="318">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[318] : Cutting Home</MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="320">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[320] : btm Suction Pad right Vaccum Home</MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="322">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[322] : btm Suction Pad Home</MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="325">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[325] : btm Unwinder rewind</MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="330">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[330] : btm Suction Pad Work</MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="332">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[332] : btm Suction Pad Left , Right Vaccum work</MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="334">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[334] : Bottom Suction Pad Left , Right Vaccum Home</MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="336">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[336] : btm Suction Pad Home</MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="338">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[338] : Bottom HEAD ROTATE Work</MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="340">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[340] : btm Suction Pad Work</MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="342">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[342] : Bottom Tapping work</MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="343">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[343] : Bottom Tape Vaccum Home</MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="347">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[347] : Bottom Tapping Home</MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="349">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[349] : btm Suction Pad Left , Right Vaccum Home</MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="351">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[351] : btm Suction Pad Home</MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="353">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[353] : Bottom HEAD ROTATE Home</MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="355">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[355] : Check EPC</MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="357">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[357] : Bottom Suction Pad Home</MultiLanguageText>
+                </Comment>
+              </Subelement>
+              <Subelement Path="390">
+                <Comment>
+                  <MultiLanguageText Lang="en-US">Step[390] : btm to Bottom Complete</MultiLanguageText>
+                </Comment>
+              </Subelement>
+            </Member>
+          </Section>
+        </Sections>
+      </Member>
+      <Member Name="jobInterface" Datatype="Struct">
+        <Member Name="requset" Datatype="Struct">
+          <Member Name="reqUnwinderTopReWind" Datatype="Bool" />
+          <Member Name="reqUnwinderBtmReWind" Datatype="Bool" />
+          <Member Name="reqEm0To1LinkChg" Datatype="Bool" />
+          <Member Name="reqEm1To0LinkChg" Datatype="Bool" />
+          <Member Name="reqDancerOn" Datatype="Bool" />
+          <Member Name="reqDancerOff" Datatype="Bool" />
+        </Member>
+        <Member Name="ready" Datatype="Struct">
+          <Member Name="null" Datatype="Bool" />
+        </Member>
+        <Member Name="busy" Datatype="Struct">
+          <Member Name="busyAutoSplice" Datatype="Bool" />
+        </Member>
+        <Member Name="done" Datatype="Struct">
+          <Member Name="doneAutoSplice" Datatype="Bool" />
+        </Member>
+        <Member Name="workingDone" Datatype="Struct">
+          <Member Name="homeJob1WorkingDone" Datatype="Bool">
+            <AttributeList>
+              <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+            </AttributeList>
+          </Member>
+          <Member Name="suctionPadUpJob2WorkingDone" Datatype="Bool" />
+          <Member Name="topSepaVaccumJob3WorkingDone" Datatype="Bool" />
+          <Member Name="btmSepaVaccumJob4WorkingDone" Datatype="Bool" />
+          <Member Name="cuttingJob5WorkingDone" Datatype="Bool" />
+          <Member Name="topSepaTransferJob6WorkingDone" Datatype="Bool" />
+          <Member Name="btmSepaTransferJob7WorkingDone" Datatype="Bool" />
+          <Member Name="suctionPadDownJob8WorkingDone" Datatype="Bool" />
+          <Member Name="topSepaReMoveJob9WorkingDone" Datatype="Bool" />
+          <Member Name="btmSepaReMoveJob10WorkingDone" Datatype="Bool" />
+          <Member Name="topSpliceRoateJob11WorkingDone" Datatype="Bool" />
+          <Member Name="btmSpliceRoateJob12WorkingDone" Datatype="Bool" />
+          <Member Name="topTapingStartJob13WorkingDone" Datatype="Bool" />
+          <Member Name="btmTapingStartJob14WorkingDone" Datatype="Bool" />
+          <Member Name="tapingFinishJob15WorkingDone" Datatype="Bool" />
+          <Member Name="fullAutoSplicingJob30WorkingDone" Datatype="Bool" />
+        </Member>
+      </Member>
+      <Member Name="preOperationCheck" Datatype="Struct">
+        <Member Name="home" Datatype="Bool" />
+        <Member Name="Bool2" Datatype="Bool" />
+        <Member Name="Bool3" Datatype="Bool" />
+        <Member Name="Bool4" Datatype="Bool" />
+        <Member Name="Bool5" Datatype="Bool" />
+        <Member Name="Bool6" Datatype="Bool" />
+        <Member Name="Bool7" Datatype="Bool" />
+        <Member Name="Bool8" Datatype="Bool" />
+        <Member Name="Bool9" Datatype="Bool" />
+      </Member>
+    </Member>
+    <Member Name="emRelations" Datatype="Struct">
+      <Member Name="em0" Datatype="Struct">
+        <Member Name="IsLinked" Datatype="Bool" />
+        <Member Name="reqAutoSplice" Datatype="Bool" />
+        <Member Name="busyAutoSplice" Datatype="Bool" />
+        <Member Name="doneAutoSplice" Datatype="Bool" />
+      </Member>
+      <Member Name="em1" Datatype="Struct">
+        <Member Name="IsLinked" Datatype="Bool" />
+        <Member Name="reqAutoSplice" Datatype="Bool" />
+        <Member Name="busyAutoSplice" Datatype="Bool" />
+        <Member Name="doneAutoSplice" Datatype="Bool" />
+      </Member>
+      <Member Name="em3" Datatype="Struct">
+        <Member Name="cmStatus" Datatype="Struct">
+          <Member Name="dancerRegulator" Datatype="&quot;LBC_typeTwoWayActuatorControlNodeMonitoring&quot;" />
+          <Member Name="dancerEncoder" Datatype="&quot;LBC_typeAnalogInputControlNodeMonitoring&quot;" />
+        </Member>
+      </Member>
+    </Member>
+    <Member Name="cmSuctionPadTopUpDown" Datatype="&quot;LBC_typeTwoWayActuatorControlNode&quot;">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <Comment>
+        <MultiLanguageText Lang="en-US"> </MultiLanguageText>
+      </Comment>
+      <Sections>
+        <Section Name="None">
+          <Member Name="commands" Datatype="&quot;LBC_typeTwoWayActuatorControlNodeCommands&quot;">
+            <Comment>
+              <MultiLanguageText Lang="en-US"> </MultiLanguageText>
+            </Comment>
+          </Member>
+          <Member Name="monitoring" Datatype="&quot;LBC_typeTwoWayActuatorControlNodeMonitoring&quot;">
+            <Comment>
+              <MultiLanguageText Lang="en-US"> </MultiLanguageText>
+            </Comment>
+            <Sections>
+              <Section Name="None">
+                <Member Name="valid" Datatype="Bool">
+                  <Comment>
+                    <MultiLanguageText Lang="en-US"> </MultiLanguageText>
+                  </Comment>
+                </Member>
+                <Member Name="busy" Datatype="Bool">
+                  <Comment>
+                    <MultiLanguageText Lang="en-US"> </MultiLanguageText>
+                  </Comment>
+                </Member>
+                <Member Name="error" Datatype="Bool">
+                  <Comment>
+                    <MultiLanguageText Lang="en-US"> </MultiLanguageText>
+                  </Comment>
+                </Member>
+                <Member Name="status" Datatype="Word">
+                  <Comment>
+                    <MultiLanguageText Lang="en-US"> </MultiLanguageText>
+                  </Comment>
+                </Member>
+                <Member Name="inHomePos" Datatype="Bool">
+                  <Comment>
+                    <MultiLanguageText Lang="en-US"> </MultiLanguageText>
+                  </Comment>
+                </Member>
+                <Member Name="inWorkPos" Datatype="Bool">
+                  <Comment>
+                    <MultiLanguageText Lang="en-US"> </MultiLanguageText>
+                  </Comment>
+                </Member>
+                <Member Name="interlockWorkPosOut" Datatype="Bool">
+                  <Comment>
+                    <MultiLanguageText Lang="en-US"> </MultiLanguageText>
+                  </Comment>
+                </Member>
+                <Member Name="interlockHomePosOut" Datatype="Bool">
+                  <Comment>
+                    <MultiLanguageText Lang="en-US"> </MultiLanguageText>
+                  </Comment>
+                </Member>
+              </Section>
+            </Sections>
+          </Member>
+        </Section>
+      </Sections>
+    </Member>
+    <Member Name="cmSuctionPadBtmUpDown" Datatype="&quot;LBC_typeTwoWayActuatorControlNode&quot;">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+      </AttributeList>
+      <Comment>
+        <MultiLanguageText Lang="en-US"> </MultiLanguageText>
+      </Comment>
+      <Sections>
+        <Section Name="None">
+          <Member Name="commands" Datatype="&quot;LBC_typeTwoWayActuatorControlNodeCommands&quot;">
+            <Comment>
+              <MultiLanguageText Lang="en-US"> </MultiLanguageText>
+            </Comment>
+          </Member>
+          <Member Name="monitoring" Datatype="&quot;LBC_typeTwoWayActuatorControlNodeMonitoring&quot;">
+            <Comment>
+              <MultiLanguageText Lang="en-US"> </MultiLanguageText>
+            </Comment>
+            <Sections>
+              <Section Name="None">
+                <Member Name="valid" Datatype="Bool">
+                  <Comment>
+                    <MultiLanguageText Lang="en-US"> </MultiLanguageText>
+                  </Comment>
+                </Member>
+                <Member Name="busy" Datatype="Bool">
+                  <Comment>
+                    <MultiLanguageText Lang="en-US"> </MultiLanguageText>
+                  </Comment>
+                </Member>
+                <Member Name="error" Datatype="Bool">
+                  <Comment>
+                    <MultiLanguageText Lang="en-US"> </MultiLanguageText>
+                  </Comment>
+                </Member>
+                <Member Name="status" Datatype="Word">
+                  <Comment>
+                    <MultiLanguageText Lang="en-US"> </MultiLanguageText>
+                  </Comment>
+                </Member>
+                <Member Name="inHomePos" Datatype="Bool">
+                  <Comment>
+                    <MultiLanguageText Lang="en-US"> </MultiLanguageText>
+                  </Comment>
+                </Member>
+                <Member Name="inWorkPos" Datatype="Bool">
+                  <Comment>
+                    <MultiLanguageText Lang="en-US"> </MultiLanguageText>
+                  </Comment>
+                </Member>
+                <Member Name="interlockWorkPosOut" Datatype="Bool">
+                  <Comment>
+                    <MultiLanguageText Lang="en-US"> </MultiLanguageText>
+                  </Comment>
+                </Member>
+                <Member Name="interlockHomePosOut" Datatype="Bool">
+                  <Comment>
+                    <MultiLanguageText Lang="en-US"> </MultiLanguageText>
+                  </Comment>
+                </Member>
+              </Section>
+            </Sections>
+          </Member>
+        </Section>
+      </Sections>
+    </Member>
+    <Member Name="cmCutterUpDown" Datatype="&quot;LBC_typeTwoWayActuatorControlNode&quot;">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+      </AttributeList>
+      <Comment>
+        <MultiLanguageText Lang="en-US"> </MultiLanguageText>
+      </Comment>
+      <Sections>
+        <Section Name="None">
+          <Member Name="commands" Datatype="&quot;LBC_typeTwoWayActuatorControlNodeCommands&quot;">
+            <Comment>
+              <MultiLanguageText Lang="en-US"> </MultiLanguageText>
+            </Comment>
+            <Sections>
+              <Section Name="None">
+                <Member Name="commandHomePos" Datatype="Bool">
+                  <Comment>
+                    <MultiLanguageText Lang="en-US"> </MultiLanguageText>
+                  </Comment>
+                </Member>
+                <Member Name="commandWorkPos" Datatype="Bool">
+                  <Comment>
+                    <MultiLanguageText Lang="en-US"> </MultiLanguageText>
+                  </Comment>
+                </Member>
+                <Member Name="reset" Datatype="Bool">
+                  <Comment>
+                    <MultiLanguageText Lang="en-US"> </MultiLanguageText>
+                  </Comment>
+                </Member>
+              </Section>
+            </Sections>
+          </Member>
+          <Member Name="monitoring" Datatype="&quot;LBC_typeTwoWayActuatorControlNodeMonitoring&quot;">
+            <Comment>
+              <MultiLanguageText Lang="en-US"> </MultiLanguageText>
+            </Comment>
+            <Sections>
+              <Section Name="None">
+                <Member Name="valid" Datatype="Bool">
+                  <Comment>
+                    <MultiLanguageText Lang="en-US"> </MultiLanguageText>
+                  </Comment>
+                </Member>
+                <Member Name="busy" Datatype="Bool">
+                  <Comment>
+                    <MultiLanguageText Lang="en-US"> </MultiLanguageText>
+                  </Comment>
+                </Member>
+                <Member Name="error" Datatype="Bool">
+                  <Comment>
+                    <MultiLanguageText Lang="en-US"> </MultiLanguageText>
+                  </Comment>
+                </Member>
+                <Member Name="status" Datatype="Word">
+                  <Comment>
+                    <MultiLanguageText Lang="en-US">  </MultiLanguageText>
+                  </Comment>
+                </Member>
+                <Member Name="inHomePos" Datatype="Bool">
+                  <Comment>
+                    <MultiLanguageText Lang="en-US"> </MultiLanguageText>
+                  </Comment>
+                </Member>
+                <Member Name="inWorkPos" Datatype="Bool">
+                  <Comment>
+                    <MultiLanguageText Lang="en-US"> </MultiLanguageText>
+                  </Comment>
+                </Member>
+                <Member Name="interlockWorkPosOut" Datatype="Bool">
+                  <Comment>
+                    <MultiLanguageText Lang="en-US">  </MultiLanguageText>
+                  </Comment>
+                </Member>
+                <Member Name="interlockHomePosOut" Datatype="Bool">
+                  <Comment>
+                    <MultiLanguageText Lang="en-US"> </MultiLanguageText>
+                  </Comment>
+                </Member>
+              </Section>
+            </Sections>
+          </Member>
+        </Section>
+      </Sections>
+    </Member>
+    <Member Name="cmTapeTopUpDown" Datatype="&quot;LBC_typeTwoWayActuatorControlNode&quot;">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+      </AttributeList>
+      <Comment>
+        <MultiLanguageText Lang="en-US"> </MultiLanguageText>
+      </Comment>
+    </Member>
+    <Member Name="cmTapeBtmUpDown" Datatype="&quot;LBC_typeTwoWayActuatorControlNode&quot;">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+      </AttributeList>
+      <Comment>
+        <MultiLanguageText Lang="en-US"> </MultiLanguageText>
+      </Comment>
+    </Member>
+    <Member Name="cmSpliceHeadRotateTopFwdBwd" Datatype="&quot;LBC_typeTwoWayActuatorControlNode&quot;">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+      </AttributeList>
+      <Comment>
+        <MultiLanguageText Lang="en-US"> </MultiLanguageText>
+      </Comment>
+    </Member>
+    <Member Name="cmSpliceHeadRotateBtmFwdBwd" Datatype="&quot;LBC_typeTwoWayActuatorControlNode&quot;">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+      </AttributeList>
+      <Comment>
+        <MultiLanguageText Lang="en-US"> </MultiLanguageText>
+      </Comment>
+    </Member>
+    <Member Name="cmSuctionPadTopLeftVaccum" Datatype="&quot;LBC_typeTwoWayActuatorControlNode&quot;">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+      </AttributeList>
+      <Comment>
+        <MultiLanguageText Lang="en-US"> </MultiLanguageText>
+      </Comment>
+    </Member>
+    <Member Name="cmSuctionPadTopRightVaccum" Datatype="&quot;LBC_typeTwoWayActuatorControlNode&quot;">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+      </AttributeList>
+      <Comment>
+        <MultiLanguageText Lang="en-US"> </MultiLanguageText>
+      </Comment>
+    </Member>
+    <Member Name="cmSuctionPadBtmLeftVaccum" Datatype="&quot;LBC_typeTwoWayActuatorControlNode&quot;">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+      </AttributeList>
+      <Comment>
+        <MultiLanguageText Lang="en-US">  </MultiLanguageText>
+      </Comment>
+    </Member>
+    <Member Name="cmSuctionPadBtmRightVaccum" Datatype="&quot;LBC_typeTwoWayActuatorControlNode&quot;">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+      </AttributeList>
+      <Comment>
+        <MultiLanguageText Lang="en-US"> </MultiLanguageText>
+      </Comment>
+    </Member>
+    <Member Name="cmSuctionPadTopTapeVaccum" Datatype="&quot;LBC_typeTwoWayActuatorControlNode&quot;">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+      </AttributeList>
+      <Comment>
+        <MultiLanguageText Lang="en-US"> </MultiLanguageText>
+      </Comment>
+    </Member>
+    <Member Name="cmSuctionPadBtmTapeVaccum" Datatype="&quot;LBC_typeTwoWayActuatorControlNode&quot;">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <Comment>
+        <MultiLanguageText Lang="en-US"> </MultiLanguageText>
+      </Comment>
+    </Member>
+  </Section>
+</Sections></Interface>
+      <MemoryReserve>100</MemoryReserve>
+      <Name>ControlNodes</Name>
+      <Namespace>Unit1.Em2</Namespace>
+      <Number>78</Number>
+      <ProgrammingLanguage>DB</ProgrammingLanguage>
+    </AttributeList>
+    <ObjectList>
+      <MultilingualText ID="1" CompositionName="Comment">
+        <ObjectList>
+          <MultilingualTextItem ID="2" CompositionName="Items">
+            <AttributeList>
+              <Culture>de-DE</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="3" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-GB</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="4" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-US</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="5" CompositionName="Items">
+            <AttributeList>
+              <Culture>es-ES</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="6" CompositionName="Items">
+            <AttributeList>
+              <Culture>fr-FR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="7" CompositionName="Items">
+            <AttributeList>
+              <Culture>it-IT</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="8" CompositionName="Items">
+            <AttributeList>
+              <Culture>ko-KR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="9" CompositionName="Items">
+            <AttributeList>
+              <Culture>zh-CN</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+        </ObjectList>
+      </MultilingualText>
+      <MultilingualText ID="A" CompositionName="Title">
+        <ObjectList>
+          <MultilingualTextItem ID="B" CompositionName="Items">
+            <AttributeList>
+              <Culture>de-DE</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="C" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-GB</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="D" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-US</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="E" CompositionName="Items">
+            <AttributeList>
+              <Culture>es-ES</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="F" CompositionName="Items">
+            <AttributeList>
+              <Culture>fr-FR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="10" CompositionName="Items">
+            <AttributeList>
+              <Culture>it-IT</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="11" CompositionName="Items">
+            <AttributeList>
+              <Culture>ko-KR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="12" CompositionName="Items">
+            <AttributeList>
+              <Culture>zh-CN</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+        </ObjectList>
+      </MultilingualText>
+    </ObjectList>
+  </SW.Blocks.GlobalDB>
+</Document>

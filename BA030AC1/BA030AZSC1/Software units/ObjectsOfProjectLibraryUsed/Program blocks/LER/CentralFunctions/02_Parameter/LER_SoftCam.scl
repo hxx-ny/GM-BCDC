@@ -1,0 +1,42 @@
+﻿FUNCTION "LER_SoftCam" : Void
+{ S7_Optimized_Access := 'TRUE' ; Published := 'TRUE' }
+VERSION : 0.1
+   VAR_INPUT 
+      postivePosition : LReal;
+      negativePosition : LReal;
+      ActualPosition : LReal;
+      namePosition : String;
+   END_VAR
+
+   VAR_OUTPUT 
+      inPos : Bool;
+      isBefore : Bool;
+      isAfter : Bool;
+      PosName : WString;
+   END_VAR
+
+
+BEGIN
+	REGION Found Axis Position
+	    // InPos Check
+	    IF (#ActualPosition > #negativePosition) AND (#ActualPosition < #postivePosition) THEN
+	        #inPos := TRUE;
+	    ELSE
+	        #inPos := FALSE;
+	    END_IF;
+	    
+	    // Before Pos & After Pos Check
+	    IF #ActualPosition < #negativePosition THEN
+	        #isBefore := TRUE;
+	        #isAfter := FALSE;
+	    ELSIF #ActualPosition > #postivePosition THEN
+	        #isBefore := FALSE;
+	        #isAfter := TRUE;
+	    END_IF;
+	    
+	    // Pos Name
+	    #PosName := STRING_TO_WSTRING(#namePosition);
+	    
+	END_REGION
+END_FUNCTION
+

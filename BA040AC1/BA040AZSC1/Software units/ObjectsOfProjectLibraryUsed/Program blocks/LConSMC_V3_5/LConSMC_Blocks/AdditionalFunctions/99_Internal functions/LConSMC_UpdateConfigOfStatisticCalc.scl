@@ -1,0 +1,302 @@
+﻿FUNCTION_BLOCK "LConSMC_UpdateConfigOfStatisticCalc"
+{ S7_Optimized_Access := 'TRUE' ; Published := 'TRUE' }
+VERSION : 0.1
+   VAR_INPUT 
+      fb_ID { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : DWord;
+      cascadeCalculation { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      sampleMode { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : UInt := "LCON_TIMEPERIOD_MODE";
+      maxBufferLengthMain { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : UInt := "LCON_STATEVAL_MAX_BUFFERLENGTH";
+      maxBufferLengthSub { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : UInt := "LCON_STATEVAL_MAX_BUFFERLENGTH_SUB";
+      inSubsetLengthMain { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : UInt := "LCON_STATEVAL_MAX_BUFFERLENGTH_MAIN";
+      setTimePeriod { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Time := #INIT_TIMEPERIOD;
+      inSamplingFactor { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : UInt := 1;
+      cycleTime { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : UDInt;   // Cycle time in ns
+   END_VAR
+
+   VAR_OUTPUT 
+      error { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      errorID { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : DWord := #NO_ERROR;
+      outSamplingFactorMain { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : UInt := #INIT_MULT_OF_SAMPLINGRATE;
+      outSamplingFactorSub { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : UInt := #INIT_MULT_OF_SAMPLINGRATE;
+      outSubsetLengthMain { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : UInt := "LCON_STATEVAL_MAX_BUFFERLENGTH";
+      outSubsetLengthSub { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : UInt := "LCON_STATEVAL_MAX_BUFFERLENGTH";
+      samplingTime { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 1.0;
+      actualizationRate { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 10.0;
+      timePeriod { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 100000.0;
+   END_VAR
+
+   VAR 
+      statError { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statErrorID { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : DWord;
+      statTimePeriodOut { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statActualizationRate { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statOutSamplingFactorSub { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : UInt;
+      statOutSubsetLengthSub { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : UInt;
+      statSamplingTime { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statOutSubsetLengthMain { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : UInt;
+      statOutSamplingFactorMain { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : UInt;
+      statCalcInMilliSecResol { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;   // default calc in µs resolution
+      statCurrentSubLen { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : UDInt;
+      statTimePeriod { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : UDInt;
+      statDivisionRest { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : UDInt;
+      statDivisionRestSub { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : UDInt;
+      statRateToInteger { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : UDInt;
+      statCycleTime { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : UDInt;
+   END_VAR
+
+   VAR CONSTANT 
+      NO_ERROR : DWord := 16#0000_0000;
+      INIT_TIMEPERIOD : Time := T#10MS;
+      INIT_MULT_OF_SAMPLINGRATE : UInt := 1;
+      ABSOLUTE_MAX_BUFFERLENGTH : UInt := 32001;   // bufferPos(SumCalc) in UINT [2**15] = 32767
+      MAX_TIME_FOR_MICRO_SECOND_RES : Time := T#1H;
+      ERROR_INVALID_BUFFER_LENGTH_OF_SUB : DWord := 16#0000_2021;
+      ERROR_INVALID_BUFFER_LENGTH : DWord := 16#0000_201F;
+      ERR_INVALID_CYCLE_TIME : DWord := 16#0000_8001;   // INput cycleTime < 125us
+   END_VAR
+
+
+BEGIN
+	//===========================================================================================================
+	// SIEMENS AG
+	// (c)Copyright 2019  All Rights Reserved
+	//-----------------------------------------------------------------------------------------------------------
+	//  file name:      LDrvOpt_UpdateConfigOfStatisticCalc (Motion Control Application Cycle)
+	//  library:        LDrvOpt
+	//  system:         SIMATIC TIA PORTAL V15
+	//  version:        V1.0.0   
+	//  restrictions:   Must be called in PreIpo
+	//  requirements:   /
+	//  functionality:  This function is designed to update the user's valid configuration for all statistic 
+	//                  function blocks.
+	//------------------------------------------------------------------------------------------------------------
+	//  change log table:
+	//  version     date            experts in charge           changes applied
+	//  01.00.00    15.03.19        APC Erlangen                create
+	//  01.00.01    28.01.21        APC Erlangen                Removed warning "Parameters might not be initialized"
+	//============================================================================================================
+	
+	//----------------------------------------------------------------------
+	//RESET ERROR AND WARNINGS
+	//----------------------------------------------------------------------
+	#statError := FALSE;
+	#statErrorID := #NO_ERROR;
+	
+	//----------------------------------------------------------------------
+	//CHECK ON VALID MAX BUFFER LENGTH
+	//----------------------------------------------------------------------
+	IF (#maxBufferLengthMain > #ABSOLUTE_MAX_BUFFERLENGTH) THEN
+	    #statError := TRUE;
+	    #statErrorID := #fb_ID OR #ERROR_INVALID_BUFFER_LENGTH;
+	    // Bufferlength of sub calculation should be equal or less than main calculation to garauntee efficience
+	ELSIF (#cascadeCalculation AND (#maxBufferLengthSub > #maxBufferLengthMain)) THEN
+	    #statError := TRUE;
+	    #statErrorID := #fb_ID OR #ERROR_INVALID_BUFFER_LENGTH_OF_SUB;
+	ELSE
+	    
+	    // determine the cycle time
+	    #statCycleTime := #cycleTime / UDINT#1000;  // 1 µs = 1 [UDINT]
+	    
+	    // Check if task system for fb call is valid
+	    IF (#statCycleTime = 0) THEN
+	        #statError := TRUE;
+	        #statErrorID := #fb_ID OR #ERR_INVALID_CYCLE_TIME;
+	    ELSIF (#statCycleTime < "LCON_STATEVAL_LEAST_CYCLETIME_IN_MICROSEC") THEN
+	        #statError := TRUE;
+	        #statErrorID := #fb_ID OR #ERR_INVALID_CYCLE_TIME;
+	    ELSE
+	        
+	        //----------------------------------------------------------------------
+	        //DETERMINE THE INPUT SETTINGS FOR THE CALCULATION
+	        //----------------------------------------------------------------------
+	        CASE #sampleMode OF
+	                // Check if the input parameters are valid and set up new config
+	                // neccessary Input: SamplingFactor, inSubsetLengthMain, (inSubsetlengthSub)
+	            "LCON_SAMPLEBASED_MODE":
+	                REGION SAMPLEBASED_MODE
+	                    // sampling rate is always necessary - check if the sampling rate is valid
+	                    IF (#inSamplingFactor > "LCON_STATEVAL_MAX_SAMPLINGRATE") THEN
+	                        #statOutSamplingFactorMain := "LCON_STATEVAL_MAX_SAMPLINGRATE";
+	                    ELSIF (#inSamplingFactor < 1) THEN
+	                        #statOutSamplingFactorMain := #INIT_MULT_OF_SAMPLINGRATE;
+	                    ELSE
+	                        #statOutSamplingFactorMain := #inSamplingFactor;
+	                    END_IF;
+	                    
+	                    // sampling time in ms
+	                    #statSamplingTime := (UDINT_TO_LREAL(#statCycleTime) / 1000.0) * #statOutSamplingFactorMain;
+	                    
+	                    // Check if the subset length is valid
+	                    IF (#inSubsetLengthMain > ("LCON_STATEVAL_MAX_BUFFERLENGTH")) THEN
+	                        #statOutSubsetLengthMain := "LCON_STATEVAL_MAX_BUFFERLENGTH";
+	                    ELSIF (#inSubsetLengthMain < 1) THEN
+	                        #statOutSubsetLengthMain := "LCON_STATEVAL_MAX_BUFFERLENGTH";
+	                    ELSE
+	                        #statOutSubsetLengthMain := #inSubsetLengthMain;
+	                    END_IF;
+	                    
+	                    // determine the current time periode of the subset
+	                    #timePeriod := #statSamplingTime * #statOutSubsetLengthMain;
+	                    
+	                    // Determine the subset length by the provided time periode
+	                    // neccessary Input: time periode
+	                END_REGION
+	            "LCON_TIMEPERIOD_MODE":
+	                REGION TIMEPERIOD_MODE
+	                    // if the demanded time period is bigger than 1h the resolution changes from µs to ms
+	                    IF (#setTimePeriod > #MAX_TIME_FOR_MICRO_SECOND_RES) THEN
+	                        
+	                        #statCalcInMilliSecResol := TRUE;
+	                        #statTimePeriod := TIME_TO_UDINT(#setTimePeriod);             // 1 ms = 1 [UDINT]
+	                        
+	                        IF (#statCycleTime MOD 1000 = 0) THEN
+	                            #statRateToInteger := 1;
+	                        ELSIF (#statCycleTime MOD 500 = 0) THEN
+	                            #statRateToInteger := 2;
+	                        ELSIF (#statCycleTime MOD 250 = 0) THEN
+	                            #statRateToInteger := 4;
+	                        ELSIF (#statCycleTime MOD 125 = 0) THEN
+	                            #statRateToInteger := 8;
+	                        END_IF;
+	                        
+	                        #statCycleTime := (#statCycleTime * #statRateToInteger) / 1000;
+	                        
+	                    ELSE
+	                        #statCalcInMilliSecResol := FALSE;
+	                        #statTimePeriod := TIME_TO_UDINT(#setTimePeriod) * 1000;     // 1 µs = 1 [UDINT]
+	                    END_IF;
+	                    
+	                    // Check if the input time intervall is valid for the cycle time
+	                    IF (#statCycleTime > #statTimePeriod) THEN
+	                        #statCurrentSubLen := 1;
+	                    ELSE
+	                        #statCurrentSubLen := #statTimePeriod / #statCycleTime;
+	                    END_IF;
+	                    
+	                    IF (NOT #cascadeCalculation) THEN
+	                        IF (#statCalcInMilliSecResol) THEN
+	                            IF (#statCurrentSubLen > ("LCON_STATEVAL_MAX_BUFFERLENGTH")) THEN
+	                                // set the subset length to maximum and refit the sampling rate
+	                                #statDivisionRest := #statTimePeriod / "LCON_STATEVAL_MAX_BUFFERLENGTH_MAIN";
+	                                #statOutSamplingFactorMain := UDINT_TO_UINT(#statDivisionRest / #statCycleTime) + 1;
+	                                #statOutSubsetLengthMain := UDINT_TO_UINT((#statTimePeriod / #statCycleTime) / #statOutSamplingFactorMain);
+	                                // set "outSamplingFactorSub" to the actual sampling rate
+	                                #statOutSamplingFactorMain := #statOutSamplingFactorMain * UDINT_TO_UINT(#statRateToInteger);
+	                            ELSE
+	                                #statOutSubsetLengthMain := UDINT_TO_UINT(#statCurrentSubLen);
+	                                #statOutSamplingFactorMain := UDINT_TO_UINT(#statRateToInteger);
+	                            END_IF;
+	                            
+	                            // sampling time in ms
+	                            #statSamplingTime := (UDINT_TO_LREAL(#statCycleTime) / #statRateToInteger) * #statOutSamplingFactorMain;
+	                        ELSE
+	                            IF (#statCurrentSubLen > ("LCON_STATEVAL_MAX_BUFFERLENGTH")) THEN
+	                                // set the subset length to maximum and refit the sampling rate
+	                                #statDivisionRest := (#statTimePeriod / 1000) / "LCON_STATEVAL_MAX_BUFFERLENGTH";
+	                                #statOutSamplingFactorMain := UDINT_TO_UINT(#statDivisionRest / (#statCycleTime / 1000)) + 1;
+	                                #statOutSubsetLengthMain := UDINT_TO_UINT((#statTimePeriod / #statCycleTime) / #statOutSamplingFactorMain);
+	                            ELSE
+	                                #statOutSubsetLengthMain := UDINT_TO_UINT(#statCurrentSubLen);
+	                                #statOutSamplingFactorMain := 1;
+	                            END_IF;
+	                            
+	                            // sampling time in ms
+	                            #statSamplingTime := (UDINT_TO_LREAL(#statCycleTime) / 1000.0) * #statOutSamplingFactorMain;
+	                        END_IF;
+	                        
+	                        // determine the current time periode of the subset
+	                        #statTimePeriodOut := #statSamplingTime * #statOutSubsetLengthMain;
+	                        
+	                        // determine the outgoing subset lengths
+	                    ELSE
+	                        IF (#statCalcInMilliSecResol) THEN
+	                            IF (#statCurrentSubLen > ("LCON_STATEVAL_MAX_BUFFERLENGTH_MAIN")) THEN
+	                                
+	                                #statDivisionRest := #statTimePeriod / "LCON_STATEVAL_MAX_BUFFERLENGTH_MAIN";
+	                                
+	                                // change of sub rate necessary 
+	                                IF (#statDivisionRest > ("LCON_STATEVAL_MAX_BUFFERLENGTH_SUB")) THEN
+	                                    #statDivisionRestSub := #statDivisionRest / "LCON_STATEVAL_MAX_BUFFERLENGTH_SUB";
+	                                    #statOutSamplingFactorSub := UDINT_TO_UINT(#statDivisionRestSub / #statCycleTime) + 1;
+	                                    #statOutSubsetLengthSub := (UDINT_TO_UINT(#statDivisionRest / #statCycleTime) / #statOutSamplingFactorSub) + 1;
+	                                    #statOutSubsetLengthMain := UDINT_TO_UINT((#statTimePeriod / #statCycleTime) / (#statOutSamplingFactorSub * #statOutSubsetLengthSub));
+	                                    // set "outSamplingFactorSub" to the actual sampling rate
+	                                    #statOutSamplingFactorSub := #statOutSamplingFactorSub * UDINT_TO_UINT(#statRateToInteger);
+	                                    //no change of sub rate necessary
+	                                ELSE
+	                                    #statOutSamplingFactorSub := UDINT_TO_UINT(#statRateToInteger);
+	                                    // always round up to ensure that main array is big enough at the end
+	                                    #statOutSubsetLengthSub := UDINT_TO_UINT(#statDivisionRest / #statCycleTime) + 1;
+	                                    #statOutSubsetLengthMain := UDINT_TO_UINT(#statTimePeriod / #statCycleTime) / #statOutSubsetLengthSub;
+	                                END_IF;
+	                            ELSE
+	                                #statOutSubsetLengthMain := UDINT_TO_UINT(#statCurrentSubLen);
+	                                #statOutSubsetLengthSub := 1;
+	                                #statOutSamplingFactorSub := UDINT_TO_UINT(#statRateToInteger);
+	                            END_IF;
+	                            
+	                            // determine the sampling rate for the main calculation
+	                            #statOutSamplingFactorMain := #statOutSamplingFactorSub * #statOutSubsetLengthSub;
+	                            
+	                            // sampling time in ms
+	                            #statSamplingTime := (UDINT_TO_LREAL(#statCycleTime) / #statRateToInteger) * #statOutSamplingFactorSub;
+	                            
+	                        ELSE
+	                            IF (#statCurrentSubLen > ("LCON_STATEVAL_MAX_BUFFERLENGTH_MAIN")) THEN
+	                                
+	                                #statDivisionRest := (#statTimePeriod / 1000) / "LCON_STATEVAL_MAX_BUFFERLENGTH_MAIN";
+	                                
+	                                // change of sub rate necessary 
+	                                IF (#statDivisionRest > ("LCON_STATEVAL_MAX_BUFFERLENGTH_SUB")) THEN
+	                                    #statDivisionRestSub := #statDivisionRest / "LCON_STATEVAL_MAX_BUFFERLENGTH_SUB";
+	                                    #statOutSamplingFactorSub := UDINT_TO_UINT(#statDivisionRestSub / (#statCycleTime / 1000)) + 1;
+	                                    #statOutSubsetLengthSub := (UDINT_TO_UINT(#statDivisionRest / (#statCycleTime / 1000)) / #statOutSamplingFactorSub) + 1;
+	                                    #statOutSubsetLengthMain := UDINT_TO_UINT((#statTimePeriod / #statCycleTime) / (#statOutSamplingFactorSub * #statOutSubsetLengthSub));
+	                                    //no change of sub rate necessary
+	                                ELSE
+	                                    #statOutSamplingFactorSub := 1;
+	                                    // always round up to ensure that main array is big enough at the end
+	                                    #statOutSubsetLengthSub := UDINT_TO_UINT(#statDivisionRest / (#statCycleTime / 1000)) + 1;
+	                                    #statOutSubsetLengthMain := UDINT_TO_UINT(#statTimePeriod / #statCycleTime) / #statOutSubsetLengthSub;
+	                                END_IF;
+	                            ELSE
+	                                #statOutSubsetLengthMain := UDINT_TO_UINT(#statCurrentSubLen);
+	                                #statOutSubsetLengthSub := 1;
+	                                #statOutSamplingFactorSub := 1;
+	                            END_IF;
+	                            
+	                            // determine the sampling rate for the main calculation
+	                            #statOutSamplingFactorMain := #statOutSamplingFactorSub * #statOutSubsetLengthSub;
+	                            
+	                            // sampling time in ms
+	                            #statSamplingTime := (UDINT_TO_LREAL(#statCycleTime) / 1000.0) * #statOutSamplingFactorSub;
+	                        END_IF;
+	                        
+	                        // determine the actualization rate of the calculation
+	                        #statActualizationRate := #statSamplingTime * #statOutSubsetLengthSub;
+	                        
+	                        // determine the current time periode of the subset
+	                        #statTimePeriodOut := #statActualizationRate * #statOutSubsetLengthMain;
+	                        
+	                    END_IF;
+	                    
+	                    //POSITIONBASED_MODE:
+	                    //;
+	                END_REGION
+	        END_CASE;
+	    END_IF;
+	END_IF;
+	
+	REGION Set outputs
+	    #error := #statError;
+	    #errorID := #statErrorID;
+	    #outSamplingFactorMain := #statOutSamplingFactorMain;
+	    #outSamplingFactorSub := #statOutSamplingFactorSub;
+	    #outSubsetLengthMain := #statOutSubsetLengthMain;
+	    #outSubsetLengthSub := #statOutSubsetLengthSub;
+	    #samplingTime := #statSamplingTime;
+	    #actualizationRate := #statActualizationRate;
+	    #timePeriod := #statTimePeriodOut;
+	END_REGION
+END_FUNCTION_BLOCK
+

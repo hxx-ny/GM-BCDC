@@ -1,0 +1,1316 @@
+﻿FUNCTION_BLOCK "2201_StackCalculate"
+{ S7_Optimized_Access := 'TRUE' ; Published := 'FALSE' }
+VERSION : 0.1
+   VAR_INPUT 
+      Execute : Bool;
+      Direction : Bool;
+      CPM : LReal;
+      StageWidth : LReal;
+      StageHeight : LReal;
+      StageGap : LReal;
+      AccRatio : DInt;
+      RatioOption : Bool;
+      TimeOption : Bool;
+      PosOption : Bool;
+      DoubleOption : Bool;
+      Ratio : Struct
+         FinalRollerStart : LReal;
+         FinalRollerEnd : LReal;
+         PnPXStart : LReal;
+         PnPXEnd : LReal;
+         PnPZDownStart : LReal;
+         PnPZDownEnd : LReal;
+         PnPZUpStart : LReal;
+         PnPZUpEnd : LReal;
+         MandrelBwdStart : LReal;
+         MandrelBwdEnd : LReal;
+         MandrelFwdStart : LReal;
+         MandrelFwdEnd : LReal;
+         MandrelUpStart1 : LReal;
+         MandrelUpEnd1 : LReal;
+         MandrelUpStart2 : LReal;
+         MandrelUpEnd2 : LReal;
+         MandrelDownStart : LReal;
+         MandrelDownEnd : LReal;
+         MandrelYTerm : LReal;
+         MandrelZTerm : LReal;
+         MandrelBwdOffset : LReal;
+         MandrelFwdOffset : LReal;
+      END_STRUCT;
+      "Time" : Struct
+         FinalRollerStart : LReal;
+         FinalRollerEnd : LReal;
+         PnPXStart : LReal;
+         PnPXEnd : LReal;
+         PnPZDownStart : LReal;
+         PnPZDownEnd : LReal;
+         PnPZUpStart : LReal;
+         PnPZUpEnd : LReal;
+         MandrelBwdStart : LReal;
+         MandrelBwdEnd : LReal;
+         MandrelFwdStart : LReal;
+         MandrelFwdEnd : LReal;
+         MandrelUpStart1 : LReal;
+         MandrelUpEnd1 : LReal;
+         MandrelUpStart2 : LReal;
+         MandrelUpEnd2 : LReal;
+         MandrelDownStart : LReal;
+         MandrelDownEnd : LReal;
+      END_STRUCT;
+      Position : Struct
+         FinalRollerBwdPos : LReal;
+         FinalRollerFwdPos : LReal;
+      END_STRUCT;
+      FinalRollerDistance : LReal;
+      AnodePnPX1Distance : LReal;
+      AnodePnPX2Distance : LReal;
+      CathodePnPX1Distance : LReal;
+      CathodePnPX2Distance : LReal;
+      AnodePnPZ1Distance1 : LReal;
+      AnodePnPZ1Distance2 : LReal;
+      AnodePnPZ2Distance1 : LReal;
+      AnodePnPZ2Distance2 : LReal;
+      CathodePnPZ1Distance1 : LReal;
+      CathodePnPZ1Distance2 : LReal;
+      CathodePnPZ2Distance1 : LReal;
+      CathodePnPZ2Distance2 : LReal;
+      AnodeMandrelYFrontDistance : LReal;
+      AnodeMandrelYRearDistance : LReal;
+      CathodeMandrelYFrontDistance : LReal;
+      CathodeMandrelYRearDistance : LReal;
+      AnodeMandrelZFrontDistance : LReal;
+      AnodeMandrelZRearDistance : LReal;
+      CathodeMandrelZFrontDistance : LReal;
+      CathodeMandrelZRearDistance : LReal;
+   END_VAR
+
+   VAR_OUTPUT 
+      Done : Bool;
+      Busy : Bool;
+      Error : Bool;
+      ErrorID : DWord;
+      StatusID : DWord;
+      NowCmd : DInt;
+      BeforeCmd : DInt;
+   END_VAR
+
+   VAR_IN_OUT 
+      EmptyPoint {InstructionName := 'TO_Cam_Struct_PointData'; LibVersion := '9.0'} : Array[1..10000] of TO_Cam_Struct_PointData;
+      EmptySegment {InstructionName := 'TO_Cam_Struct_SegmentData'; LibVersion := '9.0'} : Array[1..50] of TO_Cam_Struct_SegmentData;
+      FinalRollerCam : DB_ANY;
+      CompensatorCam : DB_ANY;
+      AnodePnPX1Cam : DB_ANY;
+      AnodePnPX2Cam : DB_ANY;
+      AnodePnPZ1Cam : DB_ANY;
+      AnodePnPZ2Cam : DB_ANY;
+      CathodePnPX1Cam : DB_ANY;
+      CathodePnPX2Cam : DB_ANY;
+      CathodePnPZ1Cam : DB_ANY;
+      CathodePnPZ2Cam : DB_ANY;
+      AnodeMandrelYFrontCam : DB_ANY;
+      AnodeMandrelYRearCam : DB_ANY;
+      AnodeMandrelZFrontCam : DB_ANY;
+      AnodeMandrelZRearCam : DB_ANY;
+      CathodeMandrelYFrontCam : DB_ANY;
+      CathodeMandrelYRearCam : DB_ANY;
+      CathodeMandrelZFrontCam : DB_ANY;
+      CathodeMandrelZRearCam : DB_ANY;
+   END_VAR
+
+   VAR 
+      statNowCmd : DInt;
+      statBeforeCmd : DInt;
+      statLineSpeed : LReal;
+      statTargetBwdTime : LReal;
+      statTargetFwdTime : LReal;
+      statTimeTable : Array[1..50] of Time;
+      statStartTime : Time;
+      statEndTime : Time;
+      instTriggerExecute {InstructionName := 'R_TRIG'; LibVersion := '1.0'; S7_SetPoint := 'False'} : R_TRIG;
+      instCalculateFinalRoller : "2303_CalculateCam_FinalRoller";
+      instCalculateBwdTime : "2304_CalculateCam_FinalTime";
+      instCalculateFwdTime : "2304_CalculateCam_FinalTime";
+      instCalculateCompensator : "2305_CalculateCam_Compensator";
+      instCalculateAnodePnPX1 : "2301_CalculateCam_PnPX";
+      instCalculateAnodePnPX2 : "2301_CalculateCam_PnPX";
+      instCalculateAnodePnPZ1 : "2302_CalculateCam_PnPZ";
+      instCalculateAnodePnPZ2 : "2302_CalculateCam_PnPZ";
+      instCalculateCathodePnPX1 : "2301_CalculateCam_PnPX";
+      instCalculateCathodePnPX2 : "2301_CalculateCam_PnPX";
+      instCalculateCathodePnPZ1 : "2302_CalculateCam_PnPZ";
+      instCalculateCathodePnPZ2 : "2302_CalculateCam_PnPZ";
+      instCalculateMandrelYFront1 : "2307_CalculateCam_MandrelY1";
+      instCalculateMandrelYRear1 : "2307_CalculateCam_MandrelY1";
+      instCalculateMandrelZFront1 : "2306_CalculateCam_MandrelZ1";
+      instCalculateMandrelZRear1 : "2306_CalculateCam_MandrelZ1";
+      instCalculateMandrelYFront2 : "2309_CalculateCam_MandrelY2";
+      instCalculateMandrelYRear2 : "2309_CalculateCam_MandrelY2";
+      instCalculateMandrelZFront2 : "2308_CalculateCam_MandrelZ2";
+      instCalculateMandrelZRear2 : "2308_CalculateCam_MandrelZ2";
+   END_VAR
+
+   VAR_TEMP 
+      tempFinalRollerDistance : LReal;
+      tempAnodePnPX1Distance : LReal;
+      tempAnodePnPX2Distance : LReal;
+      tempCathodePnPX1Distance : LReal;
+      tempCathodePnPX2Distance : LReal;
+      tempAnodePnPZ1Distance1 : LReal;
+      tempAnodePnPZ1Distance2 : LReal;
+      tempAnodePnPZ2Distance1 : LReal;
+      tempAnodePnPZ2Distance2 : LReal;
+      tempCathodePnPZ1Distance1 : LReal;
+      tempCathodePnPZ1Distance2 : LReal;
+      tempCathodePnPZ2Distance1 : LReal;
+      tempCathodePnPZ2Distance2 : LReal;
+      tempMandrelYFrontCam1 : DB_ANY;
+      tempMandrelYRearCam1 : DB_ANY;
+      tempMandrelZFrontCam1 : DB_ANY;
+      tempMandrelZRearCam1 : DB_ANY;
+      tempMandrelYFrontCam2 : DB_ANY;
+      tempMandrelYRearCam2 : DB_ANY;
+      tempMandrelZFrontCam2 : DB_ANY;
+      tempMandrelZRearCam2 : DB_ANY;
+      tempMandrelYFrontDistance1 : LReal;
+      tempMandrelYRearDistance1 : LReal;
+      tempMandrelZFrontDistance1 : LReal;
+      tempMandrelZRearDistance1 : LReal;
+      tempMandrelYFrontDistance2 : LReal;
+      tempMandrelYRearDistance2 : LReal;
+      tempMandrelZFrontDistance2 : LReal;
+      tempMandrelZRearDistance2 : LReal;
+   END_VAR
+
+   VAR CONSTANT 
+      STAT_IDLE : DInt := 0;
+      STAT_ERROR : DInt := 99;
+      STAT_START : DInt := 100;
+      STAT_CAL_FINAL : DInt := 110;
+      STAT_CAL_BWD : DInt := 120;
+      STAT_CAL_FWD : DInt := 130;
+      STAT_CAL_COMP : DInt := 140;
+      STAT_CAL_APNP_X1 : DInt := 150;
+      STAT_CAL_APNP_X2 : DInt := 160;
+      STAT_CAL_APNP_Z1 : DInt := 170;
+      STAT_CAL_APNP_Z2 : DInt := 180;
+      STAT_CAL_CPNP_X1 : DInt := 190;
+      STAT_CAL_CPNP_X2 : DInt := 200;
+      STAT_CAL_CPNP_Z1 : DInt := 210;
+      STAT_CAL_CPNP_Z2 : DInt := 220;
+      STAT_CAL_MAN_FRONT_Y1 : DInt := 230;
+      STAT_CAL_MAN_REAR_Y1 : DInt := 240;
+      STAT_CAL_MAN_FRONT_Z1 : DInt := 250;
+      STAT_CAL_MAN_REAR_Z1 : DInt := 260;
+      STAT_CAL_MAN_FRONT_Y2 : DInt := 270;
+      STAT_CAL_MAN_REAR_Y2 : DInt := 280;
+      STAT_CAL_MAN_FRONT_Z2 : DInt := 290;
+      STAT_CAL_MAN_REAR_Z2 : DInt := 300;
+      STAT_DONE : DInt := 10000;
+   END_VAR
+
+
+BEGIN
+	
+	REGION INPUT SIGNAL
+	    REGION EXECUTE
+	        IF NOT #Execute THEN
+	            #statBeforeCmd := #statNowCmd;                                      // 이전 명령 모니터링
+	            #statNowCmd := #STAT_IDLE;
+	        END_IF;
+	        
+	        #instTriggerExecute(CLK := #Execute);
+	        
+	        IF #instTriggerExecute.Q THEN
+	            #statLineSpeed := 0.0;
+	            #statStartTime := TIME_TCK();
+	            #statBeforeCmd := #statNowCmd;                                      // 이전 명령 모니터링
+	            #statNowCmd := #STAT_START;
+	        END_IF;
+	    END_REGION
+	END_REGION
+	
+	REGION COMMAND
+	    CASE #statNowCmd OF
+	        #STAT_IDLE:
+	            REGION IDLE
+	                ;
+	            END_REGION
+	            
+	        #STAT_ERROR:
+	            REGION ERROR
+	                ;
+	            END_REGION
+	            
+	        #STAT_START:
+	            REGION STEP START
+	                #statLineSpeed := #CPM * #StageWidth / 60.0;                    // 선속 = CPM * 스테이지 폭 / 60
+	                #statTargetBwdTime := 0.0;                                      // FinalRoller 전후진 시간 파라미터 초기화
+	                #statTargetFwdTime := 0.0;                                      // FinalRoller 전후진 시간 파라미터 초기화
+	                #statEndTime := TIME_TCK();
+	                #statTimeTable[#STAT_START / 10 - 9] := #statEndTime - #statStartTime;
+	                #statStartTime := TIME_TCK();
+	                #statBeforeCmd := #statNowCmd;                                  // 이전 명령 모니터링
+	                #statNowCmd := #STAT_CAL_FINAL;                                 // STAT_CAL_FINAL 상태로 이동
+	            END_REGION
+	            
+	        #STAT_CAL_FINAL:                                                        // Final Roller 캠 계산 영역
+	            REGION CALCULATE FINAL ROLLER
+	                REGION DONE                                                     // Final Roller 캠 계산 완료 시
+	                    IF #instCalculateFinalRoller.done THEN
+	                        #statEndTime := TIME_TCK();
+	                        #statTimeTable[#STAT_CAL_FINAL / 10 - 9] := #statEndTime - #statStartTime;
+	                        #statStartTime := TIME_TCK();
+	                        #statBeforeCmd := #statNowCmd;                          // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_CAL_BWD;                           // STAT_CAL_BWD 상태로 이동
+	                    END_IF;
+	                END_REGION
+	                
+	                REGION ERROR                                                    //Final Roller 캠 계산 중 에러 발생 시
+	                    IF #instCalculateFinalRoller.error THEN
+	                        #ErrorID := #instCalculateFinalRoller.errorID;          // FinalRoller 에러ID 출력
+	                        #StatusID := 16#2600_3010;
+	                        #statBeforeCmd := #statNowCmd;                          // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                             // STAT_ERROR 상태로 이동
+	                    END_IF;
+	                END_REGION
+	            END_REGION
+	            
+	        #STAT_CAL_BWD:                                                          // Final Roller BWD Time 캠 계산 영역
+	            REGION CALCULATE BWD TIME
+	                REGION DONE                                                     // Final Roller BWD Time 캠 계산 완료 시 
+	                    IF #instCalculateBwdTime.done THEN
+	                        #statTargetBwdTime := #instCalculateBwdTime.targetTime; // Mandrel Bwd Time 파라미터로 사용
+	                        #statEndTime := TIME_TCK();
+	                        #statTimeTable[#STAT_CAL_BWD / 10 - 9] := #statEndTime - #statStartTime;
+	                        #statStartTime := TIME_TCK();
+	                        #statBeforeCmd := #statNowCmd;                          // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_CAL_FWD;                           // STAT_CAL_FWD 상태로 이동
+	                    END_IF;
+	                END_REGION
+	                
+	                REGION ERROR                                                    // Final Roller BWD Time 캠 계산 중 에러 발생 시
+	                    IF #instCalculateBwdTime.error THEN
+	                        #ErrorID := #instCalculateBwdTime.errorID;              // Final BWD Time 에러ID 출력
+	                        #StatusID := 16#2600_3012;
+	                        #statBeforeCmd := #statNowCmd;                          // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                             // STAT_ERROR 상태로 이동
+	                    END_IF;
+	                END_REGION
+	            END_REGION
+	            
+	        #STAT_CAL_FWD:                                                          // Final Roller FWD Time 캠 계산 영역
+	            REGION CALCULATE FWD TIME
+	                REGION DONE                                                     // Final Roller FWD Time 캠 계산 완료 시
+	                    IF #instCalculateFwdTime.done THEN
+	                        #statTargetFwdTime := #instCalculateFwdTime.targetTime; // Mandrel Fwd Time 파라미터로 사용
+	                        #statEndTime := TIME_TCK();
+	                        #statTimeTable[#STAT_CAL_FWD / 10 - 9] := #statEndTime - #statStartTime;
+	                        #statStartTime := TIME_TCK();
+	                        #statBeforeCmd := #statNowCmd;                          // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_CAL_COMP;                          // STAT_CAL_COMP 상태로 이동
+	                    END_IF;
+	                END_REGION
+	                
+	                REGION ERROR                                                    // Final Roller FWD Time 캠 계산 중 에러 발생 시
+	                    IF #instCalculateFwdTime.error THEN
+	                        #ErrorID := #instCalculateFwdTime.errorID;              // Final FWD Time 에러ID 출력
+	                        #StatusID := 16#2600_3011;
+	                        #statBeforeCmd := #statNowCmd;                          // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                             // STAT_ERROR 상태로 이동
+	                    END_IF;
+	                END_REGION
+	            END_REGION
+	            
+	        #STAT_CAL_COMP:                                                         // Compensator 캠 계산 영역
+	            REGION CALCULATE COMPENSATOR
+	                REGION DONE                                                     // Compensator 캠 계산 완료 시
+	                    IF #instCalculateCompensator.done THEN
+	                        #statEndTime := TIME_TCK();
+	                        #statTimeTable[#STAT_CAL_COMP / 10 - 9] := #statEndTime - #statStartTime;
+	                        #statStartTime := TIME_TCK();
+	                        #statBeforeCmd := #statNowCmd;                          // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_CAL_APNP_X1;                       // STAT_CAL_APNP_X1 상태로 이동
+	                    END_IF;
+	                END_REGION
+	                
+	                REGION ERROR                                                    // Compensator 캠 계산 중 에러 발생 시
+	                    IF #instCalculateCompensator.error THEN
+	                        #ErrorID := #instCalculateCompensator.errorID;          // Compensator 에러ID 출력
+	                        #StatusID := 16#0600_3010;
+	                        #statBeforeCmd := #statNowCmd;                          // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                             // STAT_ERROR 상태로 이동
+	                    END_IF;
+	                END_REGION
+	            END_REGION
+	            
+	        #STAT_CAL_APNP_X1:                                                      // Anode PnP X1 캠 계산 영역
+	            REGION CALCULATE ANODE PNP X1
+	                REGION DONE                                                     // Anode PnP X1 캠 계산 완료 시
+	                    IF #instCalculateAnodePnPX1.done THEN
+	                        #statEndTime := TIME_TCK();
+	                        #statTimeTable[#STAT_CAL_APNP_X1 / 10 - 9] := #statEndTime - #statStartTime;
+	                        #statStartTime := TIME_TCK();
+	                        #statBeforeCmd := #statNowCmd;                          // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_CAL_APNP_X2;                       // STAT_CAL_APNP_X2 상태로 이동
+	                    END_IF;
+	                END_REGION
+	                
+	                REGION ERROR                                                    // Anode PnP X1 캠 계산 중 에러 발생 시
+	                    IF #instCalculateAnodePnPX1.error THEN                      // Anode PnP X1 에러ID 출력
+	                        #ErrorID := #instCalculateAnodePnPX1.errorID;
+	                        #StatusID := 16#0800_3010;
+	                        #statBeforeCmd := #statNowCmd;                          // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                             // STAT_ERROR 상태로 이동
+	                    END_IF;
+	                END_REGION
+	            END_REGION
+	            
+	        #STAT_CAL_APNP_X2:                                                      // Anode PnP X2 캠 계산 영역
+	            REGION CALCULATE ANODE PNP X2
+	                REGION DONE                                                     // Anode PnP X2 캠 계산 완료 시
+	                    IF #instCalculateAnodePnPX2.done THEN
+	                        #statEndTime := TIME_TCK();
+	                        #statTimeTable[#STAT_CAL_APNP_X2 / 10 - 9] := #statEndTime - #statStartTime;
+	                        #statStartTime := TIME_TCK();
+	                        #statBeforeCmd := #statNowCmd;                          // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_CAL_APNP_Z1;                       // STAT_CAL_APNP_Z1 상태로 이동
+	                    END_IF;
+	                END_REGION
+	                
+	                REGION ERROR                                                    // Anode PnP X2 캠 계산 중 에러 발생 시
+	                    IF #instCalculateAnodePnPX2.error THEN
+	                        #ErrorID := #instCalculateAnodePnPX2.errorID;           // Anode PnP X2 에러ID 출력
+	                        #StatusID := 16#0900_3010;
+	                        #statBeforeCmd := #statNowCmd;                          // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                             // STAT_ERROR 상태로 이동
+	                    END_IF;
+	                END_REGION
+	            END_REGION
+	            
+	        #STAT_CAL_APNP_Z1:                                                      // Anode PnP Z1 캠 계산 영역
+	            REGION CALCULATE ANODE PNP Z1
+	                REGION DONE                                                     // Anode PnP Z1 캠 계산 완료 시
+	                    IF #instCalculateAnodePnPZ1.done THEN
+	                        #statEndTime := TIME_TCK();
+	                        #statTimeTable[#STAT_CAL_APNP_Z1 / 10 - 9] := #statEndTime - #statStartTime;
+	                        #statStartTime := TIME_TCK();
+	                        #statBeforeCmd := #statNowCmd;                          // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_CAL_APNP_Z2;                       // STAT_CAL_APNP_Z2 상태로 이동
+	                    END_IF;
+	                END_REGION
+	                
+	                REGION ERROR                                                    // Anode PnP Z1 캠 계산 중 에러 발생 시
+	                    IF #instCalculateAnodePnPZ1.error THEN
+	                        #ErrorID := #instCalculateAnodePnPZ1.errorID;           // Anode PnP Z1 에러ID 출력
+	                        #StatusID := 16#1200_3010;
+	                        #statBeforeCmd := #statNowCmd;                          // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                             // STAT_ERROR 상태로 이동
+	                    END_IF;
+	                END_REGION
+	            END_REGION
+	            
+	        #STAT_CAL_APNP_Z2:                                                      // Anode PnP Z2 캠 계산 영역
+	            REGION CALCULATE ANODE PNP Z2 
+	                REGION DONE                                                     // Anode PnP Z2 캠 계산 완료 시
+	                    IF #instCalculateAnodePnPZ2.done THEN
+	                        #statEndTime := TIME_TCK();
+	                        #statTimeTable[#STAT_CAL_APNP_Z2 / 10 - 9] := #statEndTime - #statStartTime;
+	                        #statStartTime := TIME_TCK();
+	                        #statBeforeCmd := #statNowCmd;                          // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_CAL_CPNP_X1;                       // STAT_CAL_CPNP_X1 상태로 이동
+	                    END_IF;
+	                END_REGION
+	                
+	                REGION ERROR                                                    // Anode PnP Z2 캠 계산 중 에러 발생 시
+	                    IF #instCalculateAnodePnPZ2.error THEN
+	                        #ErrorID := #instCalculateAnodePnPZ2.errorID;           // Anode PnP Z2 에러ID 출력
+	                        #StatusID := 16#1300_3010;
+	                        #statBeforeCmd := #statNowCmd;                          // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                             // STAT_ERROR 상태로 이동
+	                    END_IF;
+	                END_REGION
+	            END_REGION
+	            
+	        #STAT_CAL_CPNP_X1:                                                      // Cathode PnP X1 캠 계산 영역
+	            REGION CALCULATE CATHODE PNP X1 
+	                REGION DONE                                                     // Cathode PnP X1 캠 계산 완료 시
+	                    IF #instCalculateCathodePnPX1.done THEN
+	                        #statEndTime := TIME_TCK();
+	                        #statTimeTable[#STAT_CAL_CPNP_X1 / 10 - 9] := #statEndTime - #statStartTime;
+	                        #statStartTime := TIME_TCK();
+	                        #statBeforeCmd := #statNowCmd;                          // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_CAL_CPNP_X2;                       // STAT_CAL_CPNP_X2 상태로 이동
+	                    END_IF;
+	                END_REGION
+	                
+	                REGION ERROR                                                    // Cathode PnP X1 캠 계산 중 에러 발생 시
+	                    IF #instCalculateCathodePnPX1.error THEN
+	                        #ErrorID := #instCalculateCathodePnPX1.errorID;         // Cathode PnP X1 에러ID 출력
+	                        #StatusID := 16#1400_3010;
+	                        #statBeforeCmd := #statNowCmd;                          // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                             // STAT_ERROR 상태로 이동
+	                    END_IF;
+	                END_REGION
+	            END_REGION
+	            
+	        #STAT_CAL_CPNP_X2:                                                      // Cathode PnP X2 캠 계산 영역
+	            REGION CALCULATE CATHODE PNP X2 
+	                REGION DONE                                                     // Cathode PnP X2 캠 계산 완료 시
+	                    IF #instCalculateCathodePnPX2.done THEN
+	                        #statEndTime := TIME_TCK();
+	                        #statTimeTable[#STAT_CAL_CPNP_X2 / 10 - 9] := #statEndTime - #statStartTime;
+	                        #statStartTime := TIME_TCK();
+	                        #statBeforeCmd := #statNowCmd;                          // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_CAL_CPNP_Z1;                       // STAT_CAL_CPNP_Z1 상태로 이동
+	                    END_IF;
+	                END_REGION
+	                
+	                REGION ERROR                                                    // Cathode PnP X2 캠 계산 중 에러 발생 시
+	                    IF #instCalculateCathodePnPX2.error THEN
+	                        #ErrorID := #instCalculateCathodePnPX2.errorID;         // Cathode PnP X2 에러ID 출력
+	                        #StatusID := 16#1500_3010;
+	                        #statBeforeCmd := #statNowCmd;                          // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                             // STAT_ERROR 상태로 이동
+	                    END_IF;
+	                END_REGION
+	            END_REGION
+	            
+	        #STAT_CAL_CPNP_Z1:                                                      // Cathode PnP Z1 캠 계산 영역
+	            REGION CALCULATE CATHODE PNP Z1 
+	                REGION DONE                                                     // Cathode PnP Z1 캠 계산 완료 시
+	                    IF #instCalculateCathodePnPZ1.done THEN
+	                        #statEndTime := TIME_TCK();
+	                        #statTimeTable[#STAT_CAL_CPNP_Z1 / 10 - 9] := #statEndTime - #statStartTime;
+	                        #statStartTime := TIME_TCK();
+	                        #statBeforeCmd := #statNowCmd;                          // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_CAL_CPNP_Z2;                       // STAT_CAL_CPNP_Z2 상태로 이동
+	                    END_IF;
+	                END_REGION
+	                
+	                REGION ERROR                                                    // Cathode PnP Z1 캠 계산 중 에러 발생 시
+	                    IF #instCalculateCathodePnPZ1.error THEN
+	                        #ErrorID := #instCalculateCathodePnPZ1.errorID;         // Cathode PnP Z1 에러ID 출력
+	                        #StatusID := 16#1800_3010;
+	                        #statBeforeCmd := #statNowCmd;                          // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                             // STAT_ERROR 상태로 이동
+	                    END_IF;
+	                END_REGION
+	            END_REGION
+	            
+	        #STAT_CAL_CPNP_Z2:                                                      // Cathode PnP Z2 캠 계산 영역
+	            REGION CALCULATE CATHODE PNP Z2 
+	                REGION DONE                                                     // Cathode PnP Z2 캠 계산 완료 시
+	                    IF #instCalculateCathodePnPZ2.done THEN
+	                        #statEndTime := TIME_TCK();
+	                        #statTimeTable[#STAT_CAL_CPNP_Z2 / 10 - 9] := #statEndTime - #statStartTime;
+	                        #statStartTime := TIME_TCK();
+	                        #statBeforeCmd := #statNowCmd;                          // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_CAL_MAN_FRONT_Y1;                  // STAT_CAL_MAN_FRONT_Y1 상태로 이동
+	                    END_IF;
+	                END_REGION
+	                
+	                REGION ERROR                                                    // Cathode PnP Z2 캠 계산 중 에러 발생 시
+	                    IF #instCalculateCathodePnPZ2.error THEN
+	                        #ErrorID := #instCalculateCathodePnPZ2.errorID;         // Cathode PnP Z2 에러ID 출력
+	                        #StatusID := 16#1900_3010;
+	                        #statBeforeCmd := #statNowCmd;                          // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                             // STAT_ERROR 상태로 이동
+	                    END_IF;
+	                END_REGION
+	            END_REGION
+	            
+	        #STAT_CAL_MAN_FRONT_Y1:                                                 // Anode Mandrel Front Y1 캠 계산 영역
+	            REGION CALCULATE ANODE MANDREL FRONT Y1 
+	                REGION DONE                                                     // Anode Mandrel Front Y1 캠 계산 완료 시
+	                    IF #instCalculateMandrelYFront1.done THEN
+	                        #statEndTime := TIME_TCK();
+	                        #statTimeTable[#STAT_CAL_MAN_FRONT_Y1 / 10 - 9] := #statEndTime - #statStartTime;
+	                        #statStartTime := TIME_TCK();
+	                        #statBeforeCmd := #statNowCmd;                          // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_CAL_MAN_REAR_Y1;                   // STAT_CAL_MAN_REAR_Y1 상태로 이동
+	                    END_IF;
+	                END_REGION
+	                
+	                REGION ERROR                                                    // Anode Mandrel Front Y1 캠 계산 중 에러 발생 시
+	                    IF #instCalculateMandrelYFront1.error THEN
+	                        #ErrorID := #instCalculateMandrelYFront1.errorID;       // Anode Mandrel Front Y1 에러ID 출력
+	                        #StatusID := 16#2800_3010;
+	                        #statBeforeCmd := #statNowCmd;                          // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                             // STAT_ERROR 상태로 이동
+	                    END_IF;
+	                END_REGION
+	            END_REGION
+	            
+	        #STAT_CAL_MAN_REAR_Y1:                                                  // Anode Mandrel Rear Y1 캠 계산 영역
+	            REGION CALCULATE ANODE MANDREL REAR Y1   
+	                REGION DONE                                                     // Anode Mandrel Rear Y1 캠 계산 완료 시
+	                    IF #instCalculateMandrelYRear1.done THEN
+	                        #statEndTime := TIME_TCK();
+	                        #statTimeTable[#STAT_CAL_MAN_REAR_Y1 / 10 - 9] := #statEndTime - #statStartTime;
+	                        #statStartTime := TIME_TCK();
+	                        #statBeforeCmd := #statNowCmd;                          // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_CAL_MAN_FRONT_Z1;                  // STAT_CAL_MAN_FRONT_Z1 상태로 이동
+	                    END_IF;
+	                END_REGION
+	                
+	                REGION ERROR                                                    // Anode Mandrel Rear Y1 캠 계산 중 에러 발생 시
+	                    IF #instCalculateMandrelYRear1.error THEN
+	                        #ErrorID := #instCalculateMandrelYRear1.errorID;        // Anode Mandrel Rear Y1 에러ID 출력
+	                        #StatusID := 16#3200_3010;
+	                        #statBeforeCmd := #statNowCmd;                          // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                             // STAT_ERROR 상태로 이동
+	                    END_IF;
+	                END_REGION
+	            END_REGION
+	            
+	        #STAT_CAL_MAN_FRONT_Z1:                                                 // Anode Mandrel Front Z1 캠 계산 영역
+	            REGION CALCULATE ANODE MANDREL FRONT Z1 
+	                REGION DONE                                                     // Anode Mandrel Front Z1 캠 계산 완료 시
+	                    IF #instCalculateMandrelZFront1.done THEN
+	                        #statEndTime := TIME_TCK();
+	                        #statTimeTable[#STAT_CAL_MAN_FRONT_Z1 / 10 - 9] := #statEndTime - #statStartTime;
+	                        #statStartTime := TIME_TCK();
+	                        #statBeforeCmd := #statNowCmd;                          // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_CAL_MAN_REAR_Z1;                   // STAT_CAL_MAN_REAR_Z1 상태로 이동
+	                    END_IF;
+	                END_REGION
+	                
+	                REGION ERROR                                                    // Anode Mandrel Front Z1 캠 계산 중 에러 발생 시
+	                    IF #instCalculateMandrelZFront1.error THEN
+	                        #ErrorID := #instCalculateMandrelZFront1.errorID;       // Anode Mandrel Front Z1 에러ID 출력
+	                        #StatusID := 16#2900_3010;
+	                        #statBeforeCmd := #statNowCmd;                          // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                             // STAT_ERROR 상태로 이동
+	                    END_IF;
+	                END_REGION
+	            END_REGION
+	            
+	        #STAT_CAL_MAN_REAR_Z1:                                                  // Anode Mandrel Rear Z1 캠 계산 영역
+	            REGION CALCULATE ANODE MANDREL REAR Z1 
+	                REGION DONE                                                     // Anode Mandrel Rear Z1 캠 계산 완료 시
+	                    IF #instCalculateMandrelZRear1.done THEN
+	                        #statEndTime := TIME_TCK();
+	                        #statTimeTable[#STAT_CAL_MAN_REAR_Z1 / 10 - 9] := #statEndTime - #statStartTime;
+	                        #statStartTime := TIME_TCK();
+	                        #statBeforeCmd := #statNowCmd;                          // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_CAL_MAN_FRONT_Y2;                  // STAT_CAL_MAN_FRONT_Y2 상태로 이동
+	                    END_IF;
+	                END_REGION
+	                
+	                REGION ERROR                                                    // Anode Mandrel Rear Z1 캠 계산 중 에러 발생 시
+	                    IF #instCalculateMandrelZRear1.error THEN
+	                        #ErrorID := #instCalculateMandrelZRear1.errorID;        // Anode Mandrel Rear Z1 에러ID 출력
+	                        #StatusID := 16#3100_3010;
+	                        #statBeforeCmd := #statNowCmd;                          // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                             // STAT_ERROR 상태로 이동
+	                    END_IF;
+	                END_REGION
+	            END_REGION
+	            
+	        #STAT_CAL_MAN_FRONT_Y2:                                                 // Cathode Mandrel Front Y2 캠 계산 영역
+	            REGION CALCULATE CATHODE MANDREL Y2 
+	                REGION DONE                                                     // Cathode Mandrel Front Y2 캠 계산 완료 시
+	                    IF #instCalculateMandrelYFront2.done THEN
+	                        #statEndTime := TIME_TCK();
+	                        #statTimeTable[#STAT_CAL_MAN_FRONT_Y2 / 10 - 9] := #statEndTime - #statStartTime;
+	                        #statStartTime := TIME_TCK();
+	                        #statBeforeCmd := #statNowCmd;                          // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_CAL_MAN_REAR_Y2;                   // STAT_CAL_MAN_REAR_Y2 상태로 이동
+	                    END_IF;
+	                END_REGION
+	                
+	                REGION ERROR                                                    // Cathode Mandrel Front Y2 캠 계산 중 에러 발생 시
+	                    IF #instCalculateMandrelYFront2.error THEN
+	                        #ErrorID := #instCalculateMandrelYFront2.errorID;       // Cathode Mandrel Front Y2 에러ID 출력
+	                        #StatusID := 16#3200_3010;
+	                        #statBeforeCmd := #statNowCmd;                          // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                             // STAT_ERROR 상태로 이동
+	                    END_IF;
+	                END_REGION
+	            END_REGION
+	            
+	        #STAT_CAL_MAN_REAR_Y2:                                                  // Cathode Mandrel Rear Y2 캠 계산 영역
+	            REGION CALCULATE CATHODE MANDREL Y2 
+	                REGION DONE                                                     // Cathode Mandrel Rear Y2 캠 계산 완료 시
+	                    IF #instCalculateMandrelYRear2.done THEN
+	                        #statEndTime := TIME_TCK();
+	                        #statTimeTable[#STAT_CAL_MAN_REAR_Y2 / 10 - 9] := #statEndTime - #statStartTime;
+	                        #statStartTime := TIME_TCK();
+	                        #statBeforeCmd := #statNowCmd;                          // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_CAL_MAN_FRONT_Z2;                  // STAT_CAL_MAN_FRONT_Z2 상태로 이동
+	                    END_IF;
+	                END_REGION
+	                
+	                REGION ERROR                                                    // Cathode Mandrel Rear Y2 캠 계산 중 에러 발생 시
+	                    IF #instCalculateMandrelYRear2.error THEN
+	                        #ErrorID := #instCalculateMandrelYRear2.errorID;        // Cathode Mandrel Rear Y2 에러ID 출력
+	                        #StatusID := 16#3400_3010;
+	                        #statBeforeCmd := #statNowCmd;                          // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                             // STAT_ERROR 상태로 이동
+	                    END_IF;
+	                END_REGION
+	            END_REGION
+	            
+	        #STAT_CAL_MAN_FRONT_Z2:                                                 // Cathode Mandrel Front Z2 캠 계산 영역
+	            REGION CALCULATE CATHODE MANDREL Z2 
+	                REGION DONE                                                     // Cathode Mandrel Front Z2 캠 계산 완료 시
+	                    IF #instCalculateMandrelZFront2.done THEN
+	                        #statEndTime := TIME_TCK();
+	                        #statTimeTable[#STAT_CAL_MAN_FRONT_Z2 / 10 - 9] := #statEndTime - #statStartTime;
+	                        #statStartTime := TIME_TCK();
+	                        #statBeforeCmd := #statNowCmd;                          // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_CAL_MAN_REAR_Z2;                   // STAT_CAL_MAN_REAR_Z2 상태로 이동
+	                    END_IF;
+	                END_REGION
+	                
+	                REGION ERROR                                                    // Cathode Mandrel Front Z2 캠 계산 중 에러 발생 시
+	                    IF #instCalculateMandrelZFront2.error THEN
+	                        #ErrorID := #instCalculateMandrelZFront2.errorID;       // Cathode Mandrel Front Z2 에러ID 출력
+	                        #StatusID := 16#3500_3010;
+	                        #statBeforeCmd := #statNowCmd;                          // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                             // STAT_ERROR 상태로 이동
+	                    END_IF;
+	                END_REGION
+	            END_REGION
+	            
+	        #STAT_CAL_MAN_REAR_Z2:                                                  // Cathode Mandrel Rear Z2 캠 계산 영역
+	            REGION CALCULATE CATHODE MANDREL Z2 
+	                REGION DONE                                                     // Cathode Mandrel Rear Z2 캠 계산 완료 시
+	                    IF #instCalculateMandrelZRear2.done THEN
+	                        #statEndTime := TIME_TCK();
+	                        #statTimeTable[#STAT_CAL_MAN_REAR_Z2 / 10 - 9] := #statEndTime - #statStartTime;
+	                        #statStartTime := TIME_TCK();
+	                        #statBeforeCmd := #statNowCmd;                          // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_DONE;                              // STAT_DONE 상태로 이동
+	                    END_IF;
+	                END_REGION
+	                
+	                REGION ERROR                                                    // Cathode Mandrel Rear Z2 캠 계산 중 에러 발생 시
+	                    IF #instCalculateMandrelZRear2.error THEN
+	                        #ErrorID := #instCalculateMandrelZRear2.errorID;        // Cathode Mandrel Rear Z2 에러ID 출력
+	                        #StatusID := 16#3500_3010;
+	                        #statBeforeCmd := #statNowCmd;                          // 이전 명령 모니터링
+	                        #statNowCmd := #STAT_ERROR;                             // STAT_ERROR 상태로 이동
+	                    END_IF;
+	                END_REGION
+	            END_REGION
+	            
+	        #STAT_DONE:
+	            REGION DONE
+	                ;
+	            END_REGION
+	    END_CASE;
+	END_REGION
+	
+	REGION INSTANCES                                                                // 각 캠 계산에 따른 인스턴스 DB 호출 영역
+	    #tempFinalRollerDistance := #FinalRollerDistance;
+	    REGION COMPENSATOR
+	        #instCalculateCompensator(execute := #statNowCmd = #STAT_CAL_COMP,
+	                                  cam := #CompensatorCam,
+	                                  cpm := #CPM,
+	                                  lineSpeed := #statLineSpeed,
+	                                  distance := #tempFinalRollerDistance,
+	                                  ratioOption := #RatioOption,
+	                                  startRatio := #Ratio.FinalRollerStart,
+	                                  endRatio := #Ratio.FinalRollerEnd,
+	                                  timeOption := #TimeOption,
+	                                  startTime := #Time.FinalRollerStart,
+	                                  endTime := #Time.FinalRollerEnd,
+	                                  accRatio := #AccRatio,
+	                                  width := #StageWidth,
+	                                  height := #StageHeight,
+	                                  gap := #StageGap,
+	                                  EmptyPoint := #EmptyPoint,
+	                                  EmptySegment := #EmptySegment);
+	    END_REGION
+	    
+	    REGION FINAL ROLLER
+	        IF #Direction THEN
+	            #tempFinalRollerDistance := #FinalRollerDistance;
+	        ELSE
+	            #tempFinalRollerDistance := - #FinalRollerDistance;
+	        END_IF;
+	        
+	        REGION MAIN
+	            #instCalculateFinalRoller(cam := #FinalRollerCam,
+	                                      execute := #statNowCmd = #STAT_CAL_FINAL,
+	                                      cpm := #CPM,
+	                                      lineSpeed := #statLineSpeed,
+	                                      distance := #tempFinalRollerDistance,
+	                                      ratioOption := #RatioOption,
+	                                      startRatio := #Ratio.FinalRollerStart,
+	                                      endRatio := #Ratio.FinalRollerEnd,
+	                                      timeOption := #TimeOption,
+	                                      startTime := #Time.FinalRollerStart,
+	                                      endTime := #Time.FinalRollerEnd,
+	                                      accRatio := #AccRatio,
+	                                      EmptyPoint := #EmptyPoint,
+	                                      EmptySegment := #EmptySegment);
+	        END_REGION
+	        
+	        REGION BWD
+	            #instCalculateBwdTime(execute := #statNowCmd = #STAT_CAL_BWD,
+	                                  cpm := #CPM,
+	                                  lineSpeed := #statLineSpeed,
+	                                  distance := #tempFinalRollerDistance,
+	                                  ratioOption := #RatioOption,
+	                                  startRatio := #Ratio.FinalRollerStart,
+	                                  endRatio := #Ratio.FinalRollerEnd,
+	                                  timeOption := #TimeOption,
+	                                  startTime := #Time.FinalRollerStart,
+	                                  endTime := #Time.FinalRollerEnd,
+	                                  accRatio := #AccRatio,
+	                                  targetPos := #Position.FinalRollerBwdPos);
+	        END_REGION
+	        
+	        REGION FWD
+	            #instCalculateFwdTime(execute := #statNowCmd = #STAT_CAL_FWD,
+	                                  cpm := #CPM,
+	                                  lineSpeed := #statLineSpeed,
+	                                  distance := #tempFinalRollerDistance,
+	                                  ratioOption := #RatioOption,
+	                                  startRatio := #Ratio.FinalRollerStart,
+	                                  endRatio := #Ratio.FinalRollerEnd,
+	                                  timeOption := #TimeOption,
+	                                  startTime := #Time.FinalRollerStart,
+	                                  endTime := #Time.FinalRollerEnd,
+	                                  accRatio := #AccRatio,
+	                                  targetPos := #Position.FinalRollerFwdPos);
+	        END_REGION
+	    END_REGION
+	    
+	    
+	    
+	    REGION PNP X
+	        IF #Direction THEN
+	            #tempAnodePnPX1Distance := #AnodePnPX1Distance;
+	            #tempAnodePnPX2Distance := #AnodePnPX2Distance;
+	            #tempCathodePnPX1Distance := #CathodePnPX1Distance;
+	            #tempCathodePnPX2Distance := #CathodePnPX2Distance;
+	        ELSE
+	            #tempAnodePnPX1Distance := - #AnodePnPX1Distance;
+	            #tempAnodePnPX2Distance := - #AnodePnPX2Distance;
+	            #tempCathodePnPX1Distance := - #CathodePnPX1Distance;
+	            #tempCathodePnPX2Distance := - #CathodePnPX2Distance;
+	        END_IF;
+	        
+	        REGION ANODE PNP X1
+	            #instCalculateAnodePnPX1(execute := #statNowCmd = #STAT_CAL_APNP_X1,
+	                                     cam := #AnodePnPX1Cam,
+	                                     cpm := #CPM,
+	                                     lineSpeed := #statLineSpeed,
+	                                     distance := #tempAnodePnPX1Distance,
+	                                     ratioOption := #RatioOption,
+	                                     startRatio := #Ratio.PnPXStart,
+	                                     endRatio := #Ratio.PnPXEnd,
+	                                     timeOption := #TimeOption,
+	                                     startTime := #Time.PnPXStart,
+	                                     endTime := #Time.PnPXEnd,
+	                                     accRatio := #AccRatio,
+	                                     EmptyPoint := #EmptyPoint,
+	                                     EmptySegment := #EmptySegment);
+	        END_REGION
+	        
+	        REGION ANODE PNP X2
+	            #instCalculateAnodePnPX2(execute := #statNowCmd = #STAT_CAL_APNP_X2,
+	                                     cpm := #CPM,
+	                                     cam := #AnodePnPX2Cam,
+	                                     lineSpeed := #statLineSpeed,
+	                                     distance := #tempAnodePnPX2Distance,
+	                                     ratioOption := #RatioOption,
+	                                     startRatio := #Ratio.PnPXStart,
+	                                     endRatio := #Ratio.PnPXEnd,
+	                                     timeOption := #TimeOption,
+	                                     startTime := #Time.PnPXStart,
+	                                     endTime := #Time.PnPXEnd,
+	                                     accRatio := #AccRatio,
+	                                     EmptyPoint := #EmptyPoint,
+	                                     EmptySegment := #EmptySegment);
+	        END_REGION
+	        
+	        REGION CATHODE PNP X1
+	            #instCalculateCathodePnPX1(execute := #statNowCmd = #STAT_CAL_CPNP_X1,
+	                                       cam := #CathodePnPX1Cam,
+	                                       cpm := #CPM,
+	                                       lineSpeed := #statLineSpeed,
+	                                       distance := #tempCathodePnPX1Distance,
+	                                       ratioOption := #RatioOption,
+	                                       startRatio := #Ratio.PnPXStart,
+	                                       endRatio := #Ratio.PnPXEnd,
+	                                       timeOption := #TimeOption,
+	                                       startTime := #Time.PnPXStart,
+	                                       endTime := #Time.PnPXEnd,
+	                                       accRatio := #AccRatio,
+	                                       EmptyPoint := #EmptyPoint,
+	                                       EmptySegment := #EmptySegment);
+	        END_REGION
+	        
+	        REGION CATHODE PNP X2
+	            #instCalculateCathodePnPX2(execute := #statNowCmd = #STAT_CAL_CPNP_X2,
+	                                       cam := #CathodePnPX2Cam,
+	                                       cpm := #CPM,
+	                                       lineSpeed := #statLineSpeed,
+	                                       distance := #tempCathodePnPX2Distance,
+	                                       ratioOption := #RatioOption,
+	                                       startRatio := #Ratio.PnPXStart,
+	                                       endRatio := #Ratio.PnPXEnd,
+	                                       timeOption := #TimeOption,
+	                                       startTime := #Time.PnPXStart,
+	                                       endTime := #Time.PnPXEnd,
+	                                       accRatio := #AccRatio,
+	                                       EmptyPoint := #EmptyPoint,
+	                                       EmptySegment := #EmptySegment);
+	        END_REGION
+	    END_REGION
+	    
+	    REGION PNP Z
+	        IF #Direction THEN
+	            #tempAnodePnPZ1Distance1 := #AnodePnPZ1Distance1;
+	            #tempAnodePnPZ1Distance2 := #AnodePnPZ1Distance2;
+	            #tempAnodePnPZ2Distance1 := #AnodePnPZ2Distance1;
+	            #tempAnodePnPZ2Distance2 := #AnodePnPZ2Distance2;
+	            #tempCathodePnPZ1Distance1 := #CathodePnPZ1Distance2;
+	            #tempCathodePnPZ1Distance2 := #CathodePnPZ1Distance1;
+	            #tempCathodePnPZ2Distance1 := #CathodePnPZ2Distance2;
+	            #tempCathodePnPZ2Distance2 := #CathodePnPZ2Distance1;
+	        ELSE
+	            #tempAnodePnPZ1Distance1 := #AnodePnPZ1Distance2;
+	            #tempAnodePnPZ1Distance2 := #AnodePnPZ1Distance1;
+	            #tempAnodePnPZ2Distance1 := #AnodePnPZ2Distance2;
+	            #tempAnodePnPZ2Distance2 := #AnodePnPZ2Distance1;
+	            #tempCathodePnPZ1Distance1 := #CathodePnPZ1Distance1;
+	            #tempCathodePnPZ1Distance2 := #CathodePnPZ1Distance2;
+	            #tempCathodePnPZ2Distance1 := #CathodePnPZ2Distance1;
+	            #tempCathodePnPZ2Distance2 := #CathodePnPZ2Distance2;
+	        END_IF;
+	        
+	        REGION ANODE PNP Z1
+	            #instCalculateAnodePnPZ1(execute := #statNowCmd = #STAT_CAL_APNP_Z1,
+	                                     cam := #AnodePnPZ1Cam,
+	                                     cpm := #CPM,
+	                                     lineSpeed := #statLineSpeed,
+	                                     distance1 := #tempAnodePnPZ1Distance1,
+	                                     distance2 := #tempAnodePnPZ1Distance2,
+	                                     ratioOption := #RatioOption,
+	                                     downStartRatio := #Ratio.PnPZDownStart,
+	                                     downEndRatio := #Ratio.PnPZDownEnd,
+	                                     upStartRatio := #Ratio.PnPZUpStart,
+	                                     upEndRatio := #Ratio.PnPZUpEnd,
+	                                     timeOption := #TimeOption,
+	                                     downStartTime := #Time.PnPZDownStart,
+	                                     downEndTime := #Time.PnPZDownEnd,
+	                                     upStartTime := #Time.PnPZUpStart,
+	                                     upEndTime := #Time.PnPZUpEnd,
+	                                     accRatio := #AccRatio,
+	                                     EmptyPoint := #EmptyPoint,
+	                                     EmptySegment := #EmptySegment);
+	        END_REGION
+	        
+	        REGION ANODE PNP Z2
+	            #instCalculateAnodePnPZ2(execute := #statNowCmd = #STAT_CAL_APNP_Z2,
+	                                     cam := #AnodePnPZ2Cam,
+	                                     cpm := #CPM,
+	                                     lineSpeed := #statLineSpeed,
+	                                     distance1 := #tempAnodePnPZ2Distance1,
+	                                     distance2 := #tempAnodePnPZ2Distance2,
+	                                     ratioOption := #RatioOption,
+	                                     downStartRatio := #Ratio.PnPZDownStart,
+	                                     downEndRatio := #Ratio.PnPZDownEnd,
+	                                     upStartRatio := #Ratio.PnPZUpStart,
+	                                     upEndRatio := #Ratio.PnPZUpEnd,
+	                                     timeOption := #TimeOption,
+	                                     downStartTime := #Time.PnPZDownStart,
+	                                     downEndTime := #Time.PnPZDownEnd,
+	                                     upStartTime := #Time.PnPZUpStart,
+	                                     upEndTime := #Time.PnPZUpEnd,
+	                                     accRatio := #AccRatio,
+	                                     EmptyPoint := #EmptyPoint,
+	                                     EmptySegment := #EmptySegment);
+	        END_REGION
+	        
+	        REGION CATHODE PNP Z1
+	            #instCalculateCathodePnPZ1(execute := #statNowCmd = #STAT_CAL_CPNP_Z1,
+	                                       cam := #CathodePnPZ1Cam,
+	                                       cpm := #CPM,
+	                                       lineSpeed := #statLineSpeed,
+	                                       distance1 := #tempCathodePnPZ1Distance1,
+	                                       distance2 := #tempCathodePnPZ1Distance2,
+	                                       ratioOption := #RatioOption,
+	                                       downStartRatio := #Ratio.PnPZDownStart,
+	                                       downEndRatio := #Ratio.PnPZDownEnd,
+	                                       upStartRatio := #Ratio.PnPZUpStart,
+	                                       upEndRatio := #Ratio.PnPZUpEnd,
+	                                       timeOption := #TimeOption,
+	                                       downStartTime := #Time.PnPZDownStart,
+	                                       downEndTime := #Time.PnPZDownEnd,
+	                                       upStartTime := #Time.PnPZUpStart,
+	                                       upEndTime := #Time.PnPZUpEnd,
+	                                       accRatio := #AccRatio,
+	                                       EmptyPoint := #EmptyPoint,
+	                                       EmptySegment := #EmptySegment);
+	        END_REGION
+	        
+	        REGION CATHODE PNP Z2
+	            #instCalculateCathodePnPZ2(execute := #statNowCmd = #STAT_CAL_CPNP_Z2,
+	                                       cam := #CathodePnPZ2Cam,
+	                                       cpm := #CPM,
+	                                       lineSpeed := #statLineSpeed,
+	                                       distance1 := #tempCathodePnPZ2Distance1,
+	                                       distance2 := #tempCathodePnPZ2Distance2,
+	                                       ratioOption := #RatioOption,
+	                                       downStartRatio := #Ratio.PnPZDownStart,
+	                                       downEndRatio := #Ratio.PnPZDownEnd,
+	                                       upStartRatio := #Ratio.PnPZUpStart,
+	                                       upEndRatio := #Ratio.PnPZUpEnd,
+	                                       timeOption := #TimeOption,
+	                                       downStartTime := #Time.PnPZDownStart,
+	                                       downEndTime := #Time.PnPZDownEnd,
+	                                       upStartTime := #Time.PnPZUpStart,
+	                                       upEndTime := #Time.PnPZUpEnd,
+	                                       accRatio := #AccRatio,
+	                                       EmptyPoint := #EmptyPoint,
+	                                       EmptySegment := #EmptySegment);
+	        END_REGION
+	    END_REGION
+	    
+	    REGION MANDREL Y
+	        IF #Direction THEN
+	            REGION PRE
+	                #tempMandrelYFrontCam1 := #AnodeMandrelYFrontCam;
+	                #tempMandrelYRearCam1 := #AnodeMandrelYRearCam;
+	                
+	                #tempMandrelYFrontDistance1 := #AnodeMandrelYFrontDistance;
+	                #tempMandrelYRearDistance1 := #AnodeMandrelYRearDistance;
+	            END_REGION
+	            
+	            REGION POST
+	                #tempMandrelYFrontCam2 := #CathodeMandrelYFrontCam;
+	                #tempMandrelYRearCam2 := #CathodeMandrelYRearCam;
+	                
+	                #tempMandrelYFrontDistance2 := #CathodeMandrelYFrontDistance;
+	                #tempMandrelYRearDistance2 := #CathodeMandrelYRearDistance;
+	            END_REGION
+	        ELSE
+	            REGION PRE
+	                #tempMandrelYFrontCam1 := #CathodeMandrelYFrontCam;
+	                #tempMandrelYRearCam1 := #CathodeMandrelYRearCam;
+	                
+	                #tempMandrelYFrontDistance1 := #CathodeMandrelYFrontDistance;
+	                #tempMandrelYRearDistance1 := #CathodeMandrelYRearDistance;
+	            END_REGION
+	            
+	            REGION POST
+	                #tempMandrelYFrontCam2 := #AnodeMandrelYFrontCam;
+	                #tempMandrelYRearCam2 := #AnodeMandrelYRearCam;
+	                
+	                #tempMandrelYFrontDistance2 := #AnodeMandrelYFrontDistance;
+	                #tempMandrelYRearDistance2 := #AnodeMandrelYRearDistance;
+	            END_REGION
+	        END_IF;
+	        
+	        
+	        
+	        REGION MANDREL FRONT Y1
+	            #instCalculateMandrelYFront1(execute := #statNowCmd = #STAT_CAL_MAN_FRONT_Y1,
+	                                         cam := #tempMandrelYFrontCam1,
+	                                         cpm := #CPM,
+	                                         lineSpeed := #statLineSpeed,
+	                                         distance := #tempMandrelYFrontDistance1,
+	                                         ratioOption := #RatioOption,
+	                                         bwdStartRatio := #Ratio.MandrelBwdStart,
+	                                         bwdEndRatio := #Ratio.MandrelBwdEnd,
+	                                         fwdStartRatio := #Ratio.MandrelFwdStart,
+	                                         fwdEndRatio := #Ratio.MandrelFwdEnd,
+	                                         timeOption := #TimeOption,
+	                                         bwdStartTime := #Time.MandrelBwdStart,
+	                                         bwdEndTime := #Time.MandrelBwdEnd,
+	                                         fwdStartTime := #Time.MandrelFwdStart,
+	                                         fwdEndTime := #Time.MandrelFwdEnd,
+	                                         posOption := #PosOption,
+	                                         bwdStartPos := #statTargetBwdTime,
+	                                         fwdStartPos := #statTargetFwdTime,
+	                                         zMoveOffset := #Ratio.MandrelBwdOffset,
+	                                         zMoveRatio := #Ratio.MandrelZTerm,
+	                                         yMoveRatio := #Ratio.MandrelYTerm,
+	                                         accRatio := #AccRatio,
+	                                         EmptyPoint := #EmptyPoint,
+	                                         EmptySegment := #EmptySegment);
+	        END_REGION
+	        
+	        REGION MANDREL REAR Y1
+	            #instCalculateMandrelYRear1(execute := #statNowCmd = #STAT_CAL_MAN_REAR_Y1,
+	                                        cam := #tempMandrelYRearCam1,
+	                                        cpm := #CPM,
+	                                        lineSpeed := #statLineSpeed,
+	                                        distance := #tempMandrelYRearDistance1,
+	                                        ratioOption := #RatioOption,
+	                                        bwdStartRatio := #Ratio.MandrelBwdStart,
+	                                        bwdEndRatio := #Ratio.MandrelBwdEnd,
+	                                        fwdStartRatio := #Ratio.MandrelFwdStart,
+	                                        fwdEndRatio := #Ratio.MandrelFwdEnd,
+	                                        timeOption := #TimeOption,
+	                                        bwdStartTime := #Time.MandrelBwdStart,
+	                                        bwdEndTime := #Time.MandrelBwdEnd,
+	                                        fwdStartTime := #Time.MandrelFwdStart,
+	                                        fwdEndTime := #Time.MandrelFwdEnd,
+	                                        posOption := #PosOption,
+	                                        bwdStartPos := #statTargetBwdTime,
+	                                        fwdStartPos := #statTargetFwdTime,
+	                                        zMoveOffset := #Ratio.MandrelBwdOffset,
+	                                        zMoveRatio := #Ratio.MandrelZTerm,
+	                                        yMoveRatio := #Ratio.MandrelYTerm,
+	                                        accRatio := #AccRatio,
+	                                        EmptyPoint := #EmptyPoint,
+	                                        EmptySegment := #EmptySegment);
+	        END_REGION
+	        
+	        REGION MANDREL FRONT Y2
+	            #instCalculateMandrelYFront2(execute := #statNowCmd = #STAT_CAL_MAN_FRONT_Y2,
+	                                         cam := #tempMandrelYFrontCam2,
+	                                         cpm := #CPM,
+	                                         lineSpeed := #statLineSpeed,
+	                                         distance := #tempMandrelYFrontDistance2,
+	                                         ratioOption := #RatioOption,
+	                                         bwdStartRatio := #Ratio.MandrelBwdStart,
+	                                         bwdEndRatio := #Ratio.MandrelBwdEnd,
+	                                         fwdStartRatio := #Ratio.MandrelFwdStart,
+	                                         fwdEndRatio := #Ratio.MandrelFwdEnd,
+	                                         timeOption := #TimeOption,
+	                                         bwdStartTime := #Time.MandrelBwdStart,
+	                                         bwdEndTime := #Time.MandrelBwdEnd,
+	                                         fwdStartTime := #Time.MandrelFwdStart,
+	                                         fwdEndTime := #Time.MandrelFwdEnd,
+	                                         posOption := #PosOption,
+	                                         bwdStartPos := #statTargetBwdTime,
+	                                         fwdStartPos := #statTargetFwdTime,
+	                                         zMoveOffset := #Ratio.MandrelBwdOffset,
+	                                         zMoveRatio := #Ratio.MandrelZTerm,
+	                                         yMoveRatio := #Ratio.MandrelYTerm,
+	                                         accRatio := #AccRatio,
+	                                         EmptyPoint := #EmptyPoint,
+	                                         EmptySegment := #EmptySegment);
+	        END_REGION
+	        
+	        REGION MANDREL REAR Y2
+	            #instCalculateMandrelYRear2(execute := #statNowCmd = #STAT_CAL_MAN_REAR_Y2,
+	                                        cam := #tempMandrelYRearCam2,
+	                                        cpm := #CPM,
+	                                        lineSpeed := #statLineSpeed,
+	                                        distance := #tempMandrelYRearDistance2,
+	                                        ratioOption := #RatioOption,
+	                                        bwdStartRatio := #Ratio.MandrelBwdStart,
+	                                        bwdEndRatio := #Ratio.MandrelBwdEnd,
+	                                        fwdStartRatio := #Ratio.MandrelFwdStart,
+	                                        fwdEndRatio := #Ratio.MandrelFwdEnd,
+	                                        timeOption := #TimeOption,
+	                                        bwdStartTime := #Time.MandrelBwdStart,
+	                                        bwdEndTime := #Time.MandrelBwdEnd,
+	                                        fwdStartTime := #Time.MandrelFwdStart,
+	                                        fwdEndTime := #Time.MandrelFwdEnd,
+	                                        posOption := #PosOption,
+	                                        bwdStartPos := #statTargetBwdTime,
+	                                        fwdStartPos := #statTargetFwdTime,
+	                                        zMoveOffset := #Ratio.MandrelBwdOffset,
+	                                        zMoveRatio := #Ratio.MandrelZTerm,
+	                                        yMoveRatio := #Ratio.MandrelYTerm,
+	                                        accRatio := #AccRatio,
+	                                        EmptyPoint := #EmptyPoint,
+	                                        EmptySegment := #EmptySegment);
+	        END_REGION
+	    END_REGION
+	    
+	    REGION MANDREL Z
+	        IF #Direction THEN
+	            REGION PRE
+	                #tempMandrelZFrontCam1 := #AnodeMandrelZFrontCam;
+	                #tempMandrelZRearCam1 := #AnodeMandrelZRearCam;
+	                
+	                #tempMandrelZFrontDistance1 := #AnodeMandrelZFrontDistance;
+	                #tempMandrelZRearDistance1 := #AnodeMandrelZRearDistance;
+	            END_REGION
+	            
+	            REGION POST
+	                #tempMandrelZFrontCam2 := #CathodeMandrelZFrontCam;
+	                #tempMandrelZRearCam2 := #CathodeMandrelZRearCam;
+	                
+	                #tempMandrelZFrontDistance2 := #CathodeMandrelZFrontDistance;
+	                #tempMandrelZRearDistance2 := #CathodeMandrelZRearDistance;
+	            END_REGION
+	        ELSE
+	            REGION PRE
+	                #tempMandrelZFrontCam1 := #CathodeMandrelZFrontCam;
+	                #tempMandrelZRearCam1 := #CathodeMandrelZRearCam;
+	                
+	                #tempMandrelZFrontDistance1 := #CathodeMandrelZFrontDistance;
+	                #tempMandrelZRearDistance1 := #CathodeMandrelZRearDistance;
+	            END_REGION
+	            
+	            REGION POST
+	                #tempMandrelZFrontCam2 := #AnodeMandrelZFrontCam;
+	                #tempMandrelZRearCam2 := #AnodeMandrelZRearCam;
+	                
+	                #tempMandrelZFrontDistance2 := #AnodeMandrelZFrontDistance;
+	                #tempMandrelZRearDistance2 := #AnodeMandrelZRearDistance;
+	            END_REGION
+	            
+	        END_IF;
+	        
+	        REGION MANDREL FRONT Z1
+	            #instCalculateMandrelZFront1(execute := #statNowCmd = #STAT_CAL_MAN_FRONT_Z1,
+	                                         cam := #tempMandrelZFrontCam1,
+	                                         cpm := #CPM,
+	                                         lineSpeed := #statLineSpeed,
+	                                         distance := #tempMandrelZFrontDistance1,
+	                                         dStepOption := #DoubleOption,
+	                                         ratioOption := #RatioOption,
+	                                         upStartRatio1 := #Ratio.MandrelUpStart1,
+	                                         upEndRatio1 := #Ratio.MandrelUpEnd1,
+	                                         upStartRatio2 := #Ratio.MandrelUpStart2,
+	                                         upEndRatio2 := #Ratio.MandrelUpEnd2,
+	                                         downStartRatio := #Ratio.MandrelDownStart,
+	                                         downEndRatio := #Ratio.MandrelDownEnd,
+	                                         timeOption := #TimeOption,
+	                                         upStartTime1 := #Time.MandrelUpStart1,
+	                                         upEndTime1 := #Time.MandrelUpEnd1,
+	                                         upStartTime2 := #Time.MandrelUpStart2,
+	                                         upEndTime2 := #Time.MandrelUpEnd2,
+	                                         downStartTime := #Time.MandrelDownStart,
+	                                         downEndTime := #Time.MandrelDownEnd,
+	                                         posOption := #PosOption,
+	                                         upStartPos := #statTargetBwdTime,
+	                                         downStartPos := #statTargetFwdTime,
+	                                         yMoveOffset := #Ratio.MandrelFwdOffset,
+	                                         zMoveRatio := #Ratio.MandrelZTerm,
+	                                         yMoveRatio := #Ratio.MandrelYTerm,
+	                                         accRatio := #AccRatio,
+	                                         EmptyPoint := #EmptyPoint,
+	                                         EmptySegment := #EmptySegment);
+	        END_REGION
+	        
+	        REGION MANDREL REAR Z1
+	            #instCalculateMandrelZRear1(execute := #statNowCmd = #STAT_CAL_MAN_REAR_Z1,
+	                                        cam := #tempMandrelZRearCam1,
+	                                        cpm := #CPM,
+	                                        lineSpeed := #statLineSpeed,
+	                                        distance := #tempMandrelZRearDistance1,
+	                                        dStepOption := #DoubleOption,
+	                                        ratioOption := #RatioOption,
+	                                        upStartRatio1 := #Ratio.MandrelUpStart1,
+	                                        upEndRatio1 := #Ratio.MandrelUpEnd1,
+	                                        upStartRatio2 := #Ratio.MandrelUpStart2,
+	                                        upEndRatio2 := #Ratio.MandrelUpEnd2,
+	                                        downStartRatio := #Ratio.MandrelDownStart,
+	                                        downEndRatio := #Ratio.MandrelDownEnd,
+	                                        timeOption := #TimeOption,
+	                                        upStartTime1 := #Time.MandrelUpStart1,
+	                                        upEndTime1 := #Time.MandrelUpEnd1,
+	                                        upStartTime2 := #Time.MandrelUpStart2,
+	                                        upEndTime2 := #Time.MandrelUpEnd2,
+	                                        downStartTime := #Time.MandrelDownStart,
+	                                        downEndTime := #Time.MandrelDownEnd,
+	                                        posOption := #PosOption,
+	                                        upStartPos := #statTargetBwdTime,
+	                                        downStartPos := #statTargetFwdTime,
+	                                        yMoveOffset := #Ratio.MandrelFwdOffset,
+	                                        zMoveRatio := #Ratio.MandrelZTerm,
+	                                        yMoveRatio := #Ratio.MandrelYTerm,
+	                                        accRatio := #AccRatio,
+	                                        EmptyPoint := #EmptyPoint,
+	                                        EmptySegment := #EmptySegment);
+	        END_REGION
+	        
+	        REGION MANDREL FRONT Z2
+	            #instCalculateMandrelZFront2(execute := #statNowCmd = #STAT_CAL_MAN_FRONT_Z2,
+	                                         cam := #tempMandrelZFrontCam2,
+	                                         cpm := #CPM,
+	                                         lineSpeed := #statLineSpeed,
+	                                         distance := #tempMandrelZFrontDistance2,
+	                                         dStepOption := #DoubleOption,
+	                                         ratioOption := #RatioOption,
+	                                         upStartRatio1 := #Ratio.MandrelUpStart1,
+	                                         upEndRatio1 := #Ratio.MandrelUpEnd1,
+	                                         upStartRatio2 := #Ratio.MandrelUpStart2,
+	                                         upEndRatio2 := #Ratio.MandrelUpEnd2,
+	                                         downStartRatio := #Ratio.MandrelDownStart,
+	                                         downEndRatio := #Ratio.MandrelDownEnd,
+	                                         timeOption := #TimeOption,
+	                                         upStartTime1 := #Time.MandrelUpStart1,
+	                                         upEndTime1 := #Time.MandrelUpEnd1,
+	                                         upStartTime2 := #Time.MandrelUpStart2,
+	                                         upEndTime2 := #Time.MandrelUpEnd2,
+	                                         downStartTime := #Time.MandrelDownStart,
+	                                         downEndTime := #Time.MandrelDownEnd,
+	                                         posOption := #PosOption,
+	                                         upStartPos := #statTargetBwdTime,
+	                                         downStartPos := #statTargetFwdTime,
+	                                         yMoveOffset := #Ratio.MandrelFwdOffset,
+	                                         zMoveRatio := #Ratio.MandrelZTerm,
+	                                         yMoveRatio := #Ratio.MandrelYTerm,
+	                                         accRatio := #AccRatio,
+	                                         EmptyPoint := #EmptyPoint,
+	                                         EmptySegment := #EmptySegment);
+	        END_REGION
+	        
+	        REGION MANDREL REAR Z2
+	            #instCalculateMandrelZRear2(execute := #statNowCmd = #STAT_CAL_MAN_REAR_Z2,
+	                                        cam := #tempMandrelZRearCam2,
+	                                        cpm := #CPM,
+	                                        lineSpeed := #statLineSpeed,
+	                                        distance := #tempMandrelZRearDistance2,
+	                                        dStepOption := #DoubleOption,
+	                                        ratioOption := #RatioOption,
+	                                        upStartRatio1 := #Ratio.MandrelUpStart1,
+	                                        upEndRatio1 := #Ratio.MandrelUpEnd1,
+	                                        upStartRatio2 := #Ratio.MandrelUpStart2,
+	                                        upEndRatio2 := #Ratio.MandrelUpEnd2,
+	                                        downStartRatio := #Ratio.MandrelDownStart,
+	                                        downEndRatio := #Ratio.MandrelDownEnd,
+	                                        timeOption := #TimeOption,
+	                                        upStartTime1 := #Time.MandrelUpStart1,
+	                                        upEndTime1 := #Time.MandrelUpEnd1,
+	                                        upStartTime2 := #Time.MandrelUpStart2,
+	                                        upEndTime2 := #Time.MandrelUpEnd2,
+	                                        downStartTime := #Time.MandrelDownStart,
+	                                        downEndTime := #Time.MandrelDownEnd,
+	                                        posOption := #PosOption,
+	                                        upStartPos := #statTargetBwdTime,
+	                                        downStartPos := #statTargetFwdTime,
+	                                        yMoveOffset := #Ratio.MandrelFwdOffset,
+	                                        zMoveRatio := #Ratio.MandrelZTerm,
+	                                        yMoveRatio := #Ratio.MandrelYTerm,
+	                                        accRatio := #AccRatio,
+	                                        EmptyPoint := #EmptyPoint,
+	                                        EmptySegment := #EmptySegment);
+	        END_REGION
+	    END_REGION
+	END_REGION
+	
+	REGION OUTPUT SIGNAL                                                            // 각 커맨드 동작 시 Busy 출력
+	    #Busy := #statNowCmd = #STAT_START
+	    OR #statNowCmd = #STAT_CAL_FINAL
+	    OR #statNowCmd = #STAT_CAL_BWD
+	    OR #statNowCmd = #STAT_CAL_FWD
+	    OR #statNowCmd = #STAT_CAL_COMP
+	    OR #statNowCmd = #STAT_CAL_APNP_X1
+	    OR #statNowCmd = #STAT_CAL_APNP_X2
+	    OR #statNowCmd = #STAT_CAL_APNP_Z1
+	    OR #statNowCmd = #STAT_CAL_APNP_Z2
+	    OR #statNowCmd = #STAT_CAL_CPNP_X1
+	    OR #statNowCmd = #STAT_CAL_CPNP_X2
+	    OR #statNowCmd = #STAT_CAL_CPNP_Z1
+	    OR #statNowCmd = #STAT_CAL_CPNP_Z2
+	    OR #statNowCmd = #STAT_CAL_MAN_FRONT_Y1
+	    OR #statNowCmd = #STAT_CAL_MAN_REAR_Y1
+	    OR #statNowCmd = #STAT_CAL_MAN_FRONT_Z1
+	    OR #statNowCmd = #STAT_CAL_MAN_REAR_Z1
+	    OR #statNowCmd = #STAT_CAL_MAN_FRONT_Y2
+	    OR #statNowCmd = #STAT_CAL_MAN_REAR_Y2
+	    OR #statNowCmd = #STAT_CAL_MAN_FRONT_Z2
+	    OR #statNowCmd = #STAT_CAL_MAN_REAR_Z2;
+	    #Done := #statNowCmd = #STAT_DONE;
+	    #Error := #statNowCmd = #STAT_ERROR;
+	    #NowCmd := #statNowCmd;
+	    #BeforeCmd := #statBeforeCmd;
+	END_REGION
+END_FUNCTION_BLOCK
+

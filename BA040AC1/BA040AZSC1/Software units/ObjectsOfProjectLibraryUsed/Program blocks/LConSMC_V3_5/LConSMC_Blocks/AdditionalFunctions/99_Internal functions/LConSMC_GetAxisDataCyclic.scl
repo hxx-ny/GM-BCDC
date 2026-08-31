@@ -1,0 +1,65 @@
+﻿FUNCTION "LConSMC_GetAxisDataCyclic" : "LConSMC_typeAxisCyclicData"
+{ S7_Optimized_Access := 'TRUE' ; Published := 'TRUE' }
+VERSION : 0.1
+   VAR_INPUT 
+      axis : DB_ANY;
+   END_VAR
+
+   VAR_TEMP 
+      tempRefSpeedAxis {InstructionName := 'TO_SpeedAxis'; LibVersion := '9.0'} : REF_TO TO_SpeedAxis;
+      tempRefSyncPosAxis {InstructionName := 'TO_PositioningAxis'; LibVersion := '9.0'} : REF_TO TO_PositioningAxis;
+      tempReturnValue : "LConSMC_typeAxisCyclicData";
+   END_VAR
+
+
+BEGIN
+	REGION BLOCK INFO HEADER
+	  //===============================================================================
+	  // SIEMENS AG / (c)Copyright 2024
+	  //-------------------------------------------------------------------------------
+	  // Title:            LConSMC_GetAxisDataCyclic
+	  // Comment/Function: Read axis data from DBAny for winder/sectional drive
+	  // Library/Family:   LConSMC
+	  // Author:           APC Erlangen
+	  // Tested with:      FW 3.0
+	  // Engineering:      TIA Portal V18
+	  // Restrictions:     -
+	  // Requirements:     -
+	  //-------------------------------------------------------------------------------
+	  // Change log table:
+	  // Version  | Date       | Expert in charge       | Changes applied
+	  //----------|------------|------------------------|------------------------------
+	  // 02.00.00 | 2024-03-12 | APC Erlangen           | Use references instead of unpub blocks to read axis data (MC V7.0 required)
+	  // 01.00.00 | xxxx-xx-xx | APC Erlangen           | First creation
+	  //===============================================================================
+	END_REGION BLOCK INFO HEADER
+	
+	#tempRefSpeedAxis ?= #axis; // Try to assign DBAny to TO_SpeedAxis
+	
+	IF (#tempRefSpeedAxis <> NULL) THEN
+	  // Assignment successful --> DBAny is at least a Speed axis
+	  #tempReturnValue.actualSpeed  := #tempRefSpeedAxis^.ActualSpeed;
+	  #tempReturnValue.velocity     := #tempRefSpeedAxis^.Velocity;
+	  #tempReturnValue.actualTorque := #tempRefSpeedAxis^.StatusTorqueData.ActualTorque;
+	  
+	  #tempRefSyncPosAxis ?= #axis; // Try to assign DBAny to TO_PositioningAxis
+	  IF #tempRefSyncPosAxis <> NULL THEN
+	    // Assignment successful --> DBAny is at least a Positioning or a Synchrnous axis
+	    #tempReturnValue.actualPosition := #tempRefSyncPosAxis^.ActualPosition;
+	  ELSE
+	    // No position information available
+	    #tempReturnValue.actualPosition := 0.0;
+	  END_IF;
+	ELSE
+	  // Invalid DBAny
+	  #tempReturnValue.actualSpeed := 0.0;
+	  #tempReturnValue.velocity := 0.0;
+	  #tempReturnValue.actualTorque := 0.0;
+	  #tempReturnValue.actualPosition := 0.0;
+	END_IF;
+	
+	// Return value
+	#LConSMC_GetAxisDataCyclic := #tempReturnValue;
+	ENO := TRUE;
+END_FUNCTION
+

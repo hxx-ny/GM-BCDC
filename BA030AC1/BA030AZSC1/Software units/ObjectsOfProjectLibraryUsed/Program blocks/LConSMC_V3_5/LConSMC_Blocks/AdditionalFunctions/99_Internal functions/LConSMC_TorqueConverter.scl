@@ -1,0 +1,77 @@
+﻿FUNCTION "LConSMC_TorqueConverter" : LReal
+{ S7_Optimized_Access := 'TRUE' ; Published := 'TRUE' }
+VERSION : 0.1
+   VAR_INPUT 
+      torqueUnitInput : UDInt;   // 1534 pdl ft; 1126 Nm; 1128 kNm;1529 lbf in (pound-force-inch); 1530 lbf ft ; 1531 ozf in (ounce-force-inch); 1532 ozf ft; 1533pdl in (poundal-inch)
+      torqueUnitOutput : UDInt;   // 1534 pdl ft; 1126 Nm; 1128 kNm;1529 lbf in (pound-force-inch); 1530 lbf ft ; 1531 ozf in (ounce-force-inch); 1532 ozf ft; 1533pdl in (poundal-inch)
+   END_VAR
+
+   VAR_TEMP 
+      statTorqueInNm : LReal;
+   END_VAR
+
+
+BEGIN
+	    //-----------------------------------------------------------------------------------------------------------------
+	    //SIEMENS AG / DF FA PMA APC / Erlangen
+	    //-----------------------------------------------------------------------------------------------------------------
+	    //functionality:    This function converts the unit of a torque value. 
+	    //
+	    //assignment:       This function can be called in any task.
+	    //-----------------------------------------------------------------------------------------------------------------
+	    //change log table:
+	    //version       date            expert in charge        changes applied
+	    //01.00.00      2019-02-22      APC Erlangen            created
+	    //=================================================================================================================  
+	    // To avoid Error: No Returnvalue
+	    #LConSMC_TorqueConverter := 0;
+	    // converting the input unit into Newtonmeter
+	    CASE #torqueUnitInput OF
+	        1128: //KILONEWTON_METER
+	            #statTorqueInNm := 1 * 1.0e3;
+	        1126: //NEWTON_METER
+	            #statTorqueInNm := 1; // already Nm
+	        1532: //OUNCE_FORCE_FEET
+	            #statTorqueInNm := 1 / 11.80099407798;
+	        1531: //OUNCE_FORCE_INCH
+	            #statTorqueInNm := 1 / 141.6119289357;
+	        1530: //POUND_FORCE_FEET
+	            #statTorqueInNm := 1 / 0.7375621211697;
+	        1529://POUND_FORCE_INCH
+	            #statTorqueInNm := 1 / 8.850745454036;
+	        1534://POUNDAL_FEET
+	            #statTorqueInNm := 1 / 23.7303604042;
+	        1533://POUNDAL_INCH
+	            #statTorqueInNm := 1 * 0.003512;
+	        ELSE
+	            ;
+	    END_CASE;
+	    
+	    // converting from Newtonmeter to the desired output unit
+	    CASE #torqueUnitOutput OF
+	        1128://KILONEWTON_METER
+	            #LConSMC_TorqueConverter := #statTorqueInNm / 1.0e3;
+	        1126: //NEWTON_METER
+	            #LConSMC_TorqueConverter := #statTorqueInNm; // already Nm
+	        1532: //OUNCE_FORCE_FEET
+	            #LConSMC_TorqueConverter := #statTorqueInNm * 11.80099407798;
+	        1531: //OUNCE_FORCE_INCH
+	            #LConSMC_TorqueConverter := #statTorqueInNm * 141.6119289357;
+	        1530: //POUND_FORCE_FEET
+	            #LConSMC_TorqueConverter := #statTorqueInNm * 0.7375621211697;
+	        1529://POUND_FORCE_INCH
+	            #LConSMC_TorqueConverter := #statTorqueInNm * 8.850745454036;
+	        1534://POUNDAL_FEET
+	            #LConSMC_TorqueConverter := #statTorqueInNm * 23.7303604042;
+	        1533://POUNDAL_INCH
+	            #LConSMC_TorqueConverter := #statTorqueInNm / 0.003512;
+	        ELSE
+	            ;
+	    END_CASE;
+	    
+	    
+	    
+	    
+	    
+END_FUNCTION
+

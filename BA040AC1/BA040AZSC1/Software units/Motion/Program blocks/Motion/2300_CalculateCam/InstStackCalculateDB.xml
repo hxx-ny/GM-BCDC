@@ -1,0 +1,346 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Document>
+  <Engineering version="V20" />
+  <SW.Blocks.InstanceDB ID="0">
+    <AttributeList>
+      <InstanceOfName>2201_StackCalculate</InstanceOfName>
+      <InstanceOfType>FB</InstanceOfType>
+      <Interface><Sections xmlns="http://www.siemens.com/automation/Openness/SW/Interface/v5">
+  <Section Name="Input">
+    <Member Name="Execute" Datatype="Bool" />
+    <Member Name="Direction" Datatype="Bool" />
+    <Member Name="CPM" Datatype="LReal" />
+    <Member Name="StageWidth" Datatype="LReal" />
+    <Member Name="StageHeight" Datatype="LReal" />
+    <Member Name="StageGap" Datatype="LReal" />
+    <Member Name="AccRatio" Datatype="DInt" />
+    <Member Name="RatioOption" Datatype="Bool" />
+    <Member Name="TimeOption" Datatype="Bool" />
+    <Member Name="PosOption" Datatype="Bool" />
+    <Member Name="DoubleOption" Datatype="Bool" />
+    <Member Name="Ratio" Datatype="Struct">
+      <Member Name="FinalRollerStart" Datatype="LReal" />
+      <Member Name="FinalRollerEnd" Datatype="LReal" />
+      <Member Name="PnPXStart" Datatype="LReal" />
+      <Member Name="PnPXEnd" Datatype="LReal" />
+      <Member Name="PnPZDownStart" Datatype="LReal" />
+      <Member Name="PnPZDownEnd" Datatype="LReal" />
+      <Member Name="PnPZUpStart" Datatype="LReal" />
+      <Member Name="PnPZUpEnd" Datatype="LReal" />
+      <Member Name="MandrelBwdStart" Datatype="LReal" />
+      <Member Name="MandrelBwdEnd" Datatype="LReal" />
+      <Member Name="MandrelFwdStart" Datatype="LReal" />
+      <Member Name="MandrelFwdEnd" Datatype="LReal" />
+      <Member Name="MandrelUpStart1" Datatype="LReal" />
+      <Member Name="MandrelUpEnd1" Datatype="LReal" />
+      <Member Name="MandrelUpStart2" Datatype="LReal" />
+      <Member Name="MandrelUpEnd2" Datatype="LReal" />
+      <Member Name="MandrelDownStart" Datatype="LReal" />
+      <Member Name="MandrelDownEnd" Datatype="LReal" />
+      <Member Name="MandrelYTerm" Datatype="LReal" />
+      <Member Name="MandrelZTerm" Datatype="LReal" />
+      <Member Name="MandrelBwdOffset" Datatype="LReal" />
+      <Member Name="MandrelFwdOffset" Datatype="LReal" />
+    </Member>
+    <Member Name="Time" Datatype="Struct">
+      <Member Name="FinalRollerStart" Datatype="LReal" />
+      <Member Name="FinalRollerEnd" Datatype="LReal" />
+      <Member Name="PnPXStart" Datatype="LReal" />
+      <Member Name="PnPXEnd" Datatype="LReal" />
+      <Member Name="PnPZDownStart" Datatype="LReal" />
+      <Member Name="PnPZDownEnd" Datatype="LReal" />
+      <Member Name="PnPZUpStart" Datatype="LReal" />
+      <Member Name="PnPZUpEnd" Datatype="LReal" />
+      <Member Name="MandrelBwdStart" Datatype="LReal" />
+      <Member Name="MandrelBwdEnd" Datatype="LReal" />
+      <Member Name="MandrelFwdStart" Datatype="LReal" />
+      <Member Name="MandrelFwdEnd" Datatype="LReal" />
+      <Member Name="MandrelUpStart1" Datatype="LReal" />
+      <Member Name="MandrelUpEnd1" Datatype="LReal" />
+      <Member Name="MandrelUpStart2" Datatype="LReal" />
+      <Member Name="MandrelUpEnd2" Datatype="LReal" />
+      <Member Name="MandrelDownStart" Datatype="LReal" />
+      <Member Name="MandrelDownEnd" Datatype="LReal" />
+    </Member>
+    <Member Name="Position" Datatype="Struct">
+      <Member Name="FinalRollerBwdPos" Datatype="LReal" />
+      <Member Name="FinalRollerFwdPos" Datatype="LReal" />
+    </Member>
+    <Member Name="FinalRollerDistance" Datatype="LReal" />
+    <Member Name="AnodePnPX1Distance" Datatype="LReal" />
+    <Member Name="AnodePnPX2Distance" Datatype="LReal" />
+    <Member Name="CathodePnPX1Distance" Datatype="LReal" />
+    <Member Name="CathodePnPX2Distance" Datatype="LReal" />
+    <Member Name="AnodePnPZ1Distance1" Datatype="LReal" />
+    <Member Name="AnodePnPZ1Distance2" Datatype="LReal" />
+    <Member Name="AnodePnPZ2Distance1" Datatype="LReal" />
+    <Member Name="AnodePnPZ2Distance2" Datatype="LReal" />
+    <Member Name="CathodePnPZ1Distance1" Datatype="LReal" />
+    <Member Name="CathodePnPZ1Distance2" Datatype="LReal" />
+    <Member Name="CathodePnPZ2Distance1" Datatype="LReal" />
+    <Member Name="CathodePnPZ2Distance2" Datatype="LReal" />
+    <Member Name="AnodeMandrelYFrontDistance" Datatype="LReal" />
+    <Member Name="AnodeMandrelYRearDistance" Datatype="LReal" />
+    <Member Name="CathodeMandrelYFrontDistance" Datatype="LReal" />
+    <Member Name="CathodeMandrelYRearDistance" Datatype="LReal" />
+    <Member Name="AnodeMandrelZFrontDistance" Datatype="LReal" />
+    <Member Name="AnodeMandrelZRearDistance" Datatype="LReal" />
+    <Member Name="CathodeMandrelZFrontDistance" Datatype="LReal" />
+    <Member Name="CathodeMandrelZRearDistance" Datatype="LReal" />
+  </Section>
+  <Section Name="Output">
+    <Member Name="Done" Datatype="Bool" />
+    <Member Name="Busy" Datatype="Bool" />
+    <Member Name="Error" Datatype="Bool" />
+    <Member Name="ErrorID" Datatype="DWord" />
+    <Member Name="StatusID" Datatype="DWord" />
+    <Member Name="NowCmd" Datatype="DInt" />
+    <Member Name="BeforeCmd" Datatype="DInt" />
+  </Section>
+  <Section Name="InOut">
+    <Member Name="EmptyPoint" Datatype="Array[1..10000] of TO_Cam_Struct_PointData" Version="9.0" />
+    <Member Name="EmptySegment" Datatype="Array[1..50] of TO_Cam_Struct_SegmentData" Version="9.0" />
+    <Member Name="FinalRollerCam" Datatype="DB_ANY" />
+    <Member Name="CompensatorCam" Datatype="DB_ANY" />
+    <Member Name="AnodePnPX1Cam" Datatype="DB_ANY" />
+    <Member Name="AnodePnPX2Cam" Datatype="DB_ANY" />
+    <Member Name="AnodePnPZ1Cam" Datatype="DB_ANY" />
+    <Member Name="AnodePnPZ2Cam" Datatype="DB_ANY" />
+    <Member Name="CathodePnPX1Cam" Datatype="DB_ANY" />
+    <Member Name="CathodePnPX2Cam" Datatype="DB_ANY" />
+    <Member Name="CathodePnPZ1Cam" Datatype="DB_ANY" />
+    <Member Name="CathodePnPZ2Cam" Datatype="DB_ANY" />
+    <Member Name="AnodeMandrelYFrontCam" Datatype="DB_ANY" />
+    <Member Name="AnodeMandrelYRearCam" Datatype="DB_ANY" />
+    <Member Name="AnodeMandrelZFrontCam" Datatype="DB_ANY" />
+    <Member Name="AnodeMandrelZRearCam" Datatype="DB_ANY" />
+    <Member Name="CathodeMandrelYFrontCam" Datatype="DB_ANY" />
+    <Member Name="CathodeMandrelYRearCam" Datatype="DB_ANY" />
+    <Member Name="CathodeMandrelZFrontCam" Datatype="DB_ANY" />
+    <Member Name="CathodeMandrelZRearCam" Datatype="DB_ANY" />
+  </Section>
+  <Section Name="Static">
+    <Member Name="statNowCmd" Datatype="DInt" />
+    <Member Name="statBeforeCmd" Datatype="DInt" />
+    <Member Name="statLineSpeed" Datatype="LReal" />
+    <Member Name="statTargetBwdTime" Datatype="LReal" />
+    <Member Name="statTargetFwdTime" Datatype="LReal" />
+    <Member Name="statTimeTable" Datatype="Array[1..50] of Time" />
+    <Member Name="statStartTime" Datatype="Time" />
+    <Member Name="statEndTime" Datatype="Time" />
+    <Member Name="instTriggerExecute" Datatype="R_TRIG" Version="1.0" />
+    <Member Name="instCalculateFinalRoller" Datatype="&quot;2303_CalculateCam_FinalRoller&quot;">
+      <AttributeList>
+        <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="instCalculateBwdTime" Datatype="&quot;2304_CalculateCam_FinalTime&quot;">
+      <AttributeList>
+        <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="instCalculateFwdTime" Datatype="&quot;2304_CalculateCam_FinalTime&quot;">
+      <AttributeList>
+        <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="instCalculateCompensator" Datatype="&quot;2305_CalculateCam_Compensator&quot;">
+      <AttributeList>
+        <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="instCalculateAnodePnPX1" Datatype="&quot;2301_CalculateCam_PnPX&quot;">
+      <AttributeList>
+        <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="instCalculateAnodePnPX2" Datatype="&quot;2301_CalculateCam_PnPX&quot;">
+      <AttributeList>
+        <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="instCalculateAnodePnPZ1" Datatype="&quot;2302_CalculateCam_PnPZ&quot;">
+      <AttributeList>
+        <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="instCalculateAnodePnPZ2" Datatype="&quot;2302_CalculateCam_PnPZ&quot;">
+      <AttributeList>
+        <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="instCalculateCathodePnPX1" Datatype="&quot;2301_CalculateCam_PnPX&quot;">
+      <AttributeList>
+        <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="instCalculateCathodePnPX2" Datatype="&quot;2301_CalculateCam_PnPX&quot;">
+      <AttributeList>
+        <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="instCalculateCathodePnPZ1" Datatype="&quot;2302_CalculateCam_PnPZ&quot;">
+      <AttributeList>
+        <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="instCalculateCathodePnPZ2" Datatype="&quot;2302_CalculateCam_PnPZ&quot;">
+      <AttributeList>
+        <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="instCalculateMandrelYFront1" Datatype="&quot;2307_CalculateCam_MandrelY1&quot;">
+      <AttributeList>
+        <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="instCalculateMandrelYRear1" Datatype="&quot;2307_CalculateCam_MandrelY1&quot;">
+      <AttributeList>
+        <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="instCalculateMandrelZFront1" Datatype="&quot;2306_CalculateCam_MandrelZ1&quot;">
+      <AttributeList>
+        <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="instCalculateMandrelZRear1" Datatype="&quot;2306_CalculateCam_MandrelZ1&quot;">
+      <AttributeList>
+        <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="instCalculateMandrelYFront2" Datatype="&quot;2309_CalculateCam_MandrelY2&quot;">
+      <AttributeList>
+        <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="instCalculateMandrelYRear2" Datatype="&quot;2309_CalculateCam_MandrelY2&quot;">
+      <AttributeList>
+        <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="instCalculateMandrelZFront2" Datatype="&quot;2308_CalculateCam_MandrelZ2&quot;">
+      <AttributeList>
+        <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="instCalculateMandrelZRear2" Datatype="&quot;2308_CalculateCam_MandrelZ2&quot;">
+      <AttributeList>
+        <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+      </AttributeList>
+    </Member>
+  </Section>
+</Sections></Interface>
+      <Name>InstStackCalculateDB</Name>
+      <Namespace />
+      <Number>459</Number>
+      <ProgrammingLanguage>DB</ProgrammingLanguage>
+    </AttributeList>
+    <ObjectList>
+      <MultilingualText ID="1" CompositionName="Comment">
+        <ObjectList>
+          <MultilingualTextItem ID="2" CompositionName="Items">
+            <AttributeList>
+              <Culture>de-DE</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="3" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-GB</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="4" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-US</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="5" CompositionName="Items">
+            <AttributeList>
+              <Culture>es-ES</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="6" CompositionName="Items">
+            <AttributeList>
+              <Culture>fr-FR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="7" CompositionName="Items">
+            <AttributeList>
+              <Culture>it-IT</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="8" CompositionName="Items">
+            <AttributeList>
+              <Culture>ko-KR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="9" CompositionName="Items">
+            <AttributeList>
+              <Culture>zh-CN</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+        </ObjectList>
+      </MultilingualText>
+      <MultilingualText ID="A" CompositionName="Title">
+        <ObjectList>
+          <MultilingualTextItem ID="B" CompositionName="Items">
+            <AttributeList>
+              <Culture>de-DE</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="C" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-GB</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="D" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-US</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="E" CompositionName="Items">
+            <AttributeList>
+              <Culture>es-ES</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="F" CompositionName="Items">
+            <AttributeList>
+              <Culture>fr-FR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="10" CompositionName="Items">
+            <AttributeList>
+              <Culture>it-IT</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="11" CompositionName="Items">
+            <AttributeList>
+              <Culture>ko-KR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="12" CompositionName="Items">
+            <AttributeList>
+              <Culture>zh-CN</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+        </ObjectList>
+      </MultilingualText>
+    </ObjectList>
+  </SW.Blocks.InstanceDB>
+</Document>

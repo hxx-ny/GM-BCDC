@@ -1,0 +1,48 @@
+﻿FUNCTION "LER_TeachingPos" : Void
+{ S7_Optimized_Access := 'TRUE' ; Published := 'TRUE' }
+VERSION : 0.1
+   VAR_IN_OUT 
+      Axis64pos : "LBC_typeAxis64PosInterface";
+      AxisTeachingpos : "LER_TypeTeachingPosInterface";
+      ParameterTeachingpos : "LER_TypeTeachingPosInterface";
+      paramterApplyButton : Bool;
+      parameterTeachingposIndex : SInt;
+   END_VAR
+
+   VAR_TEMP 
+      tempLoop : Array[0..10] of Int;
+   END_VAR
+
+
+BEGIN
+	IF #paramterApplyButton THEN
+	    FOR #tempLoop[0] := 0 TO 63 DO
+	        #Axis64pos.configuration.setPositions[#tempLoop[0]] := #AxisTeachingpos.processvalue[#tempLoop[0]] := #AxisTeachingpos.setvalue[#tempLoop[0]];
+	    END_FOR;
+	END_IF;
+	
+	FOR #tempLoop[1] := 0 TO 63 DO
+	    #ParameterTeachingpos.processvalue[#tempLoop[1]] := #AxisTeachingpos.processvalue[#tempLoop[1]];
+	    IF #AxisTeachingpos.servo_control.SavePosition[#tempLoop[1]] <> TRUE THEN
+	        #AxisTeachingpos.setvalue[#tempLoop[1]] := #ParameterTeachingpos.setvalue[#tempLoop[1]];
+	    ELSE
+	        #ParameterTeachingpos.setvalue[#tempLoop[1]] := #AxisTeachingpos.setvalue[#tempLoop[1]];
+	    END_IF;
+	END_FOR;
+	
+	IF #parameterTeachingposIndex <> 0 THEN
+	    #AxisTeachingpos.target_number := #ParameterTeachingpos.target_number;
+	    #Axis64pos.commands.jogForward := #ParameterTeachingpos.servo_control.JogForward;
+	    #Axis64pos.commands.jogBackward := #ParameterTeachingpos.servo_control.JogBackward;
+	    
+	    #AxisTeachingpos.servo_control := #ParameterTeachingpos.servo_control;
+	ELSE
+	    FOR #tempLoop[2] := 0 TO 63 DO
+	        #AxisTeachingpos.setvalue[#tempLoop[2]] := #AxisTeachingpos.processvalue[#tempLoop[2]] := #Axis64pos.configuration.setPositions[#tempLoop[2]];
+	    END_FOR;
+	END_IF;
+	
+	#Axis64pos.commands.saveConfiguration := #ParameterTeachingpos.servo_control.saveConfiguration;
+	#Axis64pos.commands.editConfiguration := #ParameterTeachingpos.servo_control.editConfiguration;
+END_FUNCTION
+

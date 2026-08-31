@@ -1,0 +1,69 @@
+﻿FUNCTION "LER_SoftCamModulo" : Void
+{ S7_Optimized_Access := 'TRUE' ; Published := 'TRUE' }
+VERSION : 0.1
+   VAR_INPUT 
+      postivePosition : LReal;
+      negativePosition : LReal;
+      ActualPosition : LReal;
+      moduloLength : LReal;
+      namePosition : String;
+   END_VAR
+
+   VAR_OUTPUT 
+      inPos : Bool;
+      isBefore : Bool;
+      isAfter : Bool;
+      PosName : WString;
+   END_VAR
+
+   VAR_TEMP 
+      tempPositive : LReal;
+      tempNegative : LReal;
+   END_VAR
+
+
+BEGIN
+	REGION Found Axis Position
+	    IF #negativePosition < 0 THEN
+	        #tempNegative := #negativePosition + #moduloLength;
+	    ELSE
+	        #tempNegative := #negativePosition;
+	    END_IF;
+	    
+	    IF #postivePosition >= #moduloLength THEN
+	        #tempPositive := #postivePosition - #moduloLength;
+	    ELSE
+	        #tempPositive := #postivePosition;
+	    END_IF;
+	    
+	    IF #tempPositive > #tempNegative THEN
+	        // InPos Check
+	        IF (#ActualPosition > #tempNegative) AND (#ActualPosition < #tempPositive) THEN
+	            #inPos := TRUE;
+	        ELSE
+	            #inPos := FALSE;
+	        END_IF;
+	    ELSE
+	        // InPos Check
+	        IF (#ActualPosition > #tempNegative) OR (#ActualPosition < #tempPositive) THEN
+	            #inPos := TRUE;
+	        ELSE
+	            #inPos := FALSE;
+	        END_IF;
+	    END_IF;
+	    
+	    // Before Pos & After Pos Check
+	    IF #ActualPosition < #tempNegative THEN
+	        #isBefore := TRUE;
+	        #isAfter := FALSE;
+	    ELSIF #ActualPosition > #tempPositive THEN
+	        #isBefore := FALSE;
+	        #isAfter := TRUE;
+	    END_IF;
+	    
+	    // Pos Name
+	    #PosName := STRING_TO_WSTRING(#namePosition);
+	    
+	END_REGION
+END_FUNCTION
+

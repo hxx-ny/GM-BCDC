@@ -1,0 +1,39 @@
+﻿FUNCTION "LER_Distance_FC_1" : Void
+{ S7_Optimized_Access := 'TRUE' ; Published := 'TRUE' }
+VERSION : 0.1
+   VAR_INPUT 
+      actualPosA : LReal;
+      actualPosB : LReal;
+   END_VAR
+
+   VAR_IN_OUT 
+      posDistance : "LER_typeDistanceInterface";
+   END_VAR
+
+
+BEGIN
+	REGION Distance
+	    
+	    IF #posDistance.processValue.distanceLimitPV <> #posDistance.setValue.distanceLimitSV THEN
+	        #posDistance.processValue.distanceLimitPV := #posDistance.setValue.distanceLimitSV;
+	    END_IF;
+	    
+	    IF #posDistance.setValue.direction THEN
+	        #posDistance.processValue.currentDistance := ABS_LREAL((0.0 + #actualPosA) - (#posDistance.setValue.distancePTPSV + #actualPosB));
+	        IF #posDistance.processValue.currentDistance > #posDistance.processValue.distanceLimitPV THEN
+	            #posDistance.processValue.distanceOutPos := TRUE;
+	        ELSE
+	            #posDistance.processValue.distanceOutPos := FALSE;
+	        END_IF;
+	    ELSE
+	        #posDistance.processValue.currentDistance := #posDistance.setValue.distancePTPSV - (#actualPosA + #actualPosB);
+	        IF #posDistance.processValue.currentDistance > #posDistance.processValue.distanceLimitPV THEN
+	            #posDistance.processValue.distanceOutPos := TRUE;
+	        ELSE
+	            #posDistance.processValue.distanceOutPos := FALSE;
+	        END_IF;
+	    END_IF;
+	    
+	END_REGION
+END_FUNCTION
+

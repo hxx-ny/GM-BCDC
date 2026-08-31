@@ -1,0 +1,815 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Document>
+  <Engineering version="V20" />
+  <SW.Blocks.InstanceDB ID="0">
+    <AttributeList>
+      <DBAccessibleFromOPCUA>false</DBAccessibleFromOPCUA>
+      <DBAccessibleFromWebserver>false</DBAccessibleFromWebserver>
+      <InstanceOfName>Unit1.Em0.typeSyncNode</InstanceOfName>
+      <InstanceOfType>UDT</InstanceOfType>
+      <Interface><Sections xmlns="http://www.siemens.com/automation/Openness/SW/Interface/v5">
+  <Section Name="Static">
+    <Member Name="commands" Datatype="Struct">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <Member Name="enableHpMotion" Datatype="Bool">
+        <StartValue>FALSE</StartValue>
+      </Member>
+    </Member>
+    <Member Name="status" Datatype="Struct">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <Member Name="busy" Datatype="Bool">
+        <StartValue>FALSE</StartValue>
+      </Member>
+      <Member Name="error" Datatype="Bool">
+        <StartValue>FALSE</StartValue>
+      </Member>
+    </Member>
+    <Member Name="WinderInput" Datatype="&quot;LConSMC_typeWinderInput&quot;">
+      <AttributeList>
+        <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+      </AttributeList>
+      <Sections>
+        <Section Name="None">
+          <Member Name="enable" Datatype="Bool">
+            <StartValue>FALSE</StartValue>
+          </Member>
+          <Member Name="speedMatch" Datatype="Bool">
+            <StartValue>FALSE</StartValue>
+          </Member>
+          <Member Name="cntrlEnable" Datatype="Bool">
+            <StartValue>FALSE</StartValue>
+          </Member>
+          <Member Name="jogPos" Datatype="Bool">
+            <StartValue>FALSE</StartValue>
+          </Member>
+          <Member Name="jogNeg" Datatype="Bool">
+            <StartValue>FALSE</StartValue>
+          </Member>
+          <Member Name="lineAxisMotionVector" Datatype="&quot;LConSMC_typeMotionVector&quot;">
+            <Sections>
+              <Section Name="None">
+                <Member Name="s" Datatype="LReal">
+                  <StartValue>0.0</StartValue>
+                </Member>
+                <Member Name="v" Datatype="LReal">
+                  <StartValue>0.0</StartValue>
+                </Member>
+                <Member Name="a" Datatype="LReal">
+                  <StartValue>0.0</StartValue>
+                </Member>
+              </Section>
+            </Sections>
+          </Member>
+          <Member Name="lineAxisActualValues" Datatype="&quot;LConSMC_typeLineAxisActValues&quot;">
+            <Sections>
+              <Section Name="None">
+                <Member Name="s" Datatype="LReal">
+                  <StartValue>0.0</StartValue>
+                </Member>
+                <Member Name="v" Datatype="LReal">
+                  <StartValue>0.0</StartValue>
+                </Member>
+              </Section>
+            </Sections>
+          </Member>
+          <Member Name="additionalVelocity" Datatype="LReal">
+            <StartValue>0.0</StartValue>
+          </Member>
+          <Member Name="typeOfWinder" Datatype="Int">
+            <StartValue>2</StartValue>
+          </Member>
+          <Member Name="controlMode" Datatype="Int">
+            <StartValue>0</StartValue>
+          </Member>
+          <Member Name="typeOfDiameterCalc" Datatype="Int">
+            <StartValue>3</StartValue>
+          </Member>
+          <Member Name="holdDiameter" Datatype="Bool">
+            <StartValue>FALSE</StartValue>
+          </Member>
+          <Member Name="setDiameter" Datatype="Bool">
+            <StartValue>FALSE</StartValue>
+          </Member>
+          <Member Name="CntrlSetpoint" Datatype="LReal">
+            <StartValue>0.0</StartValue>
+          </Member>
+          <Member Name="CntrlActual" Datatype="LReal">
+            <StartValue>24.9056603773585</StartValue>
+          </Member>
+          <Member Name="tCycle" Datatype="Real">
+            <StartValue>2.0</StartValue>
+          </Member>
+          <Member Name="winderAxis" Datatype="DB_ANY">
+            <StartValue>263</StartValue>
+          </Member>
+        </Section>
+      </Sections>
+    </Member>
+    <Member Name="WinderOutput" Datatype="&quot;LConSMC_typeWinderOutput&quot;">
+      <AttributeList>
+        <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+      </AttributeList>
+      <Sections>
+        <Section Name="None">
+          <Member Name="busy" Datatype="Bool">
+            <StartValue>FALSE</StartValue>
+          </Member>
+          <Member Name="active" Datatype="Bool">
+            <StartValue>FALSE</StartValue>
+          </Member>
+          <Member Name="ctrlBusy" Datatype="Bool">
+            <StartValue>FALSE</StartValue>
+          </Member>
+          <Member Name="inSync" Datatype="Bool">
+            <StartValue>FALSE</StartValue>
+          </Member>
+          <Member Name="error" Datatype="Bool">
+            <StartValue>FALSE</StartValue>
+          </Member>
+          <Member Name="errorID" Datatype="DWord">
+            <StartValue>16#0000_0000</StartValue>
+          </Member>
+        </Section>
+      </Sections>
+    </Member>
+    <Member Name="WinderConfig" Datatype="&quot;LConSMC_typeWinderConfig&quot;">
+      <AttributeList>
+        <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+      </AttributeList>
+      <Sections>
+        <Section Name="None">
+          <Member Name="positionControlled" Datatype="Bool">
+            <StartValue>FALSE</StartValue>
+          </Member>
+          <Member Name="axisCtrl" Datatype="Bool">
+            <StartValue>TRUE</StartValue>
+          </Member>
+          <Member Name="jogVelocity" Datatype="Real">
+            <StartValue>10.0</StartValue>
+          </Member>
+          <Member Name="overrideVelocity" Datatype="Real">
+            <StartValue>0.0</StartValue>
+          </Member>
+          <Member Name="maxVelocity" Datatype="Real">
+            <StartValue>100.0</StartValue>
+          </Member>
+          <Member Name="getAxisConfigAtStart" Datatype="Bool">
+            <StartValue>TRUE</StartValue>
+          </Member>
+          <Member Name="noOfSamplesLineVelocity" Datatype="UInt">
+            <StartValue>1</StartValue>
+          </Member>
+          <Member Name="unitConfiguration" Datatype="&quot;LConSMC_typeUnitConfiguration&quot;">
+            <Sections>
+              <Section Name="None">
+                <Member Name="metricUnits" Datatype="Bool">
+                  <StartValue>TRUE</StartValue>
+                </Member>
+                <Member Name="axisVelocityUnit" Datatype="UDInt">
+                  <StartValue>1521</StartValue>
+                </Member>
+                <Member Name="axisTorqueUnit" Datatype="UDInt">
+                  <StartValue>1126</StartValue>
+                </Member>
+              </Section>
+            </Sections>
+          </Member>
+          <Member Name="winderDynamics" Datatype="&quot;LConSMC_typeAxisDynamics&quot;">
+            <Sections>
+              <Section Name="None">
+                <Member Name="stopDynamics" Datatype="&quot;LConSMC_typeStopDynamics&quot;">
+                  <Sections>
+                    <Section Name="None">
+                      <Member Name="deceleration" Datatype="Real">
+                        <StartValue>360.0</StartValue>
+                      </Member>
+                      <Member Name="jerk" Datatype="Real">
+                        <StartValue>0.0</StartValue>
+                      </Member>
+                      <Member Name="abortAcceleration" Datatype="Bool">
+                        <StartValue>TRUE</StartValue>
+                      </Member>
+                    </Section>
+                  </Sections>
+                </Member>
+                <Member Name="syncDynamics" Datatype="&quot;LConSMC_typeSyncDynamics&quot;">
+                  <Sections>
+                    <Section Name="None">
+                      <Member Name="acceleration" Datatype="Real">
+                        <StartValue>360.0</StartValue>
+                      </Member>
+                      <Member Name="deceleration" Datatype="Real">
+                        <StartValue>360.0</StartValue>
+                      </Member>
+                      <Member Name="jerk" Datatype="Real">
+                        <StartValue>0.0</StartValue>
+                      </Member>
+                      <Member Name="abortAcceleration" Datatype="Bool">
+                        <StartValue>FALSE</StartValue>
+                      </Member>
+                      <Member Name="syncToleranceFactor" Datatype="Real">
+                        <StartValue>1.0</StartValue>
+                      </Member>
+                    </Section>
+                  </Sections>
+                </Member>
+                <Member Name="operationDynamics" Datatype="&quot;LConSMC_typeOperationDynamics&quot;">
+                  <Sections>
+                    <Section Name="None">
+                      <Member Name="acceleration" Datatype="Real">
+                        <StartValue>360000.0</StartValue>
+                      </Member>
+                      <Member Name="deceleration" Datatype="Real">
+                        <StartValue>360000.0</StartValue>
+                      </Member>
+                      <Member Name="jerk" Datatype="Real">
+                        <StartValue>0.0</StartValue>
+                      </Member>
+                    </Section>
+                  </Sections>
+                </Member>
+                <Member Name="jogDynamics" Datatype="&quot;LConSMC_typeJogDynamics&quot;">
+                  <Sections>
+                    <Section Name="None">
+                      <Member Name="acceleration" Datatype="Real">
+                        <StartValue>360.0</StartValue>
+                      </Member>
+                      <Member Name="deceleration" Datatype="Real">
+                        <StartValue>360.0</StartValue>
+                      </Member>
+                      <Member Name="jerk" Datatype="Real">
+                        <StartValue>0.0</StartValue>
+                      </Member>
+                    </Section>
+                  </Sections>
+                </Member>
+              </Section>
+            </Sections>
+          </Member>
+          <Member Name="torquePrecontrolConfig" Datatype="&quot;LConSMC_typeTorquePrecontrolConfig&quot;">
+            <Sections>
+              <Section Name="None">
+                <Member Name="useSetValForFrictionComp" Datatype="Bool">
+                  <StartValue>TRUE</StartValue>
+                </Member>
+                <Member Name="frictionAdjustment" Datatype="Real">
+                  <StartValue>0.0</StartValue>
+                </Member>
+                <Member Name="xn_speedValues" Datatype="&quot;LConSMC_typeBreakPointTable&quot;">
+                  <Sections>
+                    <Section Name="None">
+                      <Member Name="values" Datatype="Array[0..&quot;LCON_MAX_VALUE_BREAK_POINT_TABLE&quot;] of LReal">
+                        <Subelement Path="0">
+                          <StartValue>0.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="1">
+                          <StartValue>0.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="2">
+                          <StartValue>0.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="3">
+                          <StartValue>0.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="4">
+                          <StartValue>0.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="5">
+                          <StartValue>0.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="6">
+                          <StartValue>0.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="7">
+                          <StartValue>0.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="8">
+                          <StartValue>0.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="9">
+                          <StartValue>0.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="10">
+                          <StartValue>0.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="11">
+                          <StartValue>0.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="12">
+                          <StartValue>0.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="13">
+                          <StartValue>0.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="14">
+                          <StartValue>0.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="15">
+                          <StartValue>0.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="16">
+                          <StartValue>0.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="17">
+                          <StartValue>0.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="18">
+                          <StartValue>0.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="19">
+                          <StartValue>0.0</StartValue>
+                        </Subelement>
+                      </Member>
+                    </Section>
+                  </Sections>
+                </Member>
+                <Member Name="yn_torqueValues" Datatype="&quot;LConSMC_typeBreakPointTable&quot;">
+                  <Sections>
+                    <Section Name="None">
+                      <Member Name="values" Datatype="Array[0..&quot;LCON_MAX_VALUE_BREAK_POINT_TABLE&quot;] of LReal">
+                        <Subelement Path="0">
+                          <StartValue>0.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="1">
+                          <StartValue>0.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="2">
+                          <StartValue>0.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="3">
+                          <StartValue>0.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="4">
+                          <StartValue>0.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="5">
+                          <StartValue>0.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="6">
+                          <StartValue>0.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="7">
+                          <StartValue>0.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="8">
+                          <StartValue>0.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="9">
+                          <StartValue>0.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="10">
+                          <StartValue>0.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="11">
+                          <StartValue>0.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="12">
+                          <StartValue>0.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="13">
+                          <StartValue>0.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="14">
+                          <StartValue>0.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="15">
+                          <StartValue>0.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="16">
+                          <StartValue>0.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="17">
+                          <StartValue>0.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="18">
+                          <StartValue>0.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="19">
+                          <StartValue>0.0</StartValue>
+                        </Subelement>
+                      </Member>
+                    </Section>
+                  </Sections>
+                </Member>
+                <Member Name="sizeOfArray" Datatype="Int">
+                  <StartValue>20</StartValue>
+                </Member>
+                <Member Name="loadGear" Datatype="&quot;LConSMC_typeLoadGear&quot;">
+                  <Sections>
+                    <Section Name="None">
+                      <Member Name="numerator" Datatype="UDInt">
+                        <StartValue>30</StartValue>
+                      </Member>
+                      <Member Name="denominator" Datatype="UDInt">
+                        <StartValue>1</StartValue>
+                      </Member>
+                    </Section>
+                  </Sections>
+                </Member>
+                <Member Name="MaterialWidth" Datatype="LReal">
+                  <StartValue>0.035</StartValue>
+                </Member>
+                <Member Name="MaterialDensity" Datatype="LReal">
+                  <StartValue>2700.0</StartValue>
+                </Member>
+                <Member Name="MaterialFillFactor" Datatype="Real">
+                  <StartValue>1.0</StartValue>
+                </Member>
+                <Member Name="JFixed" Datatype="LReal">
+                  <StartValue>0.0327900014817715</StartValue>
+                </Member>
+                <Member Name="JMandrel" Datatype="LReal">
+                  <StartValue>0.1</StartValue>
+                </Member>
+                <Member Name="JMotor" Datatype="LReal">
+                  <StartValue>0.00104</StartValue>
+                </Member>
+                <Member Name="tensionAdjustment" Datatype="Real">
+                  <StartValue>0.5</StartValue>
+                </Member>
+                <Member Name="accelerationAdjustment" Datatype="Real">
+                  <StartValue>0.1</StartValue>
+                </Member>
+                <Member Name="dDdTAdjustment" Datatype="Real">
+                  <StartValue>0.0</StartValue>
+                </Member>
+                <Member Name="upperTorqueLimit" Datatype="LReal">
+                  <StartValue>0.2</StartValue>
+                </Member>
+                <Member Name="lowerTorqueLimit" Datatype="LReal">
+                  <StartValue>-0.2</StartValue>
+                </Member>
+                <Member Name="referenceTorque" Datatype="LReal">
+                  <StartValue>11.55</StartValue>
+                </Member>
+                <Member Name="additiveTorque" Datatype="LReal">
+                  <StartValue>0.0</StartValue>
+                </Member>
+              </Section>
+            </Sections>
+          </Member>
+          <Member Name="diamConfig" Datatype="&quot;LConSMC_typeDiamConfig&quot;">
+            <Sections>
+              <Section Name="None">
+                <Member Name="minLineVelocity" Datatype="LReal">
+                  <StartValue>0.5</StartValue>
+                </Member>
+                <Member Name="minShaftSpeed" Datatype="LReal">
+                  <StartValue>0.0</StartValue>
+                </Member>
+                <Member Name="minDia" Datatype="LReal">
+                  <StartValue>0.08</StartValue>
+                </Member>
+                <Member Name="maxDia" Datatype="LReal">
+                  <StartValue>0.4</StartValue>
+                </Member>
+                <Member Name="webThickness" Datatype="LReal">
+                  <StartValue>0.0001275</StartValue>
+                </Member>
+                <Member Name="useLineAxisActualValues" Datatype="Bool">
+                  <StartValue>TRUE</StartValue>
+                </Member>
+                <Member Name="diameterSetValue" Datatype="LReal">
+                  <StartValue>0.1876</StartValue>
+                </Member>
+                <Member Name="lineFilterTime" Datatype="Real">
+                  <StartValue>20.0</StartValue>
+                </Member>
+                <Member Name="shaftFilterTime" Datatype="Real">
+                  <StartValue>20.0</StartValue>
+                </Member>
+                <Member Name="measuringRevolutionCount" Datatype="Real">
+                  <StartValue>4.0</StartValue>
+                </Member>
+                <Member Name="firstDiameterOutput" Datatype="Real">
+                  <StartValue>0.5</StartValue>
+                </Member>
+                <Member Name="diameterOutputRate" Datatype="Real">
+                  <StartValue>1.0</StartValue>
+                </Member>
+                <Member Name="lineModLength" Datatype="Real">
+                  <StartValue>1.0</StartValue>
+                </Member>
+                <Member Name="shaftModLength" Datatype="Real">
+                  <StartValue>360.0</StartValue>
+                </Member>
+                <Member Name="diameterFilterTime" Datatype="Real">
+                  <StartValue>360.0</StartValue>
+                </Member>
+              </Section>
+            </Sections>
+          </Member>
+          <Member Name="technologyControllerConfig" Datatype="&quot;LConSMC_typeTechnologyControllerConfig&quot;">
+            <Sections>
+              <Section Name="None">
+                <Member Name="x1" Datatype="LReal">
+                  <StartValue>0.0</StartValue>
+                </Member>
+                <Member Name="Kp1" Datatype="LReal">
+                  <StartValue>3.0</StartValue>
+                </Member>
+                <Member Name="x2" Datatype="LReal">
+                  <StartValue>0.0</StartValue>
+                </Member>
+                <Member Name="Kp2" Datatype="LReal">
+                  <StartValue>0.0</StartValue>
+                </Member>
+                <Member Name="KpAdaptionValue" Datatype="LReal">
+                  <StartValue>0.0</StartValue>
+                </Member>
+                <Member Name="integTime" Datatype="LReal">
+                  <StartValue>2000.0</StartValue>
+                </Member>
+                <Member Name="derivTime" Datatype="LReal">
+                  <StartValue>0.0</StartValue>
+                </Member>
+                <Member Name="derivControlMode" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="setNominalValue" Datatype="LReal">
+                  <StartValue>100.0</StartValue>
+                </Member>
+                <Member Name="setRampTime" Datatype="LReal">
+                  <StartValue>10000.0</StartValue>
+                </Member>
+                <Member Name="filterTime" Datatype="LReal">
+                  <StartValue>10.0</StartValue>
+                </Member>
+                <Member Name="intSetValue" Datatype="LReal">
+                  <StartValue>0.0</StartValue>
+                </Member>
+                <Member Name="setIntChannel" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="holdIntChannel" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="deadBand" Datatype="LReal">
+                  <StartValue>0.0</StartValue>
+                </Member>
+                <Member Name="outValueFactor" Datatype="LReal">
+                  <StartValue>1.0</StartValue>
+                </Member>
+                <Member Name="upperLimit" Datatype="LReal">
+                  <StartValue>2.0</StartValue>
+                </Member>
+                <Member Name="lowerLimit" Datatype="LReal">
+                  <StartValue>-2.0</StartValue>
+                </Member>
+                <Member Name="limRampTime" Datatype="LReal">
+                  <StartValue>300.0</StartValue>
+                </Member>
+                <Member Name="tensionReference" Datatype="LReal">
+                  <StartValue>0.0</StartValue>
+                </Member>
+              </Section>
+            </Sections>
+          </Member>
+          <Member Name="webbreakDetectionConfig" Datatype="&quot;LConSMC_typeWebbreakDetectConfig&quot;">
+            <Sections>
+              <Section Name="None">
+                <Member Name="enableDetection" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="minLineVelocity" Datatype="LReal">
+                  <StartValue>5.0</StartValue>
+                </Member>
+                <Member Name="upperLimitError" Datatype="LReal">
+                  <StartValue>0.5</StartValue>
+                </Member>
+                <Member Name="lowerLimitError" Datatype="LReal">
+                  <StartValue>0.5</StartValue>
+                </Member>
+                <Member Name="delayTime" Datatype="Time">
+                  <StartValue>T#200MS</StartValue>
+                </Member>
+              </Section>
+            </Sections>
+          </Member>
+        </Section>
+      </Sections>
+    </Member>
+    <Member Name="WinderDiag" Datatype="&quot;LConSMC_typeWinderDiag&quot;">
+      <AttributeList>
+        <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+      </AttributeList>
+      <Sections>
+        <Section Name="None">
+          <Member Name="typeOfAxis" Datatype="Int">
+            <StartValue>0</StartValue>
+          </Member>
+          <Member Name="referenceVelocity" Datatype="LReal">
+            <StartValue>0.0</StartValue>
+          </Member>
+          <Member Name="diameterFactor" Datatype="LReal">
+            <StartValue>0.0</StartValue>
+          </Member>
+          <Member Name="diamCalcDiag" Datatype="&quot;LConSMC_typeDiamCalcDiag&quot;">
+            <Sections>
+              <Section Name="None">
+                <Member Name="atMinDia" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="atMaxDia" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="diamIsHold" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="calculatedWebThickness" Datatype="LReal">
+                  <StartValue>0.0</StartValue>
+                </Member>
+              </Section>
+            </Sections>
+          </Member>
+          <Member Name="torquePreControlDiag" Datatype="&quot;LConSMC_typeTorquePrecontrolDiag&quot;">
+            <Sections>
+              <Section Name="None">
+                <Member Name="upperTorqueLimit" Datatype="LReal">
+                  <StartValue>0.0</StartValue>
+                </Member>
+                <Member Name="lowerTorqueLimit" Datatype="LReal">
+                  <StartValue>0.0</StartValue>
+                </Member>
+                <Member Name="totalTorquePreControl" Datatype="LReal">
+                  <StartValue>0.0</StartValue>
+                </Member>
+                <Member Name="totalInertia" Datatype="LReal">
+                  <StartValue>0.0</StartValue>
+                </Member>
+                <Member Name="maxInertia" Datatype="LReal">
+                  <StartValue>0.0</StartValue>
+                </Member>
+                <Member Name="referenceTorque" Datatype="LReal">
+                  <StartValue>0.0</StartValue>
+                </Member>
+                <Member Name="loadGear" Datatype="&quot;LConSMC_typeLoadGear&quot;">
+                  <Sections>
+                    <Section Name="None">
+                      <Member Name="numerator" Datatype="UDInt">
+                        <StartValue>1</StartValue>
+                      </Member>
+                      <Member Name="denominator" Datatype="UDInt">
+                        <StartValue>1</StartValue>
+                      </Member>
+                    </Section>
+                  </Sections>
+                </Member>
+              </Section>
+            </Sections>
+          </Member>
+          <Member Name="technologyControllerDiag" Datatype="&quot;LConSMC_typeTechnollogyControllerDiag&quot;">
+            <Sections>
+              <Section Name="None">
+                <Member Name="pidoutValue" Datatype="LReal">
+                  <StartValue>0.0</StartValue>
+                </Member>
+                <Member Name="pidEffectiveKp" Datatype="LReal">
+                  <StartValue>0.0</StartValue>
+                </Member>
+                <Member Name="pidUpperLimitReached" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="pidLowerLimitReached" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="pidRFGSetpointReached" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+              </Section>
+            </Sections>
+          </Member>
+          <Member Name="webbreakDiag" Datatype="&quot;LConSMC_typeWebbreakDetectDiag&quot;">
+            <Sections>
+              <Section Name="None">
+                <Member Name="webbreakDetectionActive" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="webBreak" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+              </Section>
+            </Sections>
+          </Member>
+        </Section>
+      </Sections>
+    </Member>
+  </Section>
+</Sections></Interface>
+      <Name>SyncNode</Name>
+      <Namespace>Unit1.Em0</Namespace>
+      <Number>21</Number>
+      <ProgrammingLanguage>DB</ProgrammingLanguage>
+    </AttributeList>
+    <ObjectList>
+      <MultilingualText ID="1" CompositionName="Comment">
+        <ObjectList>
+          <MultilingualTextItem ID="2" CompositionName="Items">
+            <AttributeList>
+              <Culture>de-DE</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="3" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-GB</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="4" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-US</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="5" CompositionName="Items">
+            <AttributeList>
+              <Culture>es-ES</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="6" CompositionName="Items">
+            <AttributeList>
+              <Culture>fr-FR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="7" CompositionName="Items">
+            <AttributeList>
+              <Culture>it-IT</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="8" CompositionName="Items">
+            <AttributeList>
+              <Culture>ko-KR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="9" CompositionName="Items">
+            <AttributeList>
+              <Culture>zh-CN</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+        </ObjectList>
+      </MultilingualText>
+      <MultilingualText ID="A" CompositionName="Title">
+        <ObjectList>
+          <MultilingualTextItem ID="B" CompositionName="Items">
+            <AttributeList>
+              <Culture>de-DE</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="C" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-GB</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="D" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-US</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="E" CompositionName="Items">
+            <AttributeList>
+              <Culture>es-ES</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="F" CompositionName="Items">
+            <AttributeList>
+              <Culture>fr-FR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="10" CompositionName="Items">
+            <AttributeList>
+              <Culture>it-IT</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="11" CompositionName="Items">
+            <AttributeList>
+              <Culture>ko-KR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="12" CompositionName="Items">
+            <AttributeList>
+              <Culture>zh-CN</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+        </ObjectList>
+      </MultilingualText>
+    </ObjectList>
+  </SW.Blocks.InstanceDB>
+</Document>

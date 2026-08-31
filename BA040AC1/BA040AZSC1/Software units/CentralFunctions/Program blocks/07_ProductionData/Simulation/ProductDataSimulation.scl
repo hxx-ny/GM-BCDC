@@ -1,0 +1,160 @@
+﻿FUNCTION "ProductDataSimulation" : Void
+{ S7_Optimized_Access := 'TRUE' ; Published := 'FALSE' }
+VERSION : 0.1
+//Block for simulate the Production Counter
+
+BEGIN
+	REGION BLOCK INFO HEADER
+	    //===============================================================================
+	    // Siemens AG / (c)Copyright 2023
+	    //-------------------------------------------------------------------------------
+	    // Title:            ProductDataSimulation (FC 4)
+	    // Comment/Function: Block for simulate the Production Counter
+	    // Library/Family:   Automation Framework
+	    // Author:           -
+	    // Tested with:      -
+	    // Engineering:      TIA Portal V19
+	    // Restrictions:     -
+	    // Requirements:     -
+	    //-------------------------------------------------------------------------------
+	    // Change log table:
+	    // Version  | Date       | Expert in charge              | Changes applied
+	    //----------|------------|-------------------------------|-----------------------------
+	    // 01.00.00 | 11.12.2023 |Siemens Industry Online Support| First released version
+	    //===============================================================================    
+	END_REGION
+	
+	REGION DESCRIPTION
+	   (/*
+	 This module is used to simulate the Production Counter:
+	*  ProdDataCounter
+	*  ProdDataCycleTimer
+	*  ProdDataLimitValues
+	*  ProdDataShiftCounter
+	*  ProdDataShiftCounterOEE
+	    
+	The data in the data block ("ProdDataSimulation_ProdData") are written to the parameters in The "ProdDataInterfaceHmi".
+	This allows the visual representation of the counters be displayed
+	*/) 
+	    
+	    
+	END_REGION
+	REGION ProdDataCounter
+	
+	    // Implement an example counter for PrdDataCounter 1 and ProdDataCounter 2
+	    IF "ProdDataSimulation".ProdDataCounter.ProdDataEnable THEN
+	        
+	        // ProdDataCounter 1
+	        "ProdDataInterfaceHmi".counterDataSet[1].control[1].countUp := "ProdDataSimulation".ProdDataCounter.ProdDataCounter1Up1;
+	        "ProdDataInterfaceHmi".counterDataSet[1].control[1].countDown := "ProdDataSimulation".ProdDataCounter.ProdDataCounter1Down1;
+	        "ProdDataInterfaceHmi".counterDataSet[1].control[2].countUp := "ProdDataSimulation".ProdDataCounter.ProdDataCounter1Up2;
+	        "ProdDataInterfaceHmi".counterDataSet[1].control[2].countDown := "ProdDataSimulation".ProdDataCounter.ProdDataCounter1Down2;
+	        "ProdDataInterfaceHmi".counterDataSet[1].control[1].reset := "ProdDataSimulation".ProdDataCounter.ProdDataCounter1Reset1;
+	        "ProdDataInterfaceHmi".counterDataSet[1].control[2].reset := "ProdDataSimulation".ProdDataCounter.ProdDataCounter1Reset2;
+	        "ProdDataInterfaceHmi".counterDataSet[1].resetAllExt := "ProdDataSimulation".ProdDataCounter.ProdDataCounter1ResetAll;
+	        
+	        // ProdDataCounter 2
+	        "ProdDataInterfaceHmi".counterDataSet[2].control[1].countUp := "ProdDataSimulation".ProdDataCounter.ProdDataCounter2Up1;
+	        "ProdDataInterfaceHmi".counterDataSet[2].control[1].countDown := "ProdDataSimulation".ProdDataCounter.ProdDataCounter2Down1;
+	        "ProdDataInterfaceHmi".counterDataSet[2].control[2].countUp := "ProdDataSimulation".ProdDataCounter.ProdDataCounter2Up2;
+	        "ProdDataInterfaceHmi".counterDataSet[2].control[2].countDown := "ProdDataSimulation".ProdDataCounter.ProdDataCounter2Down2;
+	        "ProdDataInterfaceHmi".counterDataSet[2].control[1].reset := "ProdDataSimulation".ProdDataCounter.ProdDataCounter2Reset1;
+	        "ProdDataInterfaceHmi".counterDataSet[2].control[2].reset := "ProdDataSimulation".ProdDataCounter.ProdDataCounter2Reset2;
+	        "ProdDataInterfaceHmi".counterDataSet[2].resetAllExt := "ProdDataSimulation".ProdDataCounter.ProdDataCounter2ResetAll;
+	        
+	        //Via the user interface „.userInterfaceVisibility“ [DWord] individual values can be hidden in the visualization
+	        "ProdDataInterfaceHmi".counterDataSet[1].userInterfaceVisibility := "ProdDataSimulation".ProdDataCounter.userInterfaceVisibilityDataSet1Counter;
+	        "ProdDataInterfaceHmi".counterDataSet[2].userInterfaceVisibility := "ProdDataSimulation".ProdDataCounter.userInterfaceVisibilityDataSet2Counter;
+	    END_IF;
+	    
+	END_REGION
+	
+	REGION CycleTimer
+	    // Example to demonstrate and test the functionality of the cycle timer
+	    IF "ProdDataSimulation".ProdDataCyclic.cyclicTimerEnable THEN
+	        
+	        "ProdDataInterfaceHmi".cycleTimerDataSet[1].control[1].run := "ProdDataSimulation".ProdDataCyclic.cycleTimer1Run1;
+	        "ProdDataInterfaceHmi".cycleTimerDataSet[1].control[1].hold := "ProdDataSimulation".ProdDataCyclic.cycleTimer1Hold1;
+	        "ProdDataInterfaceHmi".cycleTimerDataSet[1].control[1].reset := "ProdDataSimulation".ProdDataCyclic.cycleTimer1Reset1;
+	        "ProdDataInterfaceHmi".cycleTimerDataSet[1].control[2].run := "ProdDataSimulation".ProdDataCyclic.cycleTimer1Run2;
+	        "ProdDataInterfaceHmi".cycleTimerDataSet[1].control[2].hold := "ProdDataSimulation".ProdDataCyclic.cycleTimer1Hold2;
+	        "ProdDataInterfaceHmi".cycleTimerDataSet[1].control[2].reset := "ProdDataSimulation".ProdDataCyclic.cycleTimer1Reset2;
+	        "ProdDataInterfaceHmi".cycleTimerDataSet[2].control[1].run := "ProdDataSimulation".ProdDataCyclic.cycleTimer2Run1;
+	        "ProdDataInterfaceHmi".cycleTimerDataSet[2].control[1].hold := "ProdDataSimulation".ProdDataCyclic.cycleTimer2Hold1;
+	        "ProdDataInterfaceHmi".cycleTimerDataSet[2].control[1].reset := "ProdDataSimulation".ProdDataCyclic.cycleTimer2Reset1;
+	        "ProdDataInterfaceHmi".cycleTimerDataSet[2].control[2].run := "ProdDataSimulation".ProdDataCyclic.cycleTimer2Run2;
+	        "ProdDataInterfaceHmi".cycleTimerDataSet[2].control[2].hold := "ProdDataSimulation".ProdDataCyclic.cycleTimer2Hold2;
+	        "ProdDataInterfaceHmi".cycleTimerDataSet[2].control[2].reset := "ProdDataSimulation".ProdDataCyclic.cycleTimer2Reset2;
+	        "ProdDataInterfaceHmi".cycleTimerDataSet[1].resetAverageAllExt := "ProdDataSimulation".ProdDataCyclic.cycleTimer1ResetAll;
+	        "ProdDataInterfaceHmi".cycleTimerDataSet[2].resetAverageAllExt := "ProdDataSimulation".ProdDataCyclic.cycleTimer2ResetAll;
+	        
+	        //Via the user interface „.userInterfaceVisibility“ [DWord] individual values can be hidden in the visualization
+	        "ProdDataInterfaceHmi".cycleTimerDataSet[1].userInterfaceVisibility := "ProdDataSimulation".ProdDataCyclic.userInterfaceVisibilityDataSet1Cyclic;
+	        "ProdDataInterfaceHmi".cycleTimerDataSet[2].userInterfaceVisibility := "ProdDataSimulation".ProdDataCyclic.userInterfaceVisibilityDataSet2Cyclic;
+	        
+	    END_IF;
+	END_REGION
+	
+	
+	REGION LimitValues
+	    // Example to demonstrate and test the functionality of the limit counters
+	
+	    IF "ProdDataSimulation".ProdDataLimitValues.limitValuesEnable THEN
+	        
+	        "ProdDataInterfaceHmi".limitDataSet[1].control[1].count := "ProdDataSimulation".ProdDataLimitValues.limitVal1Count1;
+	        "ProdDataInterfaceHmi".limitDataSet[1].control[1].set := "ProdDataSimulation".ProdDataLimitValues.limitVal1Set1;
+	        "ProdDataSimulation".ProdDataLimitValues.limitVal1Count1PreWarn1 := "ProdDataInterfaceHmi".limitDataSet[1].control[1].prewarn;
+	        "ProdDataSimulation".ProdDataLimitValues.limitVal1Count1Alarm1 := "ProdDataInterfaceHmi".limitDataSet[1].control[1].alarm;
+	        "ProdDataInterfaceHmi".limitDataSet[1].control[2].count := "ProdDataSimulation".ProdDataLimitValues.limitVal1Count2;
+	        "ProdDataInterfaceHmi".limitDataSet[1].control[2].set := "ProdDataSimulation".ProdDataLimitValues.limitVal1Set2;
+	        "ProdDataSimulation".ProdDataLimitValues.limitVal1Count1PreWarn2 := "ProdDataInterfaceHmi".limitDataSet[1].control[2].prewarn;
+	        "ProdDataSimulation".ProdDataLimitValues.limitVal1Count1Alarm2 := "ProdDataInterfaceHmi".limitDataSet[1].control[2].alarm;
+	        "ProdDataInterfaceHmi".limitDataSet[1].control[3].count := "ProdDataSimulation".ProdDataLimitValues.limitVal1Count3;
+	        "ProdDataInterfaceHmi".limitDataSet[1].control[3].set := "ProdDataSimulation".ProdDataLimitValues.limitVal1Set3;
+	        "ProdDataSimulation".ProdDataLimitValues.limitVal1Count1PreWarn3 := "ProdDataInterfaceHmi".limitDataSet[1].control[3].prewarn;
+	        "ProdDataSimulation".ProdDataLimitValues.limitVal1Count1Alarm3 := "ProdDataInterfaceHmi".limitDataSet[1].control[3].alarm;
+	        
+	        //Via the user interface „.userInterfaceVisibility“ [DWord] individual values can be hidden in the visualization
+	        "ProdDataInterfaceHmi".limitDataSet[1].userInterfaceVisibility := "ProdDataSimulation".ProdDataLimitValues.userInterfaceVisibilityDataSet1LimitValues;
+	        "ProdDataInterfaceHmi".limitDataSet[2].userInterfaceVisibility := "ProdDataSimulation".ProdDataLimitValues.userInterfaceVisibilityDataSet2LimitValues;
+	    END_IF;
+	END_REGION
+	
+	REGION ShiftCounter
+	    //Example to demonstrate and test the functionality of the shift counters
+	    IF "ProdDataSimulation".ProdDataShiftCounter.ShiftCounterEnable THEN
+	        
+	        "ProdDataInterfaceHmi".shiftCounterDataSet[1].countPartsCurrent[1] := "ProdDataSimulation".ProdDataShiftCounter.shiftCounter1Cnt1Curr;
+	        "ProdDataInterfaceHmi".shiftCounterDataSet[1].countPartsCurrent[2] := "ProdDataSimulation".ProdDataShiftCounter.shiftCounter1Cnt2Curr;
+	        "ProdDataInterfaceHmi".shiftCounterDataSet[1].countPartsCurrent[3] := "ProdDataSimulation".ProdDataShiftCounter.shiftCounter1Cnt3Curr;
+	        "ProdDataInterfaceHmi".shiftCounterDataSet[1].resetAllExt := "ProdDataSimulation".ProdDataShiftCounter.shiftCounter1ResetAllExt;
+	        
+	     //Via the user interface „.userInterfaceVisibility“ [DWord] individual values can be hidden in the visualization
+	        "ProdDataInterfaceHmi".shiftCounterDataSet[1].userInterfaceVisibility := "ProdDataSimulation".ProdDataShiftCounter.userInterfaceVisibilityDataSet1ShiftCounter;
+	        "ProdDataInterfaceHmi".shiftCounterDataSet[2].userInterfaceVisibility := "ProdDataSimulation".ProdDataShiftCounter.userInterfaceVisibilityDataSet2ShiftCounter;
+	    END_IF;
+	    
+	END_REGION
+	
+	REGION ShiftCounterOEE
+	    // Example to demonstrate and test the functionality of the shift counter OEE
+	    
+	    IF "ProdDataSimulation".ProdDataShiftCounterOEE.ShiftCounterOEEEnable THEN
+	        
+	        "ProdDataInterfaceHmi".shiftCounterOeeDataSet[1].countPartsCurrent[1] := "ProdDataSimulation".ProdDataShiftCounter.shiftCounter1Cnt1Curr;
+	        "ProdDataInterfaceHmi".shiftCounterOeeDataSet[1].countPartsCurrent[2] := "ProdDataSimulation".ProdDataShiftCounter.shiftCounter1Cnt2Curr;
+	        "ProdDataInterfaceHmi".shiftCounterOeeDataSet[1].countPartsCurrent[3] := "ProdDataSimulation".ProdDataShiftCounter.shiftCounter1Cnt3Curr;
+	        "ProdDataInterfaceHmi".shiftCounterOeeDataSet[1].countPartsCurrentOk[1] := "ProdDataSimulation".ProdDataShiftCounter.shiftCounter1Cnt1CurrOk;
+	        "ProdDataInterfaceHmi".shiftCounterOeeDataSet[1].countPartsCurrentOk[2] := "ProdDataSimulation".ProdDataShiftCounter.shiftCounter1Cnt2CurrOk;
+	        "ProdDataInterfaceHmi".shiftCounterOeeDataSet[1].countPartsCurrentOk[3] := "ProdDataSimulation".ProdDataShiftCounter.shiftCounter1Cnt3CurrOk;
+	        
+	     //Via the user interface „.userInterfaceVisibility“ [DWord] individual values can be hidden in the visualization
+	        "ProdDataInterfaceHmi".shiftCounterOeeDataSet[1].userInterfaceVisibility := "ProdDataSimulation".ProdDataShiftCounterOEE.userInterfaceVisibilityDataSet1ShiftCounterOEE;
+	        "ProdDataInterfaceHmi".shiftCounterOeeDataSet[2].userInterfaceVisibility := "ProdDataSimulation".ProdDataShiftCounterOEE.userInterfaceVisibilityDataSet2ShiftCounterOEE;
+	    END_IF;
+	END_REGION
+	
+	
+	
+END_FUNCTION
+

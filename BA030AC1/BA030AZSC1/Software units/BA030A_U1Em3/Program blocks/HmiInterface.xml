@@ -1,0 +1,3596 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Document>
+  <Engineering version="V20" />
+  <SW.Blocks.GlobalDB ID="0">
+    <AttributeList>
+      <Access>Published</Access>
+      <DBAccessibleFromOPCUA>false</DBAccessibleFromOPCUA>
+      <DBAccessibleFromWebserver>false</DBAccessibleFromWebserver>
+      <HeaderAuthor>ERsystem_FA2_DH. Kim</HeaderAuthor>
+      <Interface><Sections xmlns="http://www.siemens.com/automation/Openness/SW/Interface/v5">
+  <Section Name="Static">
+    <Member Name="em" Datatype="&quot;LAF_typeEmInterface&quot;">
+      <Sections>
+        <Section Name="None">
+          <Member Name="interlinkMode" Datatype="&quot;LUC_typeInterlinkMode&quot;">
+            <Sections>
+              <Section Name="None">
+                <Member Name="link" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="unlink" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="isLinked" Datatype="Bool">
+                  <StartValue>TRUE</StartValue>
+                </Member>
+              </Section>
+            </Sections>
+          </Member>
+          <Member Name="commands" Datatype="&quot;LAF_typeEmDirectControlInterface&quot;">
+            <Sections>
+              <Section Name="None">
+                <Member Name="enable" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="acknowledge" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="disableAlarms" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="activateSimulation" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="home" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="moveToInitialPosition" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="directModeControl" Datatype="DWord">
+                  <StartValue>16#0000_0002</StartValue>
+                </Member>
+                <Member Name="directStateControl" Datatype="DWord">
+                  <StartValue>16#0000_0002</StartValue>
+                </Member>
+              </Section>
+            </Sections>
+          </Member>
+          <Member Name="status" Datatype="&quot;LAF_typeEmStatus&quot;">
+            <Sections>
+              <Section Name="None">
+                <Member Name="enabled" Datatype="Bool">
+                  <StartValue>TRUE</StartValue>
+                </Member>
+                <Member Name="acknowledgeActive" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="alarmsDisabled" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="simulationActive" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="safetyReleased" Datatype="Bool">
+                  <StartValue>TRUE</StartValue>
+                </Member>
+                <Member Name="initialized" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="homed" Datatype="Bool">
+                  <StartValue>TRUE</StartValue>
+                </Member>
+                <Member Name="safeState" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="stateComplete" Datatype="Bool">
+                  <StartValue>TRUE</StartValue>
+                </Member>
+              </Section>
+            </Sections>
+          </Member>
+        </Section>
+      </Sections>
+    </Member>
+    <Member Name="cm" Datatype="Struct">
+      <Member Name="softCam" Datatype="&quot;Unit1.type_emRelations_em3_SoftCam&quot;" />
+    </Member>
+    <Member Name="webGuide" Datatype="Struct">
+      <Member Name="jobs" Datatype="&quot;LAF_typeJobsInterface&quot;">
+        <AttributeList>
+          <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+        </AttributeList>
+      </Member>
+      <Member Name="sequence" Datatype="&quot;LAF_typeSequenceInterface&quot;">
+        <AttributeList>
+          <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+        </AttributeList>
+      </Member>
+    </Member>
+    <Member Name="auxiliary" Datatype="Struct">
+      <Member Name="cmEpc_UnUse" Datatype="Bool" />
+      <Member Name="dancerRegulator" Datatype="LReal" />
+    </Member>
+    <Member Name="cmSafetyPinIdlePositionSensor" Datatype="&quot;LBC_typeDigitalSignalInterface&quot;">
+      <AttributeList>
+        <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+      </AttributeList>
+      <Sections>
+        <Section Name="None">
+          <Member Name="commands" Datatype="&quot;LBC_typeInterfaceCommands&quot;">
+            <Sections>
+              <Section Name="None">
+                <Member Name="refreshConfiguration" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="editConfiguration" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="saveConfiguration" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="reset" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+              </Section>
+            </Sections>
+          </Member>
+          <Member Name="monitoring" Datatype="&quot;LBC_typeDigitalSignalProcessValues&quot;">
+            <Sections>
+              <Section Name="None">
+                <Member Name="enable" Datatype="Bool">
+                  <StartValue>TRUE</StartValue>
+                </Member>
+                <Member Name="referenceDesignator" Datatype="WString[154]">
+                  <StartValue>WSTRING#'U1.EM3 WebGuide.DigitalSignal'</StartValue>
+                </Member>
+                <Member Name="simulation" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="processValue" Datatype="Bool">
+                  <StartValue>TRUE</StartValue>
+                </Member>
+                <Member Name="error" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="status" Datatype="Word">
+                  <StartValue>16#0000</StartValue>
+                </Member>
+              </Section>
+            </Sections>
+          </Member>
+          <Member Name="configuration" Datatype="&quot;LBC_typeDigitalSignalConfiguration&quot;">
+            <Sections>
+              <Section Name="None">
+                <Member Name="referenceDesignator" Datatype="WString[25]">
+                  <StartValue>WSTRING#'DigitalSignal'</StartValue>
+                </Member>
+                <Member Name="onDelay" Datatype="Time">
+                  <StartValue>T#0MS</StartValue>
+                </Member>
+                <Member Name="offDelay" Datatype="Time">
+                  <StartValue>T#0MS</StartValue>
+                </Member>
+                <Member Name="default" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="invertProcessValue" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="disableAlarms" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+              </Section>
+            </Sections>
+          </Member>
+        </Section>
+      </Sections>
+    </Member>
+    <Member Name="cmRotationSafetyPinPositionSensor" Datatype="&quot;LBC_typeDigitalSignalInterface&quot;">
+      <AttributeList>
+        <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+      </AttributeList>
+      <Sections>
+        <Section Name="None">
+          <Member Name="commands" Datatype="&quot;LBC_typeInterfaceCommands&quot;">
+            <Sections>
+              <Section Name="None">
+                <Member Name="refreshConfiguration" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="editConfiguration" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="saveConfiguration" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="reset" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+              </Section>
+            </Sections>
+          </Member>
+          <Member Name="monitoring" Datatype="&quot;LBC_typeDigitalSignalProcessValues&quot;">
+            <Sections>
+              <Section Name="None">
+                <Member Name="enable" Datatype="Bool">
+                  <StartValue>TRUE</StartValue>
+                </Member>
+                <Member Name="referenceDesignator" Datatype="WString[154]">
+                  <StartValue>WSTRING#'U1.EM3 WebGuide.DigitalSignal'</StartValue>
+                </Member>
+                <Member Name="simulation" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="processValue" Datatype="Bool">
+                  <StartValue>TRUE</StartValue>
+                </Member>
+                <Member Name="error" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="status" Datatype="Word">
+                  <StartValue>16#0000</StartValue>
+                </Member>
+              </Section>
+            </Sections>
+          </Member>
+          <Member Name="configuration" Datatype="&quot;LBC_typeDigitalSignalConfiguration&quot;">
+            <Sections>
+              <Section Name="None">
+                <Member Name="referenceDesignator" Datatype="WString[25]">
+                  <StartValue>WSTRING#'DigitalSignal'</StartValue>
+                </Member>
+                <Member Name="onDelay" Datatype="Time">
+                  <StartValue>T#0MS</StartValue>
+                </Member>
+                <Member Name="offDelay" Datatype="Time">
+                  <StartValue>T#0MS</StartValue>
+                </Member>
+                <Member Name="default" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="invertProcessValue" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="disableAlarms" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+              </Section>
+            </Sections>
+          </Member>
+        </Section>
+      </Sections>
+    </Member>
+    <Member Name="cmIonizerTopMaintDetection" Datatype="&quot;LBC_typeDigitalSignalInterface&quot;">
+      <AttributeList>
+        <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+      </AttributeList>
+      <Sections>
+        <Section Name="None">
+          <Member Name="commands" Datatype="&quot;LBC_typeInterfaceCommands&quot;">
+            <Sections>
+              <Section Name="None">
+                <Member Name="refreshConfiguration" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="editConfiguration" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="saveConfiguration" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="reset" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+              </Section>
+            </Sections>
+          </Member>
+          <Member Name="monitoring" Datatype="&quot;LBC_typeDigitalSignalProcessValues&quot;">
+            <Sections>
+              <Section Name="None">
+                <Member Name="enable" Datatype="Bool">
+                  <StartValue>TRUE</StartValue>
+                </Member>
+                <Member Name="referenceDesignator" Datatype="WString[154]">
+                  <StartValue>WSTRING#'U1.EM3 WebGuide.DigitalSignal'</StartValue>
+                </Member>
+                <Member Name="simulation" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="processValue" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="error" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="status" Datatype="Word">
+                  <StartValue>16#0000</StartValue>
+                </Member>
+              </Section>
+            </Sections>
+          </Member>
+          <Member Name="configuration" Datatype="&quot;LBC_typeDigitalSignalConfiguration&quot;">
+            <Sections>
+              <Section Name="None">
+                <Member Name="referenceDesignator" Datatype="WString[25]">
+                  <StartValue>WSTRING#'DigitalSignal'</StartValue>
+                </Member>
+                <Member Name="onDelay" Datatype="Time">
+                  <StartValue>T#0MS</StartValue>
+                </Member>
+                <Member Name="offDelay" Datatype="Time">
+                  <StartValue>T#0MS</StartValue>
+                </Member>
+                <Member Name="default" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="invertProcessValue" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="disableAlarms" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+              </Section>
+            </Sections>
+          </Member>
+        </Section>
+      </Sections>
+    </Member>
+    <Member Name="cmIonizerTopErrorDetection" Datatype="&quot;LBC_typeDigitalSignalInterface&quot;">
+      <AttributeList>
+        <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+      </AttributeList>
+      <Sections>
+        <Section Name="None">
+          <Member Name="commands" Datatype="&quot;LBC_typeInterfaceCommands&quot;">
+            <Sections>
+              <Section Name="None">
+                <Member Name="refreshConfiguration" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="editConfiguration" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="saveConfiguration" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="reset" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+              </Section>
+            </Sections>
+          </Member>
+          <Member Name="monitoring" Datatype="&quot;LBC_typeDigitalSignalProcessValues&quot;">
+            <Sections>
+              <Section Name="None">
+                <Member Name="enable" Datatype="Bool">
+                  <StartValue>TRUE</StartValue>
+                </Member>
+                <Member Name="referenceDesignator" Datatype="WString[154]">
+                  <StartValue>WSTRING#'U1.EM3 WebGuide.DigitalSignal'</StartValue>
+                </Member>
+                <Member Name="simulation" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="processValue" Datatype="Bool">
+                  <StartValue>TRUE</StartValue>
+                </Member>
+                <Member Name="error" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="status" Datatype="Word">
+                  <StartValue>16#0000</StartValue>
+                </Member>
+              </Section>
+            </Sections>
+          </Member>
+          <Member Name="configuration" Datatype="&quot;LBC_typeDigitalSignalConfiguration&quot;">
+            <Sections>
+              <Section Name="None">
+                <Member Name="referenceDesignator" Datatype="WString[25]">
+                  <StartValue>WSTRING#'DigitalSignal'</StartValue>
+                </Member>
+                <Member Name="onDelay" Datatype="Time">
+                  <StartValue>T#0MS</StartValue>
+                </Member>
+                <Member Name="offDelay" Datatype="Time">
+                  <StartValue>T#0MS</StartValue>
+                </Member>
+                <Member Name="default" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="invertProcessValue" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="disableAlarms" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+              </Section>
+            </Sections>
+          </Member>
+        </Section>
+      </Sections>
+    </Member>
+    <Member Name="cmIonizerBtmMaintDetection" Datatype="&quot;LBC_typeDigitalSignalInterface&quot;">
+      <AttributeList>
+        <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+      </AttributeList>
+      <Sections>
+        <Section Name="None">
+          <Member Name="commands" Datatype="&quot;LBC_typeInterfaceCommands&quot;">
+            <Sections>
+              <Section Name="None">
+                <Member Name="refreshConfiguration" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="editConfiguration" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="saveConfiguration" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="reset" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+              </Section>
+            </Sections>
+          </Member>
+          <Member Name="monitoring" Datatype="&quot;LBC_typeDigitalSignalProcessValues&quot;">
+            <Sections>
+              <Section Name="None">
+                <Member Name="enable" Datatype="Bool">
+                  <StartValue>TRUE</StartValue>
+                </Member>
+                <Member Name="referenceDesignator" Datatype="WString[154]">
+                  <StartValue>WSTRING#'U1.EM3 WebGuide.DigitalSignal'</StartValue>
+                </Member>
+                <Member Name="simulation" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="processValue" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="error" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="status" Datatype="Word">
+                  <StartValue>16#0000</StartValue>
+                </Member>
+              </Section>
+            </Sections>
+          </Member>
+          <Member Name="configuration" Datatype="&quot;LBC_typeDigitalSignalConfiguration&quot;">
+            <Sections>
+              <Section Name="None">
+                <Member Name="referenceDesignator" Datatype="WString[25]">
+                  <StartValue>WSTRING#'DigitalSignal'</StartValue>
+                </Member>
+                <Member Name="onDelay" Datatype="Time">
+                  <StartValue>T#0MS</StartValue>
+                </Member>
+                <Member Name="offDelay" Datatype="Time">
+                  <StartValue>T#0MS</StartValue>
+                </Member>
+                <Member Name="default" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="invertProcessValue" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="disableAlarms" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+              </Section>
+            </Sections>
+          </Member>
+        </Section>
+      </Sections>
+    </Member>
+    <Member Name="cmIonizerBtmErrorDetection" Datatype="&quot;LBC_typeDigitalSignalInterface&quot;">
+      <AttributeList>
+        <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+      </AttributeList>
+      <Sections>
+        <Section Name="None">
+          <Member Name="commands" Datatype="&quot;LBC_typeInterfaceCommands&quot;">
+            <Sections>
+              <Section Name="None">
+                <Member Name="refreshConfiguration" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="editConfiguration" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="saveConfiguration" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="reset" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+              </Section>
+            </Sections>
+          </Member>
+          <Member Name="monitoring" Datatype="&quot;LBC_typeDigitalSignalProcessValues&quot;">
+            <Sections>
+              <Section Name="None">
+                <Member Name="enable" Datatype="Bool">
+                  <StartValue>TRUE</StartValue>
+                </Member>
+                <Member Name="referenceDesignator" Datatype="WString[154]">
+                  <StartValue>WSTRING#'U1.EM3 WebGuide.DigitalSignal'</StartValue>
+                </Member>
+                <Member Name="simulation" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="processValue" Datatype="Bool">
+                  <StartValue>TRUE</StartValue>
+                </Member>
+                <Member Name="error" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="status" Datatype="Word">
+                  <StartValue>16#0000</StartValue>
+                </Member>
+              </Section>
+            </Sections>
+          </Member>
+          <Member Name="configuration" Datatype="&quot;LBC_typeDigitalSignalConfiguration&quot;">
+            <Sections>
+              <Section Name="None">
+                <Member Name="referenceDesignator" Datatype="WString[25]">
+                  <StartValue>WSTRING#'DigitalSignal'</StartValue>
+                </Member>
+                <Member Name="onDelay" Datatype="Time">
+                  <StartValue>T#0MS</StartValue>
+                </Member>
+                <Member Name="offDelay" Datatype="Time">
+                  <StartValue>T#0MS</StartValue>
+                </Member>
+                <Member Name="default" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="invertProcessValue" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="disableAlarms" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+              </Section>
+            </Sections>
+          </Member>
+        </Section>
+      </Sections>
+    </Member>
+    <Member Name="cmDancerEncoder" Datatype="&quot;LBC_typeAnalogInputInterface&quot;">
+      <Sections>
+        <Section Name="None">
+          <Member Name="commands" Datatype="&quot;LBC_typeInterfaceCommands&quot;">
+            <Sections>
+              <Section Name="None">
+                <Member Name="refreshConfiguration" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="editConfiguration" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="saveConfiguration" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="reset" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+              </Section>
+            </Sections>
+          </Member>
+          <Member Name="monitoring" Datatype="&quot;LBC_typeAnalogProcessValues&quot;">
+            <Sections>
+              <Section Name="None">
+                <Member Name="enable" Datatype="Bool">
+                  <StartValue>TRUE</StartValue>
+                </Member>
+                <Member Name="referenceDesignator" Datatype="WString[154]">
+                  <StartValue>WSTRING#'U1.EM3 WebGuide.cmDancerEncoder'</StartValue>
+                </Member>
+                <Member Name="simulation" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="processValue" Datatype="LReal">
+                  <StartValue>0.034215856481481</StartValue>
+                </Member>
+                <Member Name="analogValue" Datatype="Int">
+                  <StartValue>13835</StartValue>
+                </Member>
+                <Member Name="limitHigh2" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="limitHigh1" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="limitLow1" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="limitLow2" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="maxValueReached" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="minValueReached" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="error" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="status" Datatype="Word">
+                  <StartValue>16#0000</StartValue>
+                </Member>
+              </Section>
+            </Sections>
+          </Member>
+          <Member Name="configuration" Datatype="&quot;LBC_typeAnalogInputConfiguration&quot;">
+            <Sections>
+              <Section Name="None">
+                <Member Name="referenceDesignator" Datatype="WString[25]">
+                  <StartValue>WSTRING#'cmDancerEncoder'</StartValue>
+                </Member>
+                <Member Name="physicalUnit" Datatype="String[10]">
+                  <StartValue>'unit'</StartValue>
+                </Member>
+                <Member Name="isUnipolarSignal" Datatype="Bool">
+                  <StartValue>TRUE</StartValue>
+                </Member>
+                <Member Name="default" Datatype="LReal">
+                  <StartValue>0.0</StartValue>
+                </Member>
+                <Member Name="limitHigh2" Datatype="LReal">
+                  <StartValue>20.0</StartValue>
+                </Member>
+                <Member Name="limitHigh1" Datatype="LReal">
+                  <StartValue>15.0</StartValue>
+                </Member>
+                <Member Name="limitLow1" Datatype="LReal">
+                  <StartValue>-15.0</StartValue>
+                </Member>
+                <Member Name="limitLow2" Datatype="LReal">
+                  <StartValue>-20.0</StartValue>
+                </Member>
+                <Member Name="processValueMax" Datatype="LReal">
+                  <StartValue>43.0</StartValue>
+                </Member>
+                <Member Name="processValueMin" Datatype="LReal">
+                  <StartValue>-43.0</StartValue>
+                </Member>
+                <Member Name="scaleAnalogUppPoint" Datatype="LReal">
+                  <StartValue>27648.0</StartValue>
+                </Member>
+                <Member Name="scaleAnalogLowPoint" Datatype="LReal">
+                  <StartValue>0.0</StartValue>
+                </Member>
+                <Member Name="scaleProcessUppPoint" Datatype="LReal">
+                  <StartValue>43.0</StartValue>
+                </Member>
+                <Member Name="scaleProcessLowPoint" Datatype="LReal">
+                  <StartValue>-43.0</StartValue>
+                </Member>
+                <Member Name="disableAlarms" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+              </Section>
+            </Sections>
+          </Member>
+        </Section>
+      </Sections>
+    </Member>
+    <Member Name="cmLoadCellControllerInterface" Datatype="&quot;LBC_typeAnalogInputInterface&quot;">
+      <Sections>
+        <Section Name="None">
+          <Member Name="commands" Datatype="&quot;LBC_typeInterfaceCommands&quot;">
+            <Sections>
+              <Section Name="None">
+                <Member Name="refreshConfiguration" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="editConfiguration" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="saveConfiguration" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="reset" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+              </Section>
+            </Sections>
+          </Member>
+          <Member Name="monitoring" Datatype="&quot;LBC_typeAnalogProcessValues&quot;">
+            <Sections>
+              <Section Name="None">
+                <Member Name="enable" Datatype="Bool">
+                  <StartValue>TRUE</StartValue>
+                </Member>
+                <Member Name="referenceDesignator" Datatype="WString[154]">
+                  <StartValue>WSTRING#'U1.EM3 WebGuide.cmLoadCellController'</StartValue>
+                </Member>
+                <Member Name="simulation" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="processValue" Datatype="LReal">
+                  <StartValue>-99.9638310185185</StartValue>
+                </Member>
+                <Member Name="analogValue" Datatype="Int">
+                  <StartValue>5</StartValue>
+                </Member>
+                <Member Name="limitHigh2" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="limitHigh1" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="limitLow1" Datatype="Bool">
+                  <StartValue>TRUE</StartValue>
+                </Member>
+                <Member Name="limitLow2" Datatype="Bool">
+                  <StartValue>TRUE</StartValue>
+                </Member>
+                <Member Name="maxValueReached" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="minValueReached" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="error" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="status" Datatype="Word">
+                  <StartValue>16#0000</StartValue>
+                </Member>
+              </Section>
+            </Sections>
+          </Member>
+          <Member Name="configuration" Datatype="&quot;LBC_typeAnalogInputConfiguration&quot;">
+            <Sections>
+              <Section Name="None">
+                <Member Name="referenceDesignator" Datatype="WString[25]">
+                  <StartValue>WSTRING#'cmLoadCellController'</StartValue>
+                </Member>
+                <Member Name="physicalUnit" Datatype="String[10]">
+                  <StartValue>'unit'</StartValue>
+                </Member>
+                <Member Name="isUnipolarSignal" Datatype="Bool">
+                  <StartValue>TRUE</StartValue>
+                </Member>
+                <Member Name="default" Datatype="LReal">
+                  <StartValue>0.0</StartValue>
+                </Member>
+                <Member Name="limitHigh2" Datatype="LReal">
+                  <StartValue>90.0</StartValue>
+                </Member>
+                <Member Name="limitHigh1" Datatype="LReal">
+                  <StartValue>80.0</StartValue>
+                </Member>
+                <Member Name="limitLow1" Datatype="LReal">
+                  <StartValue>-80.0</StartValue>
+                </Member>
+                <Member Name="limitLow2" Datatype="LReal">
+                  <StartValue>-90.0</StartValue>
+                </Member>
+                <Member Name="processValueMax" Datatype="LReal">
+                  <StartValue>100.0</StartValue>
+                </Member>
+                <Member Name="processValueMin" Datatype="LReal">
+                  <StartValue>-100.0</StartValue>
+                </Member>
+                <Member Name="scaleAnalogUppPoint" Datatype="LReal">
+                  <StartValue>27648.0</StartValue>
+                </Member>
+                <Member Name="scaleAnalogLowPoint" Datatype="LReal">
+                  <StartValue>0.0</StartValue>
+                </Member>
+                <Member Name="scaleProcessUppPoint" Datatype="LReal">
+                  <StartValue>100.0</StartValue>
+                </Member>
+                <Member Name="scaleProcessLowPoint" Datatype="LReal">
+                  <StartValue>-100.0</StartValue>
+                </Member>
+                <Member Name="disableAlarms" Datatype="Bool">
+                  <StartValue>TRUE</StartValue>
+                </Member>
+              </Section>
+            </Sections>
+          </Member>
+        </Section>
+      </Sections>
+    </Member>
+    <Member Name="cmDancerElectroPneumaticRegulator" Datatype="&quot;LBC_typeAnalogOutputInterface&quot;">
+      <Sections>
+        <Section Name="None">
+          <Member Name="commands" Datatype="&quot;LBC_typeInterfaceCommands&quot;">
+            <Sections>
+              <Section Name="None">
+                <Member Name="refreshConfiguration" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="editConfiguration" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="saveConfiguration" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="reset" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+              </Section>
+            </Sections>
+          </Member>
+          <Member Name="monitoring" Datatype="&quot;LBC_typeAnalogProcessValues&quot;">
+            <Sections>
+              <Section Name="None">
+                <Member Name="enable" Datatype="Bool">
+                  <StartValue>TRUE</StartValue>
+                </Member>
+                <Member Name="referenceDesignator" Datatype="WString[154]">
+                  <StartValue>WSTRING#'cmDancerRegulator'</StartValue>
+                </Member>
+                <Member Name="simulation" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="processValue" Datatype="LReal">
+                  <StartValue>0.0</StartValue>
+                </Member>
+                <Member Name="analogValue" Datatype="Int">
+                  <StartValue>0</StartValue>
+                </Member>
+                <Member Name="limitHigh2" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="limitHigh1" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="limitLow1" Datatype="Bool">
+                  <StartValue>TRUE</StartValue>
+                </Member>
+                <Member Name="limitLow2" Datatype="Bool">
+                  <StartValue>TRUE</StartValue>
+                </Member>
+                <Member Name="maxValueReached" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="minValueReached" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="error" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="status" Datatype="Word">
+                  <StartValue>16#0000</StartValue>
+                </Member>
+              </Section>
+            </Sections>
+          </Member>
+          <Member Name="configuration" Datatype="&quot;LBC_typeAnalogOutputConfiguration&quot;">
+            <Sections>
+              <Section Name="None">
+                <Member Name="referenceDesignator" Datatype="WString[25]">
+                  <StartValue>WSTRING#'cmDancerRegulator'</StartValue>
+                </Member>
+                <Member Name="physicalUnit" Datatype="String[10]">
+                  <StartValue>'unit'</StartValue>
+                </Member>
+                <Member Name="isUnipolarSignal" Datatype="Bool">
+                  <StartValue>TRUE</StartValue>
+                </Member>
+                <Member Name="default" Datatype="Int">
+                  <StartValue>0</StartValue>
+                </Member>
+                <Member Name="limitHigh2" Datatype="LReal">
+                  <StartValue>0.5</StartValue>
+                </Member>
+                <Member Name="limitHigh1" Datatype="LReal">
+                  <StartValue>0.5</StartValue>
+                </Member>
+                <Member Name="limitLow1" Datatype="LReal">
+                  <StartValue>0.0</StartValue>
+                </Member>
+                <Member Name="limitLow2" Datatype="LReal">
+                  <StartValue>0.0</StartValue>
+                </Member>
+                <Member Name="processValueMax" Datatype="LReal">
+                  <StartValue>0.5</StartValue>
+                </Member>
+                <Member Name="processValueMin" Datatype="LReal">
+                  <StartValue>0.0</StartValue>
+                </Member>
+                <Member Name="scaleProcessUppPoint" Datatype="LReal">
+                  <StartValue>0.5</StartValue>
+                </Member>
+                <Member Name="scaleProcessLowPoint" Datatype="LReal">
+                  <StartValue>0.0</StartValue>
+                </Member>
+                <Member Name="scaleAnalogUppPoint" Datatype="LReal">
+                  <StartValue>27648.0</StartValue>
+                </Member>
+                <Member Name="scaleAnalogLowPoint" Datatype="LReal">
+                  <StartValue>0.0</StartValue>
+                </Member>
+                <Member Name="disableAlarms" Datatype="Bool">
+                  <StartValue>TRUE</StartValue>
+                </Member>
+              </Section>
+            </Sections>
+          </Member>
+        </Section>
+      </Sections>
+    </Member>
+    <Member Name="cmCompensatorAxisX" Datatype="&quot;LBC_typeAxis64PosInterface&quot;">
+      <Sections>
+        <Section Name="None">
+          <Member Name="commandConfiguration" Datatype="&quot;LAxisCtrl_typeAxisConfig&quot;">
+            <Sections>
+              <Section Name="None">
+                <Member Name="generalSettings" Datatype="&quot;LAxisCtrl_typeGeneralSettings&quot;">
+                  <Sections>
+                    <Section Name="None">
+                      <Member Name="stopOnError" Datatype="Bool">
+                        <StartValue>TRUE</StartValue>
+                      </Member>
+                      <Member Name="resetWithRestart" Datatype="Bool">
+                        <StartValue>FALSE</StartValue>
+                      </Member>
+                      <Member Name="abortWaitingSyncCmd" Datatype="Bool">
+                        <StartValue>TRUE</StartValue>
+                      </Member>
+                    </Section>
+                  </Sections>
+                </Member>
+                <Member Name="power" Datatype="&quot;LAxisCtrl_typePower&quot;">
+                  <Sections>
+                    <Section Name="None">
+                      <Member Name="startMode" Datatype="DInt">
+                        <StartValue>1</StartValue>
+                      </Member>
+                      <Member Name="stopMode" Datatype="Int">
+                        <StartValue>0</StartValue>
+                      </Member>
+                      <Member Name="syncMotionSimulation" Datatype="Bool">
+                        <StartValue>FALSE</StartValue>
+                      </Member>
+                      <Member Name="syncMotionSimulationExtendedMode" Datatype="Int">
+                        <StartValue>-1</StartValue>
+                      </Member>
+                    </Section>
+                  </Sections>
+                </Member>
+                <Member Name="jog" Datatype="&quot;LAxisCtrl_typeJog&quot;">
+                  <Sections>
+                    <Section Name="None">
+                      <Member Name="velocity" Datatype="LReal">
+                        <StartValue>10.0</StartValue>
+                      </Member>
+                      <Member Name="acceleration" Datatype="LReal">
+                        <StartValue>100.0</StartValue>
+                      </Member>
+                      <Member Name="deceleration" Datatype="LReal">
+                        <StartValue>100.0</StartValue>
+                      </Member>
+                      <Member Name="jerk" Datatype="LReal">
+                        <StartValue>-1.0</StartValue>
+                      </Member>
+                      <Member Name="positionControlled" Datatype="Bool">
+                        <StartValue>TRUE</StartValue>
+                      </Member>
+                      <Member Name="increment" Datatype="LReal">
+                        <StartValue>0.0</StartValue>
+                      </Member>
+                      <Member Name="mode" Datatype="DInt">
+                        <StartValue>0</StartValue>
+                      </Member>
+                    </Section>
+                  </Sections>
+                </Member>
+                <Member Name="moveVelocity" Datatype="&quot;LAxisCtrl_typeMoveVelocity&quot;">
+                  <Sections>
+                    <Section Name="None">
+                      <Member Name="velocity" Datatype="LReal">
+                        <StartValue>10.0</StartValue>
+                      </Member>
+                      <Member Name="acceleration" Datatype="LReal">
+                        <StartValue>100.0</StartValue>
+                      </Member>
+                      <Member Name="deceleration" Datatype="LReal">
+                        <StartValue>100.0</StartValue>
+                      </Member>
+                      <Member Name="jerk" Datatype="LReal">
+                        <StartValue>-1.0</StartValue>
+                      </Member>
+                      <Member Name="direction" Datatype="Int">
+                        <StartValue>0</StartValue>
+                      </Member>
+                      <Member Name="positionControlled" Datatype="Bool">
+                        <StartValue>TRUE</StartValue>
+                      </Member>
+                      <Member Name="velocityChangeOnTheFly" Datatype="Bool">
+                        <StartValue>FALSE</StartValue>
+                      </Member>
+                    </Section>
+                  </Sections>
+                </Member>
+                <Member Name="stop" Datatype="&quot;LAxisCtrl_typeStop&quot;">
+                  <Sections>
+                    <Section Name="None">
+                      <Member Name="deceleration" Datatype="LReal">
+                        <StartValue>-1.0</StartValue>
+                      </Member>
+                      <Member Name="jerk" Datatype="LReal">
+                        <StartValue>-1.0</StartValue>
+                      </Member>
+                      <Member Name="abortAcceleration" Datatype="Bool">
+                        <StartValue>FALSE</StartValue>
+                      </Member>
+                    </Section>
+                  </Sections>
+                </Member>
+                <Member Name="fastStop" Datatype="&quot;LAxisCtrl_typeFastStop&quot;">
+                  <Sections>
+                    <Section Name="None">
+                      <Member Name="deceleration" Datatype="LReal">
+                        <StartValue>-1.0</StartValue>
+                      </Member>
+                      <Member Name="jerk" Datatype="LReal">
+                        <StartValue>-1.0</StartValue>
+                      </Member>
+                      <Member Name="abortAcceleration" Datatype="Bool">
+                        <StartValue>FALSE</StartValue>
+                      </Member>
+                      <Member Name="replaceStopPossible" Datatype="Bool">
+                        <StartValue>FALSE</StartValue>
+                      </Member>
+                    </Section>
+                  </Sections>
+                </Member>
+                <Member Name="torqueLimiting" Datatype="&quot;LAxisCtrl_typeTorqueLimiting&quot;">
+                  <Sections>
+                    <Section Name="None">
+                      <Member Name="limit" Datatype="LReal">
+                        <StartValue>-1.0</StartValue>
+                      </Member>
+                      <Member Name="mode" Datatype="DInt">
+                        <StartValue>0</StartValue>
+                      </Member>
+                    </Section>
+                  </Sections>
+                </Member>
+                <Member Name="homing" Datatype="&quot;LAxisCtrl_typeHoming&quot;">
+                  <Sections>
+                    <Section Name="None">
+                      <Member Name="position" Datatype="LReal">
+                        <StartValue>0.0</StartValue>
+                      </Member>
+                      <Member Name="mode" Datatype="Int">
+                        <StartValue>0</StartValue>
+                      </Member>
+                      <Member Name="sensor" Datatype="DInt">
+                        <StartValue>0</StartValue>
+                      </Member>
+                      <Member Name="extendedMode" Datatype="DInt">
+                        <StartValue>-1</StartValue>
+                      </Member>
+                      <Member Name="extendedModeTorqueLimit" Datatype="LReal">
+                        <StartValue>0.0</StartValue>
+                      </Member>
+                      <Member Name="extendedModeTargetPosition" Datatype="LReal">
+                        <StartValue>0.0</StartValue>
+                      </Member>
+                    </Section>
+                  </Sections>
+                </Member>
+                <Member Name="posRelative" Datatype="&quot;LAxisCtrl_typePosRelative&quot;">
+                  <Sections>
+                    <Section Name="None">
+                      <Member Name="distance" Datatype="LReal">
+                        <StartValue>0.0</StartValue>
+                      </Member>
+                      <Member Name="velocity" Datatype="LReal">
+                        <StartValue>10.0</StartValue>
+                      </Member>
+                      <Member Name="acceleration" Datatype="LReal">
+                        <StartValue>100.0</StartValue>
+                      </Member>
+                      <Member Name="deceleration" Datatype="LReal">
+                        <StartValue>100.0</StartValue>
+                      </Member>
+                      <Member Name="jerk" Datatype="LReal">
+                        <StartValue>-1.0</StartValue>
+                      </Member>
+                      <Member Name="direction" Datatype="DInt">
+                        <StartValue>0</StartValue>
+                      </Member>
+                    </Section>
+                  </Sections>
+                </Member>
+                <Member Name="posAbsolute" Datatype="&quot;LAxisCtrl_typePosAbsolute&quot;">
+                  <Sections>
+                    <Section Name="None">
+                      <Member Name="position" Datatype="LReal">
+                        <StartValue>0.0</StartValue>
+                      </Member>
+                      <Member Name="velocity" Datatype="LReal">
+                        <StartValue>0.0</StartValue>
+                      </Member>
+                      <Member Name="acceleration" Datatype="LReal">
+                        <StartValue>-1.0</StartValue>
+                      </Member>
+                      <Member Name="deceleration" Datatype="LReal">
+                        <StartValue>-1.0</StartValue>
+                      </Member>
+                      <Member Name="jerk" Datatype="LReal">
+                        <StartValue>57.5863648889861</StartValue>
+                      </Member>
+                      <Member Name="direction" Datatype="Int">
+                        <StartValue>1</StartValue>
+                      </Member>
+                      <Member Name="positionChangeOnTheFly" Datatype="Bool">
+                        <StartValue>FALSE</StartValue>
+                      </Member>
+                      <Member Name="velocityChangeOnTheFly" Datatype="Bool">
+                        <StartValue>FALSE</StartValue>
+                      </Member>
+                    </Section>
+                  </Sections>
+                </Member>
+                <Member Name="posSuperimposed" Datatype="&quot;LAxisCtrl_typePosSuperimposed&quot;">
+                  <Sections>
+                    <Section Name="None">
+                      <Member Name="distance" Datatype="LReal">
+                        <StartValue>150.5</StartValue>
+                      </Member>
+                      <Member Name="velocityDiff" Datatype="LReal">
+                        <StartValue>53.921568627451</StartValue>
+                      </Member>
+                      <Member Name="acceleration" Datatype="LReal">
+                        <StartValue>31.7185697808535</StartValue>
+                      </Member>
+                      <Member Name="deceleration" Datatype="LReal">
+                        <StartValue>31.7185697808535</StartValue>
+                      </Member>
+                      <Member Name="jerk" Datatype="LReal">
+                        <StartValue>18.6579822240315</StartValue>
+                      </Member>
+                      <Member Name="direction" Datatype="DInt">
+                        <StartValue>0</StartValue>
+                      </Member>
+                    </Section>
+                  </Sections>
+                </Member>
+                <Member Name="haltSuperimposed" Datatype="&quot;LAxisCtrl_typeHaltSuperimposed&quot;">
+                  <Sections>
+                    <Section Name="None">
+                      <Member Name="deceleration" Datatype="LReal">
+                        <StartValue>-1.0</StartValue>
+                      </Member>
+                      <Member Name="jerk" Datatype="LReal">
+                        <StartValue>-1.0</StartValue>
+                      </Member>
+                      <Member Name="abortAcceleration" Datatype="Bool">
+                        <StartValue>FALSE</StartValue>
+                      </Member>
+                    </Section>
+                  </Sections>
+                </Member>
+                <Member Name="gearInRelative" Datatype="&quot;LAxisCtrl_typeGearInRelative&quot;">
+                  <Sections>
+                    <Section Name="None">
+                      <Member Name="ratioNumerator" Datatype="DInt">
+                        <StartValue>10000</StartValue>
+                      </Member>
+                      <Member Name="ratioDenominator" Datatype="DInt">
+                        <StartValue>10000</StartValue>
+                      </Member>
+                      <Member Name="acceleration" Datatype="LReal">
+                        <StartValue>-1.0</StartValue>
+                      </Member>
+                      <Member Name="deceleration" Datatype="LReal">
+                        <StartValue>-1.0</StartValue>
+                      </Member>
+                      <Member Name="jerk" Datatype="LReal">
+                        <StartValue>-1.0</StartValue>
+                      </Member>
+                      <Member Name="ratioChangeOnTheFly" Datatype="Bool">
+                        <StartValue>FALSE</StartValue>
+                      </Member>
+                    </Section>
+                  </Sections>
+                </Member>
+                <Member Name="gearInAbsolute" Datatype="&quot;LAxisCtrl_typeGearInAbsolute&quot;">
+                  <Sections>
+                    <Section Name="None">
+                      <Member Name="ratioNumerator" Datatype="DInt">
+                        <StartValue>1</StartValue>
+                      </Member>
+                      <Member Name="ratioDenominator" Datatype="DInt">
+                        <StartValue>1</StartValue>
+                      </Member>
+                      <Member Name="masterSyncPosition" Datatype="LReal">
+                        <StartValue>0.0</StartValue>
+                      </Member>
+                      <Member Name="slaveSyncPosition" Datatype="LReal">
+                        <StartValue>0.0</StartValue>
+                      </Member>
+                      <Member Name="syncProfileReference" Datatype="DInt">
+                        <StartValue>1</StartValue>
+                      </Member>
+                      <Member Name="masterStartDistance" Datatype="LReal">
+                        <StartValue>0.0</StartValue>
+                      </Member>
+                      <Member Name="velocity" Datatype="LReal">
+                        <StartValue>-1.0</StartValue>
+                      </Member>
+                      <Member Name="acceleration" Datatype="LReal">
+                        <StartValue>-1.0</StartValue>
+                      </Member>
+                      <Member Name="deceleration" Datatype="LReal">
+                        <StartValue>-1.0</StartValue>
+                      </Member>
+                      <Member Name="jerk" Datatype="LReal">
+                        <StartValue>-1.0</StartValue>
+                      </Member>
+                      <Member Name="syncDirection" Datatype="DInt">
+                        <StartValue>1</StartValue>
+                      </Member>
+                      <Member Name="ratioChangeOnTheFly" Datatype="Bool">
+                        <StartValue>FALSE</StartValue>
+                      </Member>
+                    </Section>
+                  </Sections>
+                </Member>
+                <Member Name="gearInVelocity" Datatype="&quot;LAxisCtrl_typeGearInVelocity&quot;">
+                  <Sections>
+                    <Section Name="None">
+                      <Member Name="continuousUpdate" Datatype="Bool">
+                        <StartValue>FALSE</StartValue>
+                      </Member>
+                      <Member Name="ratioNumerator" Datatype="DInt">
+                        <StartValue>1</StartValue>
+                      </Member>
+                      <Member Name="ratioDenominator" Datatype="DInt">
+                        <StartValue>1</StartValue>
+                      </Member>
+                      <Member Name="acceleration" Datatype="LReal">
+                        <StartValue>-1.0</StartValue>
+                      </Member>
+                      <Member Name="deceleration" Datatype="LReal">
+                        <StartValue>-1.0</StartValue>
+                      </Member>
+                      <Member Name="jerk" Datatype="LReal">
+                        <StartValue>-1.0</StartValue>
+                      </Member>
+                      <Member Name="positionControlled" Datatype="Bool">
+                        <StartValue>FALSE</StartValue>
+                      </Member>
+                    </Section>
+                  </Sections>
+                </Member>
+                <Member Name="camIn" Datatype="&quot;LAxisCtrl_typeCamIn&quot;">
+                  <Sections>
+                    <Section Name="None">
+                      <Member Name="masterOffset" Datatype="LReal">
+                        <StartValue>0.0</StartValue>
+                      </Member>
+                      <Member Name="slaveOffset" Datatype="LReal">
+                        <StartValue>0.0</StartValue>
+                      </Member>
+                      <Member Name="masterScaling" Datatype="LReal">
+                        <StartValue>1.0</StartValue>
+                      </Member>
+                      <Member Name="slaveScaling" Datatype="LReal">
+                        <StartValue>1.0</StartValue>
+                      </Member>
+                      <Member Name="masterSyncPosition" Datatype="LReal">
+                        <StartValue>0.0</StartValue>
+                      </Member>
+                      <Member Name="syncProfileReference" Datatype="DInt">
+                        <StartValue>2</StartValue>
+                      </Member>
+                      <Member Name="masterStartDistance" Datatype="LReal">
+                        <StartValue>0.0</StartValue>
+                      </Member>
+                      <Member Name="velocity" Datatype="LReal">
+                        <StartValue>179.738562091503</StartValue>
+                      </Member>
+                      <Member Name="acceleration" Datatype="LReal">
+                        <StartValue>176.214276560297</StartValue>
+                      </Member>
+                      <Member Name="deceleration" Datatype="LReal">
+                        <StartValue>176.214276560297</StartValue>
+                      </Member>
+                      <Member Name="jerk" Datatype="LReal">
+                        <StartValue>172.759094666958</StartValue>
+                      </Member>
+                      <Member Name="applicationMode" Datatype="DInt">
+                        <StartValue>0</StartValue>
+                      </Member>
+                      <Member Name="syncDirection" Datatype="DInt">
+                        <StartValue>3</StartValue>
+                      </Member>
+                    </Section>
+                  </Sections>
+                </Member>
+                <Member Name="gearOutCamOut" Datatype="&quot;LAxisCtrl_typeGearOutCamOut&quot;">
+                  <Sections>
+                    <Section Name="None">
+                      <Member Name="slavePosition" Datatype="LReal">
+                        <StartValue>0.0</StartValue>
+                      </Member>
+                      <Member Name="syncProfileReference" Datatype="DInt">
+                        <StartValue>1</StartValue>
+                      </Member>
+                      <Member Name="masterStopDistance" Datatype="LReal">
+                        <StartValue>0.0</StartValue>
+                      </Member>
+                      <Member Name="deceleration" Datatype="LReal">
+                        <StartValue>-1.0</StartValue>
+                      </Member>
+                      <Member Name="jerk" Datatype="LReal">
+                        <StartValue>-1.0</StartValue>
+                      </Member>
+                      <Member Name="syncOutDirection" Datatype="DInt">
+                        <StartValue>3</StartValue>
+                      </Member>
+                      <Member Name="gearOutCamOutMode" Datatype="DInt">
+                        <StartValue>-1</StartValue>
+                      </Member>
+                    </Section>
+                  </Sections>
+                </Member>
+                <Member Name="phasing" Datatype="&quot;LAxisCtrl_typePhasing&quot;">
+                  <Sections>
+                    <Section Name="None">
+                      <Member Name="phaseShift" Datatype="LReal">
+                        <StartValue>301.0</StartValue>
+                      </Member>
+                      <Member Name="velocity" Datatype="LReal">
+                        <StartValue>89.8692810457516</StartValue>
+                      </Member>
+                      <Member Name="acceleration" Datatype="LReal">
+                        <StartValue>88.1071382801487</StartValue>
+                      </Member>
+                      <Member Name="deceleration" Datatype="LReal">
+                        <StartValue>88.1071382801487</StartValue>
+                      </Member>
+                      <Member Name="jerk" Datatype="LReal">
+                        <StartValue>0.0</StartValue>
+                      </Member>
+                      <Member Name="profileReference" Datatype="DInt">
+                        <StartValue>0</StartValue>
+                      </Member>
+                      <Member Name="phasingDistance" Datatype="LReal">
+                        <StartValue>0.0</StartValue>
+                      </Member>
+                      <Member Name="startPosition" Datatype="LReal">
+                        <StartValue>45.0</StartValue>
+                      </Member>
+                      <Member Name="direction" Datatype="DInt">
+                        <StartValue>3</StartValue>
+                      </Member>
+                      <Member Name="phaseAbsolute" Datatype="Bool">
+                        <StartValue>FALSE</StartValue>
+                      </Member>
+                      <Member Name="phaseShiftChangeOnTheFly" Datatype="Bool">
+                        <StartValue>FALSE</StartValue>
+                      </Member>
+                    </Section>
+                  </Sections>
+                </Member>
+                <Member Name="offset" Datatype="&quot;LAxisCtrl_typeOffset&quot;">
+                  <Sections>
+                    <Section Name="None">
+                      <Member Name="offset" Datatype="LReal">
+                        <StartValue>0.0</StartValue>
+                      </Member>
+                      <Member Name="profileReference" Datatype="DInt">
+                        <StartValue>1</StartValue>
+                      </Member>
+                      <Member Name="offsetDistance" Datatype="LReal">
+                        <StartValue>0.0</StartValue>
+                      </Member>
+                      <Member Name="startPosition" Datatype="LReal">
+                        <StartValue>0.0</StartValue>
+                      </Member>
+                      <Member Name="direction" Datatype="DInt">
+                        <StartValue>3</StartValue>
+                      </Member>
+                      <Member Name="offsetAbsolute" Datatype="Bool">
+                        <StartValue>TRUE</StartValue>
+                      </Member>
+                      <Member Name="offsetChangeOnTheFly" Datatype="Bool">
+                        <StartValue>FALSE</StartValue>
+                      </Member>
+                    </Section>
+                  </Sections>
+                </Member>
+              </Section>
+            </Sections>
+          </Member>
+          <Member Name="commands" Datatype="&quot;LBC_typeAxis64PosManualCommands&quot;">
+            <Sections>
+              <Section Name="None">
+                <Member Name="enableMasterControl" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="enableAxis" Datatype="Bool">
+                  <StartValue>TRUE</StartValue>
+                </Member>
+                <Member Name="resetAxis" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="openBrake" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="jogForward" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="jogBackward" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="moveVelocity" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="stop" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="fastStop" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="torqueLimiting" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="homing" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="posRelative" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="posAbsolute" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="posSuperimposed" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="haltSuperimposed" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="selectSetPosition" Datatype="SInt">
+                  <StartValue>-1</StartValue>
+                </Member>
+                <Member Name="uploadParameters" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="refreshConfiguration" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="editConfiguration" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="saveConfiguration" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="uploadCurrentTorque" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="reset" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+              </Section>
+            </Sections>
+          </Member>
+          <Member Name="monitoring" Datatype="&quot;LBC_typeAxis64PosProcessValues&quot;">
+            <Sections>
+              <Section Name="None">
+                <Member Name="enable" Datatype="Bool">
+                  <StartValue>TRUE</StartValue>
+                </Member>
+                <Member Name="referenceDesignator" Datatype="WString[154]">
+                  <StartValue>WSTRING#'U1.EM3 WebGuide.cmCompensatorAxisX'</StartValue>
+                </Member>
+                <Member Name="enabled" Datatype="Bool">
+                  <StartValue>TRUE</StartValue>
+                </Member>
+                <Member Name="enableManualCmds" Datatype="Bool">
+                  <StartValue>TRUE</StartValue>
+                </Member>
+                <Member Name="reset" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="resetAxis" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="enableAxis" Datatype="Bool">
+                  <StartValue>TRUE</StartValue>
+                </Member>
+                <Member Name="openBrake" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="jogBackward" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="jogForward" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="moveVelocity" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="stop" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="fastStop" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="torqueLimiting" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="homing" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="posRelative" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="posAbsolute" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="posSuperimposed" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="haltSuperimposed" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="brakeOpened" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="axisEnabled" Datatype="Bool">
+                  <StartValue>TRUE</StartValue>
+                </Member>
+                <Member Name="resetActive" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="inVelocity" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="inLimitation" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="inClamping" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="startSync" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="inSync" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="inSimulation" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="jogSelected" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="moveVelocitySelected" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="stopSelected" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="fastStopSelected" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="torqueLimitingSelected" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="homingSelected" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="posRelativeSelected" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="posAbsoluteSelected" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="posSuperimposedSelected" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="haltSuperimposedSelected" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="commandBusy" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="commandDone" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="commandAborted" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="homingCommandBusy" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="homingCommandDone" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="homingCommandAborted" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="superimposedBusy" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="superimposedDone" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="superimposedAborted" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="selectSetPosition" Datatype="SInt">
+                  <StartValue>-1</StartValue>
+                </Member>
+                <Member Name="selectionController" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="interlockGeneral" Datatype="Bool">
+                  <StartValue>TRUE</StartValue>
+                </Member>
+                <Member Name="interlockJogForward" Datatype="Bool">
+                  <StartValue>TRUE</StartValue>
+                </Member>
+                <Member Name="interlockJogBackward" Datatype="Bool">
+                  <StartValue>TRUE</StartValue>
+                </Member>
+                <Member Name="interlockWarningGeneral" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="interlockWarningJogForward" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="interlockWarningJogBackward" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="valid" Datatype="Bool">
+                  <StartValue>TRUE</StartValue>
+                </Member>
+                <Member Name="busy" Datatype="Bool">
+                  <StartValue>TRUE</StartValue>
+                </Member>
+                <Member Name="error" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="status" Datatype="Word">
+                  <StartValue>16#7002</StartValue>
+                </Member>
+                <Member Name="subfunctionStatus" Datatype="Word">
+                  <StartValue>16#0000</StartValue>
+                </Member>
+                <Member Name="actualPosition" Datatype="LReal">
+                  <StartValue>69.95</StartValue>
+                </Member>
+                <Member Name="actualSpeed" Datatype="LReal">
+                  <StartValue>-0.005</StartValue>
+                </Member>
+                <Member Name="speedUnit" Datatype="UDInt">
+                  <StartValue>1062</StartValue>
+                </Member>
+                <Member Name="positionUnit" Datatype="UDInt">
+                  <StartValue>1013</StartValue>
+                </Member>
+                <Member Name="axisType" Datatype="DInt">
+                  <StartValue>1</StartValue>
+                </Member>
+                <Member Name="maxVelocity" Datatype="LReal">
+                  <StartValue>2500.0</StartValue>
+                </Member>
+                <Member Name="actualCurrent" Datatype="LReal">
+                  <StartValue>0.0</StartValue>
+                </Member>
+                <Member Name="actualTorque" Datatype="LReal">
+                  <StartValue>0.0</StartValue>
+                </Member>
+                <Member Name="velocityOverrideEnabled" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="sinaParaError" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="sinaParaStatus" Datatype="DWord">
+                  <StartValue>16#0000_0000</StartValue>
+                </Member>
+              </Section>
+            </Sections>
+          </Member>
+          <Member Name="configuration" Datatype="&quot;LBC_typeAxis64PosConfiguration&quot;">
+            <Sections>
+              <Section Name="None">
+                <Member Name="referenceDesignator" Datatype="WString[25]">
+                  <StartValue>WSTRING#'cmCompensatorAxisX'</StartValue>
+                </Member>
+                <Member Name="disableAlarms" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="masterControlPopUp" Datatype="Bool">
+                  <StartValue>TRUE</StartValue>
+                </Member>
+                <Member Name="setPositions" Datatype="Array[0..15] of &quot;LBC_typeAxis64PosSetPosition&quot;">
+                  <Sections>
+                    <Section Name="None">
+                      <Member Name="position" Datatype="LReal">
+                        <Subelement Path="0">
+                          <StartValue>0.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="1">
+                          <StartValue>50.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="2">
+                          <StartValue>70.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="3">
+                          <StartValue>0.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="4">
+                          <StartValue>0.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="5">
+                          <StartValue>0.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="6">
+                          <StartValue>0.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="7">
+                          <StartValue>0.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="8">
+                          <StartValue>0.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="9">
+                          <StartValue>0.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="10">
+                          <StartValue>0.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="11">
+                          <StartValue>0.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="12">
+                          <StartValue>0.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="13">
+                          <StartValue>0.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="14">
+                          <StartValue>0.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="15">
+                          <StartValue>0.0</StartValue>
+                        </Subelement>
+                      </Member>
+                      <Member Name="velocity" Datatype="LReal">
+                        <Subelement Path="0">
+                          <StartValue>-1.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="1">
+                          <StartValue>30.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="2">
+                          <StartValue>30.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="3">
+                          <StartValue>-1.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="4">
+                          <StartValue>-1.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="5">
+                          <StartValue>-1.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="6">
+                          <StartValue>-1.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="7">
+                          <StartValue>-1.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="8">
+                          <StartValue>-1.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="9">
+                          <StartValue>-1.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="10">
+                          <StartValue>-1.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="11">
+                          <StartValue>-1.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="12">
+                          <StartValue>-1.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="13">
+                          <StartValue>-1.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="14">
+                          <StartValue>-1.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="15">
+                          <StartValue>-1.0</StartValue>
+                        </Subelement>
+                      </Member>
+                      <Member Name="acceleration" Datatype="LReal">
+                        <Subelement Path="0">
+                          <StartValue>-1.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="1">
+                          <StartValue>30.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="2">
+                          <StartValue>30.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="3">
+                          <StartValue>-1.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="4">
+                          <StartValue>-1.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="5">
+                          <StartValue>-1.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="6">
+                          <StartValue>-1.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="7">
+                          <StartValue>-1.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="8">
+                          <StartValue>-1.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="9">
+                          <StartValue>-1.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="10">
+                          <StartValue>-1.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="11">
+                          <StartValue>-1.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="12">
+                          <StartValue>-1.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="13">
+                          <StartValue>-1.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="14">
+                          <StartValue>-1.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="15">
+                          <StartValue>-1.0</StartValue>
+                        </Subelement>
+                      </Member>
+                      <Member Name="deceleration" Datatype="LReal">
+                        <Subelement Path="0">
+                          <StartValue>-1.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="1">
+                          <StartValue>30.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="2">
+                          <StartValue>30.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="3">
+                          <StartValue>-1.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="4">
+                          <StartValue>-1.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="5">
+                          <StartValue>-1.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="6">
+                          <StartValue>-1.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="7">
+                          <StartValue>-1.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="8">
+                          <StartValue>-1.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="9">
+                          <StartValue>-1.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="10">
+                          <StartValue>-1.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="11">
+                          <StartValue>-1.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="12">
+                          <StartValue>-1.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="13">
+                          <StartValue>-1.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="14">
+                          <StartValue>-1.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="15">
+                          <StartValue>-1.0</StartValue>
+                        </Subelement>
+                      </Member>
+                      <Member Name="name" Datatype="String[32]">
+                        <Subelement Path="0">
+                          <StartValue>''</StartValue>
+                        </Subelement>
+                        <Subelement Path="1">
+                          <StartValue>''</StartValue>
+                        </Subelement>
+                        <Subelement Path="2">
+                          <StartValue>''</StartValue>
+                        </Subelement>
+                        <Subelement Path="3">
+                          <StartValue>''</StartValue>
+                        </Subelement>
+                        <Subelement Path="4">
+                          <StartValue>''</StartValue>
+                        </Subelement>
+                        <Subelement Path="5">
+                          <StartValue>''</StartValue>
+                        </Subelement>
+                        <Subelement Path="6">
+                          <StartValue>''</StartValue>
+                        </Subelement>
+                        <Subelement Path="7">
+                          <StartValue>''</StartValue>
+                        </Subelement>
+                        <Subelement Path="8">
+                          <StartValue>''</StartValue>
+                        </Subelement>
+                        <Subelement Path="9">
+                          <StartValue>''</StartValue>
+                        </Subelement>
+                        <Subelement Path="10">
+                          <StartValue>''</StartValue>
+                        </Subelement>
+                        <Subelement Path="11">
+                          <StartValue>''</StartValue>
+                        </Subelement>
+                        <Subelement Path="12">
+                          <StartValue>''</StartValue>
+                        </Subelement>
+                        <Subelement Path="13">
+                          <StartValue>''</StartValue>
+                        </Subelement>
+                        <Subelement Path="14">
+                          <StartValue>''</StartValue>
+                        </Subelement>
+                        <Subelement Path="15">
+                          <StartValue>''</StartValue>
+                        </Subelement>
+                      </Member>
+                    </Section>
+                  </Sections>
+                </Member>
+              </Section>
+            </Sections>
+          </Member>
+        </Section>
+      </Sections>
+    </Member>
+    <Member Name="cmMasterVirtualAxis" Datatype="&quot;LBC_typeAxis64PosInterface&quot;">
+      <AttributeList>
+        <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="cmUnwinderVirtualAxis" Datatype="&quot;LBC_typeAxis64PosInterface&quot;">
+      <Sections>
+        <Section Name="None">
+          <Member Name="commandConfiguration" Datatype="&quot;LAxisCtrl_typeAxisConfig&quot;">
+            <Sections>
+              <Section Name="None">
+                <Member Name="generalSettings" Datatype="&quot;LAxisCtrl_typeGeneralSettings&quot;">
+                  <Sections>
+                    <Section Name="None">
+                      <Member Name="stopOnError" Datatype="Bool">
+                        <StartValue>TRUE</StartValue>
+                      </Member>
+                      <Member Name="resetWithRestart" Datatype="Bool">
+                        <StartValue>FALSE</StartValue>
+                      </Member>
+                      <Member Name="abortWaitingSyncCmd" Datatype="Bool">
+                        <StartValue>TRUE</StartValue>
+                      </Member>
+                    </Section>
+                  </Sections>
+                </Member>
+                <Member Name="power" Datatype="&quot;LAxisCtrl_typePower&quot;">
+                  <Sections>
+                    <Section Name="None">
+                      <Member Name="startMode" Datatype="DInt">
+                        <StartValue>1</StartValue>
+                      </Member>
+                      <Member Name="stopMode" Datatype="Int">
+                        <StartValue>0</StartValue>
+                      </Member>
+                      <Member Name="syncMotionSimulation" Datatype="Bool">
+                        <StartValue>FALSE</StartValue>
+                      </Member>
+                      <Member Name="syncMotionSimulationExtendedMode" Datatype="Int">
+                        <StartValue>-1</StartValue>
+                      </Member>
+                    </Section>
+                  </Sections>
+                </Member>
+                <Member Name="jog" Datatype="&quot;LAxisCtrl_typeJog&quot;">
+                  <Sections>
+                    <Section Name="None">
+                      <Member Name="velocity" Datatype="LReal">
+                        <StartValue>0.0</StartValue>
+                      </Member>
+                      <Member Name="acceleration" Datatype="LReal">
+                        <StartValue>-1.0</StartValue>
+                      </Member>
+                      <Member Name="deceleration" Datatype="LReal">
+                        <StartValue>-1.0</StartValue>
+                      </Member>
+                      <Member Name="jerk" Datatype="LReal">
+                        <StartValue>-1.0</StartValue>
+                      </Member>
+                      <Member Name="positionControlled" Datatype="Bool">
+                        <StartValue>TRUE</StartValue>
+                      </Member>
+                      <Member Name="increment" Datatype="LReal">
+                        <StartValue>0.0</StartValue>
+                      </Member>
+                      <Member Name="mode" Datatype="DInt">
+                        <StartValue>0</StartValue>
+                      </Member>
+                    </Section>
+                  </Sections>
+                </Member>
+                <Member Name="moveVelocity" Datatype="&quot;LAxisCtrl_typeMoveVelocity&quot;">
+                  <Sections>
+                    <Section Name="None">
+                      <Member Name="velocity" Datatype="LReal">
+                        <StartValue>0.0</StartValue>
+                      </Member>
+                      <Member Name="acceleration" Datatype="LReal">
+                        <StartValue>-1.0</StartValue>
+                      </Member>
+                      <Member Name="deceleration" Datatype="LReal">
+                        <StartValue>-1.0</StartValue>
+                      </Member>
+                      <Member Name="jerk" Datatype="LReal">
+                        <StartValue>-1.0</StartValue>
+                      </Member>
+                      <Member Name="direction" Datatype="Int">
+                        <StartValue>0</StartValue>
+                      </Member>
+                      <Member Name="positionControlled" Datatype="Bool">
+                        <StartValue>TRUE</StartValue>
+                      </Member>
+                      <Member Name="velocityChangeOnTheFly" Datatype="Bool">
+                        <StartValue>FALSE</StartValue>
+                      </Member>
+                    </Section>
+                  </Sections>
+                </Member>
+                <Member Name="stop" Datatype="&quot;LAxisCtrl_typeStop&quot;">
+                  <Sections>
+                    <Section Name="None">
+                      <Member Name="deceleration" Datatype="LReal">
+                        <StartValue>-1.0</StartValue>
+                      </Member>
+                      <Member Name="jerk" Datatype="LReal">
+                        <StartValue>-1.0</StartValue>
+                      </Member>
+                      <Member Name="abortAcceleration" Datatype="Bool">
+                        <StartValue>FALSE</StartValue>
+                      </Member>
+                    </Section>
+                  </Sections>
+                </Member>
+                <Member Name="fastStop" Datatype="&quot;LAxisCtrl_typeFastStop&quot;">
+                  <Sections>
+                    <Section Name="None">
+                      <Member Name="deceleration" Datatype="LReal">
+                        <StartValue>-1.0</StartValue>
+                      </Member>
+                      <Member Name="jerk" Datatype="LReal">
+                        <StartValue>-1.0</StartValue>
+                      </Member>
+                      <Member Name="abortAcceleration" Datatype="Bool">
+                        <StartValue>FALSE</StartValue>
+                      </Member>
+                      <Member Name="replaceStopPossible" Datatype="Bool">
+                        <StartValue>FALSE</StartValue>
+                      </Member>
+                    </Section>
+                  </Sections>
+                </Member>
+                <Member Name="torqueLimiting" Datatype="&quot;LAxisCtrl_typeTorqueLimiting&quot;">
+                  <Sections>
+                    <Section Name="None">
+                      <Member Name="limit" Datatype="LReal">
+                        <StartValue>-1.0</StartValue>
+                      </Member>
+                      <Member Name="mode" Datatype="DInt">
+                        <StartValue>0</StartValue>
+                      </Member>
+                    </Section>
+                  </Sections>
+                </Member>
+                <Member Name="homing" Datatype="&quot;LAxisCtrl_typeHoming&quot;">
+                  <Sections>
+                    <Section Name="None">
+                      <Member Name="position" Datatype="LReal">
+                        <StartValue>0.0</StartValue>
+                      </Member>
+                      <Member Name="mode" Datatype="Int">
+                        <StartValue>0</StartValue>
+                      </Member>
+                      <Member Name="sensor" Datatype="DInt">
+                        <StartValue>0</StartValue>
+                      </Member>
+                      <Member Name="extendedMode" Datatype="DInt">
+                        <StartValue>-1</StartValue>
+                      </Member>
+                      <Member Name="extendedModeTorqueLimit" Datatype="LReal">
+                        <StartValue>0.0</StartValue>
+                      </Member>
+                      <Member Name="extendedModeTargetPosition" Datatype="LReal">
+                        <StartValue>0.0</StartValue>
+                      </Member>
+                    </Section>
+                  </Sections>
+                </Member>
+                <Member Name="posRelative" Datatype="&quot;LAxisCtrl_typePosRelative&quot;">
+                  <Sections>
+                    <Section Name="None">
+                      <Member Name="distance" Datatype="LReal">
+                        <StartValue>0.0</StartValue>
+                      </Member>
+                      <Member Name="velocity" Datatype="LReal">
+                        <StartValue>0.0</StartValue>
+                      </Member>
+                      <Member Name="acceleration" Datatype="LReal">
+                        <StartValue>-1.0</StartValue>
+                      </Member>
+                      <Member Name="deceleration" Datatype="LReal">
+                        <StartValue>-1.0</StartValue>
+                      </Member>
+                      <Member Name="jerk" Datatype="LReal">
+                        <StartValue>-1.0</StartValue>
+                      </Member>
+                      <Member Name="direction" Datatype="DInt">
+                        <StartValue>0</StartValue>
+                      </Member>
+                    </Section>
+                  </Sections>
+                </Member>
+                <Member Name="posAbsolute" Datatype="&quot;LAxisCtrl_typePosAbsolute&quot;">
+                  <Sections>
+                    <Section Name="None">
+                      <Member Name="position" Datatype="LReal">
+                        <StartValue>0.0</StartValue>
+                      </Member>
+                      <Member Name="velocity" Datatype="LReal">
+                        <StartValue>0.0</StartValue>
+                      </Member>
+                      <Member Name="acceleration" Datatype="LReal">
+                        <StartValue>-1.0</StartValue>
+                      </Member>
+                      <Member Name="deceleration" Datatype="LReal">
+                        <StartValue>-1.0</StartValue>
+                      </Member>
+                      <Member Name="jerk" Datatype="LReal">
+                        <StartValue>-1.0</StartValue>
+                      </Member>
+                      <Member Name="direction" Datatype="Int">
+                        <StartValue>1</StartValue>
+                      </Member>
+                      <Member Name="positionChangeOnTheFly" Datatype="Bool">
+                        <StartValue>FALSE</StartValue>
+                      </Member>
+                      <Member Name="velocityChangeOnTheFly" Datatype="Bool">
+                        <StartValue>FALSE</StartValue>
+                      </Member>
+                    </Section>
+                  </Sections>
+                </Member>
+                <Member Name="posSuperimposed" Datatype="&quot;LAxisCtrl_typePosSuperimposed&quot;">
+                  <Sections>
+                    <Section Name="None">
+                      <Member Name="distance" Datatype="LReal">
+                        <StartValue>0.0</StartValue>
+                      </Member>
+                      <Member Name="velocityDiff" Datatype="LReal">
+                        <StartValue>-1.0</StartValue>
+                      </Member>
+                      <Member Name="acceleration" Datatype="LReal">
+                        <StartValue>-1.0</StartValue>
+                      </Member>
+                      <Member Name="deceleration" Datatype="LReal">
+                        <StartValue>-1.0</StartValue>
+                      </Member>
+                      <Member Name="jerk" Datatype="LReal">
+                        <StartValue>-1.0</StartValue>
+                      </Member>
+                      <Member Name="direction" Datatype="DInt">
+                        <StartValue>0</StartValue>
+                      </Member>
+                    </Section>
+                  </Sections>
+                </Member>
+                <Member Name="haltSuperimposed" Datatype="&quot;LAxisCtrl_typeHaltSuperimposed&quot;">
+                  <Sections>
+                    <Section Name="None">
+                      <Member Name="deceleration" Datatype="LReal">
+                        <StartValue>-1.0</StartValue>
+                      </Member>
+                      <Member Name="jerk" Datatype="LReal">
+                        <StartValue>-1.0</StartValue>
+                      </Member>
+                      <Member Name="abortAcceleration" Datatype="Bool">
+                        <StartValue>FALSE</StartValue>
+                      </Member>
+                    </Section>
+                  </Sections>
+                </Member>
+                <Member Name="gearInRelative" Datatype="&quot;LAxisCtrl_typeGearInRelative&quot;">
+                  <Sections>
+                    <Section Name="None">
+                      <Member Name="ratioNumerator" Datatype="DInt">
+                        <StartValue>1</StartValue>
+                      </Member>
+                      <Member Name="ratioDenominator" Datatype="DInt">
+                        <StartValue>1</StartValue>
+                      </Member>
+                      <Member Name="acceleration" Datatype="LReal">
+                        <StartValue>-1.0</StartValue>
+                      </Member>
+                      <Member Name="deceleration" Datatype="LReal">
+                        <StartValue>-1.0</StartValue>
+                      </Member>
+                      <Member Name="jerk" Datatype="LReal">
+                        <StartValue>-1.0</StartValue>
+                      </Member>
+                      <Member Name="ratioChangeOnTheFly" Datatype="Bool">
+                        <StartValue>FALSE</StartValue>
+                      </Member>
+                    </Section>
+                  </Sections>
+                </Member>
+                <Member Name="gearInAbsolute" Datatype="&quot;LAxisCtrl_typeGearInAbsolute&quot;">
+                  <Sections>
+                    <Section Name="None">
+                      <Member Name="ratioNumerator" Datatype="DInt">
+                        <StartValue>1</StartValue>
+                      </Member>
+                      <Member Name="ratioDenominator" Datatype="DInt">
+                        <StartValue>1</StartValue>
+                      </Member>
+                      <Member Name="masterSyncPosition" Datatype="LReal">
+                        <StartValue>0.0</StartValue>
+                      </Member>
+                      <Member Name="slaveSyncPosition" Datatype="LReal">
+                        <StartValue>0.0</StartValue>
+                      </Member>
+                      <Member Name="syncProfileReference" Datatype="DInt">
+                        <StartValue>1</StartValue>
+                      </Member>
+                      <Member Name="masterStartDistance" Datatype="LReal">
+                        <StartValue>0.0</StartValue>
+                      </Member>
+                      <Member Name="velocity" Datatype="LReal">
+                        <StartValue>-1.0</StartValue>
+                      </Member>
+                      <Member Name="acceleration" Datatype="LReal">
+                        <StartValue>-1.0</StartValue>
+                      </Member>
+                      <Member Name="deceleration" Datatype="LReal">
+                        <StartValue>-1.0</StartValue>
+                      </Member>
+                      <Member Name="jerk" Datatype="LReal">
+                        <StartValue>-1.0</StartValue>
+                      </Member>
+                      <Member Name="syncDirection" Datatype="DInt">
+                        <StartValue>1</StartValue>
+                      </Member>
+                      <Member Name="ratioChangeOnTheFly" Datatype="Bool">
+                        <StartValue>FALSE</StartValue>
+                      </Member>
+                    </Section>
+                  </Sections>
+                </Member>
+                <Member Name="gearInVelocity" Datatype="&quot;LAxisCtrl_typeGearInVelocity&quot;">
+                  <Sections>
+                    <Section Name="None">
+                      <Member Name="continuousUpdate" Datatype="Bool">
+                        <StartValue>FALSE</StartValue>
+                      </Member>
+                      <Member Name="ratioNumerator" Datatype="DInt">
+                        <StartValue>1</StartValue>
+                      </Member>
+                      <Member Name="ratioDenominator" Datatype="DInt">
+                        <StartValue>1</StartValue>
+                      </Member>
+                      <Member Name="acceleration" Datatype="LReal">
+                        <StartValue>-1.0</StartValue>
+                      </Member>
+                      <Member Name="deceleration" Datatype="LReal">
+                        <StartValue>-1.0</StartValue>
+                      </Member>
+                      <Member Name="jerk" Datatype="LReal">
+                        <StartValue>-1.0</StartValue>
+                      </Member>
+                      <Member Name="positionControlled" Datatype="Bool">
+                        <StartValue>FALSE</StartValue>
+                      </Member>
+                    </Section>
+                  </Sections>
+                </Member>
+                <Member Name="camIn" Datatype="&quot;LAxisCtrl_typeCamIn&quot;">
+                  <Sections>
+                    <Section Name="None">
+                      <Member Name="masterOffset" Datatype="LReal">
+                        <StartValue>0.0</StartValue>
+                      </Member>
+                      <Member Name="slaveOffset" Datatype="LReal">
+                        <StartValue>0.0</StartValue>
+                      </Member>
+                      <Member Name="masterScaling" Datatype="LReal">
+                        <StartValue>1.0</StartValue>
+                      </Member>
+                      <Member Name="slaveScaling" Datatype="LReal">
+                        <StartValue>1.0</StartValue>
+                      </Member>
+                      <Member Name="masterSyncPosition" Datatype="LReal">
+                        <StartValue>0.0</StartValue>
+                      </Member>
+                      <Member Name="syncProfileReference" Datatype="DInt">
+                        <StartValue>1</StartValue>
+                      </Member>
+                      <Member Name="masterStartDistance" Datatype="LReal">
+                        <StartValue>0.0</StartValue>
+                      </Member>
+                      <Member Name="velocity" Datatype="LReal">
+                        <StartValue>-1.0</StartValue>
+                      </Member>
+                      <Member Name="acceleration" Datatype="LReal">
+                        <StartValue>-1.0</StartValue>
+                      </Member>
+                      <Member Name="deceleration" Datatype="LReal">
+                        <StartValue>-1.0</StartValue>
+                      </Member>
+                      <Member Name="jerk" Datatype="LReal">
+                        <StartValue>-1.0</StartValue>
+                      </Member>
+                      <Member Name="applicationMode" Datatype="DInt">
+                        <StartValue>0</StartValue>
+                      </Member>
+                      <Member Name="syncDirection" Datatype="DInt">
+                        <StartValue>1</StartValue>
+                      </Member>
+                    </Section>
+                  </Sections>
+                </Member>
+                <Member Name="gearOutCamOut" Datatype="&quot;LAxisCtrl_typeGearOutCamOut&quot;">
+                  <Sections>
+                    <Section Name="None">
+                      <Member Name="slavePosition" Datatype="LReal">
+                        <StartValue>0.0</StartValue>
+                      </Member>
+                      <Member Name="syncProfileReference" Datatype="DInt">
+                        <StartValue>1</StartValue>
+                      </Member>
+                      <Member Name="masterStopDistance" Datatype="LReal">
+                        <StartValue>0.0</StartValue>
+                      </Member>
+                      <Member Name="deceleration" Datatype="LReal">
+                        <StartValue>-1.0</StartValue>
+                      </Member>
+                      <Member Name="jerk" Datatype="LReal">
+                        <StartValue>-1.0</StartValue>
+                      </Member>
+                      <Member Name="syncOutDirection" Datatype="DInt">
+                        <StartValue>3</StartValue>
+                      </Member>
+                      <Member Name="gearOutCamOutMode" Datatype="DInt">
+                        <StartValue>-1</StartValue>
+                      </Member>
+                    </Section>
+                  </Sections>
+                </Member>
+                <Member Name="phasing" Datatype="&quot;LAxisCtrl_typePhasing&quot;">
+                  <Sections>
+                    <Section Name="None">
+                      <Member Name="phaseShift" Datatype="LReal">
+                        <StartValue>0.0</StartValue>
+                      </Member>
+                      <Member Name="velocity" Datatype="LReal">
+                        <StartValue>-1.0</StartValue>
+                      </Member>
+                      <Member Name="acceleration" Datatype="LReal">
+                        <StartValue>-1.0</StartValue>
+                      </Member>
+                      <Member Name="deceleration" Datatype="LReal">
+                        <StartValue>-1.0</StartValue>
+                      </Member>
+                      <Member Name="jerk" Datatype="LReal">
+                        <StartValue>-1.0</StartValue>
+                      </Member>
+                      <Member Name="profileReference" Datatype="DInt">
+                        <StartValue>0</StartValue>
+                      </Member>
+                      <Member Name="phasingDistance" Datatype="LReal">
+                        <StartValue>0.0</StartValue>
+                      </Member>
+                      <Member Name="startPosition" Datatype="LReal">
+                        <StartValue>0.0</StartValue>
+                      </Member>
+                      <Member Name="direction" Datatype="DInt">
+                        <StartValue>3</StartValue>
+                      </Member>
+                      <Member Name="phaseAbsolute" Datatype="Bool">
+                        <StartValue>TRUE</StartValue>
+                      </Member>
+                      <Member Name="phaseShiftChangeOnTheFly" Datatype="Bool">
+                        <StartValue>FALSE</StartValue>
+                      </Member>
+                    </Section>
+                  </Sections>
+                </Member>
+                <Member Name="offset" Datatype="&quot;LAxisCtrl_typeOffset&quot;">
+                  <Sections>
+                    <Section Name="None">
+                      <Member Name="offset" Datatype="LReal">
+                        <StartValue>0.0</StartValue>
+                      </Member>
+                      <Member Name="profileReference" Datatype="DInt">
+                        <StartValue>1</StartValue>
+                      </Member>
+                      <Member Name="offsetDistance" Datatype="LReal">
+                        <StartValue>0.0</StartValue>
+                      </Member>
+                      <Member Name="startPosition" Datatype="LReal">
+                        <StartValue>0.0</StartValue>
+                      </Member>
+                      <Member Name="direction" Datatype="DInt">
+                        <StartValue>3</StartValue>
+                      </Member>
+                      <Member Name="offsetAbsolute" Datatype="Bool">
+                        <StartValue>TRUE</StartValue>
+                      </Member>
+                      <Member Name="offsetChangeOnTheFly" Datatype="Bool">
+                        <StartValue>FALSE</StartValue>
+                      </Member>
+                    </Section>
+                  </Sections>
+                </Member>
+              </Section>
+            </Sections>
+          </Member>
+          <Member Name="commands" Datatype="&quot;LBC_typeAxis64PosManualCommands&quot;">
+            <Sections>
+              <Section Name="None">
+                <Member Name="enableMasterControl" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="enableAxis" Datatype="Bool">
+                  <StartValue>TRUE</StartValue>
+                </Member>
+                <Member Name="resetAxis" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="openBrake" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="jogForward" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="jogBackward" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="moveVelocity" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="stop" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="fastStop" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="torqueLimiting" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="homing" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="posRelative" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="posAbsolute" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="posSuperimposed" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="haltSuperimposed" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="selectSetPosition" Datatype="SInt">
+                  <StartValue>-1</StartValue>
+                </Member>
+                <Member Name="uploadParameters" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="refreshConfiguration" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="editConfiguration" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="saveConfiguration" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="uploadCurrentTorque" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="reset" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+              </Section>
+            </Sections>
+          </Member>
+          <Member Name="monitoring" Datatype="&quot;LBC_typeAxis64PosProcessValues&quot;">
+            <Sections>
+              <Section Name="None">
+                <Member Name="enable" Datatype="Bool">
+                  <StartValue>TRUE</StartValue>
+                </Member>
+                <Member Name="referenceDesignator" Datatype="WString[154]">
+                  <StartValue>WSTRING#'U1.EM3 WebGuide.Axis64Pos'</StartValue>
+                </Member>
+                <Member Name="enabled" Datatype="Bool">
+                  <StartValue>TRUE</StartValue>
+                </Member>
+                <Member Name="enableManualCmds" Datatype="Bool">
+                  <StartValue>TRUE</StartValue>
+                </Member>
+                <Member Name="reset" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="resetAxis" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="enableAxis" Datatype="Bool">
+                  <StartValue>TRUE</StartValue>
+                </Member>
+                <Member Name="openBrake" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="jogBackward" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="jogForward" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="moveVelocity" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="stop" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="fastStop" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="torqueLimiting" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="homing" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="posRelative" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="posAbsolute" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="posSuperimposed" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="haltSuperimposed" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="brakeOpened" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="axisEnabled" Datatype="Bool">
+                  <StartValue>TRUE</StartValue>
+                </Member>
+                <Member Name="resetActive" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="inVelocity" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="inLimitation" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="inClamping" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="startSync" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="inSync" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="inSimulation" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="jogSelected" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="moveVelocitySelected" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="stopSelected" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="fastStopSelected" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="torqueLimitingSelected" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="homingSelected" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="posRelativeSelected" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="posAbsoluteSelected" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="posSuperimposedSelected" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="haltSuperimposedSelected" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="commandBusy" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="commandDone" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="commandAborted" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="homingCommandBusy" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="homingCommandDone" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="homingCommandAborted" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="superimposedBusy" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="superimposedDone" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="superimposedAborted" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="selectSetPosition" Datatype="SInt">
+                  <StartValue>-1</StartValue>
+                </Member>
+                <Member Name="selectionController" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="interlockGeneral" Datatype="Bool">
+                  <StartValue>TRUE</StartValue>
+                </Member>
+                <Member Name="interlockJogForward" Datatype="Bool">
+                  <StartValue>TRUE</StartValue>
+                </Member>
+                <Member Name="interlockJogBackward" Datatype="Bool">
+                  <StartValue>TRUE</StartValue>
+                </Member>
+                <Member Name="interlockWarningGeneral" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="interlockWarningJogForward" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="interlockWarningJogBackward" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="valid" Datatype="Bool">
+                  <StartValue>TRUE</StartValue>
+                </Member>
+                <Member Name="busy" Datatype="Bool">
+                  <StartValue>TRUE</StartValue>
+                </Member>
+                <Member Name="error" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="status" Datatype="Word">
+                  <StartValue>16#7002</StartValue>
+                </Member>
+                <Member Name="subfunctionStatus" Datatype="Word">
+                  <StartValue>16#0000</StartValue>
+                </Member>
+                <Member Name="actualPosition" Datatype="LReal">
+                  <StartValue>0.0</StartValue>
+                </Member>
+                <Member Name="actualSpeed" Datatype="LReal">
+                  <StartValue>0.0</StartValue>
+                </Member>
+                <Member Name="speedUnit" Datatype="UDInt">
+                  <StartValue>1062</StartValue>
+                </Member>
+                <Member Name="positionUnit" Datatype="UDInt">
+                  <StartValue>1013</StartValue>
+                </Member>
+                <Member Name="axisType" Datatype="DInt">
+                  <StartValue>1</StartValue>
+                </Member>
+                <Member Name="maxVelocity" Datatype="LReal">
+                  <StartValue>500.0</StartValue>
+                </Member>
+                <Member Name="actualCurrent" Datatype="LReal">
+                  <StartValue>0.0</StartValue>
+                </Member>
+                <Member Name="actualTorque" Datatype="LReal">
+                  <StartValue>0.0</StartValue>
+                </Member>
+                <Member Name="velocityOverrideEnabled" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="sinaParaError" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="sinaParaStatus" Datatype="DWord">
+                  <StartValue>16#0000_0000</StartValue>
+                </Member>
+              </Section>
+            </Sections>
+          </Member>
+          <Member Name="configuration" Datatype="&quot;LBC_typeAxis64PosConfiguration&quot;">
+            <Sections>
+              <Section Name="None">
+                <Member Name="referenceDesignator" Datatype="WString[25]">
+                  <StartValue>WSTRING#'Axis64Pos'</StartValue>
+                </Member>
+                <Member Name="disableAlarms" Datatype="Bool">
+                  <StartValue>TRUE</StartValue>
+                </Member>
+                <Member Name="masterControlPopUp" Datatype="Bool">
+                  <StartValue>TRUE</StartValue>
+                </Member>
+                <Member Name="setPositions" Datatype="Array[0..15] of &quot;LBC_typeAxis64PosSetPosition&quot;">
+                  <Sections>
+                    <Section Name="None">
+                      <Member Name="position" Datatype="LReal">
+                        <Subelement Path="0">
+                          <StartValue>0.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="1">
+                          <StartValue>0.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="2">
+                          <StartValue>0.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="3">
+                          <StartValue>0.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="4">
+                          <StartValue>0.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="5">
+                          <StartValue>0.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="6">
+                          <StartValue>0.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="7">
+                          <StartValue>0.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="8">
+                          <StartValue>0.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="9">
+                          <StartValue>0.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="10">
+                          <StartValue>0.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="11">
+                          <StartValue>0.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="12">
+                          <StartValue>0.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="13">
+                          <StartValue>0.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="14">
+                          <StartValue>0.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="15">
+                          <StartValue>0.0</StartValue>
+                        </Subelement>
+                      </Member>
+                      <Member Name="velocity" Datatype="LReal">
+                        <Subelement Path="0">
+                          <StartValue>-1.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="1">
+                          <StartValue>-1.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="2">
+                          <StartValue>-1.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="3">
+                          <StartValue>-1.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="4">
+                          <StartValue>-1.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="5">
+                          <StartValue>-1.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="6">
+                          <StartValue>-1.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="7">
+                          <StartValue>-1.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="8">
+                          <StartValue>-1.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="9">
+                          <StartValue>-1.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="10">
+                          <StartValue>-1.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="11">
+                          <StartValue>-1.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="12">
+                          <StartValue>-1.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="13">
+                          <StartValue>-1.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="14">
+                          <StartValue>-1.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="15">
+                          <StartValue>-1.0</StartValue>
+                        </Subelement>
+                      </Member>
+                      <Member Name="acceleration" Datatype="LReal">
+                        <Subelement Path="0">
+                          <StartValue>-1.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="1">
+                          <StartValue>-1.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="2">
+                          <StartValue>-1.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="3">
+                          <StartValue>-1.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="4">
+                          <StartValue>-1.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="5">
+                          <StartValue>-1.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="6">
+                          <StartValue>-1.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="7">
+                          <StartValue>-1.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="8">
+                          <StartValue>-1.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="9">
+                          <StartValue>-1.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="10">
+                          <StartValue>-1.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="11">
+                          <StartValue>-1.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="12">
+                          <StartValue>-1.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="13">
+                          <StartValue>-1.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="14">
+                          <StartValue>-1.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="15">
+                          <StartValue>-1.0</StartValue>
+                        </Subelement>
+                      </Member>
+                      <Member Name="deceleration" Datatype="LReal">
+                        <Subelement Path="0">
+                          <StartValue>-1.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="1">
+                          <StartValue>-1.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="2">
+                          <StartValue>-1.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="3">
+                          <StartValue>-1.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="4">
+                          <StartValue>-1.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="5">
+                          <StartValue>-1.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="6">
+                          <StartValue>-1.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="7">
+                          <StartValue>-1.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="8">
+                          <StartValue>-1.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="9">
+                          <StartValue>-1.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="10">
+                          <StartValue>-1.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="11">
+                          <StartValue>-1.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="12">
+                          <StartValue>-1.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="13">
+                          <StartValue>-1.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="14">
+                          <StartValue>-1.0</StartValue>
+                        </Subelement>
+                        <Subelement Path="15">
+                          <StartValue>-1.0</StartValue>
+                        </Subelement>
+                      </Member>
+                      <Member Name="name" Datatype="String[32]">
+                        <Subelement Path="0">
+                          <StartValue>''</StartValue>
+                        </Subelement>
+                        <Subelement Path="1">
+                          <StartValue>''</StartValue>
+                        </Subelement>
+                        <Subelement Path="2">
+                          <StartValue>''</StartValue>
+                        </Subelement>
+                        <Subelement Path="3">
+                          <StartValue>''</StartValue>
+                        </Subelement>
+                        <Subelement Path="4">
+                          <StartValue>''</StartValue>
+                        </Subelement>
+                        <Subelement Path="5">
+                          <StartValue>''</StartValue>
+                        </Subelement>
+                        <Subelement Path="6">
+                          <StartValue>''</StartValue>
+                        </Subelement>
+                        <Subelement Path="7">
+                          <StartValue>''</StartValue>
+                        </Subelement>
+                        <Subelement Path="8">
+                          <StartValue>''</StartValue>
+                        </Subelement>
+                        <Subelement Path="9">
+                          <StartValue>''</StartValue>
+                        </Subelement>
+                        <Subelement Path="10">
+                          <StartValue>''</StartValue>
+                        </Subelement>
+                        <Subelement Path="11">
+                          <StartValue>''</StartValue>
+                        </Subelement>
+                        <Subelement Path="12">
+                          <StartValue>''</StartValue>
+                        </Subelement>
+                        <Subelement Path="13">
+                          <StartValue>''</StartValue>
+                        </Subelement>
+                        <Subelement Path="14">
+                          <StartValue>''</StartValue>
+                        </Subelement>
+                        <Subelement Path="15">
+                          <StartValue>''</StartValue>
+                        </Subelement>
+                      </Member>
+                    </Section>
+                  </Sections>
+                </Member>
+              </Section>
+            </Sections>
+          </Member>
+        </Section>
+      </Sections>
+    </Member>
+    <Member Name="cmDancerFwdBwd" Datatype="&quot;LBC_typeTwoWayActuatorInterface&quot;">
+      <Sections>
+        <Section Name="None">
+          <Member Name="commands" Datatype="&quot;LBC_typeTwoWayActuatorManualCommands&quot;">
+            <Sections>
+              <Section Name="None">
+                <Member Name="refreshConfiguration" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="editConfiguration" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="saveConfiguration" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="reset" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="commandHomePos" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="commandWorkPos" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+              </Section>
+            </Sections>
+          </Member>
+          <Member Name="monitoring" Datatype="&quot;LBC_typeTwoWayActuatorProcessValues&quot;">
+            <Sections>
+              <Section Name="None">
+                <Member Name="enable" Datatype="Bool">
+                  <StartValue>TRUE</StartValue>
+                </Member>
+                <Member Name="referenceDesignator" Datatype="WString[154]">
+                  <StartValue>WSTRING#'U1.EM3 WebGuide.cmDancerFwdBwd'</StartValue>
+                </Member>
+                <Member Name="commandHomePos" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="commandWorkPos" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="goToHomePos" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="goToWorkPos" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="inHomePos" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="inWorkPos" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="reset" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="enableManualCmds" Datatype="Bool">
+                  <StartValue>TRUE</StartValue>
+                </Member>
+                <Member Name="error" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="interlockHomePos" Datatype="Bool">
+                  <StartValue>TRUE</StartValue>
+                </Member>
+                <Member Name="interlockWorkPos" Datatype="Bool">
+                  <StartValue>TRUE</StartValue>
+                </Member>
+                <Member Name="status" Datatype="Word">
+                  <StartValue>16#7003</StartValue>
+                </Member>
+                <Member Name="interlockWarningWorkPos" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="interlockWarningHomePos" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+              </Section>
+            </Sections>
+          </Member>
+          <Member Name="configuration" Datatype="&quot;LBC_typeTwoWayActuatorConfiguration&quot;">
+            <Sections>
+              <Section Name="None">
+                <Member Name="referenceDesignator" Datatype="WString[25]">
+                  <StartValue>WSTRING#'cmDancerFwdBwd'</StartValue>
+                </Member>
+                <Member Name="monitoringLeavingFeedback" Datatype="Time">
+                  <StartValue>T#1S</StartValue>
+                </Member>
+                <Member Name="monitoringReachingFeedback" Datatype="Time">
+                  <StartValue>T#1S</StartValue>
+                </Member>
+                <Member Name="monitoringDiscrepancy" Datatype="Time">
+                  <StartValue>T#0MS</StartValue>
+                </Member>
+                <Member Name="setOutputHomeContinuously" Datatype="Bool">
+                  <StartValue>TRUE</StartValue>
+                </Member>
+                <Member Name="setOutputWorkContinuously" Datatype="Bool">
+                  <StartValue>TRUE</StartValue>
+                </Member>
+                <Member Name="disableHomeCommand" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="disableFeedbackHomePos" Datatype="Bool">
+                  <StartValue>TRUE</StartValue>
+                </Member>
+                <Member Name="disableFeedbackWorkPos" Datatype="Bool">
+                  <StartValue>TRUE</StartValue>
+                </Member>
+                <Member Name="disableAlarms" Datatype="Bool">
+                  <StartValue>TRUE</StartValue>
+                </Member>
+                <Member Name="resetOutputsOnError" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="allwaysWaitOnReachingTime" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+              </Section>
+            </Sections>
+          </Member>
+        </Section>
+      </Sections>
+    </Member>
+    <Member Name="cmSepaUnwinderIonizerTop" Datatype="&quot;LBC_typeTwoWayActuatorInterface&quot;">
+      <AttributeList>
+        <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+      </AttributeList>
+      <Sections>
+        <Section Name="None">
+          <Member Name="commands" Datatype="&quot;LBC_typeTwoWayActuatorManualCommands&quot;">
+            <Sections>
+              <Section Name="None">
+                <Member Name="refreshConfiguration" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="editConfiguration" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="saveConfiguration" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="reset" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="commandHomePos" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="commandWorkPos" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+              </Section>
+            </Sections>
+          </Member>
+          <Member Name="monitoring" Datatype="&quot;LBC_typeTwoWayActuatorProcessValues&quot;">
+            <Sections>
+              <Section Name="None">
+                <Member Name="enable" Datatype="Bool">
+                  <StartValue>TRUE</StartValue>
+                </Member>
+                <Member Name="referenceDesignator" Datatype="WString[154]">
+                  <StartValue>WSTRING#'U1.EM3 WebGuide.cmSepaUnwinderIonizerTop'</StartValue>
+                </Member>
+                <Member Name="commandHomePos" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="commandWorkPos" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="goToHomePos" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="goToWorkPos" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="inHomePos" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="inWorkPos" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="reset" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="enableManualCmds" Datatype="Bool">
+                  <StartValue>TRUE</StartValue>
+                </Member>
+                <Member Name="error" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="interlockHomePos" Datatype="Bool">
+                  <StartValue>TRUE</StartValue>
+                </Member>
+                <Member Name="interlockWorkPos" Datatype="Bool">
+                  <StartValue>TRUE</StartValue>
+                </Member>
+                <Member Name="status" Datatype="Word">
+                  <StartValue>16#7003</StartValue>
+                </Member>
+                <Member Name="interlockWarningWorkPos" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="interlockWarningHomePos" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+              </Section>
+            </Sections>
+          </Member>
+          <Member Name="configuration" Datatype="&quot;LBC_typeTwoWayActuatorConfiguration&quot;">
+            <Sections>
+              <Section Name="None">
+                <Member Name="referenceDesignator" Datatype="WString[25]">
+                  <StartValue>WSTRING#'cmSepaUnwinderIonizerTop'</StartValue>
+                </Member>
+                <Member Name="monitoringLeavingFeedback" Datatype="Time">
+                  <StartValue>T#5S</StartValue>
+                </Member>
+                <Member Name="monitoringReachingFeedback" Datatype="Time">
+                  <StartValue>T#5S</StartValue>
+                </Member>
+                <Member Name="monitoringDiscrepancy" Datatype="Time">
+                  <StartValue>T#0MS</StartValue>
+                </Member>
+                <Member Name="setOutputHomeContinuously" Datatype="Bool">
+                  <StartValue>TRUE</StartValue>
+                </Member>
+                <Member Name="setOutputWorkContinuously" Datatype="Bool">
+                  <StartValue>TRUE</StartValue>
+                </Member>
+                <Member Name="disableHomeCommand" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="disableFeedbackHomePos" Datatype="Bool">
+                  <StartValue>TRUE</StartValue>
+                </Member>
+                <Member Name="disableFeedbackWorkPos" Datatype="Bool">
+                  <StartValue>TRUE</StartValue>
+                </Member>
+                <Member Name="disableAlarms" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="resetOutputsOnError" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="allwaysWaitOnReachingTime" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+              </Section>
+            </Sections>
+          </Member>
+        </Section>
+      </Sections>
+    </Member>
+    <Member Name="cmSepaUnwinderIonizerBottom" Datatype="&quot;LBC_typeTwoWayActuatorInterface&quot;">
+      <AttributeList>
+        <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+      </AttributeList>
+      <Sections>
+        <Section Name="None">
+          <Member Name="commands" Datatype="&quot;LBC_typeTwoWayActuatorManualCommands&quot;">
+            <Sections>
+              <Section Name="None">
+                <Member Name="refreshConfiguration" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="editConfiguration" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="saveConfiguration" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="reset" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="commandHomePos" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="commandWorkPos" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+              </Section>
+            </Sections>
+          </Member>
+          <Member Name="monitoring" Datatype="&quot;LBC_typeTwoWayActuatorProcessValues&quot;">
+            <Sections>
+              <Section Name="None">
+                <Member Name="enable" Datatype="Bool">
+                  <StartValue>TRUE</StartValue>
+                </Member>
+                <Member Name="referenceDesignator" Datatype="WString[154]">
+                  <StartValue>WSTRING#'U1.EM3 WebGuide.cmSepaUnwinderIonizerBtm'</StartValue>
+                </Member>
+                <Member Name="commandHomePos" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="commandWorkPos" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="goToHomePos" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="goToWorkPos" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="inHomePos" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="inWorkPos" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="reset" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="enableManualCmds" Datatype="Bool">
+                  <StartValue>TRUE</StartValue>
+                </Member>
+                <Member Name="error" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="interlockHomePos" Datatype="Bool">
+                  <StartValue>TRUE</StartValue>
+                </Member>
+                <Member Name="interlockWorkPos" Datatype="Bool">
+                  <StartValue>TRUE</StartValue>
+                </Member>
+                <Member Name="status" Datatype="Word">
+                  <StartValue>16#7003</StartValue>
+                </Member>
+                <Member Name="interlockWarningWorkPos" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="interlockWarningHomePos" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+              </Section>
+            </Sections>
+          </Member>
+          <Member Name="configuration" Datatype="&quot;LBC_typeTwoWayActuatorConfiguration&quot;">
+            <Sections>
+              <Section Name="None">
+                <Member Name="referenceDesignator" Datatype="WString[25]">
+                  <StartValue>WSTRING#'cmSepaUnwinderIonizerBtm'</StartValue>
+                </Member>
+                <Member Name="monitoringLeavingFeedback" Datatype="Time">
+                  <StartValue>T#5S</StartValue>
+                </Member>
+                <Member Name="monitoringReachingFeedback" Datatype="Time">
+                  <StartValue>T#5S</StartValue>
+                </Member>
+                <Member Name="monitoringDiscrepancy" Datatype="Time">
+                  <StartValue>T#0MS</StartValue>
+                </Member>
+                <Member Name="setOutputHomeContinuously" Datatype="Bool">
+                  <StartValue>TRUE</StartValue>
+                </Member>
+                <Member Name="setOutputWorkContinuously" Datatype="Bool">
+                  <StartValue>TRUE</StartValue>
+                </Member>
+                <Member Name="disableHomeCommand" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="disableFeedbackHomePos" Datatype="Bool">
+                  <StartValue>TRUE</StartValue>
+                </Member>
+                <Member Name="disableFeedbackWorkPos" Datatype="Bool">
+                  <StartValue>TRUE</StartValue>
+                </Member>
+                <Member Name="disableAlarms" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="resetOutputsOnError" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+                <Member Name="allwaysWaitOnReachingTime" Datatype="Bool">
+                  <StartValue>FALSE</StartValue>
+                </Member>
+              </Section>
+            </Sections>
+          </Member>
+        </Section>
+      </Sections>
+    </Member>
+    <Member Name="cmEpcPivot" Datatype="&quot;LER_typeCON600Interface&quot;" />
+    <Member Name="motion" Datatype="Struct">
+      <Member Name="jobs" Datatype="&quot;LAF_typeJobsInterface&quot;">
+        <AttributeList>
+          <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+        </AttributeList>
+      </Member>
+      <Member Name="sequence" Datatype="&quot;LAF_typeSequenceInterface&quot;">
+        <AttributeList>
+          <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+        </AttributeList>
+      </Member>
+    </Member>
+    <Member Name="step" Datatype="Struct">
+      <Member Name="jobs" Datatype="&quot;LAF_typeJobsInterface&quot;">
+        <AttributeList>
+          <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+        </AttributeList>
+      </Member>
+      <Member Name="sequence" Datatype="&quot;LAF_typeSequenceInterface&quot;">
+        <AttributeList>
+          <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+        </AttributeList>
+      </Member>
+    </Member>
+    <Member Name="intCondition" Datatype="Struct">
+      <Member Name="Axis_03" Datatype="&quot;LER.typeAxisIntlockAll&quot;">
+        <AttributeList>
+          <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+        </AttributeList>
+        <Comment>
+          <MultiLanguageText Lang="en-US">compenastor X</MultiLanguageText>
+        </Comment>
+      </Member>
+      <Member Name="Actuator_10" Datatype="&quot;LER.typeAxisActuatorCondition&quot;">
+        <AttributeList>
+          <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+        </AttributeList>
+        <Comment>
+          <MultiLanguageText Lang="en-US">DancerFwdBwd</MultiLanguageText>
+        </Comment>
+      </Member>
+      <Member Name="Actuator_11" Datatype="&quot;LER.typeAxisActuatorCondition&quot;">
+        <AttributeList>
+          <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+        </AttributeList>
+        <Comment>
+          <MultiLanguageText Lang="en-US">SepaUnwinderIonizer</MultiLanguageText>
+        </Comment>
+      </Member>
+      <Member Name="Actuator_12" Datatype="&quot;LER.typeAxisActuatorCondition&quot;">
+        <AttributeList>
+          <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+        </AttributeList>
+        <Comment>
+          <MultiLanguageText Lang="en-US">SepaUnwinderIonizerBottom</MultiLanguageText>
+        </Comment>
+      </Member>
+    </Member>
+  </Section>
+</Sections></Interface>
+      <MemoryReserve>100</MemoryReserve>
+      <Name>HmiInterface</Name>
+      <Namespace>Unit1.Em3</Namespace>
+      <Number>95</Number>
+      <ProgrammingLanguage>DB</ProgrammingLanguage>
+    </AttributeList>
+    <ObjectList>
+      <MultilingualText ID="1" CompositionName="Comment">
+        <ObjectList>
+          <MultilingualTextItem ID="2" CompositionName="Items">
+            <AttributeList>
+              <Culture>de-DE</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="3" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-GB</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="4" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-US</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="5" CompositionName="Items">
+            <AttributeList>
+              <Culture>es-ES</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="6" CompositionName="Items">
+            <AttributeList>
+              <Culture>fr-FR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="7" CompositionName="Items">
+            <AttributeList>
+              <Culture>it-IT</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="8" CompositionName="Items">
+            <AttributeList>
+              <Culture>ko-KR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="9" CompositionName="Items">
+            <AttributeList>
+              <Culture>zh-CN</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+        </ObjectList>
+      </MultilingualText>
+      <MultilingualText ID="A" CompositionName="Title">
+        <ObjectList>
+          <MultilingualTextItem ID="B" CompositionName="Items">
+            <AttributeList>
+              <Culture>de-DE</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="C" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-GB</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="D" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-US</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="E" CompositionName="Items">
+            <AttributeList>
+              <Culture>es-ES</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="F" CompositionName="Items">
+            <AttributeList>
+              <Culture>fr-FR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="10" CompositionName="Items">
+            <AttributeList>
+              <Culture>it-IT</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="11" CompositionName="Items">
+            <AttributeList>
+              <Culture>ko-KR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="12" CompositionName="Items">
+            <AttributeList>
+              <Culture>zh-CN</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+        </ObjectList>
+      </MultilingualText>
+    </ObjectList>
+  </SW.Blocks.GlobalDB>
+</Document>

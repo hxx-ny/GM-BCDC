@@ -1,0 +1,1413 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Document>
+  <Engineering version="V20" />
+  <SW.Blocks.FC ID="0">
+    <AttributeList>
+      <Access>Published</Access>
+      <Interface><Sections xmlns="http://www.siemens.com/automation/Openness/SW/Interface/v5">
+  <Section Name="Input">
+    <Member Name="hmiMode" Datatype="Int">
+      <Comment>
+        <MultiLanguageText Lang="en-US">1:L2R Large, 2:L2R Samll, 3:R2L Large, 4:R2L Small</MultiLanguageText>
+      </Comment>
+    </Member>
+    <Member Name="hmiMinLimit" Datatype="LReal">
+      <Comment>
+        <MultiLanguageText Lang="en-US">TO_Software Min Limit</MultiLanguageText>
+      </Comment>
+    </Member>
+    <Member Name="hmiMaxLimit" Datatype="LReal">
+      <Comment>
+        <MultiLanguageText Lang="en-US">TO_Software Max Limit</MultiLanguageText>
+      </Comment>
+    </Member>
+    <Member Name="axisActualPos" Datatype="LReal" />
+    <Member Name="referenceDesignator" Datatype="WString" />
+  </Section>
+  <Section Name="Output">
+    <Member Name="simHmiAxis" Datatype="&quot;LER_typeSimLinearAxis&quot;" />
+  </Section>
+  <Section Name="InOut" />
+  <Section Name="Temp">
+    <Member Name="t_ratio" Datatype="LReal" />
+    <Member Name="t_axisTravelDistance" Datatype="LReal" />
+    <Member Name="t_hmiPositionLReal" Datatype="LReal" />
+    <Member Name="t_hmiTravleDistance" Datatype="Int" />
+  </Section>
+  <Section Name="Constant">
+    <Member Name="L2R_LARGE_MIN_PIXEL" Datatype="Int">
+      <StartValue>72</StartValue>
+    </Member>
+    <Member Name="L2R_LARGE_MAX_PIXEL" Datatype="Int">
+      <StartValue>632</StartValue>
+    </Member>
+    <Member Name="L2R_SMALL_MIN_PIXEL" Datatype="Int">
+      <StartValue>72</StartValue>
+    </Member>
+    <Member Name="L2R_SMALL_MAX_PIXEL" Datatype="Int">
+      <StartValue>192</StartValue>
+    </Member>
+    <Member Name="R2L_LARGE_MIN_PIXEL" Datatype="Int">
+      <StartValue>0</StartValue>
+    </Member>
+    <Member Name="R2L_LARGE_MAX_PIXEL" Datatype="Int">
+      <StartValue>560</StartValue>
+    </Member>
+    <Member Name="R2L_SMALL_MIN_PIXEL" Datatype="Int">
+      <StartValue>0</StartValue>
+    </Member>
+    <Member Name="R2L_SMALL_MAX_PIXEL" Datatype="Int">
+      <StartValue>120</StartValue>
+    </Member>
+  </Section>
+  <Section Name="Return">
+    <Member Name="Ret_Val" Datatype="Void" />
+  </Section>
+</Sections></Interface>
+      <IsIECCheckEnabled>true</IsIECCheckEnabled>
+      <Name>LER_SimHmiLinearAxis</Name>
+      <Namespace />
+      <Number>36</Number>
+      <ProgrammingLanguage>LAD</ProgrammingLanguage>
+      <SetENOAutomatically>true</SetENOAutomatically>
+    </AttributeList>
+    <ObjectList>
+      <MultilingualText ID="1" CompositionName="Comment">
+        <ObjectList>
+          <MultilingualTextItem ID="2" CompositionName="Items">
+            <AttributeList>
+              <Culture>de-DE</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="3" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-GB</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="4" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-US</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="5" CompositionName="Items">
+            <AttributeList>
+              <Culture>es-ES</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="6" CompositionName="Items">
+            <AttributeList>
+              <Culture>fr-FR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="7" CompositionName="Items">
+            <AttributeList>
+              <Culture>it-IT</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="8" CompositionName="Items">
+            <AttributeList>
+              <Culture>ko-KR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="9" CompositionName="Items">
+            <AttributeList>
+              <Culture>zh-CN</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+        </ObjectList>
+      </MultilingualText>
+      <SW.Blocks.CompileUnit ID="A" CompositionName="CompileUnits">
+        <AttributeList>
+          <NetworkSource><StructuredText xmlns="http://www.siemens.com/automation/Openness/SW/NetworkSource/StructuredText/v4">
+  <NewLine UId="21" />
+  <Token Text="IF" UId="22" />
+  <Blank UId="23" />
+  <Access Scope="LocalVariable" UId="24">
+    <Symbol UId="25">
+      <Component Name="hmiMode" UId="26" />
+    </Symbol>
+  </Access>
+  <Blank UId="27" />
+  <Token Text="=" UId="28" />
+  <Blank UId="29" />
+  <Access Scope="LiteralConstant" UId="30">
+    <Constant UId="31">
+      <ConstantValue UId="33">1</ConstantValue>
+    </Constant>
+  </Access>
+  <Blank UId="34" />
+  <Token Text="THEN" UId="35" />
+  <NewLine UId="36" />
+  <Blank Num="2" UId="37" />
+  <Access Scope="LocalVariable" UId="38">
+    <Symbol UId="39">
+      <Component Name="t_hmiTravleDistance" UId="40" />
+    </Symbol>
+  </Access>
+  <Blank UId="41" />
+  <Token Text=":=" UId="42" />
+  <Blank UId="43" />
+  <Access Scope="LocalConstant" UId="44">
+    <Constant Name="L2R_LARGE_MAX_PIXEL" UId="45" />
+  </Access>
+  <Blank UId="48" />
+  <Token Text="-" UId="49" />
+  <Blank UId="50" />
+  <Access Scope="LocalConstant" UId="51">
+    <Constant Name="L2R_LARGE_MIN_PIXEL" UId="52" />
+  </Access>
+  <Token Text=";" UId="55" />
+  <NewLine UId="56" />
+  <Blank Num="2" UId="57" />
+  <Access Scope="LocalVariable" UId="58">
+    <Symbol UId="59">
+      <Component Name="t_axisTravelDistance" UId="60" />
+    </Symbol>
+  </Access>
+  <Blank UId="61" />
+  <Token Text=":=" UId="62" />
+  <Blank UId="63" />
+  <Access Scope="LocalVariable" UId="64">
+    <Symbol UId="65">
+      <Component Name="hmiMaxLimit" UId="66" />
+    </Symbol>
+  </Access>
+  <Blank UId="67" />
+  <Token Text="-" UId="68" />
+  <Blank UId="69" />
+  <Access Scope="LocalVariable" UId="70">
+    <Symbol UId="71">
+      <Component Name="hmiMinLimit" UId="72" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="73" />
+  <NewLine UId="74" />
+  <Blank Num="2" UId="75" />
+  <Access Scope="LocalVariable" UId="76">
+    <Symbol UId="77">
+      <Component Name="t_ratio" UId="78" />
+    </Symbol>
+  </Access>
+  <Blank UId="79" />
+  <Token Text=":=" UId="80" />
+  <Blank UId="81" />
+  <Token Text="(" UId="82" />
+  <Access Scope="LocalVariable" UId="83">
+    <Symbol UId="84">
+      <Component Name="axisActualPos" UId="85" />
+    </Symbol>
+  </Access>
+  <Blank UId="86" />
+  <Token Text="-" UId="87" />
+  <Blank UId="88" />
+  <Access Scope="LocalVariable" UId="89">
+    <Symbol UId="90">
+      <Component Name="hmiMinLimit" UId="91" />
+    </Symbol>
+  </Access>
+  <Token Text=")" UId="92" />
+  <Blank UId="93" />
+  <Token Text="/" UId="94" />
+  <Blank UId="95" />
+  <Access Scope="LocalVariable" UId="96">
+    <Symbol UId="97">
+      <Component Name="t_axisTravelDistance" UId="98" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="99" />
+  <NewLine UId="100" />
+  <Blank Num="2" UId="101" />
+  <NewLine UId="102" />
+  <Blank Num="2" UId="103" />
+  <Access Scope="LocalVariable" UId="104">
+    <Symbol UId="105">
+      <Component Name="simHmiAxis" UId="106" />
+      <Token Text="." UId="107" />
+      <Component Name="hmiObjectPos" UId="108" />
+    </Symbol>
+  </Access>
+  <Blank UId="109" />
+  <Token Text=":=" UId="110" />
+  <Blank UId="111" />
+  <Access Scope="LocalConstant" UId="112">
+    <Constant Name="L2R_LARGE_MIN_PIXEL" UId="113" />
+  </Access>
+  <Blank UId="116" />
+  <Token Text="+" UId="117" />
+  <Blank UId="118" />
+  <Access Scope="Call" UId="119">
+    <Instruction Name="LREAL_TO_INT" UId="120">
+      <Token Text="(" UId="121" />
+      <NamelessParameter UId="122">
+        <Token Text="(" UId="123" />
+        <Access Scope="LocalVariable" UId="124">
+          <Symbol UId="125">
+            <Component Name="t_ratio" UId="126" />
+          </Symbol>
+        </Access>
+        <Blank UId="127" />
+        <Token Text="*" UId="128" />
+        <Blank UId="129" />
+        <Access Scope="Call" UId="130">
+          <Instruction Name="INT_TO_LREAL" UId="131">
+            <Token Text="(" UId="132" />
+            <NamelessParameter UId="133">
+              <Access Scope="LocalVariable" UId="134">
+                <Symbol UId="135">
+                  <Component Name="t_hmiTravleDistance" UId="136" />
+                </Symbol>
+              </Access>
+            </NamelessParameter>
+            <Token Text=")" UId="138" />
+          </Instruction>
+        </Access>
+        <Token Text=")" UId="139" />
+      </NamelessParameter>
+      <Token Text=")" UId="141" />
+    </Instruction>
+  </Access>
+  <Token Text=";" UId="142" />
+  <NewLine UId="143" />
+  <Blank Num="2" UId="144" />
+  <NewLine UId="145" />
+  <Token Text="END_IF" UId="146" />
+  <Token Text=";" UId="147" />
+  <NewLine UId="148" />
+</StructuredText></NetworkSource>
+          <ProgrammingLanguage>SCL</ProgrammingLanguage>
+        </AttributeList>
+        <ObjectList>
+          <MultilingualText ID="B" CompositionName="Comment">
+            <ObjectList>
+              <MultilingualTextItem ID="C" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="D" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-GB</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="E" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="F" CompositionName="Items">
+                <AttributeList>
+                  <Culture>es-ES</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="10" CompositionName="Items">
+                <AttributeList>
+                  <Culture>fr-FR</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="11" CompositionName="Items">
+                <AttributeList>
+                  <Culture>it-IT</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="12" CompositionName="Items">
+                <AttributeList>
+                  <Culture>ko-KR</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="13" CompositionName="Items">
+                <AttributeList>
+                  <Culture>zh-CN</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+          <MultilingualText ID="14" CompositionName="Title">
+            <ObjectList>
+              <MultilingualTextItem ID="15" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="16" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-GB</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="17" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text>i_mode == 1 // L2R Large</Text>
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="18" CompositionName="Items">
+                <AttributeList>
+                  <Culture>es-ES</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="19" CompositionName="Items">
+                <AttributeList>
+                  <Culture>fr-FR</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="1A" CompositionName="Items">
+                <AttributeList>
+                  <Culture>it-IT</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="1B" CompositionName="Items">
+                <AttributeList>
+                  <Culture>ko-KR</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="1C" CompositionName="Items">
+                <AttributeList>
+                  <Culture>zh-CN</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+        </ObjectList>
+      </SW.Blocks.CompileUnit>
+      <SW.Blocks.CompileUnit ID="1D" CompositionName="CompileUnits">
+        <AttributeList>
+          <NetworkSource><StructuredText xmlns="http://www.siemens.com/automation/Openness/SW/NetworkSource/StructuredText/v4">
+  <NewLine UId="21" />
+  <Token Text="IF" UId="22" />
+  <Blank UId="23" />
+  <Access Scope="LocalVariable" UId="24">
+    <Symbol UId="25">
+      <Component Name="hmiMode" UId="26" />
+    </Symbol>
+  </Access>
+  <Blank UId="27" />
+  <Token Text="=" UId="28" />
+  <Blank UId="29" />
+  <Access Scope="LiteralConstant" UId="30">
+    <Constant UId="31">
+      <ConstantValue UId="33">2</ConstantValue>
+    </Constant>
+  </Access>
+  <Blank UId="34" />
+  <Token Text="THEN" UId="35" />
+  <NewLine UId="36" />
+  <Blank Num="2" UId="37" />
+  <Access Scope="LocalVariable" UId="38">
+    <Symbol UId="39">
+      <Component Name="t_hmiTravleDistance" UId="40" />
+    </Symbol>
+  </Access>
+  <Blank UId="41" />
+  <Token Text=":=" UId="42" />
+  <Blank UId="43" />
+  <Access Scope="LocalConstant" UId="44">
+    <Constant Name="L2R_SMALL_MAX_PIXEL" UId="45" />
+  </Access>
+  <Blank UId="48" />
+  <Token Text="-" UId="49" />
+  <Blank UId="50" />
+  <Access Scope="LocalConstant" UId="51">
+    <Constant Name="L2R_SMALL_MIN_PIXEL" UId="52" />
+  </Access>
+  <Token Text=";" UId="55" />
+  <NewLine UId="56" />
+  <Blank Num="2" UId="57" />
+  <Access Scope="LocalVariable" UId="58">
+    <Symbol UId="59">
+      <Component Name="t_axisTravelDistance" UId="60" />
+    </Symbol>
+  </Access>
+  <Blank UId="61" />
+  <Token Text=":=" UId="62" />
+  <Blank UId="63" />
+  <Access Scope="LocalVariable" UId="64">
+    <Symbol UId="65">
+      <Component Name="hmiMaxLimit" UId="66" />
+    </Symbol>
+  </Access>
+  <Blank UId="67" />
+  <Token Text="-" UId="68" />
+  <Blank UId="69" />
+  <Access Scope="LocalVariable" UId="70">
+    <Symbol UId="71">
+      <Component Name="hmiMinLimit" UId="72" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="73" />
+  <NewLine UId="74" />
+  <Blank Num="2" UId="75" />
+  <Access Scope="LocalVariable" UId="76">
+    <Symbol UId="77">
+      <Component Name="t_ratio" UId="78" />
+    </Symbol>
+  </Access>
+  <Blank UId="79" />
+  <Token Text=":=" UId="80" />
+  <Blank UId="81" />
+  <Token Text="(" UId="82" />
+  <Access Scope="LocalVariable" UId="83">
+    <Symbol UId="84">
+      <Component Name="axisActualPos" UId="85" />
+    </Symbol>
+  </Access>
+  <Blank UId="86" />
+  <Token Text="-" UId="87" />
+  <Blank UId="88" />
+  <Access Scope="LocalVariable" UId="89">
+    <Symbol UId="90">
+      <Component Name="hmiMinLimit" UId="91" />
+    </Symbol>
+  </Access>
+  <Token Text=")" UId="92" />
+  <Blank UId="93" />
+  <Token Text="/" UId="94" />
+  <Blank UId="95" />
+  <Access Scope="LocalVariable" UId="96">
+    <Symbol UId="97">
+      <Component Name="t_axisTravelDistance" UId="98" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="99" />
+  <NewLine UId="100" />
+  <Blank Num="2" UId="101" />
+  <NewLine UId="102" />
+  <Blank Num="2" UId="103" />
+  <Access Scope="LocalVariable" UId="104">
+    <Symbol UId="105">
+      <Component Name="simHmiAxis" UId="106" />
+      <Token Text="." UId="107" />
+      <Component Name="hmiObjectPos" UId="108" />
+    </Symbol>
+  </Access>
+  <Blank UId="109" />
+  <Token Text=":=" UId="110" />
+  <Blank UId="111" />
+  <Access Scope="LocalConstant" UId="112">
+    <Constant Name="L2R_SMALL_MIN_PIXEL" UId="113" />
+  </Access>
+  <Blank UId="116" />
+  <Token Text="+" UId="117" />
+  <Blank UId="118" />
+  <Access Scope="Call" UId="119">
+    <Instruction Name="LREAL_TO_INT" UId="120">
+      <Token Text="(" UId="121" />
+      <NamelessParameter UId="122">
+        <Token Text="(" UId="123" />
+        <Access Scope="LocalVariable" UId="124">
+          <Symbol UId="125">
+            <Component Name="t_ratio" UId="126" />
+          </Symbol>
+        </Access>
+        <Blank UId="127" />
+        <Token Text="*" UId="128" />
+        <Blank UId="129" />
+        <Access Scope="Call" UId="130">
+          <Instruction Name="INT_TO_LREAL" UId="131">
+            <Token Text="(" UId="132" />
+            <NamelessParameter UId="133">
+              <Access Scope="LocalVariable" UId="134">
+                <Symbol UId="135">
+                  <Component Name="t_hmiTravleDistance" UId="136" />
+                </Symbol>
+              </Access>
+            </NamelessParameter>
+            <Token Text=")" UId="138" />
+          </Instruction>
+        </Access>
+        <Token Text=")" UId="139" />
+      </NamelessParameter>
+      <Token Text=")" UId="141" />
+    </Instruction>
+  </Access>
+  <Token Text=";" UId="142" />
+  <NewLine UId="143" />
+  <Blank Num="2" UId="144" />
+  <NewLine UId="145" />
+  <Token Text="END_IF" UId="146" />
+  <Token Text=";" UId="147" />
+  <NewLine UId="148" />
+</StructuredText></NetworkSource>
+          <ProgrammingLanguage>SCL</ProgrammingLanguage>
+        </AttributeList>
+        <ObjectList>
+          <MultilingualText ID="1E" CompositionName="Comment">
+            <ObjectList>
+              <MultilingualTextItem ID="1F" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="20" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-GB</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="21" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="22" CompositionName="Items">
+                <AttributeList>
+                  <Culture>es-ES</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="23" CompositionName="Items">
+                <AttributeList>
+                  <Culture>fr-FR</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="24" CompositionName="Items">
+                <AttributeList>
+                  <Culture>it-IT</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="25" CompositionName="Items">
+                <AttributeList>
+                  <Culture>ko-KR</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="26" CompositionName="Items">
+                <AttributeList>
+                  <Culture>zh-CN</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+          <MultilingualText ID="27" CompositionName="Title">
+            <ObjectList>
+              <MultilingualTextItem ID="28" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="29" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-GB</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="2A" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text>i_mode == 2 // L2R Small</Text>
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="2B" CompositionName="Items">
+                <AttributeList>
+                  <Culture>es-ES</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="2C" CompositionName="Items">
+                <AttributeList>
+                  <Culture>fr-FR</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="2D" CompositionName="Items">
+                <AttributeList>
+                  <Culture>it-IT</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="2E" CompositionName="Items">
+                <AttributeList>
+                  <Culture>ko-KR</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="2F" CompositionName="Items">
+                <AttributeList>
+                  <Culture>zh-CN</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+        </ObjectList>
+      </SW.Blocks.CompileUnit>
+      <SW.Blocks.CompileUnit ID="30" CompositionName="CompileUnits">
+        <AttributeList>
+          <NetworkSource><StructuredText xmlns="http://www.siemens.com/automation/Openness/SW/NetworkSource/StructuredText/v4">
+  <NewLine UId="21" />
+  <Token Text="IF" UId="22" />
+  <Blank UId="23" />
+  <Access Scope="LocalVariable" UId="24">
+    <Symbol UId="25">
+      <Component Name="hmiMode" UId="26" />
+    </Symbol>
+  </Access>
+  <Blank UId="27" />
+  <Token Text="=" UId="28" />
+  <Blank UId="29" />
+  <Access Scope="LiteralConstant" UId="30">
+    <Constant UId="31">
+      <ConstantValue UId="33">3</ConstantValue>
+    </Constant>
+  </Access>
+  <Blank UId="34" />
+  <Token Text="THEN" UId="35" />
+  <NewLine UId="36" />
+  <Blank Num="2" UId="37" />
+  <Access Scope="LocalVariable" UId="38">
+    <Symbol UId="39">
+      <Component Name="t_hmiTravleDistance" UId="40" />
+    </Symbol>
+  </Access>
+  <Blank UId="41" />
+  <Token Text=":=" UId="42" />
+  <Blank UId="43" />
+  <Access Scope="LocalConstant" UId="44">
+    <Constant Name="R2L_LARGE_MAX_PIXEL" UId="45" />
+  </Access>
+  <Blank UId="48" />
+  <Token Text="-" UId="49" />
+  <Blank UId="50" />
+  <Access Scope="LocalConstant" UId="51">
+    <Constant Name="R2L_LARGE_MIN_PIXEL" UId="52" />
+  </Access>
+  <Token Text=";" UId="55" />
+  <NewLine UId="56" />
+  <Blank Num="2" UId="57" />
+  <Access Scope="LocalVariable" UId="58">
+    <Symbol UId="59">
+      <Component Name="t_axisTravelDistance" UId="60" />
+    </Symbol>
+  </Access>
+  <Blank UId="61" />
+  <Token Text=":=" UId="62" />
+  <Blank UId="63" />
+  <Access Scope="LocalVariable" UId="64">
+    <Symbol UId="65">
+      <Component Name="hmiMaxLimit" UId="66" />
+    </Symbol>
+  </Access>
+  <Blank UId="67" />
+  <Token Text="-" UId="68" />
+  <Blank UId="69" />
+  <Access Scope="LocalVariable" UId="70">
+    <Symbol UId="71">
+      <Component Name="hmiMinLimit" UId="72" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="73" />
+  <NewLine UId="74" />
+  <Blank Num="2" UId="75" />
+  <Access Scope="LocalVariable" UId="76">
+    <Symbol UId="77">
+      <Component Name="t_ratio" UId="78" />
+    </Symbol>
+  </Access>
+  <Blank UId="79" />
+  <Token Text=":=" UId="80" />
+  <Blank UId="81" />
+  <Token Text="(" UId="82" />
+  <Access Scope="LocalVariable" UId="83">
+    <Symbol UId="84">
+      <Component Name="axisActualPos" UId="85" />
+    </Symbol>
+  </Access>
+  <Blank UId="86" />
+  <Token Text="-" UId="87" />
+  <Blank UId="88" />
+  <Access Scope="LocalVariable" UId="89">
+    <Symbol UId="90">
+      <Component Name="hmiMinLimit" UId="91" />
+    </Symbol>
+  </Access>
+  <Token Text=")" UId="92" />
+  <Blank UId="93" />
+  <Token Text="/" UId="94" />
+  <Blank UId="95" />
+  <Access Scope="LocalVariable" UId="96">
+    <Symbol UId="97">
+      <Component Name="t_axisTravelDistance" UId="98" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="99" />
+  <NewLine UId="100" />
+  <Blank Num="2" UId="101" />
+  <NewLine UId="102" />
+  <Blank Num="2" UId="103" />
+  <Access Scope="LocalVariable" UId="104">
+    <Symbol UId="105">
+      <Component Name="simHmiAxis" UId="106" />
+      <Token Text="." UId="107" />
+      <Component Name="hmiObjectPos" UId="108" />
+    </Symbol>
+  </Access>
+  <Blank UId="109" />
+  <Token Text=":=" UId="110" />
+  <Blank UId="111" />
+  <Access Scope="LocalConstant" UId="112">
+    <Constant Name="R2L_LARGE_MAX_PIXEL" UId="113" />
+  </Access>
+  <Blank UId="116" />
+  <Token Text="-" UId="117" />
+  <Blank UId="118" />
+  <Access Scope="Call" UId="119">
+    <Instruction Name="LREAL_TO_INT" UId="120">
+      <Token Text="(" UId="121" />
+      <NamelessParameter UId="122">
+        <Token Text="(" UId="123" />
+        <Access Scope="LocalVariable" UId="124">
+          <Symbol UId="125">
+            <Component Name="t_ratio" UId="126" />
+          </Symbol>
+        </Access>
+        <Blank UId="127" />
+        <Token Text="*" UId="128" />
+        <Blank UId="129" />
+        <Access Scope="Call" UId="130">
+          <Instruction Name="INT_TO_LREAL" UId="131">
+            <Token Text="(" UId="132" />
+            <NamelessParameter UId="133">
+              <Access Scope="LocalVariable" UId="134">
+                <Symbol UId="135">
+                  <Component Name="t_hmiTravleDistance" UId="136" />
+                </Symbol>
+              </Access>
+            </NamelessParameter>
+            <Token Text=")" UId="138" />
+          </Instruction>
+        </Access>
+        <Token Text=")" UId="139" />
+      </NamelessParameter>
+      <Token Text=")" UId="141" />
+    </Instruction>
+  </Access>
+  <Token Text=";" UId="142" />
+  <NewLine UId="143" />
+  <Blank Num="2" UId="144" />
+  <NewLine UId="145" />
+  <Token Text="END_IF" UId="146" />
+  <Token Text=";" UId="147" />
+  <NewLine UId="148" />
+</StructuredText></NetworkSource>
+          <ProgrammingLanguage>SCL</ProgrammingLanguage>
+        </AttributeList>
+        <ObjectList>
+          <MultilingualText ID="31" CompositionName="Comment">
+            <ObjectList>
+              <MultilingualTextItem ID="32" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="33" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-GB</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="34" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="35" CompositionName="Items">
+                <AttributeList>
+                  <Culture>es-ES</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="36" CompositionName="Items">
+                <AttributeList>
+                  <Culture>fr-FR</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="37" CompositionName="Items">
+                <AttributeList>
+                  <Culture>it-IT</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="38" CompositionName="Items">
+                <AttributeList>
+                  <Culture>ko-KR</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="39" CompositionName="Items">
+                <AttributeList>
+                  <Culture>zh-CN</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+          <MultilingualText ID="3A" CompositionName="Title">
+            <ObjectList>
+              <MultilingualTextItem ID="3B" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="3C" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-GB</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="3D" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text>i_mode == 3 // R2L Large</Text>
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="3E" CompositionName="Items">
+                <AttributeList>
+                  <Culture>es-ES</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="3F" CompositionName="Items">
+                <AttributeList>
+                  <Culture>fr-FR</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="40" CompositionName="Items">
+                <AttributeList>
+                  <Culture>it-IT</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="41" CompositionName="Items">
+                <AttributeList>
+                  <Culture>ko-KR</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="42" CompositionName="Items">
+                <AttributeList>
+                  <Culture>zh-CN</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+        </ObjectList>
+      </SW.Blocks.CompileUnit>
+      <SW.Blocks.CompileUnit ID="43" CompositionName="CompileUnits">
+        <AttributeList>
+          <NetworkSource><StructuredText xmlns="http://www.siemens.com/automation/Openness/SW/NetworkSource/StructuredText/v4">
+  <NewLine UId="21" />
+  <Token Text="IF" UId="22" />
+  <Blank UId="23" />
+  <Access Scope="LocalVariable" UId="24">
+    <Symbol UId="25">
+      <Component Name="hmiMode" UId="26" />
+    </Symbol>
+  </Access>
+  <Blank UId="27" />
+  <Token Text="=" UId="28" />
+  <Blank UId="29" />
+  <Access Scope="LiteralConstant" UId="30">
+    <Constant UId="31">
+      <ConstantValue UId="33">4</ConstantValue>
+    </Constant>
+  </Access>
+  <Blank UId="34" />
+  <Token Text="THEN" UId="35" />
+  <NewLine UId="36" />
+  <Blank Num="2" UId="37" />
+  <Access Scope="LocalVariable" UId="38">
+    <Symbol UId="39">
+      <Component Name="t_hmiTravleDistance" UId="40" />
+    </Symbol>
+  </Access>
+  <Blank UId="41" />
+  <Token Text=":=" UId="42" />
+  <Blank UId="43" />
+  <Access Scope="LocalConstant" UId="44">
+    <Constant Name="R2L_SMALL_MAX_PIXEL" UId="45" />
+  </Access>
+  <Blank UId="48" />
+  <Token Text="-" UId="49" />
+  <Blank UId="50" />
+  <Access Scope="LocalConstant" UId="51">
+    <Constant Name="R2L_SMALL_MIN_PIXEL" UId="52" />
+  </Access>
+  <Token Text=";" UId="55" />
+  <NewLine UId="56" />
+  <Blank Num="2" UId="57" />
+  <Access Scope="LocalVariable" UId="58">
+    <Symbol UId="59">
+      <Component Name="t_axisTravelDistance" UId="60" />
+    </Symbol>
+  </Access>
+  <Blank UId="61" />
+  <Token Text=":=" UId="62" />
+  <Blank UId="63" />
+  <Access Scope="LocalVariable" UId="64">
+    <Symbol UId="65">
+      <Component Name="hmiMaxLimit" UId="66" />
+    </Symbol>
+  </Access>
+  <Blank UId="67" />
+  <Token Text="-" UId="68" />
+  <Blank UId="69" />
+  <Access Scope="LocalVariable" UId="70">
+    <Symbol UId="71">
+      <Component Name="hmiMinLimit" UId="72" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="73" />
+  <NewLine UId="74" />
+  <Blank Num="2" UId="75" />
+  <Access Scope="LocalVariable" UId="76">
+    <Symbol UId="77">
+      <Component Name="t_ratio" UId="78" />
+    </Symbol>
+  </Access>
+  <Blank UId="79" />
+  <Token Text=":=" UId="80" />
+  <Blank UId="81" />
+  <Token Text="(" UId="82" />
+  <Access Scope="LocalVariable" UId="83">
+    <Symbol UId="84">
+      <Component Name="axisActualPos" UId="85" />
+    </Symbol>
+  </Access>
+  <Blank UId="86" />
+  <Token Text="-" UId="87" />
+  <Blank UId="88" />
+  <Access Scope="LocalVariable" UId="89">
+    <Symbol UId="90">
+      <Component Name="hmiMinLimit" UId="91" />
+    </Symbol>
+  </Access>
+  <Token Text=")" UId="92" />
+  <Blank UId="93" />
+  <Token Text="/" UId="94" />
+  <Blank UId="95" />
+  <Access Scope="LocalVariable" UId="96">
+    <Symbol UId="97">
+      <Component Name="t_axisTravelDistance" UId="98" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="99" />
+  <NewLine UId="100" />
+  <Blank Num="2" UId="101" />
+  <NewLine UId="102" />
+  <Blank Num="2" UId="103" />
+  <Access Scope="LocalVariable" UId="104">
+    <Symbol UId="105">
+      <Component Name="simHmiAxis" UId="106" />
+      <Token Text="." UId="107" />
+      <Component Name="hmiObjectPos" UId="108" />
+    </Symbol>
+  </Access>
+  <Blank UId="109" />
+  <Token Text=":=" UId="110" />
+  <Blank UId="111" />
+  <Access Scope="LocalConstant" UId="112">
+    <Constant Name="R2L_SMALL_MAX_PIXEL" UId="113" />
+  </Access>
+  <Blank UId="116" />
+  <Token Text="-" UId="117" />
+  <Blank UId="118" />
+  <Access Scope="Call" UId="119">
+    <Instruction Name="LREAL_TO_INT" UId="120">
+      <Token Text="(" UId="121" />
+      <NamelessParameter UId="122">
+        <Token Text="(" UId="123" />
+        <Access Scope="LocalVariable" UId="124">
+          <Symbol UId="125">
+            <Component Name="t_ratio" UId="126" />
+          </Symbol>
+        </Access>
+        <Blank UId="127" />
+        <Token Text="*" UId="128" />
+        <Blank UId="129" />
+        <Access Scope="Call" UId="130">
+          <Instruction Name="INT_TO_LREAL" UId="131">
+            <Token Text="(" UId="132" />
+            <NamelessParameter UId="133">
+              <Access Scope="LocalVariable" UId="134">
+                <Symbol UId="135">
+                  <Component Name="t_hmiTravleDistance" UId="136" />
+                </Symbol>
+              </Access>
+            </NamelessParameter>
+            <Token Text=")" UId="138" />
+          </Instruction>
+        </Access>
+        <Token Text=")" UId="139" />
+      </NamelessParameter>
+      <Token Text=")" UId="141" />
+    </Instruction>
+  </Access>
+  <Token Text=";" UId="142" />
+  <NewLine UId="143" />
+  <Blank Num="2" UId="144" />
+  <NewLine UId="145" />
+  <Token Text="END_IF" UId="146" />
+  <Token Text=";" UId="147" />
+  <NewLine UId="148" />
+</StructuredText></NetworkSource>
+          <ProgrammingLanguage>SCL</ProgrammingLanguage>
+        </AttributeList>
+        <ObjectList>
+          <MultilingualText ID="44" CompositionName="Comment">
+            <ObjectList>
+              <MultilingualTextItem ID="45" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="46" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-GB</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="47" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="48" CompositionName="Items">
+                <AttributeList>
+                  <Culture>es-ES</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="49" CompositionName="Items">
+                <AttributeList>
+                  <Culture>fr-FR</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="4A" CompositionName="Items">
+                <AttributeList>
+                  <Culture>it-IT</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="4B" CompositionName="Items">
+                <AttributeList>
+                  <Culture>ko-KR</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="4C" CompositionName="Items">
+                <AttributeList>
+                  <Culture>zh-CN</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+          <MultilingualText ID="4D" CompositionName="Title">
+            <ObjectList>
+              <MultilingualTextItem ID="4E" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="4F" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-GB</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="50" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text>i_mode == 4 // R2L Small</Text>
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="51" CompositionName="Items">
+                <AttributeList>
+                  <Culture>es-ES</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="52" CompositionName="Items">
+                <AttributeList>
+                  <Culture>fr-FR</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="53" CompositionName="Items">
+                <AttributeList>
+                  <Culture>it-IT</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="54" CompositionName="Items">
+                <AttributeList>
+                  <Culture>ko-KR</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="55" CompositionName="Items">
+                <AttributeList>
+                  <Culture>zh-CN</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+        </ObjectList>
+      </SW.Blocks.CompileUnit>
+      <SW.Blocks.CompileUnit ID="56" CompositionName="CompileUnits">
+        <AttributeList>
+          <NetworkSource><FlgNet xmlns="http://www.siemens.com/automation/Openness/SW/NetworkSource/FlgNet/v5">
+  <Parts>
+    <Access Scope="LocalVariable" UId="21">
+      <Symbol>
+        <Component Name="axisActualPos" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="22">
+      <Symbol>
+        <Component Name="simHmiAxis" />
+        <Component Name="actualPos" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="23">
+      <Symbol>
+        <Component Name="referenceDesignator" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="24">
+      <Symbol>
+        <Component Name="simHmiAxis" />
+        <Component Name="referenceDesignator" />
+      </Symbol>
+    </Access>
+    <Part Name="Move" UId="25" DisabledENO="true">
+      <TemplateValue Name="Card" Type="Cardinality">1</TemplateValue>
+    </Part>
+    <Part Name="S_Move" UId="26" DisabledENO="true" />
+  </Parts>
+  <Wires>
+    <Wire UId="27">
+      <Powerrail />
+      <NameCon UId="25" Name="en" />
+      <NameCon UId="26" Name="en" />
+    </Wire>
+    <Wire UId="28">
+      <IdentCon UId="21" />
+      <NameCon UId="25" Name="in" />
+    </Wire>
+    <Wire UId="29">
+      <NameCon UId="25" Name="out1" />
+      <IdentCon UId="22" />
+    </Wire>
+    <Wire UId="30">
+      <IdentCon UId="23" />
+      <NameCon UId="26" Name="in" />
+    </Wire>
+    <Wire UId="31">
+      <NameCon UId="26" Name="out" />
+      <IdentCon UId="24" />
+    </Wire>
+  </Wires>
+</FlgNet></NetworkSource>
+          <ProgrammingLanguage>LAD</ProgrammingLanguage>
+        </AttributeList>
+        <ObjectList>
+          <MultilingualText ID="57" CompositionName="Comment">
+            <ObjectList>
+              <MultilingualTextItem ID="58" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="59" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-GB</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="5A" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="5B" CompositionName="Items">
+                <AttributeList>
+                  <Culture>es-ES</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="5C" CompositionName="Items">
+                <AttributeList>
+                  <Culture>fr-FR</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="5D" CompositionName="Items">
+                <AttributeList>
+                  <Culture>it-IT</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="5E" CompositionName="Items">
+                <AttributeList>
+                  <Culture>ko-KR</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="5F" CompositionName="Items">
+                <AttributeList>
+                  <Culture>zh-CN</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+          <MultilingualText ID="60" CompositionName="Title">
+            <ObjectList>
+              <MultilingualTextItem ID="61" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="62" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-GB</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="63" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text>Output Mapping</Text>
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="64" CompositionName="Items">
+                <AttributeList>
+                  <Culture>es-ES</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="65" CompositionName="Items">
+                <AttributeList>
+                  <Culture>fr-FR</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="66" CompositionName="Items">
+                <AttributeList>
+                  <Culture>it-IT</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="67" CompositionName="Items">
+                <AttributeList>
+                  <Culture>ko-KR</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="68" CompositionName="Items">
+                <AttributeList>
+                  <Culture>zh-CN</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+        </ObjectList>
+      </SW.Blocks.CompileUnit>
+      <MultilingualText ID="69" CompositionName="Title">
+        <ObjectList>
+          <MultilingualTextItem ID="6A" CompositionName="Items">
+            <AttributeList>
+              <Culture>de-DE</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="6B" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-GB</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="6C" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-US</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="6D" CompositionName="Items">
+            <AttributeList>
+              <Culture>es-ES</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="6E" CompositionName="Items">
+            <AttributeList>
+              <Culture>fr-FR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="6F" CompositionName="Items">
+            <AttributeList>
+              <Culture>it-IT</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="70" CompositionName="Items">
+            <AttributeList>
+              <Culture>ko-KR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="71" CompositionName="Items">
+            <AttributeList>
+              <Culture>zh-CN</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+        </ObjectList>
+      </MultilingualText>
+    </ObjectList>
+  </SW.Blocks.FC>
+</Document>

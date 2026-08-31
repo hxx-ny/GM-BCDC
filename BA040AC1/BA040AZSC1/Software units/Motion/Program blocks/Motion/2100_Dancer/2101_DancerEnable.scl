@@ -1,0 +1,216 @@
+﻿FUNCTION_BLOCK "2101_DancerEnable"
+{ S7_Optimized_Access := 'TRUE' ; Published := 'FALSE' }
+VERSION : 0.1
+   VAR_INPUT 
+      Execute : Bool;
+      DancerDirection : Bool;
+      UnWinderDirection : Bool;
+      JogMode : Bool;
+      UnwinderTopUse : Bool;
+      UnwinderBottomUse : Bool;
+      DancerSetPoint : LReal;
+      DancerInput : LReal;
+      DancerKp : LReal;
+      DancerKi : LReal;
+      UnwinderRadius : LReal;
+   END_VAR
+
+   VAR_OUTPUT 
+      Busy : Bool;
+      Error : Bool;
+      ErrorID : DWord;
+      StatusID : DWord;
+      NowCmd : DInt;
+      BeforeCmd : DInt;
+   END_VAR
+
+   VAR_IN_OUT 
+      SlaveUnwinderVirtual : DB_ANY;
+      SlaveUnwinderTop : DB_ANY;
+      SlaveUnwinderBottom : DB_ANY;
+      SepaClampX : DB_ANY;
+   END_VAR
+
+   VAR 
+      statNowCmd : DInt;
+      statBeforeCmd : DInt;
+      statTimeTable : Array[1..50] of Time;
+      statStartTime : Time;
+      statEndTime : Time;
+      instTriggerExecute {InstructionName := 'R_TRIG'; LibVersion := '1.0'; S7_SetPoint := 'False'} : R_TRIG;
+      instVelocityUnwinderTop {InstructionName := 'MC_MOVEVELOCITY'; LibVersion := '9.0'} : MC_MOVEVELOCITY;
+      instVelocityUnwinderBottom {InstructionName := 'MC_MOVEVELOCITY'; LibVersion := '9.0'} : MC_MOVEVELOCITY;
+      instPIDControl : "2152_PIDControl";
+   END_VAR
+
+   VAR_TEMP 
+      tempMasterUnwinder {InstructionName := 'TO_SynchronousAxis'; LibVersion := '9.0'} : REF_TO TO_SynchronousAxis;
+      tempSlaveUnwinderTop {InstructionName := 'TO_SynchronousAxis'; LibVersion := '9.0'} : REF_TO TO_SynchronousAxis;
+      tempSlaveUnwinderBottom {InstructionName := 'TO_SynchronousAxis'; LibVersion := '9.0'} : REF_TO TO_SynchronousAxis;
+      tempPIDOutput : LReal;
+      tempUnwinderVelocity : LReal;
+   END_VAR
+
+   VAR CONSTANT 
+      PI : LReal := 3.14159265;
+      STAT_IDLE : DInt := 0;
+      STAT_ERROR : DInt := 99;
+      STAT_START : DInt := 100;
+      STAT_RUN : DInt := 110;
+   END_VAR
+
+
+BEGIN
+	REGION TECHNOLOGY OBJECT 
+	    REGION AXIS                                  
+	        #tempSlaveUnwinderTop ?= #SlaveUnwinderTop;                                                  // Slave Unwinder Axis 할당
+	        #tempSlaveUnwinderBottom ?= #SlaveUnwinderBottom;                                                  // Slave Unwinder Axis 할당
+	    END_REGION
+	END_REGION
+	
+	REGION INPUT SIGNAL                                                                        // 입력 신호 처리
+	    REGION EXECUTE
+	        IF NOT #Execute THEN                                                               // Execute := False 상태 시 IDLE 상태로 초기화
+	            #instPIDControl.Enable := FALSE;                                               // PID 제어 정지
+	            #instVelocityUnwinderTop.Execute := FALSE;
+	            #instVelocityUnwinderBottom.Execute := FALSE;                                        // Unwinder 구동 정지
+	            #statBeforeCmd := #statNowCmd;                                                 // 이전 명령 모니터링
+	            #statNowCmd := #STAT_IDLE;                                                     // STAT_IDLE 상태로 이동
+	        END_IF;
+	        
+	        #instTriggerExecute(CLK := #Execute);                                              // 상승 에지 검출
+	        
+	        IF #instTriggerExecute.Q THEN                                                      // 상승 에지 검출 시 동작
+	            #statStartTime := TIME_TCK();
+	            #statBeforeCmd := #statNowCmd;                                                 // 이전 명령 모니터링
+	            #statNowCmd := #STAT_START;                                                    // STAT_START 상태 돌입
+	        END_IF;
+	    END_REGION
+	END_REGION
+	
+	REGION PIDControl                                                                          // 터치 입력값으로 PID 파라미터 조정
+	    #instPIDControl(InvertOption := #DancerDirection,                                      // 보정 방향 옵션
+	                    SetPoint := #DancerSetPoint,                                           // 목표 각도
+	                    Input := #DancerInput,                                                 // 실제 각도
+	                    Kp := #DancerKp,                                                       // 목표각도를 추종하는 댄서의 속도 조정
+	                    Ki := #DancerKi,                                                       // 목표각도에 접근하도록 누적 오차 보정값
+	                    Output => #tempPIDOutput);
+	END_REGION
+	
+	REGION COMMAND                                                                             // 각 커맨드에 따른 Done 및 Error 신호 처리
+	    CASE #statNowCmd OF
+	        #STAT_IDLE:                                                                        // STAT_IDLE 상태
+	            REGION IDLE
+	                ;
+	            END_REGION
+	            
+	        #STAT_ERROR:                                                                       // STAT_ERROR 상태
+	            REGION ERROR
+	                ;
+	            END_REGION
+	            
+	        #STAT_START:                                                                       // STAT_START 상태
+	            REGION STEP START
+	                #instPIDControl.Enable := TRUE;                                            // PID 제어 시작
+	                #instVelocityUnwinderTop.Execute := FALSE;                                    // Unwinder 구동 정지
+	                #instVelocityUnwinderBottom.Execute := FALSE;                                    // Unwinder 구동 정지
+	                
+	                #statEndTime := TIME_TCK();
+	                #statTimeTable[#STAT_START / 10 - 9] := #statEndTime - #statStartTime;
+	                #statStartTime := TIME_TCK();
+	                #statBeforeCmd := #statNowCmd;                                             // 이전 명령 모니터링
+	                #statNowCmd := #STAT_RUN;                                           // STAT_LOOP_START 상태 돌입
+	            END_REGION
+	            
+	        #STAT_RUN:                                                                  // STAT_LOOP_START 상태
+	            REGION LOOP START 
+	                IF #instVelocityUnwinderTop.Error THEN                               // Unwinder 구동 정지
+	                    #ErrorID := #instVelocityUnwinderTop.ErrorId;                             // 에러 ID 출력
+	                    #StatusID := 16#0400_11B0;
+	                    #statBeforeCmd := #statNowCmd;                                         // 이전 명령 모니터링
+	                    #statNowCmd := #STAT_ERROR;
+	                END_IF;
+	                
+	                IF  #instVelocityUnwinderBottom.Error THEN                             // Unwinder 구동 정지
+	                    #ErrorID := #instVelocityUnwinderBottom.ErrorId;                             // 에러 ID 출력
+	                    #StatusID := 16#0500_11B0;
+	                    #statBeforeCmd := #statNowCmd;                                         // 이전 명령 모니터링
+	                    #statNowCmd := #STAT_ERROR;
+	                END_IF;
+	                
+	                #statEndTime := TIME_TCK();
+	                #statTimeTable[#STAT_RUN / 10 - 9] := #statEndTime - #statStartTime;
+	                #statStartTime := TIME_TCK();
+	            END_REGION
+	            
+	    END_CASE;
+	END_REGION
+	
+	REGION INSTANCES
+	    IF #JogMode THEN
+	        #tempMasterUnwinder ?= #SepaClampX;
+	    ELSE
+	        #tempMasterUnwinder ?= #SlaveUnwinderVirtual;
+	    END_IF;
+	    
+	    IF #UnWinderDirection THEN
+	        #tempUnwinderVelocity := #tempMasterUnwinder^.Velocity;
+	    ELSE
+	        #tempUnwinderVelocity := - #tempMasterUnwinder^.Velocity;
+	    END_IF;
+	    
+	    REGION UW TOP
+	        #instVelocityUnwinderTop(Axis := #tempSlaveUnwinderTop^,
+	                                 Execute := FALSE,
+	                                 Acceleration := -1.0,
+	                                 Deceleration := -1.0,
+	                                 Jerk := 0.0,
+	                                 Velocity := #tempUnwinderVelocity / #UnwinderRadius * 360.0 / 2.0 / #PI + #tempPIDOutput,
+	                                 // Velocity = 가상축 속도[mm/s] / 언와인더 지름[mm] * 360.0 / 2.0 / #PI + #PID 출력값
+	                                 // 각속도를 선속으로 변환 : Rad/s -> Degree/s
+	                                 Current := FALSE);
+	        
+	        #instVelocityUnwinderTop(Axis := #tempSlaveUnwinderTop^,
+	                                 Execute := (#statNowCmd = #STAT_RUN) AND #UnwinderTopUse,
+	                                 Acceleration := -1.0,
+	                                 Deceleration := -1.0,
+	                                 Jerk := 0.0,
+	                                 Velocity := #tempUnwinderVelocity / #UnwinderRadius * 360.0 / 2.0 / #PI + #tempPIDOutput,
+	                                 // Velocity = 가상축 속도[mm/s] / 언와인더 지름[mm] * 360.0 / 2.0 / #PI + #PID 출력값
+	                                 // 각속도를 선속으로 변환 : Rad/s -> Degree/s
+	                                 Current := FALSE);
+	    END_REGION
+	    
+	    REGION UW BTM
+	        #instVelocityUnwinderBottom(Axis := #tempSlaveUnwinderBottom^,
+	                                    Execute := FALSE,
+	                                    Acceleration := -1.0,
+	                                    Deceleration := -1.0,
+	                                    Jerk := 0.0,
+	                                    Velocity := #tempUnwinderVelocity / #UnwinderRadius * 360.0 / 2.0 / #PI + #tempPIDOutput,
+	                                    // Velocity = 가상축 속도[mm/s] / 언와인더 지름[mm] * 360.0 / 2.0 / #PI + #PID 출력값
+	                                    // 각속도를 선속으로 변환 : Rad/s -> Degree/s
+	                                    Current := FALSE);
+	        
+	        #instVelocityUnwinderBottom(Axis := #tempSlaveUnwinderBottom^,
+	                                    Execute := (#statNowCmd = #STAT_RUN) AND #UnwinderBottomUse,
+	                                    Acceleration := -1.0,
+	                                    Deceleration := -1.0,
+	                                    Jerk := 0.0,
+	                                    Velocity := #tempUnwinderVelocity / #UnwinderRadius * 360.0 / 2.0 / #PI + #tempPIDOutput,
+	                                    // Velocity = 가상축 속도[mm/s] / 언와인더 지름[mm] * 360.0 / 2.0 / #PI + #PID 출력값
+	                                    // 각속도를 선속으로 변환 : Rad/s -> Degree/s
+	                                    Current := FALSE);
+	    END_REGION
+	END_REGION
+	
+	REGION OUTPUT SIGNAL
+	    #Busy := #statNowCmd = #STAT_START OR #statNowCmd = #STAT_RUN;
+	    #Error := #statNowCmd = #STAT_ERROR;
+	    #NowCmd := #statNowCmd;
+	    #BeforeCmd := #statBeforeCmd;
+	END_REGION
+	
+	
+END_FUNCTION_BLOCK
+

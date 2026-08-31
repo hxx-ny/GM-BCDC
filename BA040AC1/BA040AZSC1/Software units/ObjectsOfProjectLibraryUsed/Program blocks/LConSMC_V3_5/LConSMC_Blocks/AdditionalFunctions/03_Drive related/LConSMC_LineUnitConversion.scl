@@ -1,0 +1,275 @@
+﻿FUNCTION_BLOCK "LConSMC_LineUnitConversion"
+{ S7_Optimized_Access := 'TRUE' ; Published := 'TRUE' }
+VERSION : 0.1
+//This function block calculates conversion factors for position, velocity and acceleration of the leading axis (line axis) to the necessary units for the winder/ sectional drive function block.
+//The function block can be called in any task.  Function block ID: 3114
+   VAR_INPUT 
+      lengthUnitInput { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : UDInt;   // Configured TO unit at TO.Units.LengthUnit
+      velocityUnitInput { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : UDInt;   // Configured TO unit at TO.Units.VelocityUnit
+      formatLength { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;   // [m] or [ft] Format length  Only used for rotatory input units. One rotation correspondents to this formatLength
+   END_VAR
+
+   VAR_OUTPUT 
+      lengthConversionFactor { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;   // Multiplicative conversion factor for length. Value of lengthUnitInput multiplied with lengthConversationFactor = [m] or [ft]. It depends on the unit of translatory axis or the unit of the formatLength at rotatory axis.
+      velocityConversionFactor { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;   // Multiplicative conversion factor for velocity. Value of velocityUnitInput multiplied with velocityConversationFactor = [m]/min or [ft]/min. It depends on the unit of translatory axis or the unit of the formatLength at rotatory axis.
+      accelerationConversionFactor { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;   // Multiplicative conversion factor for acceleration. Value of the respective accerleration regarding to velocityUnitInput multiplied with accelerationConversationFactor = [m]/s^2 or [ft]/s^2.  It depends on the unit of translatory axis or the unit of the formatLength at rotatory axis.
+   END_VAR
+
+   VAR_TEMP 
+      tempLengthConversion : LReal;
+      tempVelocityConversion : LReal;
+      tempAccelerationConversion : LReal;
+   END_VAR
+
+   VAR CONSTANT 
+      LCONSMC_PI : LReal := 3.14159265358979;
+      LCONSMC_FEET_PER_MINUTE : UInt := 1070;
+      LCONSMC_FEET_PER_SECOND : UInt := 1067;
+      LCONSMC_INCH_PER_MINUTE : UInt := 1069;
+      LCONSMC_INCH_PER_SECOND : UInt := 1066;
+      LCONSMC_KM_PER_HOUR : UInt := 1064;
+      LCONSMC_KM_PER_MINUTE : UInt := 1527;
+      LCONSMC_M_PER_HOUR : UInt := 1063;
+      LCONSMC_M_PER_MINUTE : UInt := 1525;
+      LCONSMC_M_PER_SECOND : UInt := 1061;
+      LCONSMC_MILES_PER_HOUR : UInt := 1075;
+      LCONSMC_MM_PER_HOUR : UInt := 1526;
+      LCONSMC_MM_PER_MINUTE : UInt := 1524;
+      LCONSMC_MM_PER_SECOND : UInt := 1062;
+      LCONSMC_MM_PER_SECOND_HIGH_RESOLUTION : UInt := 1538;
+      LCONSMC_1_PER_HOUR : UInt := 1528;
+      LCONSMC_1_PER_MINUTE : UInt := 1083;
+      LCONSMC_1_PER_SECOND : UInt := 1082;
+      LCONSMC_DEGREE_PER_MINUTE : UInt := 1522;
+      LCONSMC_DEGREE_PER_SECOND : UInt := 1521;
+      LCONSMC_DEGREE_PER_SECOND_HIGH_RESOLUTION : UInt := 1539;
+      LCONSMC_RAD_PER_MINUTE : UInt := 1523;
+      LCONSMC_RAD_PER_SECOND : UInt := 1086;
+      LCONSMC_M : UInt := 1010;
+      LCONSMC_MM : UInt := 1013;
+      LCONSMC_MM_HIGH_RESOLUTION : UInt := 1536;
+      LCONSMC_KM : UInt := 1011;
+      LCONSMC_UM : UInt := 1014;
+      LCONSMC_NM : UInt := 1015;
+      LCONSMC_IN : UInt := 1019;
+      LCONSMC_FT : UInt := 1018;
+      LCONSMC_MI : UInt := 1021;
+      LCONSMC_RAD : UInt := 1004;
+      LCONSMC_DEG : UInt := 1005;
+      LCONSMC_DEG_HIGH_RESOLUTION : UInt := 1537;
+   END_VAR
+
+
+BEGIN
+	REGION BLOCK INFO HEADER
+	  //===============================================================================
+	  // SIEMENS AG / (c)Copyright 2023
+	  //-------------------------------------------------------------------------------
+	  // Title:            LConSMC_LineUnitConversion
+	  // Comment/Function: Calculates the multiplicative conversion factor for variabel input velocity units to output unit for winder
+	  //                   or sectional drive leading value unit:
+	  // Library/Family:   LConSMC
+	  // Author:           APC Erlangen
+	  // Tested with:      FW 2.8
+	  // Engineering:      TIA Portal V16
+	  // Restrictions:     .
+	  // Requirements:     -
+	  //-------------------------------------------------------------------------------
+	  // Change log table:
+	  // Version  | Date       | Expert in charge       | Changes applied
+	  //----------|------------|------------------------|------------------------------
+	  // 01.01.00 | 2023-10-06 | APC Erlangen           | Added units with "Higher resolution" option activated
+	  // 01.00.00 | 2021-01-27 | APC Erlangen           | Creation
+	  //===============================================================================
+	  //
+	END_REGION BLOCK INFO HEADER
+	
+	REGION DESCRIPTION
+	(/*
+	This function block is needed if the unit of the leading axis (line axis) is not in the required unit for the winder/sectional drive.
+	In that case the FB can be used to calculate multiplicative conversion factors:  
+	
+	* inputUnit * multiplicative factor = winder/sectional drive unit  
+	  
+	Output units for winder/ sectional drive FB:  
+	
+	| unit        | metric system     | anglo american system   |
+	|-------------|-------------------|-------------------------|
+	| length      |   meter           |   feet                  |
+	| velocity    |   meter/minute    |   feet/minute           |
+	| acceleration|   meter/second^2  |   feet/second^2         |
+	
+	Example use case:  
+	  
+	```scl
+	// Converting line position in [m]/[ft]
+	lineAxisMotionVector.s := lineAxis.position * lengthConversionFactor;
+	// Converting line velocity in [m/min]/[ft/min]
+	lineAxisMotionVector.v := lineAxis.velocity * velocityConversionFactor;
+	// Converting line acceleration in [m/s^2] / [ft/s^2]
+	lineAxisMotionVector.a := lineAxis.acceleration * accelerationConversionFactor;
+	```
+	  
+	Is the input unit in the metric system the factor is calculated for the metric system, otherwise for the angloamerican system.
+	
+	*/)
+	END_REGION
+	
+	REGION Length conversion
+	  IF #formatLength <= 0.0
+	    AND ((#lengthUnitInput = #LCONSMC_RAD)
+	    OR (#lengthUnitInput = #LCONSMC_DEG)
+	    OR (#lengthUnitInput = #LCONSMC_DEG_HIGH_RESOLUTION))
+	  THEN
+	    // Invalid input
+	    #tempLengthConversion := 0.0;
+	  ELSIF (#lengthUnitInput = #LCONSMC_M)
+	    OR (#lengthUnitInput = #LCONSMC_FT)
+	  THEN
+	    #tempLengthConversion := 1.0; // Input parameter correspondenting to winder / sectional drive unit
+	  ELSE
+	    CASE #lengthUnitInput OF
+	      #LCONSMC_MM, #LCONSMC_MM_HIGH_RESOLUTION:
+	        #tempLengthConversion := 1.0e-3; // factor to m
+	      #LCONSMC_KM:
+	        #tempLengthConversion := 1000.0; // factor to m
+	      #LCONSMC_UM:
+	        #tempLengthConversion := 1.0e-6; // factor to m
+	      #LCONSMC_NM:
+	        #tempLengthConversion := 1.0e-9; // factor to m
+	      #LCONSMC_IN:
+	        #tempLengthConversion := 1.0 / 12.0; // factor to ft
+	      #LCONSMC_MI:
+	        #tempLengthConversion := 5280.0; // factor to ft
+	      #LCONSMC_RAD:
+	        #tempLengthConversion := #formatLength / 2.0 / #LCONSMC_PI; // factor depending on formatLengthUnit [m] or [ft]
+	      #LCONSMC_DEG,#LCONSMC_DEG_HIGH_RESOLUTION:
+	        #tempLengthConversion := #formatLength / 360.0; // factor depending on formatLengthUnit [m] or [ft]
+	      ELSE
+	        // Unknown input unit
+	        #tempLengthConversion := 0.0;
+	    END_CASE;
+	  END_IF;
+	END_REGION
+	
+	REGION Velocity conversion
+	    IF #formatLength <= 0.0
+	        AND (
+	        (#velocityUnitInput = #LCONSMC_DEGREE_PER_SECOND)
+	        OR (#velocityUnitInput = #LCONSMC_DEGREE_PER_SECOND_HIGH_RESOLUTION)
+	        OR (#velocityUnitInput = #LCONSMC_DEGREE_PER_MINUTE)
+	        OR (#velocityUnitInput = #LCONSMC_RAD_PER_SECOND)
+	        OR (#velocityUnitInput = #LCONSMC_RAD_PER_MINUTE)
+	        OR (#velocityUnitInput = #LCONSMC_1_PER_HOUR)
+	        OR (#velocityUnitInput = #LCONSMC_1_PER_MINUTE)
+	        OR (#velocityUnitInput = #LCONSMC_1_PER_SECOND)
+	        )
+	    THEN
+	        // Invalid input
+	        #tempVelocityConversion := 0.0;
+	    ELSIF #velocityUnitInput = #LCONSMC_M_PER_MINUTE
+	        OR #velocityUnitInput = #LCONSMC_FEET_PER_MINUTE
+	    THEN
+	        #tempVelocityConversion := 1.0; // Input parameter correspondenting to winder / sectional drive unit
+	    ELSE
+	      CASE #velocityUnitInput OF
+	        #LCONSMC_DEGREE_PER_SECOND, #LCONSMC_DEGREE_PER_SECOND_HIGH_RESOLUTION:
+	          #tempVelocityConversion := #formatLength / 360.0 * 60.0; // factor depending on formatLengthUnit [m] or [ft]
+	        #LCONSMC_DEGREE_PER_MINUTE:
+	          #tempVelocityConversion := #formatLength / 360.0; // factor depending on formatLengthUnit [m] or [ft]
+	        #LCONSMC_RAD_PER_SECOND:
+	          #tempVelocityConversion := #formatLength / 2.0 / #LCONSMC_PI * 60.0; // factor depending on formatLengthUnit [m] or [ft]
+	        #LCONSMC_RAD_PER_MINUTE:
+	          #tempVelocityConversion := #formatLength / 2.0 / #LCONSMC_PI; // factor depending on formatLengthUnit [m] or [ft]
+	        #LCONSMC_MM_PER_SECOND,#LCONSMC_MM_PER_SECOND_HIGH_RESOLUTION:
+	          #tempVelocityConversion := 60.0 / 1000.0; // factor to m/min
+	        #LCONSMC_M_PER_SECOND:
+	          #tempVelocityConversion := 60.0; // factor to m/min
+	        #LCONSMC_MM_PER_MINUTE:
+	          #tempVelocityConversion := 1.0 / 1000.0; // factor to m/min
+	        #LCONSMC_MM_PER_HOUR:
+	          #tempVelocityConversion := 1.0 / (1000.0 * 60); // factor to m/min
+	        #LCONSMC_M_PER_HOUR:
+	          #tempVelocityConversion := 1.0 / 60; // factor to m/min
+	        #LCONSMC_KM_PER_MINUTE:
+	          #tempVelocityConversion := 1000.0; // factor to m/min
+	        #LCONSMC_KM_PER_HOUR:
+	          #tempVelocityConversion := 1000.0 / 60.0; // factor to m/min
+	        #LCONSMC_INCH_PER_SECOND:
+	          #tempVelocityConversion := 1.0 / 12.0 * 60.0; // factor to ft/min
+	        #LCONSMC_INCH_PER_MINUTE:
+	          #tempVelocityConversion := 1.0 / 12.0; // factor to ft/min
+	        #LCONSMC_FEET_PER_SECOND:
+	          #tempVelocityConversion := 60.0; // factor to ft/min
+	        #LCONSMC_MILES_PER_HOUR:
+	          #tempVelocityConversion := 5280.0 / 60.0; // factor to ft/min
+	        #LCONSMC_1_PER_HOUR:
+	          #tempVelocityConversion := 1.0 / 60.0 * #formatLength; // factor depending on formatLengthUnit [m] or [ft]
+	        #LCONSMC_1_PER_MINUTE:
+	          #tempVelocityConversion := #formatLength; // factor depending on formatLengthUnit [m] or [ft]
+	        #LCONSMC_1_PER_SECOND:
+	          #tempVelocityConversion := #formatLength * 60.0; // factor depending on formatLengthUnit [m] or [ft]
+	        ELSE
+	          // Unknown input unit
+	          #tempVelocityConversion := 0.0;
+	      END_CASE;
+	    END_IF;
+	END_REGION
+	
+	REGION Acceleration conversion
+	    IF #formatLength <= 0.0
+	        AND (
+	        #velocityUnitInput = #LCONSMC_1_PER_SECOND
+	        OR #velocityUnitInput = #LCONSMC_1_PER_MINUTE
+	        OR #velocityUnitInput = #LCONSMC_1_PER_HOUR
+	        OR #velocityUnitInput = #LCONSMC_RAD_PER_SECOND
+	        OR #velocityUnitInput = #LCONSMC_RAD_PER_MINUTE
+	        OR #velocityUnitInput = #LCONSMC_DEGREE_PER_SECOND
+	        OR #velocityUnitInput = #LCONSMC_DEGREE_PER_MINUTE
+	        )
+	    THEN
+	        // Invalid input
+	        #tempAccelerationConversion := 0.0;
+	    ELSIF (#velocityUnitInput <= 0)
+	        OR (#velocityUnitInput = #LCONSMC_M_PER_SECOND)
+	        OR (#velocityUnitInput = #LCONSMC_M_PER_MINUTE)
+	        OR (#velocityUnitInput = #LCONSMC_KM_PER_MINUTE)
+	        OR (#velocityUnitInput = #LCONSMC_KM_PER_HOUR)
+	        OR (#velocityUnitInput = #LCONSMC_M_PER_HOUR)
+	        OR (#velocityUnitInput = #LCONSMC_FEET_PER_SECOND)
+	        OR (#velocityUnitInput = #LCONSMC_FEET_PER_MINUTE)
+	        OR (#velocityUnitInput = #LCONSMC_MILES_PER_HOUR)
+	    THEN
+	        #tempAccelerationConversion := 1.0;
+	    ELSE
+	        CASE #velocityUnitInput OF
+	            #LCONSMC_MM_PER_SECOND, #LCONSMC_MM_PER_MINUTE, #LCONSMC_MM_PER_HOUR:
+	                // Output is always [mm/s^2]
+	                #tempAccelerationConversion := 1.0 / 1000.0;
+	            #LCONSMC_INCH_PER_SECOND, #LCONSMC_INCH_PER_MINUTE:
+	                // Output is always [in/s^2]
+	                #tempAccelerationConversion := 1.0 / 12.0;
+	            #LCONSMC_1_PER_SECOND, #LCONSMC_1_PER_MINUTE, #LCONSMC_1_PER_HOUR:
+	                // Output is always [1/s^2]
+	                #tempAccelerationConversion := #formatLength;
+	            #LCONSMC_RAD_PER_SECOND, #LCONSMC_RAD_PER_MINUTE:
+	                // Output is always [rad/s^2]
+	                #tempAccelerationConversion := #formatLength / 2.0 / #LCONSMC_PI;
+	            #LCONSMC_DEGREE_PER_SECOND, #LCONSMC_DEGREE_PER_MINUTE:
+	                // Output is always [°/s^2]
+	                #tempAccelerationConversion := #formatLength / 360.0;
+	            ELSE
+	                // Unknown input unit
+	                #tempAccelerationConversion := 0.0;
+	        END_CASE;
+	    END_IF;
+	END_REGION
+	
+	REGION Set outputs
+	    #lengthConversionFactor := #tempLengthConversion;
+	    #velocityConversionFactor := #tempVelocityConversion;
+	    #accelerationConversionFactor := #tempAccelerationConversion;
+	END_REGION
+	
+END_FUNCTION_BLOCK
+

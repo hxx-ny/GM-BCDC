@@ -1,0 +1,958 @@
+﻿FUNCTION_BLOCK "LConSMC_DiameterCalculation"
+{ S7_Optimized_Access := 'TRUE' ; Published := 'TRUE' }
+VERSION : 0.1
+//This function block calculates the actual diameter of the roll based on the behavior of the winding drive and line drive. One of six modes can be selected for the calculation. The function block must be called in a cyclic OB, e.g. OB30.  Function block ID: 5104
+   VAR_INPUT 
+      enable { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := FALSE;   // TRUE: Enable function block
+      holdDiameter { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := FALSE;   // TRUE: Holds the actual diameter
+      metricUnits { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := TRUE;   // TRUE: Use metric system [m] / [m/min] / [m/s^2] / [N]  FALSE: Use angloamerican system [inch] / [ft/min] / [ft/s^2] / [Lbf]
+      setDiameter { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := FALSE;   // TRUE: Sets the diameter to a specified value "diamConfig.diameterSetValue"
+      lineFeedback { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 0.0;   // [m or ft] Web position
+      lineVelocity { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 0.0;   // [m/min oder ft/min] Web velocity
+      windingShaftFeedback { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 0.0;   // [°] Winder shaft position
+      shaftSpeed { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 0.0;   // [RPM] Speed of the winder shaft on load side
+      selectDiamMode { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Int := 0;   // Type of diameter calculation  0: V/n  1: Thickness addition  2: Integral  3: External  4: WebLength  5: Position
+      typeOfWinder { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Int := 0;   // Definition of winding direction  0: Rewind from above  1: Rewind from below  2: Unwind from above  3: Unwind from below
+      tCycle { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Real := 0.0;   // [ms] Cycle time the function block is called
+   END_VAR
+
+   VAR_OUTPUT 
+      error { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := FALSE;   // TRUE: An error occured
+      errorID { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : DWord := 16#0000_0000;   // Detailed error description
+      busy { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := FALSE;   // TRUE: The function block is active
+      diamModeInUse { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Int := 0;   // Active diameter mode  0: V/n  1: Thickness addition  2: Integral  3: External  4: WebLength  5: Position
+      atMinDia { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := FALSE;   // TRUE: Lower limit of the actual diameter value reached (see "diamConfig.minDia")
+      atMaxDia { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := FALSE;   // TRUE: Upper limit of the actual diameter value reached (see "diamConfig.maxDia")
+      diamIsHold { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := FALSE;   // TRUE: Diameter calculation is stopped. Possible reasons:  Input "holdDiameter" = TRUE  Minimum velocity reached (see diamConfig.minLineVelocity/minShaftSpeed)
+      calculatedWebThickness { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 0.0;   // [m or inch] Calculated value of the web thickness 
+   END_VAR
+
+   VAR_IN_OUT 
+      diameter { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 0.0;   // [m or inch] Calculated diameter
+      diamConfig : "LConSMC_typeDiamConfig";   // Diameter configuration
+   END_VAR
+
+   VAR 
+      statEnableOld { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statBusy { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statSetDiameter { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statErrorLinePT1 { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statErrorShaftPT1 { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statErrorDiameterPT1 { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statErrorLineInt { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statDiamIsHold { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statErrorShaftInt { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statResetIntegrators { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statDiamHoldImplicit { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statCalculateFirstDiameter { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statFirstDiameterOutputDone { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statFirstDeltaEntered { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statArrayEntryIntervalPassed { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statOutputRateIntervalPassed { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statLatchRawValue { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statBufferFilled { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statUseDactRawValue { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statLatchNow { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statSetDiameterValue { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statWebThicknessNeeded { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statPosBasedCalc { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statDiamModeChanged { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statInitializeDiamCalcPosition { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statError { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statErrorIDLinePT1 { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : DWord;
+      statErrorIDShaftPT1 { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : DWord;
+      statErrorIDDiameterPT1 { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : DWord;
+      statErrorIDShaftInt { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : DWord;
+      statErrorIDLineInt { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : DWord;
+      statIntervalCounter { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Int;
+      statDiamModeInUse { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Int := 0;
+      statArrayCounter { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : DInt;
+      statRawDiameter { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statDiameterInterpolated { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statAbsLinVelocity { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statAbsShaftSpeed { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statCalcRoot { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statRadiusOffset { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statDiameterSetValLimited { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statFirstArrayEntryPosition { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statDeltaShaftRev { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statDeltaLineRev { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statDeltaShaft { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statDeltaLine { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statWindShaftStart { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      startLineStart { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statBufferSize { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statFloatingDeltaShaft { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statFloatingDeltaLine { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statDactRawValUnlimited { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statWebThickness { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statTargetDia { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statTargetDiaLast { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statTemp1 { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statDeltaShaftArray { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Array[0..#MAX_LENGTH_AVERAGE_VALUE] of LReal;
+      statDeltaLineArray { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Array[0..#MAX_LENGTH_AVERAGE_VALUE] of LReal;
+      statDeltaArrayZero { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Array[0..#MAX_LENGTH_AVERAGE_VALUE] of LReal;
+      instLinePT1 { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'; S7_SetPoint := 'False'} : "LConSMC_PT1";
+      instShaftPT1 { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'; S7_SetPoint := 'False'} : "LConSMC_PT1";
+      instDiameterPT1 { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'; S7_SetPoint := 'False'} : "LConSMC_PT1";
+      instShaftInt { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'; S7_SetPoint := 'False'} : "LConSMC_Integrator";
+      instLineInt { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'; S7_SetPoint := 'False'} : "LConSMC_Integrator";
+      instRTrigBusy {InstructionName := 'R_TRIG'; LibVersion := '1.0'; ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'; S7_SetPoint := 'False'} : R_TRIG;
+      instTrigArrayEntryIntervalPassed {InstructionName := 'R_TRIG'; LibVersion := '1.0'; ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'; S7_SetPoint := 'False'} : R_TRIG;
+      instTrigHold {InstructionName := 'R_TRIG'; LibVersion := '1.0'; ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'; S7_SetPoint := 'False'} : R_TRIG;
+      statSetDiameterOld { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+   END_VAR
+
+   VAR CONSTANT 
+      Pi : Real := 3.141592;
+      INT_SCALE : Real := 16384.0;
+      PERCENT_SCALE : Real := 100.0;
+      NO_ERROR : DWord := 16#0000_0000;
+      MAX_REAL_VALUE : Real := 3.402823E+38;
+      MAX_LENGTH_AVERAGE_VALUE : Int := 50;
+      DEGREE_PER_REVOLUTION : LReal := 360.0;
+   END_VAR
+
+
+BEGIN
+	REGION BLOCK INFO HEADER
+	  //===============================================================================
+	  // SIEMENS AG / (c)Copyright 2023
+	  //-------------------------------------------------------------------------------
+	  // Title:            LConSMC_DiameterCalculation
+	  // Comment/Function: Diameter calculation for winder applications
+	  // Library/Family:   LConSMC
+	  // Author:           APC Erlangen
+	  // Tested with:      FW 2.8
+	  // Engineering:      TIA Portal V16
+	  // Restrictions:     -
+	  // Requirements:     -
+	  //-------------------------------------------------------------------------------
+	  // Change log table:
+	  // Version  | Date       | Expert in charge       | Changes applied
+	  //----------|------------|------------------------|------------------------------
+	  // 01.03.01 | 2024-03-01 | APC Erlangen           | Bugfix: Initialize internal variables after setting the diameter without disabling the function block (*c_00065*)
+	  // 01.03.00 | 2022-03-19 | APC Erlangen           | Bugfix: - Validate configuration only if function block is enabled (*c_00048*)
+	  //                                                          - Avoid division by zero (*c_00049*)
+	  //                                                          - Initialize internal variable after changing the diameter calculation mode on the fly (*c_00050*) 
+	  // 01.02.00 | 2021-07-16 | APC Erlangen           | Bugfix calculating condition for outputs atMinDia/atMaxDia in mode Intragal and Position (*c_00040*)
+	  // 01.01.00 | 2019-11-18 | APC Erlangen           | Bugfix: After the first initialization the correct diameter value is used now. (*c_00019*)
+	  // 01.00.00 | 2019-05-15 | APC Erlangen           | Creation
+	  //===============================================================================
+	END_REGION BLOCK INFO HEADER
+	
+	REGION DESCRIPTION
+	(/*
+	The diameter calculator determines the actual diameter value of the roll being wound (or unwound) using the input quantities:  
+	* Web velocity and position
+	* Shaft speed of the mandrel or angle
+	* Web thickness  
+	  
+	The following calculation modes are realized within the function block:  
+	
+	+----------------+---------------------------------------------------------------------------------------------------------------------------------------------+
+	|Calculation mode|Description                                                                                                                                  |
+	+================+=============================================================================================================================================+
+	| Division       | Calculates the diameter based on the ratio between the web velocity and winder velocity or speed (speed)
+	+----------------+---------------------------------------------------------------------------------------------------------------------------------------------+
+	| Thickness      | Integrates the web thickness
+	+----------------+---------------------------------------------------------------------------------------------------------------------------------------------+
+	| Integral       | Calculates the diameter from the ratio between the winder angle and web length by integrating the winding speed and the web velocity.
+	+----------------+---------------------------------------------------------------------------------------------------------------------------------------------+
+	| External       | Senses the diameter using a sensor
+	+----------------+---------------------------------------------------------------------------------------------------------------------------------------------+
+	| Web length     | Diameter calculation based on the wound material via the integration of the line velocity
+	+----------------+---------------------------------------------------------------------------------------------------------------------------------------------+
+	| Position       | Calculates the diameter using the ratio between the winder angle and web length by measuring the winder position (angle) and the web length.
+	+----------------+---------------------------------------------------------------------------------------------------------------------------------------------+
+	
+	At the first run the specified mode is accepted and is issued at output parameter diamModeInUse for the user.
+	A flying change of the calculation mode is possible.
+	The *holdDiameter* input will pause diameter calculation and hold the resulting diameter at the current value when set to true.
+	The *setDiameter* input writes the *diameterSetvalue* as the diameter if the actual shaft speed is below minimum shaft speed.
+	The set value is limited by the minimum and maximum diameter.
+	With actual line velocity above line and actual shaft speed above minimum and not hold, the diameter is calculated.
+	The result of the division is limited and smoothed.
+	
+	|Quantity           |  Metric   |  Imperial |
+	|-------------------|-----------|-----------|
+	|line velocity      | m/min     | ft/min    |
+	|winder shaft speed | rpm       | rpm       |
+	|Line position      | meter     | feet      |
+	|Winder position    | degree    | degree    |
+	|diameter           | meter     | inch      |
+	
+	The diameter is calculated in two steps:
+	1. The raw diameter value is calculated
+	2. The raw diameter value is post-conditioned (limited, interpolated and smoothed)  
+	  
+	The functionality of each calculation mode is described in the following:
+	*/)
+	  
+	(/*
+	#### Division
+	
+	The function block determines the actual diameter value (diameter) of the roll being wound (or unwound) using the input quantities:
+	* Web velocity (lineVelocity) - the web velocity is the setpoint velocity of the machine and the velocity with which the main drive moves the material web.
+	In exceptional cases, it is possible to use the actual value from a tachometer measuring the web speed.
+	* Shaft speed of the mandrel (shaftSpeed)  
+	  
+	$ diameter = \frac{v}{n \cdot \pi}\ $
+	
+	---
+	
+	{.pageWidth}
+	![Diam calc division](DiamCalcModeDivision.png)
+	
+	---
+	
+	*/)
+	(/*
+	#### Thickness addition
+	
+	The diameter calculator determines the actual diameter value (diameter) of the roll being wound (or unwound) using the input quantities:
+	* Web Thickness - the actual web (material) thickness.
+	* Shaft speed of the mandrel (shaftSpeed) – Actual speed of the winder shaft.
+	
+	NOTE
+	:    This calculation method relies very much on the accuracy of the material thickness and the starting diameter value.
+	Any deviation between the actual effective material thickness and the set material thickness will lead to an invalid diameter which error will get bigger after each revolution.
+	An inaccurate starting value will remain as an offset between the actual and the calculated diameter.  
+	This calculation mode is mostly useful for materials where air entrapment and in wound tension does not influence the effective material thickness.
+	
+	---
+	
+	{.pageWidth}
+	![Diam calc addition](DiamCalcModeAddition.png)
+	
+	*/)
+	(/*
+	#### Integral mode
+	
+	The diameter calculator determines the actual diameter value (diameter) of the roll being wound (or unwound) using the input quantities:
+	* Web velocity (lineVelocity) - the web velocity is the setpoint velocity of the machine and the velocity with which the main drive moves the material web. In exceptional cases, it is possible to use the actual value from a tachometer measuring the web speed. 
+	* Shaft speed of the mandrel (shaftspeed) – Actual speed of the winder shaft.  
+	  
+	The actual motor speed is converted to the roll shaft (by the gear ratio) and is used to calculate the diameter.
+	The integral diameter calculation is also based on the division of the web quantity by the angular quantity.
+	However, quantities v and ω are integrated over several roll revolutions that can be specified by measuringRevolutionCount.
+	This is to minimize the disturbing effect of processing just individual values. The following applies:
+	
+	$ diameter = 2 \cdot \frac{\int v}{\int n}\ $
+	
+	If the number of revolutions of the winding shaft - specified by parameter diameterOutputRate – is reached,
+	then the integrators are reset. One integrator will give the length change of the material for the specified
+	number of winder shaft revolutions. From these two values the (average) diameter can be calculated.
+	
+	---
+	
+	{.pageWidth}
+	![Diam calc integral](DiamCalcModeIntegral.png)
+	
+	*/)
+	(/*
+	#### External
+	
+	In this mode an external diameter value, e.g., from a sensor, can be used via the parameter *diamConfig.diameterSetValue*.
+	*/)
+	(/*
+	#### Web length addition
+	
+	The diameter calculator determines the actual diameter value of the roll using the following input quantities:
+	* Web Thickness - the actual web (material) thickness.
+	* The length of the winded material  
+	  
+	With the help of the actual velocity of the leading axis the length of the rewinded or unwinded material on the core is calculated.
+	In addition, with the material thickness the current diameter of the winder can be calculated.
+	
+	NOTE
+	:    This calculation method relies very much on the accuracy of the material thickness and the starting diameter value.
+	Any deviation between the actual effective material thickness and the set material thickness will lead to an invalid
+	diameter which error will get bigger after each revolution.
+	An inaccurate starting value will remain as an offset between the actual and the calculated diameter.
+	This calculation mode is mostly useful for materials where air entrapment and in wound tension does not influence the effective material thickness.
+	
+	---
+	
+	{.pageWidth}
+	![Diam calc web length](DiamCalcModeWebLength.png)
+	
+	*/)
+	(/*
+	#### Position mode
+	
+	This diameter calculation technique directly intervenes at the position of the web and the roll being wound or unwound.
+	Therefor the position is fed back into the FB via the input parameter lineFeedback and windingShaftFeedback and the
+	difference to the previous cycle is measured.
+	Overflows are intercepted using modulo limits that should be entered.
+	
+	$ s = R \cdot \varphi , \qquad with \, d=2 \cdot \frac{s}{\varphi}\ $
+	
+	If the number revolutions of the winding shaft – specified by parameter MeasuringRevolutionCount – are reached the
+	differential value is reset and the calculated diameter value is further processed.
+	In order to be able to identify overflows, the change of the feedback signal per cycle must be less than half of the difference of the modulo limits.
+	
+	$ \Delta feedback < \frac{moduloLength}{2}\ $
+	
+	In addition, in every measuring interval the actual material thickness (CalculatedWebThickness) is calculated, e.g., for a rest length calculation.
+	
+	---
+	
+	{.pageWidth}
+	![Diam calc position](DiamCalcModePosition.png)
+	
+	*/)
+	(/*
+	#### Floating diameter calculation (Only mode Integral and Position)
+	
+	To optimize the diameter signal quality a floating averaging over a defined number of rotations (measuringRevolutionCount) is used internally.
+	The floating diameter calculation can be configured by the following configuration parameter:
+	* MeasuringRevolutionCount
+	* FirstDiameterOutput
+	* DiameterOutputRate  
+	  
+	After rising edge of input “enable” the first calculated diameter will be output after the number of revolutions configured in “FirstDiameterOutput”.
+	After the first diameter output the calculated diameter will be refreshed cylic after the number of revolutions configured in “DiameterOutputRate”.
+	The calculated diameter will be averaged over the number of revolutions configured in “MeasuringRevolutionCount”, if the parameterized number of revolutions has been passed already. 
+	The averaging of a specific number or revolutions is determined by the depth (array length) of an internal ring buffer.
+	Inside the ring buffer the position deltas of line and winder axis will be entered. The buffer depth is calculated based on the following formula:
+	
+	$ bufferDepth = \frac{MeasuringRevolutionCount}{DiameterOutputRate}\ $
+	
+	Is the result of the calculation a non-natural number the value will be rounded to next natural number (N = {1, 2,3, …}).
+	Thereby the effective averaging over a specific number of revolutions can differ to the configured value in “MeasuringRevolutionCount” (compare example 3).
+	The following sketches show the interacting of the configuration parameter.
+	In the function block a modulo cycle from 0° to 360° is recreated.
+	The configuration of the technology object is independent of that.
+	
+	#### Example 1
+	
+	* MeasuringRevolutionCount  := 4
+	* DiameterOutputRate        := 1
+	* FirstDiameterOutput       := 2
+	
+	---
+	
+	![Floating diameter calc 1](FloatingDiamCalc_1.png)
+	
+	#### Example 2
+	
+	* MeasuringRevolutionCount  := 4
+	* DiameterOutputRate        := 1
+	* FirstDiameterOutput       := 0.5
+	
+	---
+	
+	![Floating diameter calc 2](FloatingDiamCalc_2.png)
+	
+	#### Example 3
+	
+	* MeasuringRevolutionCount  := 5
+	* DiameterOutputRate        := 2
+	* FirstDiameterOutput       := 1
+	
+	---
+	
+	![Floating diameter calc 3](FloatingDiamCalc_3.png)
+	
+	---
+	
+	In addition, in every measuring interval based on the diameter change the actual material thickness is also calculated, e.g., for a rest length calculation.
+	  
+	$ Thickness = \frac{dimeterNew - diameterOld}{diameterOutputRate}\ $
+	
+	*/)
+	END_REGION
+	
+	IF #enable AND NOT #statEnableOld THEN
+	    // Initialize parameters
+	    #atMinDia := FALSE;
+	    #atMaxDia := FALSE;
+	    #statBusy := FALSE;
+	    #error := FALSE;
+	    #statError := FALSE;
+	    #statDiamIsHold := FALSE;
+	    #statOutputRateIntervalPassed := FALSE;
+	    #errorID := #NO_ERROR;
+	    #statWebThickness := 0.0;
+	    #statErrorLinePT1 := FALSE;
+	    #statErrorLineInt := FALSE;
+	    #statErrorShaftPT1 := FALSE;
+	    #statErrorShaftInt := FALSE;
+	    #statUseDactRawValue := FALSE;
+	    #statErrorDiameterPT1 := FALSE;
+	    #statErrorIDLinePT1 := #NO_ERROR;
+	    #statErrorIDLineInt := #NO_ERROR;
+	    #statErrorIDShaftPT1 := #NO_ERROR;
+	    #statErrorIDShaftInt := #NO_ERROR;
+	    #statErrorIDDiameterPT1 := #NO_ERROR;
+	    #statDiameterInterpolated := #diameter; (*c_00019*)
+	    #statTargetDia := #diameter;
+	    #statTargetDiaLast := #diameter;
+	    #statFirstDiameterOutputDone := FALSE;
+	    #statCalculateFirstDiameter := FALSE;
+	    #statFloatingDeltaShaft := 0.0;
+	    #statFloatingDeltaLine := 0.0;
+	    #statDeltaShaftArray := #statDeltaArrayZero;
+	    #statDeltaLineArray := #statDeltaArrayZero;
+	    #statIntervalCounter := 0;
+	    
+	    IF #tCycle = 0.0 THEN
+	        #atMinDia := TRUE;
+	        #atMaxDia := TRUE;
+	        #statError := TRUE;
+	        #errorID := "LCON_ERROR_DIAM_CALC_INVALID_CYCLE_TIME";                                // FB NO Valid Data return
+	    ELSE
+	        #statBusy := TRUE;
+	        #statRawDiameter := #diameter;           //save in out diameter and initialize PT1 Blocks 
+	        #statRadiusOffset := #diameter / 2.0;
+	        #instLinePT1(set := true,
+	                     setvalue := ABS(#lineVelocity),
+	                     tCycle := #tCycle);
+	        
+	        #instShaftPT1(set := true,
+	                      setvalue := ABS(#shaftSpeed),
+	                      tCycle := #tCycle);
+	        
+	        #instDiameterPT1(set := true,
+	                         setvalue := #statRawDiameter,
+	                         tCycle := #tCycle);
+	        
+	        #instShaftInt(set := True,
+	                      setValue := #diameter,
+	                      upperLimit := #diamConfig.#maxDia,
+	                      lowerLimit := #diamConfig.#minDia,
+	                      tCycle := #tCycle);
+	    END_IF;
+	END_IF;
+	
+	IF NOT #enable AND #statEnableOld THEN
+	    #statErrorLinePT1   := FALSE;
+	    #statErrorLineInt   := FALSE;
+	    #statErrorShaftPT1  := FALSE;
+	    #statErrorShaftInt  := FALSE;
+	    #statErrorDiameterPT1 := FALSE;
+	    #statErrorShaftInt  := FALSE;
+	    
+	    #statErrorIDLinePT1     := #NO_ERROR;
+	    #statErrorIDLineInt     := #NO_ERROR;
+	    #statErrorIDShaftPT1    := #NO_ERROR;
+	    #statErrorIDShaftInt    := #NO_ERROR;
+	    #statErrorIDDiameterPT1 := #NO_ERROR;
+	    
+	    #error      := #statError   := FALSE;
+	    #errorID    := #NO_ERROR;
+	    #busy       := #statBusy    := FALSE;
+	    #diamModeInUse := #selectDiamMode;
+	    #atMinDia   := FALSE;
+	    #atMaxDia   := FALSE;
+	    #diamIsHold := FALSE;
+	    #calculatedWebThickness     := #statWebThickness := 0.0;
+	END_IF;
+	#statEnableOld := #enable;
+	//Reduce load if function block is disabled     // (*c_00048*)
+	IF NOT #enable THEN       
+	    RETURN;
+	END_IF;
+	
+	#statWebThicknessNeeded := #selectDiamMode = ("LCON_DIAM_CALC_MODE_ADDITION") OR (#selectDiamMode = "LCON_DIAM_CALC_MODE_WEB_LENGTH");
+	#statPosBasedCalc := #selectDiamMode = "LCON_DIAM_CALC_MODE_POSITION";
+	IF (#diamConfig.#minDia <= 0.0)
+	    OR (#diamConfig.#maxDia <= 0.0)
+	    OR (#diamConfig.#minDia >= #diamConfig.#maxDia)
+	    OR #diamConfig.#diameterFilterTime < 0.0
+	    OR (#diamConfig.webThickness <= 0.0 AND #statWebThicknessNeeded)
+	    OR #typeOfWinder < 0
+	    OR #typeOfWinder > 3
+	    OR (#diamConfig.#measuringRevolutionCount <= 0.0)
+	    OR (#diamConfig.#measuringRevolutionCount < #diamConfig.#diameterOutputRate)
+	    //OR (((#diamConfig.#windingShaftFeedbackScal <= 0.0)) AND #statPosBasedCalc)
+	THEN
+	    #atMinDia := TRUE;
+	    #atMaxDia := TRUE;
+	    IF NOT #statError THEN  // Do not override error
+	        #statError := TRUE;
+	        #errorID := "LCON_ERROR_DIAM_CALC_INVALID_CONFIGURATION";                       // FB NO Valid Data return
+	    END_IF;
+	ELSIF #selectDiamMode < 0 OR #selectDiamMode > 5 THEN
+	    #atMinDia := TRUE;
+	    #atMaxDia := TRUE;
+	    IF NOT #statError THEN  // Do not override error
+	        #statError := TRUE;
+	        #errorID := "LCON_ERROR_DIAM_CALC_INVALID_MODE";
+	    END_IF;
+	END_IF;
+	
+	IF #statError THEN
+	    #error := #statError;
+	    #busy := #statBusy := FALSE;
+	    RETURN;
+	END_IF;
+	IF (#selectDiamMode <> #statDiamModeInUse)
+	  OR (#setDiameter AND NOT #statSetDiameterOld) (*c_00065*)
+	THEN
+	    #statDiamModeInUse := #selectDiamMode;
+	    #statInitializeDiamCalcPosition := TRUE;                // set initialize bit for possibly next use of diam mode DIAM_CALC_POSITION
+	    #statDiamModeChanged := TRUE;
+	    #statFirstDiameterOutputDone := FALSE;
+	    #statCalculateFirstDiameter := FALSE;
+	    #statLatchRawValue := FALSE;
+	    #statFloatingDeltaShaft := 0.0;
+	    #statFloatingDeltaLine := 0.0;
+	    #statDeltaShaftArray := #statDeltaArrayZero;
+	    #statDeltaLineArray := #statDeltaArrayZero;
+	    #statIntervalCounter := 0;
+	    #statOutputRateIntervalPassed := FALSE;     // (*c_00050*)
+	    #statArrayEntryIntervalPassed := FALSE;     // (*c_00050*)
+	    #statBufferFilled := FALSE;       (*c_00065*)
+	    #statArrayCounter := 0;           (*c_00065*)
+	ELSE
+	    #statDiamModeChanged := FALSE;
+	END_IF;
+	#statSetDiameterOld := #setDiameter;  (*c_00065*)
+	IF #statBusy THEN
+	    #instRTrigBusy(CLK := #statBusy);
+	    REGION Filter line/winder speed
+	        #statSetDiameter := #setDiameter AND (ABS(#instShaftPT1.y) < ABS(#diamConfig.#minShaftSpeed));               //setDiameter:True = Set diameter to diameter set value  FALSE: Diameter Calculation
+	        #statDiamHoldImplicit := ((ABS(#shaftSpeed) < ABS(#diamConfig.#minShaftSpeed)) OR (ABS(#lineVelocity) < ABS(#diamConfig.#minLineVelocity))) AND (#statDiamModeInUse <> "LCON_DIAM_CALC_MODE_EXTERNAL");  // Speed for Diameter Calc is not reached  
+	        // Filter the line speed
+	        #instLinePT1(set           := #statSetDiameter OR #statDiamModeChanged,
+	                     x             := #lineVelocity,
+	                     setvalue      := #lineVelocity,
+	                     smoothingTime := #diamConfig.#lineFilterTime,
+	                     tCycle        := #tCycle,
+	                     error         => #statErrorLinePT1,
+	                     errorID       => #statErrorIDLinePT1);
+	        // Filter the actual shaft speed
+	        #instShaftPT1(set           := #statSetDiameter OR #statDiamModeChanged,                      //PT1 set controlled by mysetDiameter
+	                      x             := #shaftSpeed,
+	                      setvalue      := #shaftSpeed,
+	                      smoothingTime := #diamConfig.#shaftFilterTime,
+	                      tCycle        := #tCycle,
+	                      error         => #statErrorShaftPT1,
+	                      errorID       => #statErrorIDShaftPT1);
+	    END_REGION
+	    
+	    #statDiameterSetValLimited := LIMIT(MN := #diamConfig.#minDia,            // [ LU ]
+	                                        IN := #diamConfig.#diameterSetValue,  // [ LU ]
+	                                        MX := #diamConfig.#maxDia);           // [ LU ]
+	    
+	    CASE #statDiamModeInUse OF
+	        "LCON_DIAM_CALC_MODE_DIVISION":
+	            REGION DiamCalcDivision
+	                #statUseDactRawValue    := TRUE;
+	                #statAbsLinVelocity     := ABS(#instLinePT1.y);
+	                #statAbsShaftSpeed      := ABS(#instShaftPT1.y);
+	                IF NOT #statDiamHoldImplicit
+	                    AND NOT #holdDiameter
+	                THEN
+	                    IF #statAbsShaftSpeed = 0.0 THEN    // Avoid division by zero //(*c_00049*)
+	                        #statDactRawValUnlimited := 0.0;
+	                    ELSE
+	                        IF #metricUnits THEN
+	                            #statDactRawValUnlimited := (#statAbsLinVelocity / #statAbsShaftSpeed / #Pi);
+	                        ELSIF NOT #metricUnits THEN
+	                            #statDactRawValUnlimited := (#statAbsLinVelocity / #statAbsShaftSpeed / #Pi) * 12;
+	                        END_IF;
+	                    END_IF;
+	                    #statDiamIsHold := FALSE;
+	                ELSE
+	                    #statDiamIsHold := TRUE;
+	                END_IF;
+	                IF #statSetDiameter THEN
+	                    #statDactRawValUnlimited := #statDiameterSetValLimited;
+	                END_IF;
+	            END_REGION
+	        "LCON_DIAM_CALC_MODE_ADDITION":
+	            REGION DiamCalcAddition
+	                // Check if above min speeds for calcualtions and not diameter Hold  
+	                #statUseDactRawValue := TRUE;
+	                IF ((ABS(#instShaftPT1.y) >= ABS(#diamConfig.#minShaftSpeed)) AND NOT #holdDiameter) OR #statSetDiameter OR #statDiamModeChanged THEN
+	                  #statDiamIsHold := FALSE;
+	                  IF #statDiamModeChanged AND NOT #statSetDiameter THEN
+	                    #instShaftInt(set          := TRUE,
+	                                  x            := 0.0,
+	                                  setValue     := #statDiameterInterpolated,//#diameter,
+	                                  upperLimit   := #diamConfig.#maxDia,                                                                                                      //upper limit assigned to maxDia
+	                                  lowerLimit   := #diamConfig.#minDia,                                                                                                      //lower limit assigned to minDia
+	                                  integralTime := 1000.0,
+	                                  tCycle       := #tCycle,
+	                                  error        => #statErrorShaftInt,
+	                                  errorID      => #statErrorIDShaftInt);
+	                  END_IF; 
+	                  #instShaftInt(set          := #statSetDiameter,
+	                                x            := SEL(G := ((#typeOfWinder = "LCON_TYPE_OF_WINDER_REWIND_FROM_BELOW") OR (#typeOfWinder = "LCON_TYPE_OF_WINDER_UNWIND_FROM_ABOVE")),                          // Invert counting to drive speed
+	                                                    IN0 := #instShaftPT1.y / 60 * ABS(#diamConfig.webThickness) * 2,
+	                                                    IN1 := #instShaftPT1.y / 60 * - ABS(#diamConfig.webThickness) * 2),
+	                                setValue     := #statDiameterSetValLimited,
+	                                upperLimit   := #diamConfig.#maxDia,                                                                                                      //upper limit assigned to maxDia
+	                                lowerLimit   := #diamConfig.#minDia,                                                                                                      //lower limit assigned to minDia
+	                                integralTime := 1000.0,
+	                                tCycle       := #tCycle,
+	                                error        => #statErrorShaftInt,
+	                                errorID      => #statErrorIDShaftInt);
+	                ELSE
+	                  #statDiamIsHold := TRUE;
+	                END_IF;
+	                #statDactRawValUnlimited := #instShaftInt.y;
+	                #atMaxDia := #instShaftInt.upperLimitReached;
+	                #atMinDia := #instShaftInt.lowerLimitReached;
+	            END_REGION
+	        "LCON_DIAM_CALC_MODE_INTEGRAL":
+	            REGION DiamCalcIntegral
+	                #statUseDactRawValue := FALSE;
+	                REGION Integrate line and winder speed
+	                  #instLineInt(set          := #statResetIntegrators OR #statDiamModeChanged,
+	                               x            := #instLinePT1.y / 60.0,
+	                               setValue     := 0.0,
+	                               upperLimit   := 1000.0,
+	                               lowerLimit   := -1000.0,
+	                               integralTime := 1000.0,
+	                               tCycle       := #tCycle,
+	                               error        => #statErrorLineInt,
+	                               errorID      => #statErrorIDLineInt);
+	                    
+	                  #instShaftInt(set          := #statResetIntegrators OR #statDiamModeChanged,    // integrate smoothed shaftspeed
+	                                x            := (#instShaftPT1.y * 2.0 * #Pi) / 60.0,             // [ RPS ] into [ rad/s ]
+	                                setValue     := 0.0,
+	                                upperLimit   := 1000.0,
+	                                lowerLimit   := -1000.0,
+	                                integralTime := 1000.0,
+	                                tCycle       := #tCycle,
+	                                error        => #statErrorShaftInt,
+	                                errorID      => #statErrorIDShaftInt);
+	                END_REGION
+	                REGION Calculate buffer events
+	                    IF (#diamConfig.#firstDiameterOutput <= #diamConfig.#diameterOutputRate) AND NOT #statCalculateFirstDiameter AND NOT #statFirstDiameterOutputDone THEN
+	                        #statCalculateFirstDiameter := (ABS(#instShaftInt.y) >= (ABS(#diamConfig.#firstDiameterOutput) * 2.0 * #Pi));    // latch after (statFirstDiameterOutput) revolution
+	                    ELSIF (#diamConfig.#firstDiameterOutput > #diamConfig.#diameterOutputRate) AND NOT #statCalculateFirstDiameter AND NOT #statFirstDiameterOutputDone THEN
+	                        #statFirstArrayEntryPosition := "LConSMC_ModuloIEC"(value := ABS(#diamConfig.#firstDiameterOutput), moduloValue := ABS(#diamConfig.#diameterOutputRate));
+	                        IF (#statFirstArrayEntryPosition = 0.0) THEN
+	                            #statFirstArrayEntryPosition := ABS(#diamConfig.#diameterOutputRate);
+	                        END_IF;
+	                        IF NOT #statFirstDeltaEntered THEN
+	                            #statArrayEntryIntervalPassed := (ABS(#instShaftInt.y) >= (#statFirstArrayEntryPosition) * 2.0 * #Pi);               // enter calculated delta in buffer
+	                            #statFirstDeltaEntered := #statArrayEntryIntervalPassed;
+	                        ELSE
+	                            #statArrayEntryIntervalPassed := (ABS(#instShaftInt.y) >= (ABS(#diamConfig.#diameterOutputRate) * 2.0 * #Pi));   // enter calculated delta in buffer
+	                        END_IF;
+	                        #instTrigArrayEntryIntervalPassed(CLK := #statArrayEntryIntervalPassed);
+	                        IF #instTrigArrayEntryIntervalPassed.Q THEN
+	                            #statIntervalCounter := #statIntervalCounter + 1;
+	                        END_IF;
+	                        IF (#statIntervalCounter >= (ABS(#diamConfig.#firstDiameterOutput) / ABS(#diamConfig.#diameterOutputRate))) THEN
+	                            #statCalculateFirstDiameter := TRUE;
+	                            #statIntervalCounter := 0;
+	                            #statArrayEntryIntervalPassed := FALSE;
+	                            #statFirstDeltaEntered := FALSE;
+	                        END_IF;
+	                    ELSIF #statCalculateFirstDiameter THEN
+	                        #statCalculateFirstDiameter := FALSE;
+	                        #statFirstDiameterOutputDone := TRUE;
+	                    END_IF;
+	                    IF #statFirstDiameterOutputDone THEN
+	                        #statOutputRateIntervalPassed := (ABS(#instShaftInt.y) >= (ABS(#diamConfig.#diameterOutputRate) * 2.0 * #Pi));           // latch every (r32DiameterOutputRate) revolution
+	                    END_IF;
+	                    // set bits                    
+	                    #statResetIntegrators := #statCalculateFirstDiameter OR #statArrayEntryIntervalPassed OR #statOutputRateIntervalPassed OR #statDiamIsHold;  // measuring interval reached OR "hold diam"
+	                    #statLatchRawValue := #statCalculateFirstDiameter OR #statOutputRateIntervalPassed;// output diameter
+	                    // copy deltas for floating calculation in buffer
+	                    #statDeltaShaftRev := ABS(#instShaftInt.y);
+	                    #statDeltaLineRev := ABS(#instLineInt.y);
+	                END_REGION
+	            END_REGION
+	        "LCON_DIAM_CALC_MODE_EXTERNAL":
+	            REGION DiamExt
+	                #statUseDactRawValue := TRUE;
+	                IF NOT #holdDiameter THEN
+	                    #statDactRawValUnlimited := #diamConfig.diameterSetValue;
+	                END_IF;
+	                #statDiamIsHold := #holdDiameter;
+	            END_REGION
+	        "LCON_DIAM_CALC_MODE_WEB_LENGTH":
+	          REGION DiamCalcWebLength
+	            #statUseDactRawValue := TRUE;
+	            IF #statDiamModeChanged THEN
+	              #statRadiusOffset := #statDiameterInterpolated / 2.0;//#diameter / 2.0;
+	              #instLineInt(set          := TRUE,
+	                           x            := 0.0,
+	                           setValue     := 0.0,
+	                           upperLimit   := #MAX_REAL_VALUE,
+	                           lowerLimit   := - #MAX_REAL_VALUE,
+	                           integralTime := 1000.0,
+	                           tCycle       := #tCycle,
+	                           error        => #statErrorLineInt,
+	                           errorID      => #statErrorIDLineInt);
+	            END_IF; 
+	            #instLineInt(set          := #statResetIntegrators,
+	                         x            := SEL(G := ((#typeOfWinder = "LCON_TYPE_OF_WINDER_REWIND_FROM_BELOW") OR (#typeOfWinder = "LCON_TYPE_OF_WINDER_UNWIND_FROM_ABOVE")),
+	                                             IN0 := #instLinePT1.y / 60.0,       // [LU/s]
+	                                             IN1 := - #instLinePT1.y / 60.0),    // [LU/s]
+	                         setValue     := 0.0,
+	                         upperLimit   := #MAX_REAL_VALUE,
+	                         lowerLimit   := - #MAX_REAL_VALUE,
+	                         integralTime := 1000.0,
+	                         tCycle       := #tCycle,
+	                         error        => #statErrorLineInt,
+	                         errorID      => #statErrorIDLineInt);
+	            
+	            #statResetIntegrators := (#holdDiameter) OR (#statSetDiameter) OR (ABS(#instLinePT1.y) < ABS(#diamConfig.#minLineVelocity));
+	            
+	            // Check if above min speeds for calcualtions and not diameter Hold 
+	            IF NOT #holdDiameter AND (ABS(#instLinePT1.y) >= ABS(#diamConfig.#minLineVelocity)) THEN
+	              IF #metricUnits THEN //
+	                #statCalcRoot := #instLineInt.y * #diamConfig.webThickness / #Pi + #statRadiusOffset * #statRadiusOffset;        //  [m]
+	              ELSE
+	                #statCalcRoot := #instLineInt.y * 12.0 * #diamConfig.webThickness / #Pi + #statRadiusOffset * #statRadiusOffset; //  [in]
+	              END_IF;
+	              #statDactRawValUnlimited := 2.0 * SQRT(MAX(IN1 := 0, IN2 := #statCalcRoot));
+	              #statDiamIsHold := FALSE;
+	            ELSE
+	              #statDiamIsHold := TRUE;
+	              IF #setDiameter THEN
+	                #statDactRawValUnlimited := #statDiameterSetValLimited;
+	                #statRadiusOffset := #statDactRawValUnlimited / 2.0;
+	              ELSE
+	                #statRadiusOffset := #statDactRawValUnlimited / 2.0;
+	              END_IF;
+	            END_IF;
+	          END_REGION
+	        "LCON_DIAM_CALC_MODE_POSITION":
+	            REGION DiamCalcPosition
+	                #statUseDactRawValue := FALSE;
+	                REGION Calculate buffer events
+	                    IF #statResetIntegrators THEN
+	                        #statDeltaShaft := 0.0;     // reset delta                                 
+	                        #statDeltaLine := 0.0;      // reset delta
+	                    END_IF;
+	                    IF #statInitializeDiamCalcPosition THEN
+	                        #statWindShaftStart := #windingShaftFeedback;
+	                        #startLineStart := #lineFeedback;
+	                        #statDeltaShaft := 0.0;
+	                        #statDeltaLine := 0.0;
+	                        #statInitializeDiamCalcPosition := FALSE;
+	                    END_IF;
+	                    // get position difference winder axis (per cycle);  as fbINT3 in DIAM_CALC_INTEGRAL mode
+	                    #statDeltaShaft := #statDeltaShaft + "LConSMC_EvaluateModulo"(valueAct := #windingShaftFeedback,
+	                                                                                  valueLast := #statWindShaftStart,
+	                                                                                  moduloLength := #diamConfig.#shaftModLength);
+	                    #statWindShaftStart := #windingShaftFeedback;
+	                    // get position difference line axis (per cycle); as fbINT2 in DIAM_CALC_INTEGRAL mode
+	                    #statDeltaLine := #statDeltaLine + "LConSMC_EvaluateModulo"(valueAct := #lineFeedback,
+	                                                                                valueLast := #startLineStart,
+	                                                                                moduloLength := #diamConfig.#lineModLength);
+	                    #startLineStart := #lineFeedback;
+	                    IF (#diamConfig.#firstDiameterOutput <= #diamConfig.#diameterOutputRate) AND NOT #statCalculateFirstDiameter AND NOT #statFirstDiameterOutputDone THEN
+	                        // latch after (statFirstDiameterOutput) revolution
+	                        #statCalculateFirstDiameter := ((ABS(#statDeltaShaft) / #DEGREE_PER_REVOLUTION) >= ABS(#diamConfig.#firstDiameterOutput));
+	                    ELSIF (#diamConfig.#firstDiameterOutput > #diamConfig.#diameterOutputRate) AND NOT #statCalculateFirstDiameter AND NOT #statFirstDiameterOutputDone THEN
+	                        #statFirstArrayEntryPosition := "LConSMC_ModuloIEC"(value := ABS(#diamConfig.#firstDiameterOutput), moduloValue := ABS(#diamConfig.#diameterOutputRate));
+	                        IF (#statFirstArrayEntryPosition = 0.0) THEN
+	                            #statFirstArrayEntryPosition := ABS(#diamConfig.#diameterOutputRate);
+	                        END_IF;
+	                        IF NOT #statFirstDeltaEntered THEN
+	                            // enter calculated delta in buffer
+	                            #statArrayEntryIntervalPassed := ((ABS(#statDeltaShaft) / #DEGREE_PER_REVOLUTION) >= #statFirstArrayEntryPosition);
+	                            #statFirstDeltaEntered := #statArrayEntryIntervalPassed;
+	                        ELSE
+	                            // enter calculated delta in buffer
+	                            #statArrayEntryIntervalPassed := ((ABS(#statDeltaShaft) / #DEGREE_PER_REVOLUTION) >= ABS(#diamConfig.#diameterOutputRate));
+	                        END_IF;
+	                        #instTrigArrayEntryIntervalPassed(CLK := #statArrayEntryIntervalPassed);
+	                        IF #instTrigArrayEntryIntervalPassed.Q
+	                        THEN
+	                            #statIntervalCounter := #statIntervalCounter + 1;
+	                        END_IF;
+	                        IF (#statIntervalCounter >= (ABS(#diamConfig.#firstDiameterOutput) / ABS(#diamConfig.#diameterOutputRate))) THEN
+	                            #statCalculateFirstDiameter := TRUE;
+	                            #statIntervalCounter := 0;
+	                            #statArrayEntryIntervalPassed := FALSE;
+	                            #statFirstDeltaEntered := FALSE;
+	                        END_IF;
+	                    ELSIF #statCalculateFirstDiameter THEN
+	                        #statCalculateFirstDiameter := FALSE;
+	                        #statFirstDiameterOutputDone := TRUE;
+	                    END_IF;
+	                    IF #statFirstDiameterOutputDone THEN
+	                        // latch every (statDiameterOutputRate) revolution
+	                        #statOutputRateIntervalPassed := ((ABS(#statDeltaShaft) / #DEGREE_PER_REVOLUTION) >= ABS(#diamConfig.#diameterOutputRate));
+	                    END_IF;
+	                    // set bits                    
+	                    #statResetIntegrators := #statCalculateFirstDiameter OR #statArrayEntryIntervalPassed OR #statOutputRateIntervalPassed OR #statDiamIsHold;  // measuring interval reached OR "hold diam"
+	                    #statLatchRawValue := #statCalculateFirstDiameter OR #statOutputRateIntervalPassed;                                              // output diameter
+	                    // copy deltas for floating calculation in buffer
+	                    #statDeltaShaftRev := ABS(#statDeltaShaft);
+	                    #statDeltaLineRev := ABS(#statDeltaLine);
+	                END_REGION
+	            END_REGION
+	    END_CASE;
+	    
+	    REGION Floating diameter calculation
+	        IF #statDiamModeInUse = "LCON_DIAM_CALC_MODE_INTEGRAL" OR #statDiamModeInUse = "LCON_DIAM_CALC_MODE_POSITION" THEN
+	            // floating diameter average (only in case of DIAM_CALC_INTEGRAL, DIAM_CALC_POSITION)
+	            // determine buffer size
+	            #statBufferSize := ABS(#diamConfig.#measuringRevolutionCount) / ABS(#diamConfig.#diameterOutputRate);
+	            IF ("LConSMC_ModuloIEC"(value := #statBufferSize, moduloValue := 1.0) >= 0.5) THEN
+	                #statBufferSize := 1 + TRUNC(#statBufferSize);
+	            ELSE
+	                #statBufferSize := TRUNC(#statBufferSize);
+	            END_IF;
+	            IF (#statBufferSize > #MAX_LENGTH_AVERAGE_VALUE) THEN
+	                #statError := TRUE;
+	                #errorID := "LCON_ERROR_DIAM_CALC_MAX_BUFFER_SIZE";
+	            ELSE
+	                IF #statOutputRateIntervalPassed
+	                    OR #statCalculateFirstDiameter
+	                    OR #statArrayEntryIntervalPassed
+	                THEN
+	                    // if buffer filled -> subract existing array element from total value before adding new value
+	                    IF #statBufferFilled THEN
+	                        #statFloatingDeltaShaft := #statFloatingDeltaShaft - #statDeltaShaftArray[#statArrayCounter];
+	                        #statFloatingDeltaLine := #statFloatingDeltaLine - #statDeltaLineArray[#statArrayCounter];
+	                    END_IF;
+	                    // write new Value in ARRAY
+	                    #statDeltaShaftArray[#statArrayCounter] := #statDeltaShaftRev;
+	                    #statDeltaLineArray[#statArrayCounter] := #statDeltaLineRev;
+	                    // refresh total value
+	                    #statFloatingDeltaShaft := #statFloatingDeltaShaft + #statDeltaShaftArray[#statArrayCounter];
+	                    #statFloatingDeltaLine := #statFloatingDeltaLine + #statDeltaLineArray[#statArrayCounter];
+	                    // Set counter up
+	                    #statArrayCounter += 1;
+	                    // if ring buffer filled -> begin at Zero
+	                    IF (#statArrayCounter > (#statBufferSize - 1)) THEN
+	                        #statArrayCounter := 0;
+	                        #statBufferFilled := TRUE;
+	                    END_IF;
+	                END_IF;
+	            END_IF;
+	            
+	            // Calculate diameter raw value (cyclic)
+	            IF #statDiamModeInUse = "LCON_DIAM_CALC_MODE_INTEGRAL" THEN
+	                IF (#statFloatingDeltaShaft <> 0) THEN
+	                    #statDactRawValUnlimited := LREAL_TO_REAL((ABS(#statFloatingDeltaLine) / ABS(#statFloatingDeltaShaft) * 2));                    // S/Angle -> [ LU ]/[ rad ]
+	                    IF NOT #metricUnits THEN
+	                        #statDactRawValUnlimited *= 12.0; // convert from [ft] -> [inch]
+	                    END_IF;
+	                END_IF;
+	            ELSE  // "LCON_DIAM_CALC_MODE_POSITION"
+	                IF (#statFloatingDeltaShaft <> 0.0) THEN
+	                    #statDactRawValUnlimited := LREAL_TO_REAL(2.0 * (ABS(#statFloatingDeltaLine))           // [m]
+	                                                              / (ABS(#statFloatingDeltaShaft) *  (2.0 * #Pi / #DEGREE_PER_REVOLUTION)));    // Into rad
+	                    IF NOT #metricUnits THEN
+	                        #statDactRawValUnlimited *= 12.0; // convert from [ft] -> [inch]
+	                    END_IF;
+	                END_IF;
+	            END_IF;
+	        END_IF;
+	    END_REGION
+	    
+	    // Limitation of raw value:
+	    #statRawDiameter := LIMIT(MN := #diamConfig.#minDia,        // [ LU ]
+	                              IN := #statDactRawValUnlimited,   // [ LU ]
+	                              MX := #diamConfig.#maxDia);       // [ LU ]
+	    
+	    REGION Latch diameter and calculate web thickness
+	        #statDiamIsHold := (#holdDiameter) OR (#statDiamHoldImplicit);                              // Diameter Hold 
+	        // forced BY FBLConDiameterCalculation input parameter OR speed too slow
+	        
+	        // compute latch signals and latch control:
+	        #statLatchNow := #statLatchRawValue AND (NOT #statDiamIsHold); // if Diameter not Hold and boUseDactRawValue = TRUE  -> Latch value cyclic
+	        // if Diameter not Hold and boUseDactRawValue = FALSE -> Latch value with #statLatchRawValue trigger
+	        // boUseDactRawValue = TRUE for diamModes <> DIAM_CALC_POSITION, DIAM_CALC_INTEGRAL
+	        
+	        // web thickness calculation:
+	        IF (#statLatchRawValue) AND (#statRawDiameter <> #diameter) THEN   // calculate web thickness only in modes Diam_Calc_Integral and Diam_Calc_Position (in other modes #statLatchRawValue = FALSE all the time) 
+	            #statWebThickness := ABS(#statRawDiameter - #diameter) / 2.0 / ABS(#diamConfig.#diameterOutputRate); // [ LU ] calculated WebThickness
+	        END_IF;
+	        
+	        // diameter hold:
+	        #instTrigHold(CLK := #statDiamIsHold);
+	        #statSetDiameterValue := #instTrigHold.Q;
+	        
+	        IF (#instTrigHold.Q OR (#instRTrigBusy.Q AND #statDiamIsHold)) THEN
+	            #statDiameterSetValLimited := #diameter;
+	            #statRawDiameter := #diameter;
+	            #diameter := #diameter;
+	            #statTargetDia := #diameter;
+	            #statTargetDiaLast := #diameter;
+	        END_IF;
+	        
+	        // latch calculated diameter:
+	        IF (#statLatchNow OR #statUseDactRawValue) THEN
+	            #statTemp1 := #statRawDiameter;   // [ LU ] Latch now calulated Value
+	        ELSE
+	            #statTemp1 := #diameter;            // [ LU ] Latch old Dia Value
+	        END_IF;
+	    END_REGION
+	    IF NOT #statUseDactRawValue THEN
+	        REGION Set diameter
+	            IF (#statSetDiameter) THEN                                                       // Set diameter value
+	                #diameter := ABS(#statDiameterSetValLimited);
+	                #diameter := #diameter;                               // [ LU ] Set actual Value
+	                #statTargetDia := #diameter;
+	                #statTargetDiaLast := #diameter;
+	            END_IF;
+	        END_REGION
+	        REGION Interpolate diameter
+	            IF (#statLatchNow) THEN
+	                #statTargetDiaLast := #statTargetDia;
+	                #statTargetDia := #statTemp1;
+	            ELSIF #statDiamModeChanged THEN
+	                #statTargetDiaLast := #statDiameterInterpolated;//#diameter;
+	                #statTargetDia := #statDiameterInterpolated;//#diameter;
+	            ELSE                                                                    // DiameterInterpolation1, (DiameterInterpolation3 AND NOT LatchNow)
+	                ;
+	            END_IF;
+	            IF #statResetIntegrators THEN
+	                #statTemp1 := #statTargetDiaLast;
+	            ELSE
+	                #statTemp1 := "LConSMC_Linear"(x := SEL(G := #statDiamModeInUse = "LCON_DIAM_CALC_MODE_INTEGRAL",
+	                                                                                       IN1 := ABS(#instShaftInt.y) / 2.0 / #Pi,
+	                                                                                       IN0 := ABS(#statDeltaShaft) / #DEGREE_PER_REVOLUTION),
+	                                               x1 := 0.0,
+	                                               y1 := #statTargetDiaLast,
+	                                               x2 := #diamConfig.#diameterOutputRate,
+	                                               y2 := #statTargetDia);
+	            END_IF;
+	            IF (#setDiameter) OR (#statSetDiameterValue) THEN
+	                #statTemp1 := #statDiameterSetValLimited;
+	            END_IF;
+	        END_REGION
+	    END_IF;
+	    #statDiameterInterpolated := #statTemp1;
+	    
+	    #instDiameterPT1(set           := #statSetDiameter,              //PT1 set controlled by mysetDiameter
+	                     x             := #statDiameterInterpolated,
+	                     setvalue      := #statDiameterSetValLimited,
+	                     smoothingTime := #diamConfig.#diameterFilterTime,
+	                     tCycle        := #tCycle,
+	                     error         => #statErrorDiameterPT1,
+	                     errorID       => #statErrorIDDiameterPT1);
+	    #diameter := LIMIT(MN := #diamConfig.#minDia,                      // [ LU ]
+	                       IN := #instDiameterPT1.y,                       // [ LU ]
+	                       MX := #diamConfig.#maxDia);
+	    // Diameter has reached the limit (*c_00040*)
+	    #atMinDia := (#instDiameterPT1.y <= #diamConfig.#minDia);
+	    #atMaxDia := (#instDiameterPT1.y >= #diamConfig.#maxDia);
+	    #diamIsHold := #statDiamIsHold;
+	END_IF;
+	
+	REGION Set outputs
+	    #calculatedWebThickness := #statWebThickness;
+	    #diamModeInUse := #statDiamModeInUse;
+	    #busy := #statBusy;
+	    #statError := #statErrorLinePT1 OR #statErrorShaftPT1 OR #statErrorDiameterPT1 OR #statErrorShaftInt OR #statErrorLineInt;
+	    IF #statErrorLinePT1 THEN
+	        #errorID := #statErrorIDLinePT1;
+	    ELSIF #statErrorShaftPT1 THEN
+	        #errorID := #statErrorIDShaftPT1;
+	    ELSIF #statErrorDiameterPT1 THEN
+	        #errorID := #statErrorIDDiameterPT1;
+	    ELSIF #statErrorShaftInt THEN
+	        #errorID := #statErrorIDShaftInt;
+	    ELSIF #statErrorLineInt THEN
+	        #errorID := #statErrorIDLineInt;
+	    END_IF;
+	END_REGION
+END_FUNCTION_BLOCK
+

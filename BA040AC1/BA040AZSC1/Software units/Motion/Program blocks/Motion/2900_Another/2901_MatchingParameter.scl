@@ -1,0 +1,841 @@
+﻿FUNCTION "2901_MatchingParameter" : Void
+{ S7_Optimized_Access := 'TRUE' ; Published := 'FALSE' }
+VERSION : 0.1
+
+BEGIN
+	REGION HARDWARE CONFIG
+	    REGION AXIS
+	        "500_Hardware".Axis.MasterVirtual := "100_CommunicationPLC".PLCToMotion.TechnologyObject.Axis.MasterVirtual;
+	        
+	        "500_Hardware".Axis.UnwinderVirtual := "100_CommunicationPLC".PLCToMotion.TechnologyObject.Axis.UnwinderVirtual;
+	        
+	        "500_Hardware".Axis.UnwinderTop := "100_CommunicationPLC".PLCToMotion.TechnologyObject.Axis.UnwinderTop;
+	        
+	        "500_Hardware".Axis.UnwinderBottom := "100_CommunicationPLC".PLCToMotion.TechnologyObject.Axis.UnwinderBottom;
+	        
+	        "500_Hardware".Axis.FinalRoller := "100_CommunicationPLC".PLCToMotion.TechnologyObject.Axis.FinalRoller;
+	        
+	        "500_Hardware".Axis.Compensator := "100_CommunicationPLC".PLCToMotion.TechnologyObject.Axis.Compensator;
+	        
+	        "500_Hardware".Axis.AnodePnPX1 := "100_CommunicationPLC".PLCToMotion.TechnologyObject.Axis.AnodePnPX1;
+	        
+	        "500_Hardware".Axis.AnodePnPX2 := "100_CommunicationPLC".PLCToMotion.TechnologyObject.Axis.AnodePnPX2;
+	        
+	        "500_Hardware".Axis.AnodePnPZ1 := "100_CommunicationPLC".PLCToMotion.TechnologyObject.Axis.AnodePnPZ1;
+	        
+	        "500_Hardware".Axis.AnodePnPZ2 := "100_CommunicationPLC".PLCToMotion.TechnologyObject.Axis.AnodePnPZ2;
+	        
+	        "500_Hardware".Axis.CathodePnPX1 := "100_CommunicationPLC".PLCToMotion.TechnologyObject.Axis.CathodePnPX1;
+	        
+	        "500_Hardware".Axis.CathodePnPX2 := "100_CommunicationPLC".PLCToMotion.TechnologyObject.Axis.CathodePnPX2;
+	        
+	        "500_Hardware".Axis.CathodePnPZ1 := "100_CommunicationPLC".PLCToMotion.TechnologyObject.Axis.CathodePnPZ1;
+	        
+	        "500_Hardware".Axis.CathodePnPZ2 := "100_CommunicationPLC".PLCToMotion.TechnologyObject.Axis.CathodePnPZ2;
+	        
+	        "500_Hardware".Axis.AnodeMandrelYFront := "100_CommunicationPLC".PLCToMotion.TechnologyObject.Axis.AnodeMandrelYFront;
+	        
+	        "500_Hardware".Axis.AnodeMandrelYRear := "100_CommunicationPLC".PLCToMotion.TechnologyObject.Axis.AnodeMandrelYRear;
+	        
+	        "500_Hardware".Axis.AnodeMandrelZFront := "100_CommunicationPLC".PLCToMotion.TechnologyObject.Axis.AnodeMandrelZFront;
+	        
+	        "500_Hardware".Axis.AnodeMandrelZRear := "100_CommunicationPLC".PLCToMotion.TechnologyObject.Axis.AnodeMandrelZRear;
+	        
+	        "500_Hardware".Axis.CathodeMandrelYFront := "100_CommunicationPLC".PLCToMotion.TechnologyObject.Axis.CathodeMandrelYFront;
+	        
+	        "500_Hardware".Axis.CathodeMandrelYRear := "100_CommunicationPLC".PLCToMotion.TechnologyObject.Axis.CathodeMandrelYRear;
+	        
+	        "500_Hardware".Axis.CathodeMandrelZFront := "100_CommunicationPLC".PLCToMotion.TechnologyObject.Axis.CathodeMandrelZFront;
+	        
+	        "500_Hardware".Axis.CathodeMandrelZRear := "100_CommunicationPLC".PLCToMotion.TechnologyObject.Axis.CathodeMandrelZRear;
+	        
+	        "500_Hardware".Axis.SepaClampX := "100_CommunicationPLC".PLCToMotion.TechnologyObject.Axis.SepaClampX;
+	    END_REGION
+	    
+	    REGION CAM
+	        "500_Hardware".Cam.FinalRollerCam := "100_CommunicationPLC".PLCToMotion.TechnologyObject.Cam.FinalRollerCam;
+	        
+	        "500_Hardware".Cam.CompensatorCam := "100_CommunicationPLC".PLCToMotion.TechnologyObject.Cam.CompensatorCam;
+	        
+	        "500_Hardware".Cam.AnodePnPX1Cam := "100_CommunicationPLC".PLCToMotion.TechnologyObject.Cam.AnodePnPX1Cam;
+	        
+	        "500_Hardware".Cam.AnodePnPX2Cam := "100_CommunicationPLC".PLCToMotion.TechnologyObject.Cam.AnodePnPX2Cam;
+	        
+	        "500_Hardware".Cam.AnodePnPZ1Cam := "100_CommunicationPLC".PLCToMotion.TechnologyObject.Cam.AnodePnPZ1Cam;
+	        
+	        "500_Hardware".Cam.AnodePnPZ2Cam := "100_CommunicationPLC".PLCToMotion.TechnologyObject.Cam.AnodePnPZ2Cam;
+	        
+	        "500_Hardware".Cam.CathodePnPX1Cam := "100_CommunicationPLC".PLCToMotion.TechnologyObject.Cam.CathodePnPX1Cam;
+	        
+	        "500_Hardware".Cam.CathodePnPX2Cam := "100_CommunicationPLC".PLCToMotion.TechnologyObject.Cam.CathodePnPX2Cam;
+	        
+	        "500_Hardware".Cam.CathodePnPZ1Cam := "100_CommunicationPLC".PLCToMotion.TechnologyObject.Cam.CathodePnPZ1Cam;
+	        
+	        "500_Hardware".Cam.CathodePnPZ2Cam := "100_CommunicationPLC".PLCToMotion.TechnologyObject.Cam.CathodePnPZ2Cam;
+	        
+	        "500_Hardware".Cam.AnodeMandrelYFrontCam := "100_CommunicationPLC".PLCToMotion.TechnologyObject.Cam.AnodeMandrelYFrontCam;
+	        
+	        "500_Hardware".Cam.AnodeMandrelYRearCam := "100_CommunicationPLC".PLCToMotion.TechnologyObject.Cam.AnodeMandrelYRearCam;
+	        
+	        "500_Hardware".Cam.AnodeMandrelZFrontCam := "100_CommunicationPLC".PLCToMotion.TechnologyObject.Cam.AnodeMandrelZFrontCam;
+	        
+	        "500_Hardware".Cam.AnodeMandrelZRearCam := "100_CommunicationPLC".PLCToMotion.TechnologyObject.Cam.AnodeMandrelZRearCam;
+	        
+	        "500_Hardware".Cam.CathodeMandrelYFrontCam := "100_CommunicationPLC".PLCToMotion.TechnologyObject.Cam.CathodeMandrelYFrontCam;
+	        
+	        "500_Hardware".Cam.CathodeMandrelYRearCam := "100_CommunicationPLC".PLCToMotion.TechnologyObject.Cam.CathodeMandrelYRearCam;
+	        
+	        "500_Hardware".Cam.CathodeMandrelZFrontCam := "100_CommunicationPLC".PLCToMotion.TechnologyObject.Cam.CathodeMandrelZFrontCam;
+	        
+	        "500_Hardware".Cam.CathodeMandrelZRearCam := "100_CommunicationPLC".PLCToMotion.TechnologyObject.Cam.CathodeMandrelZRearCam;
+	    END_REGION
+	    
+	    REGION OUTPUTCAM
+	        "500_Hardware".OutputCam.FinalRollerXFwdOutputCam := "100_CommunicationPLC".PLCToMotion.TechnologyObject.OutputCam.FinalRollerXFwdOutputCam;
+	        
+	        "500_Hardware".OutputCam.FinalRollerXBwdOutputCam := "100_CommunicationPLC".PLCToMotion.TechnologyObject.OutputCam.FinalRollerXBwdOutputCam;
+	        
+	        "500_Hardware".OutputCam.FinalRollerXStackTableDownOutputCam := "100_CommunicationPLC".PLCToMotion.TechnologyObject.OutputCam.FinalRollerXStackTableDownOutputCam;
+	        
+	        "500_Hardware".OutputCam.FinalRollerXStackAnodeVisionOutputCam := "100_CommunicationPLC".PLCToMotion.TechnologyObject.OutputCam.FinalRollerXStackAnodeVisionOutputCam;
+	        
+	        "500_Hardware".OutputCam.FinalRollerXStackCathodeVisionOutputCam := "100_CommunicationPLC".PLCToMotion.TechnologyObject.OutputCam.FinalRollerXStackCathodeVisionOutputCam;
+	        
+	        "500_Hardware".OutputCam.AnodePnPX1FwdOutputCam := "100_CommunicationPLC".PLCToMotion.TechnologyObject.OutputCam.AnodePnPX1FwdOutputCam;
+	        
+	        "500_Hardware".OutputCam.AnodePnPX1BwdOutputCam := "100_CommunicationPLC".PLCToMotion.TechnologyObject.OutputCam.AnodePnPX1BwdOutputCam;
+	        
+	        "500_Hardware".OutputCam.AnodePnPX2FwdOutputCam := "100_CommunicationPLC".PLCToMotion.TechnologyObject.OutputCam.AnodePnPX2FwdOutputCam;
+	        
+	        "500_Hardware".OutputCam.AnodePnPX2BwdOutputCam := "100_CommunicationPLC".PLCToMotion.TechnologyObject.OutputCam.AnodePnPX2BwdOutputCam;
+	        
+	        "500_Hardware".OutputCam.AnodePnPZ1Down1OutputCam := "100_CommunicationPLC".PLCToMotion.TechnologyObject.OutputCam.AnodePnPZ1Down1OutputCam;
+	        
+	        "500_Hardware".OutputCam.AnodePnPZ1Up1OutputCam := "100_CommunicationPLC".PLCToMotion.TechnologyObject.OutputCam.AnodePnPZ1Up1OutputCam;
+	        
+	        "500_Hardware".OutputCam.AnodePnPZ2Down1OutputCam := "100_CommunicationPLC".PLCToMotion.TechnologyObject.OutputCam.AnodePnPZ2Down1OutputCam;
+	        
+	        "500_Hardware".OutputCam.AnodePnPZ2Up1OutputCam := "100_CommunicationPLC".PLCToMotion.TechnologyObject.OutputCam.AnodePnPZ2Up1OutputCam;
+	        
+	        "500_Hardware".OutputCam.AnodePnPZ1Down2OutputCam := "100_CommunicationPLC".PLCToMotion.TechnologyObject.OutputCam.AnodePnPZ1Down2OutputCam;
+	        
+	        "500_Hardware".OutputCam.AnodePnPZ1Up2OutputCam := "100_CommunicationPLC".PLCToMotion.TechnologyObject.OutputCam.AnodePnPZ1Up2OutputCam;
+	        
+	        "500_Hardware".OutputCam.AnodePnPZ2Down2OutputCam := "100_CommunicationPLC".PLCToMotion.TechnologyObject.OutputCam.AnodePnPZ2Down2OutputCam;
+	        
+	        "500_Hardware".OutputCam.AnodePnPZ2Up2OutputCam := "100_CommunicationPLC".PLCToMotion.TechnologyObject.OutputCam.AnodePnPZ2Up2OutputCam;
+	        
+	        "500_Hardware".OutputCam.AnodePnPZ1SuctionOnOutputCam := "100_CommunicationPLC".PLCToMotion.TechnologyObject.OutputCam.AnodePnPZ1SuctionOnOutputCam;
+	        
+	        "500_Hardware".OutputCam.AnodePnPZ1SuctionOffOutputCam := "100_CommunicationPLC".PLCToMotion.TechnologyObject.OutputCam.AnodePnPZ1SuctionOffOutputCam;
+	        
+	        "500_Hardware".OutputCam.AnodePnPZ1ReelCutBlowOutputCam := "100_CommunicationPLC".PLCToMotion.TechnologyObject.OutputCam.AnodePnPZ1ReelCutBlowOutputCam;
+	        
+	        "500_Hardware".OutputCam.AnodePnPZ2SuctionOnOutputCam := "100_CommunicationPLC".PLCToMotion.TechnologyObject.OutputCam.AnodePnPZ2SuctionOnOutputCam;
+	        
+	        "500_Hardware".OutputCam.AnodePnPZ2SuctionOffOutputCam := "100_CommunicationPLC".PLCToMotion.TechnologyObject.OutputCam.AnodePnPZ2SuctionOffOutputCam;
+	        
+	        "500_Hardware".OutputCam.AnodeAlignSuctionOnOutputCam := "100_CommunicationPLC".PLCToMotion.TechnologyObject.OutputCam.AnodeAlignSuctionOnOutputCam;
+	        
+	        "500_Hardware".OutputCam.AnodeAlignSuctionOffOutputCam := "100_CommunicationPLC".PLCToMotion.TechnologyObject.OutputCam.AnodeAlignSuctionOffOutputCam;
+	        
+	        "500_Hardware".OutputCam.AnodePnPZ1ReelCutDataDeleteOnOutputCam := "100_CommunicationPLC".PLCToMotion.TechnologyObject.OutputCam.AnodePnPZ1ReelCutDataDeleteOnOutputCam;
+	        
+	        "500_Hardware".OutputCam.AnodePnP1XReelCutDataDeleteOffOutputCam := "100_CommunicationPLC".PLCToMotion.TechnologyObject.OutputCam.AnodePnP1XReelCutDataDeleteOffOutputCam;
+	        
+	        "500_Hardware".OutputCam.AnodeAlignVisionOutputCam := "100_CommunicationPLC".PLCToMotion.TechnologyObject.OutputCam.AnodeAlignVisionOutputCam;
+	        
+	        "500_Hardware".OutputCam.CathodePnPX1FwdOutputCam := "100_CommunicationPLC".PLCToMotion.TechnologyObject.OutputCam.CathodePnPX1FwdOutputCam;
+	        
+	        "500_Hardware".OutputCam.CathodePnPX1BwdOutputCam := "100_CommunicationPLC".PLCToMotion.TechnologyObject.OutputCam.CathodePnPX1BwdOutputCam;
+	        
+	        "500_Hardware".OutputCam.CathodePnPX2FwdOutputCam := "100_CommunicationPLC".PLCToMotion.TechnologyObject.OutputCam.CathodePnPX2FwdOutputCam;
+	        
+	        "500_Hardware".OutputCam.CathodePnPX2BwdOutputCam := "100_CommunicationPLC".PLCToMotion.TechnologyObject.OutputCam.CathodePnPX2BwdOutputCam;
+	        
+	        "500_Hardware".OutputCam.CathodePnPZ1Down1OutputCam := "100_CommunicationPLC".PLCToMotion.TechnologyObject.OutputCam.CathodePnPZ1Down1OutputCam;
+	        
+	        "500_Hardware".OutputCam.CathodePnPZ1Up1OutputCam := "100_CommunicationPLC".PLCToMotion.TechnologyObject.OutputCam.CathodePnPZ1Up1OutputCam;
+	        
+	        "500_Hardware".OutputCam.CathodePnPZ2Down1OutputCam := "100_CommunicationPLC".PLCToMotion.TechnologyObject.OutputCam.CathodePnPZ2Down1OutputCam;
+	        
+	        "500_Hardware".OutputCam.CathodePnPZ2Up1OutputCam := "100_CommunicationPLC".PLCToMotion.TechnologyObject.OutputCam.CathodePnPZ2Up1OutputCam;
+	        
+	        "500_Hardware".OutputCam.CathodePnPZ1Down2OutputCam := "100_CommunicationPLC".PLCToMotion.TechnologyObject.OutputCam.CathodePnPZ1Down2OutputCam;
+	        
+	        "500_Hardware".OutputCam.CathodePnPZ1Up2OutputCam := "100_CommunicationPLC".PLCToMotion.TechnologyObject.OutputCam.CathodePnPZ1Up2OutputCam;
+	        
+	        "500_Hardware".OutputCam.CathodePnPZ2Down2OutputCam := "100_CommunicationPLC".PLCToMotion.TechnologyObject.OutputCam.CathodePnPZ2Down2OutputCam;
+	        
+	        "500_Hardware".OutputCam.CathodePnPZ2Up2OutputCam := "100_CommunicationPLC".PLCToMotion.TechnologyObject.OutputCam.CathodePnPZ2Up2OutputCam;
+	        
+	        "500_Hardware".OutputCam.CathodePnPZ1SuctionOnOutputCam := "100_CommunicationPLC".PLCToMotion.TechnologyObject.OutputCam.CathodePnPZ1SuctionOnOutputCam;
+	        
+	        "500_Hardware".OutputCam.CathodePnPZ1SuctionOffOutputCam := "100_CommunicationPLC".PLCToMotion.TechnologyObject.OutputCam.CathodePnPZ1SuctionOffOutputCam;
+	        
+	        "500_Hardware".OutputCam.CathodePnPZ1ReelCutBlowOutputCam := "100_CommunicationPLC".PLCToMotion.TechnologyObject.OutputCam.CathodePnPZ1ReelCutBlowOutputCam;
+	        
+	        "500_Hardware".OutputCam.CathodePnPZ2SuctionOnOutputCam := "100_CommunicationPLC".PLCToMotion.TechnologyObject.OutputCam.CathodePnPZ2SuctionOnOutputCam;
+	        
+	        "500_Hardware".OutputCam.CathodePnPZ2SuctionOffOutputCam := "100_CommunicationPLC".PLCToMotion.TechnologyObject.OutputCam.CathodePnPZ2SuctionOffOutputCam;
+	        
+	        "500_Hardware".OutputCam.CathodeAlignSuctionOnOutputCam := "100_CommunicationPLC".PLCToMotion.TechnologyObject.OutputCam.CathodeAlignSuctionOnOutputCam;
+	        
+	        "500_Hardware".OutputCam.CathodeAlignSuctionOffOutputCam := "100_CommunicationPLC".PLCToMotion.TechnologyObject.OutputCam.CathodeAlignSuctionOffOutputCam;
+	        
+	        "500_Hardware".OutputCam.CathodePnPZ1ReelCutDataDeleteOnOutputCam := "100_CommunicationPLC".PLCToMotion.TechnologyObject.OutputCam.CathodePnPZ1ReelCutDataDeleteOnOutputCam;
+	        
+	        "500_Hardware".OutputCam.CathodePnP1XReelCutDataDeleteOffOutputCam := "100_CommunicationPLC".PLCToMotion.TechnologyObject.OutputCam.CathodePnP1XReelCutDataDeleteOffOutputCam;
+	        
+	        "500_Hardware".OutputCam.CathodeAlignVisionOutputCam := "100_CommunicationPLC".PLCToMotion.TechnologyObject.OutputCam.CathodeAlignVisionOutputCam;
+	    END_REGION
+	END_REGION
+	
+	REGION DANCER
+	    REGION COMMANDS
+	        "2000_Motion".Dancer.Commands.Enable := "100_CommunicationPLC".PLCToMotion.Commands.Dancer.Enable;
+	        
+	        "2000_Motion".Dancer.Commands.Stop := "100_CommunicationPLC".PLCToMotion.Commands.Dancer.Stop;
+	        
+	        "2000_Motion".Dancer.Commands.Reset := "100_CommunicationPLC".PLCToMotion.Commands.Dancer.Reset;
+	    END_REGION
+	    
+	    REGION PARAMETERS
+	        "2000_Motion".Dancer.Parameters.DancerDirection := "100_CommunicationPLC".PLCToMotion.Parameters.Dancer.DancerDirection;
+	        
+	        "2000_Motion".Dancer.Parameters.UnWinderDirection := "100_CommunicationPLC".PLCToMotion.Parameters.Dancer.UnWinderDirection;
+	        
+	        "2000_Motion".Dancer.Parameters.UnwinderTopUse := "100_CommunicationPLC".PLCToMotion.Parameters.Dancer.UnwinderTopUse;
+	        
+	        "2000_Motion".Dancer.Parameters.UnwinderBottomUse := "100_CommunicationPLC".PLCToMotion.Parameters.Dancer.UnwinderBottomUse;
+	        
+	        "2000_Motion".Dancer.Parameters.JogMode := "100_CommunicationPLC".PLCToMotion.Parameters.Dancer.JogMode;
+	        
+	        "2000_Motion".Dancer.Parameters.SetPoint := "100_CommunicationPLC".PLCToMotion.Parameters.Dancer.Setpoint;
+	        
+	        "2000_Motion".Dancer.Parameters.Input := "100_CommunicationPLC".PLCToMotion.Parameters.Dancer.Input;
+	        
+	        "2000_Motion".Dancer.Parameters.Kp := "100_CommunicationPLC".PLCToMotion.Parameters.Dancer.Kp;
+	        
+	        "2000_Motion".Dancer.Parameters.Ki := "100_CommunicationPLC".PLCToMotion.Parameters.Dancer.Ki;
+	        
+	        "2000_Motion".Dancer.Parameters.Radius := "100_CommunicationPLC".PLCToMotion.Parameters.Dancer.Radius;
+	        
+	        
+	    END_REGION
+	    
+	    REGION STATUS
+	        "100_CommunicationPLC".MotionToPLC.Status.Dancer.StopRequest := "2000_Motion".Dancer.Status.StopRequest;
+	        
+	        "100_CommunicationPLC".MotionToPLC.Status.Dancer.Busy.TotalBusy := "2000_Motion".Dancer.Status.Busy.TotalBusy;
+	        
+	        "100_CommunicationPLC".MotionToPLC.Status.Dancer.Busy.EnableBusy := "2000_Motion".Dancer.Status.Busy.EnableBusy;
+	        
+	        "100_CommunicationPLC".MotionToPLC.Status.Dancer.Busy.StopBusy := "2000_Motion".Dancer.Status.Busy.StopBusy;
+	        
+	        "100_CommunicationPLC".MotionToPLC.Status.Dancer.Busy.ResetBusy := "2000_Motion".Dancer.Status.Busy.ResetBusy;
+	        
+	        "100_CommunicationPLC".MotionToPLC.Status.Dancer.Done.TotalDone := "2000_Motion".Dancer.Status.Done.TotalDone;
+	        
+	        "100_CommunicationPLC".MotionToPLC.Status.Dancer.Done.EnableDone := "2000_Motion".Dancer.Status.Done.EnableDone;
+	        
+	        "100_CommunicationPLC".MotionToPLC.Status.Dancer.Done.StopDone := "2000_Motion".Dancer.Status.Done.StopDone;
+	        
+	        "100_CommunicationPLC".MotionToPLC.Status.Dancer.Done.ResetDone := "2000_Motion".Dancer.Status.Done.ResetDone;
+	        
+	        "100_CommunicationPLC".MotionToPLC.Status.Dancer.Error := "2000_Motion".Dancer.Status.Error;
+	        
+	        "100_CommunicationPLC".MotionToPLC.Status.Dancer.ErrorID := "2000_Motion".Dancer.Status.ErrorID;
+	        
+	        "100_CommunicationPLC".MotionToPLC.Status.Dancer.NowCmd := "2000_Motion".Dancer.Status.NowCmd;
+	        
+	        "100_CommunicationPLC".MotionToPLC.Status.Dancer.BeforeCmd := "2000_Motion".Dancer.Status.BeforeCmd;
+	        
+	        "100_CommunicationPLC".MotionToPLC.Status.Dancer.NowStep := "2000_Motion".Dancer.Status.NowStep;
+	        
+	        "100_CommunicationPLC".MotionToPLC.Status.Dancer.BeforeStep := "2000_Motion".Dancer.Status.BeforeStep;
+	    END_REGION
+	END_REGION
+	
+	REGION STACK
+	    REGION COMMANDS
+	        "2000_Motion".StackMain.Commands.Calculate := "100_CommunicationPLC".PLCToMotion.Commands.StackMain.Calculate;
+	        
+	        "2000_Motion".StackMain.Commands.SemiStep := "100_CommunicationPLC".PLCToMotion.Commands.StackMain.SemiStep;
+	        
+	        "2000_Motion".StackMain.Commands.FullStep := "100_CommunicationPLC".PLCToMotion.Commands.StackMain.FullStep;
+	        
+	        "2000_Motion".StackMain.Commands.Auto := "100_CommunicationPLC".PLCToMotion.Commands.StackMain.Auto OR "100_CommunicationPLC".PLCToMotion.Commands.StackMain.SepaClean;
+	        
+	        "2000_Motion".StackMain.Commands.CycleStop := "100_CommunicationPLC".PLCToMotion.Commands.StackMain.CycleStop;
+	        
+	        "2000_Motion".StackMain.Commands.FastStop := "100_CommunicationPLC".PLCToMotion.Commands.StackMain.FastStop;
+	        
+	        "2000_Motion".StackMain.Commands.Reset := "100_CommunicationPLC".PLCToMotion.Commands.StackMain.Reset;
+	    END_REGION
+	    
+	    REGION PARAMETERS
+	        REGION GLOBAL
+	            "2000_Motion".StackMain.Parameters.Global.CPM := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Global.CPM;
+	            
+	            "2000_Motion".StackMain.Parameters.Global.StageWidth := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Global.StageWidth;
+	        END_REGION
+	        
+	        REGION STEP
+	            "2000_Motion".StackMain.Parameters.Step.MandrelUse := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Step.MandrelUse;
+	            
+	            "2000_Motion".StackMain.Parameters.Step.InitialPosFinalRoller := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Step.InitialPosFinalRoller;
+	            
+	            "2000_Motion".StackMain.Parameters.Step.InitialPosCompensator := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Step.InitialPosCompensator;
+	        END_REGION
+	        
+	        REGION AUTO
+	            "2000_Motion".StackMain.Parameters.Auto.SepaClean := "100_CommunicationPLC".PLCToMotion.Commands.StackMain.SepaClean OR "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.SepaClean;
+	            
+	            "2000_Motion".StackMain.Parameters.Auto.CellCount := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.CellCount;
+	            
+	            REGION COMPENSATOR
+	                "2000_Motion".StackMain.Parameters.Auto.Compensator.InitialPosCompensator := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.InitialPosCompensator;
+	            END_REGION
+	            
+	            REGION ANODE
+	                REGION PNP X1
+	                    "2000_Motion".StackMain.Parameters.Auto.Anode.PnPX1.InitialPosAnodePnPX1 := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.InitialPosAnodePnPX1;
+	                    
+	                    "2000_Motion".StackMain.Parameters.Auto.Anode.PnPX1.AnodePnPX1FwdOutputCam.OnPos := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.Pos1AnodePnPX1FwdOutputCam;
+	                    
+	                    "2000_Motion".StackMain.Parameters.Auto.Anode.PnPX1.AnodePnPX1FwdOutputCam.OffPos := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.Pos2AnodePnPX1FwdOutputCam;
+	                    
+	                    "2000_Motion".StackMain.Parameters.Auto.Anode.PnPX1.AnodePnPX1BwdOutputCam.OnPos := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.Pos1AnodePnPX1BwdOutputCam;
+	                    
+	                    "2000_Motion".StackMain.Parameters.Auto.Anode.PnPX1.AnodePnPX1BwdOutputCam.OffPos := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.Pos2AnodePnPX1BwdOutputCam;
+	                    
+	                    "2000_Motion".StackMain.Parameters.Auto.Anode.PnPX1.AnodeReelCutDataDeleteOffOutputCam.OnPos := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.Pos1AnodePnPX1ReelCutDataDeleteOffOutputCam;
+	                    
+	                    "2000_Motion".StackMain.Parameters.Auto.Anode.PnPX1.AnodeReelCutDataDeleteOffOutputCam.OffPos := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.Pos2AnodePnPX1ReelCutDataDeleteOffOutputCam;
+	                END_REGION
+	                
+	                REGION PNP X2
+	                    "2000_Motion".StackMain.Parameters.Auto.Anode.PnPX2.InitialPosAnodePnPX2 := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.InitialPosAnodePnPX2;
+	                    
+	                    "2000_Motion".StackMain.Parameters.Auto.Anode.PnPX2.AnodePnPX2FwdOutputCam.OnPos := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.Pos1AnodePnPX2FwdOutputCam;
+	                    
+	                    "2000_Motion".StackMain.Parameters.Auto.Anode.PnPX2.AnodePnPX2FwdOutputCam.OffPos := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.Pos2AnodePnPX2FwdOutputCam;
+	                    
+	                    "2000_Motion".StackMain.Parameters.Auto.Anode.PnPX2.AnodePnPX2BwdOutputCam.OnPos := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.Pos1AnodePnPX2BwdOutputCam;
+	                    
+	                    "2000_Motion".StackMain.Parameters.Auto.Anode.PnPX2.AnodePnPX2BwdOutputCam.OffPos := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.Pos2AnodePnPX2BwdOutputCam;
+	                END_REGION
+	                
+	                REGION PNP Z1
+	                    "2000_Motion".StackMain.Parameters.Auto.Anode.PnPZ1.InitialPosAnodePnPZ1 := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.InitialPosAnodePnPZ1;
+	                    
+	                    "2000_Motion".StackMain.Parameters.Auto.Anode.PnPZ1.AnodePnPZ1Down1OutputCam.OnPos := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.Pos1AnodePnPZ1Down1OutputCam;
+	                    
+	                    "2000_Motion".StackMain.Parameters.Auto.Anode.PnPZ1.AnodePnPZ1Down1OutputCam.OffPos := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.Pos2AnodePnPZ1Down1OutputCam;
+	                    
+	                    "2000_Motion".StackMain.Parameters.Auto.Anode.PnPZ1.AnodePnPZ1Up1OutputCam.OnPos := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.Pos1AnodePnPZ1Up1OutputCam;
+	                    
+	                    "2000_Motion".StackMain.Parameters.Auto.Anode.PnPZ1.AnodePnPZ1Up1OutputCam.OffPos := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.Pos2AnodePnPZ1Up1OutputCam;
+	                    
+	                    "2000_Motion".StackMain.Parameters.Auto.Anode.PnPZ1.AnodePnPZ1Down2OutputCam.OnPos := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.Pos1AnodePnPZ1Down2OutputCam;
+	                    
+	                    "2000_Motion".StackMain.Parameters.Auto.Anode.PnPZ1.AnodePnPZ1Down2OutputCam.OffPos := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.Pos2AnodePnPZ1Down2OutputCam;
+	                    
+	                    "2000_Motion".StackMain.Parameters.Auto.Anode.PnPZ1.AnodePnPZ1Up2OutputCam.OnPos := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.Pos1AnodePnPZ1Up2OutputCam;
+	                    
+	                    "2000_Motion".StackMain.Parameters.Auto.Anode.PnPZ1.AnodePnPZ1Up2OutputCam.OffPos := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.Pos2AnodePnPZ1Up2OutputCam;
+	                    
+	                    "2000_Motion".StackMain.Parameters.Auto.Anode.PnPZ1.AnodePnPZ1SuctionOnOutputCam.OnPos := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.Pos1AnodePnPZ1SuctionOnOutputCam;
+	                    
+	                    "2000_Motion".StackMain.Parameters.Auto.Anode.PnPZ1.AnodePnPZ1SuctionOnOutputCam.OffPos := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.Pos2AnodePnPZ1SuctionOnOutputCam;
+	                    
+	                    "2000_Motion".StackMain.Parameters.Auto.Anode.PnPZ1.AnodePnPZ1SuctionOffOutputCam.OnPos := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.Pos1AnodePnPZ1SuctionOffOutputCam;
+	                    
+	                    "2000_Motion".StackMain.Parameters.Auto.Anode.PnPZ1.AnodePnPZ1SuctionOffOutputCam.OffPos := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.Pos2AnodePnPZ1SuctionOffOutputCam;
+	                    
+	                    "2000_Motion".StackMain.Parameters.Auto.Anode.PnPZ1.AnodePnPZ1ReelCutBlowOutputCam.OnPos := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.Pos1AnodePnPZ1ReelCutBlowOutputCam;
+	                    
+	                    "2000_Motion".StackMain.Parameters.Auto.Anode.PnPZ1.AnodePnPZ1ReelCutBlowOutputCam.OffPos := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.Pos2AnodePnPZ1ReelCutBlowOutputCam;
+	                    
+	                    "2000_Motion".StackMain.Parameters.Auto.Anode.PnPZ1.AnodeAlignSuctionOnOutputCam.OnPos := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.Pos1AnodeAlignSuctionOnOutputCam;
+	                    
+	                    "2000_Motion".StackMain.Parameters.Auto.Anode.PnPZ1.AnodeAlignSuctionOnOutputCam.OffPos := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.Pos2AnodeAlignSuctionOnOutputCam;
+	                    
+	                    "2000_Motion".StackMain.Parameters.Auto.Anode.PnPZ1.AnodeReelCutDataDeleteOnOutputCam.OnPos := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.Pos1AnodePnPZ1ReelCutDataDeleteOnOutputCam;
+	                    
+	                    "2000_Motion".StackMain.Parameters.Auto.Anode.PnPZ1.AnodeReelCutDataDeleteOnOutputCam.OffPos := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.Pos2AnodePnPZ1ReelCutDataDeleteOnOutputCam;
+	                    
+	                    "2000_Motion".StackMain.Parameters.Auto.Anode.PnPZ1.AnodeAlignVisionOutputCam.OnPos := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.Pos1AnodePnPZ1AlignVisionOutputCam;
+	                    
+	                    "2000_Motion".StackMain.Parameters.Auto.Anode.PnPZ1.AnodeAlignVisionOutputCam.OffPos := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.Pos2AnodePnPZ1AlignVisionOutputCam;
+	                END_REGION
+	                
+	                REGION PNP Z2
+	                    "2000_Motion".StackMain.Parameters.Auto.Anode.PnPZ2.InitialPosAnodePnPZ2 := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.InitialPosAnodePnPZ2;
+	                    
+	                    "2000_Motion".StackMain.Parameters.Auto.Anode.PnPZ2.AnodePnPZ2Down1OutputCam.OnPos := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.Pos1AnodePnPZ2Down1OutputCam;
+	                    
+	                    "2000_Motion".StackMain.Parameters.Auto.Anode.PnPZ2.AnodePnPZ2Down1OutputCam.OffPos := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.Pos2AnodePnPZ2Down1OutputCam;
+	                    
+	                    "2000_Motion".StackMain.Parameters.Auto.Anode.PnPZ2.AnodePnPZ2Up1OutputCam.OnPos := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.Pos1AnodePnPZ2Up1OutputCam;
+	                    
+	                    "2000_Motion".StackMain.Parameters.Auto.Anode.PnPZ2.AnodePnPZ2Up1OutputCam.OffPos := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.Pos2AnodePnPZ2Up1OutputCam;
+	                    
+	                    "2000_Motion".StackMain.Parameters.Auto.Anode.PnPZ2.AnodePnPZ2Down2OutputCam.OnPos := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.Pos1AnodePnPZ2Down2OutputCam;
+	                    
+	                    "2000_Motion".StackMain.Parameters.Auto.Anode.PnPZ2.AnodePnPZ2Down2OutputCam.OffPos := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.Pos2AnodePnPZ2Down2OutputCam;
+	                    
+	                    "2000_Motion".StackMain.Parameters.Auto.Anode.PnPZ2.AnodePnPZ2Up2OutputCam.OnPos := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.Pos1AnodePnPZ2Up2OutputCam;
+	                    
+	                    "2000_Motion".StackMain.Parameters.Auto.Anode.PnPZ2.AnodePnPZ2Up2OutputCam.OffPos := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.Pos2AnodePnPZ2Up2OutputCam;
+	                    
+	                    "2000_Motion".StackMain.Parameters.Auto.Anode.PnPZ2.AnodePnPZ2SuctionOnOutputCam.OnPos := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.Pos1AnodePnPZ2SuctionOnOutputCam;
+	                    
+	                    "2000_Motion".StackMain.Parameters.Auto.Anode.PnPZ2.AnodePnPZ2SuctionOnOutputCam.OffPos := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.Pos2AnodePnPZ2SuctionOnOutputCam;
+	                    
+	                    "2000_Motion".StackMain.Parameters.Auto.Anode.PnPZ2.AnodePnPZ2SuctionOffOutputCam.OnPos := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.Pos1AnodePnPZ2SuctionOffOutputCam;
+	                    
+	                    "2000_Motion".StackMain.Parameters.Auto.Anode.PnPZ2.AnodePnPZ2SuctionOffOutputCam.OffPos := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.Pos2AnodePnPZ2SuctionOffOutputCam;
+	                    
+	                    "2000_Motion".StackMain.Parameters.Auto.Anode.PnPZ2.AnodeAlignSuctionOffOutputCam.OnPos := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.Pos1AnodeAlignSuctionOffOutputCam;
+	                    
+	                    "2000_Motion".StackMain.Parameters.Auto.Anode.PnPZ2.AnodeAlignSuctionOffOutputCam.OffPos := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.Pos2AnodeAlignSuctionOffOutputCam;
+	                END_REGION
+	                
+	            END_REGION
+	            
+	            REGION CATHODE
+	                REGION PNP X1
+	                    "2000_Motion".StackMain.Parameters.Auto.Cathode.PnPX1.InitialPosCathodePnPX1 := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.InitialPosCathodePnPX1;
+	                    
+	                    "2000_Motion".StackMain.Parameters.Auto.Cathode.PnPX1.CathodePnPX1FwdOutputCam.OnPos := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.Pos1CathodePnPX1FwdOutputCam;
+	                    
+	                    "2000_Motion".StackMain.Parameters.Auto.Cathode.PnPX1.CathodePnPX1FwdOutputCam.OffPos := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.Pos2CathodePnPX1FwdOutputCam;
+	                    
+	                    "2000_Motion".StackMain.Parameters.Auto.Cathode.PnPX1.CathodePnPX1BwdOutputCam.OnPos := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.Pos1CathodePnPX1BwdOutputCam;
+	                    
+	                    "2000_Motion".StackMain.Parameters.Auto.Cathode.PnPX1.CathodePnPX1BwdOutputCam.OffPos := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.Pos2CathodePnPX1BwdOutputCam;
+	                    
+	                    "2000_Motion".StackMain.Parameters.Auto.Cathode.PnPX1.CathodeReelCutDataDeleteOffOutputCam.OnPos := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.Pos1CathodePnPX1ReelCutDataDeleteOffOutputCam;
+	                    
+	                    "2000_Motion".StackMain.Parameters.Auto.Cathode.PnPX1.CathodeReelCutDataDeleteOffOutputCam.OffPos := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.Pos2CathodePnPX1ReelCutDataDeleteOffOutputCam;
+	                END_REGION
+	                
+	                REGION PNP X2
+	                    "2000_Motion".StackMain.Parameters.Auto.Cathode.PnPX2.InitialPosCathodePnPX2 := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.InitialPosCathodePnPX2;
+	                    
+	                    "2000_Motion".StackMain.Parameters.Auto.Cathode.PnPX2.CathodePnPX2FwdOutputCam.OnPos := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.Pos1CathodePnPX2FwdOutputCam;
+	                    
+	                    "2000_Motion".StackMain.Parameters.Auto.Cathode.PnPX2.CathodePnPX2FwdOutputCam.OffPos := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.Pos2CathodePnPX2FwdOutputCam;
+	                    
+	                    "2000_Motion".StackMain.Parameters.Auto.Cathode.PnPX2.CathodePnPX2BwdOutputCam.OnPos := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.Pos1CathodePnPX2BwdOutputCam;
+	                    
+	                    "2000_Motion".StackMain.Parameters.Auto.Cathode.PnPX2.CathodePnPX2BwdOutputCam.OffPos := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.Pos2CathodePnPX2BwdOutputCam;
+	                END_REGION
+	                
+	                REGION PNP Z1
+	                    "2000_Motion".StackMain.Parameters.Auto.Cathode.PnPZ1.InitialPosCathodePnPZ1 := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.InitialPosCathodePnPZ1;
+	                    
+	                    "2000_Motion".StackMain.Parameters.Auto.Cathode.PnPZ1.CathodePnPZ1Down1OutputCam.OnPos := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.Pos1CathodePnPZ1Down1OutputCam;
+	                    
+	                    "2000_Motion".StackMain.Parameters.Auto.Cathode.PnPZ1.CathodePnPZ1Down1OutputCam.OffPos := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.Pos2CathodePnPZ1Down1OutputCam;
+	                    
+	                    "2000_Motion".StackMain.Parameters.Auto.Cathode.PnPZ1.CathodePnPZ1Up1OutputCam.OnPos := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.Pos1CathodePnPZ1Up1OutputCam;
+	                    
+	                    "2000_Motion".StackMain.Parameters.Auto.Cathode.PnPZ1.CathodePnPZ1Up1OutputCam.OffPos := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.Pos2CathodePnPZ1Up1OutputCam;
+	                    
+	                    "2000_Motion".StackMain.Parameters.Auto.Cathode.PnPZ1.CathodePnPZ1Down2OutputCam.OnPos := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.Pos1CathodePnPZ1Down2OutputCam;
+	                    
+	                    "2000_Motion".StackMain.Parameters.Auto.Cathode.PnPZ1.CathodePnPZ1Down2OutputCam.OffPos := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.Pos2CathodePnPZ1Down2OutputCam;
+	                    
+	                    "2000_Motion".StackMain.Parameters.Auto.Cathode.PnPZ1.CathodePnPZ1Up2OutputCam.OnPos := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.Pos1CathodePnPZ1Up2OutputCam;
+	                    
+	                    "2000_Motion".StackMain.Parameters.Auto.Cathode.PnPZ1.CathodePnPZ1Up2OutputCam.OffPos := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.Pos2CathodePnPZ1Up2OutputCam;
+	                    
+	                    "2000_Motion".StackMain.Parameters.Auto.Cathode.PnPZ1.CathodePnPZ1SuctionOnOutputCam.OnPos := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.Pos1CathodePnPZ1SuctionOnOutputCam;
+	                    
+	                    "2000_Motion".StackMain.Parameters.Auto.Cathode.PnPZ1.CathodePnPZ1SuctionOnOutputCam.OffPos := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.Pos2CathodePnPZ1SuctionOnOutputCam;
+	                    
+	                    "2000_Motion".StackMain.Parameters.Auto.Cathode.PnPZ1.CathodePnPZ1SuctionOffOutputCam.OnPos := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.Pos1CathodePnPZ1SuctionOffOutputCam;
+	                    
+	                    "2000_Motion".StackMain.Parameters.Auto.Cathode.PnPZ1.CathodePnPZ1SuctionOffOutputCam.OffPos := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.Pos2CathodePnPZ1SuctionOffOutputCam;
+	                    
+	                    "2000_Motion".StackMain.Parameters.Auto.Cathode.PnPZ1.CathodePnPZ1ReelCutBlowOutputCam.OnPos := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.Pos1CathodePnPZ1ReelCutBlowOutputCam;
+	                    
+	                    "2000_Motion".StackMain.Parameters.Auto.Cathode.PnPZ1.CathodePnPZ1ReelCutBlowOutputCam.OffPos := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.Pos2CathodePnPZ1ReelCutBlowOutputCam;
+	                    
+	                    "2000_Motion".StackMain.Parameters.Auto.Cathode.PnPZ1.CathodeAlignSuctionOnOutputCam.OnPos := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.Pos1CathodeAlignSuctionOnOutputCam;
+	                    
+	                    "2000_Motion".StackMain.Parameters.Auto.Cathode.PnPZ1.CathodeAlignSuctionOnOutputCam.OffPos := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.Pos2CathodeAlignSuctionOnOutputCam;
+	                    
+	                    "2000_Motion".StackMain.Parameters.Auto.Cathode.PnPZ1.CathodeReelCutDataDeleteOnOutputCam.OnPos := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.Pos1CathodePnPZ1ReelCutDataDeleteOnOutputCam;
+	                    
+	                    "2000_Motion".StackMain.Parameters.Auto.Cathode.PnPZ1.CathodeReelCutDataDeleteOnOutputCam.OffPos := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.Pos2CathodePnPZ1ReelCutDataDeleteOnOutputCam;
+	                    
+	                    "2000_Motion".StackMain.Parameters.Auto.Cathode.PnPZ1.CathodeAlignVisionOutputCam.OnPos := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.Pos1CathodePnPZ1AlignVisionOutputCam;
+	                    
+	                    "2000_Motion".StackMain.Parameters.Auto.Cathode.PnPZ1.CathodeAlignVisionOutputCam.OffPos := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.Pos2CathodePnPZ1AlignVisionOutputCam;
+	                END_REGION
+	                
+	                REGION PNP Z2
+	                    "2000_Motion".StackMain.Parameters.Auto.Cathode.PnPZ2.InitialPosCathodePnPZ2 := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.InitialPosCathodePnPZ2;
+	                    
+	                    "2000_Motion".StackMain.Parameters.Auto.Cathode.PnPZ2.CathodePnPZ2Down1OutputCam.OnPos := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.Pos1CathodePnPZ2Down1OutputCam;
+	                    
+	                    "2000_Motion".StackMain.Parameters.Auto.Cathode.PnPZ2.CathodePnPZ2Down1OutputCam.OffPos := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.Pos2CathodePnPZ2Down1OutputCam;
+	                    
+	                    "2000_Motion".StackMain.Parameters.Auto.Cathode.PnPZ2.CathodePnPZ2Up1OutputCam.OnPos := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.Pos1CathodePnPZ2Up1OutputCam;
+	                    
+	                    "2000_Motion".StackMain.Parameters.Auto.Cathode.PnPZ2.CathodePnPZ2Up1OutputCam.OffPos := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.Pos2CathodePnPZ2Up1OutputCam;
+	                    
+	                    "2000_Motion".StackMain.Parameters.Auto.Cathode.PnPZ2.CathodePnPZ2Down2OutputCam.OnPos := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.Pos1CathodePnPZ2Down2OutputCam;
+	                    
+	                    "2000_Motion".StackMain.Parameters.Auto.Cathode.PnPZ2.CathodePnPZ2Down2OutputCam.OffPos := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.Pos2CathodePnPZ2Down2OutputCam;
+	                    
+	                    "2000_Motion".StackMain.Parameters.Auto.Cathode.PnPZ2.CathodePnPZ2Up2OutputCam.OnPos := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.Pos1CathodePnPZ2Up2OutputCam;
+	                    
+	                    "2000_Motion".StackMain.Parameters.Auto.Cathode.PnPZ2.CathodePnPZ2Up2OutputCam.OffPos := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.Pos2CathodePnPZ2Up2OutputCam;
+	                    
+	                    "2000_Motion".StackMain.Parameters.Auto.Cathode.PnPZ2.CathodePnPZ2SuctionOnOutputCam.OnPos := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.Pos1CathodePnPZ2SuctionOnOutputCam;
+	                    
+	                    "2000_Motion".StackMain.Parameters.Auto.Cathode.PnPZ2.CathodePnPZ2SuctionOnOutputCam.OffPos := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.Pos2CathodePnPZ2SuctionOnOutputCam;
+	                    
+	                    "2000_Motion".StackMain.Parameters.Auto.Cathode.PnPZ2.CathodePnPZ2SuctionOffOutputCam.OnPos := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.Pos1CathodePnPZ2SuctionOffOutputCam;
+	                    
+	                    "2000_Motion".StackMain.Parameters.Auto.Cathode.PnPZ2.CathodePnPZ2SuctionOffOutputCam.OffPos := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.Pos2CathodePnPZ2SuctionOffOutputCam;
+	                    
+	                    "2000_Motion".StackMain.Parameters.Auto.Cathode.PnPZ2.CathodeAlignSuctionOffOutputCam.OnPos := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.Pos1CathodeAlignSuctionOffOutputCam;
+	                    
+	                    "2000_Motion".StackMain.Parameters.Auto.Cathode.PnPZ2.CathodeAlignSuctionOffOutputCam.OffPos := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.Pos2CathodeAlignSuctionOffOutputCam;
+	                END_REGION
+	            END_REGION
+	            
+	            REGION FINALROLLER
+	                "2000_Motion".StackMain.Parameters.Auto.FinalRoller.InitialPosFinalRoller := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.InitialPosFinalRoller;
+	                
+	                "2000_Motion".StackMain.Parameters.Auto.FinalRoller.FinalRollerFwdOutputCam.OnPos := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.Pos1FinalRollerXFwdOutputCam;
+	                
+	                "2000_Motion".StackMain.Parameters.Auto.FinalRoller.FinalRollerFwdOutputCam.OffPos := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.Pos2FinalRollerXFwdOutputCam;
+	                
+	                "2000_Motion".StackMain.Parameters.Auto.FinalRoller.FinalRollerBwdOutputCam.OnPos := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.Pos1FinalRollerXBwdOutputCam;
+	                
+	                "2000_Motion".StackMain.Parameters.Auto.FinalRoller.FinalRollerBwdOutputCam.OffPos := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.Pos2FinalRollerXBwdOutputCam;
+	                
+	                "2000_Motion".StackMain.Parameters.Auto.FinalRoller.FinalRollerStackTableDownOutputCam.OnPos := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.Pos1FinalRollerXStackTableDownOutputCam;
+	                
+	                "2000_Motion".StackMain.Parameters.Auto.FinalRoller.FinalRollerStackTableDownOutputCam.OffPos := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.Pos2FinalRollerXStackTableDownOutputCam;
+	                
+	                "2000_Motion".StackMain.Parameters.Auto.FinalRoller.FinalRollerStackAnodeVisionOutputCam.OnPos := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.Pos1FinalRollerXStackAnodeVisionOutputCam;
+	                
+	                "2000_Motion".StackMain.Parameters.Auto.FinalRoller.FinalRollerStackAnodeVisionOutputCam.OffPos := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.Pos2FinalRollerXStackAnodeVisionOutputCam;
+	                
+	                "2000_Motion".StackMain.Parameters.Auto.FinalRoller.FinalRollerStackCathodeVisionOutputCam.OnPos := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.Pos1FinalRollerXStackCathodeVisionOutputCam;
+	                
+	                "2000_Motion".StackMain.Parameters.Auto.FinalRoller.FinalRollerStackCathodeVisionOutputCam.OffPos := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.Pos2FinalRollerXStackCathodeVisionOutputCam;
+	            END_REGION
+	            
+	            REGION MANDREL
+	                "2000_Motion".StackMain.Parameters.Auto.Mandrel.InitialPosAnodeMandrelYFront := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.InitialPosAnodeMandrelYFront;
+	                
+	                "2000_Motion".StackMain.Parameters.Auto.Mandrel.InitialPosAnodeMandrelYRear := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.InitialPosAnodeMandrelYRear;
+	                
+	                "2000_Motion".StackMain.Parameters.Auto.Mandrel.InitialPosAnodeMandrelZFront := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.InitialPosAnodeMandrelZFront;
+	                
+	                "2000_Motion".StackMain.Parameters.Auto.Mandrel.InitialPosAnodeMandrelZRear := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.InitialPosAnodeMandrelZRear;
+	                
+	                "2000_Motion".StackMain.Parameters.Auto.Mandrel.InitialPosCathodeMandrelYFront := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.InitialPosCathodeMandrelYFront;
+	                
+	                "2000_Motion".StackMain.Parameters.Auto.Mandrel.InitialPosCathodeMandrelYRear := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.InitialPosCathodeMandrelYRear;
+	                
+	                "2000_Motion".StackMain.Parameters.Auto.Mandrel.InitialPosCathodeMandrelZFront := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.InitialPosCathodeMandrelZFront;
+	                
+	                "2000_Motion".StackMain.Parameters.Auto.Mandrel.InitialPosCathodeMandrelZRear := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.Auto.InitialPosCathodeMandrelZRear;
+	            END_REGION
+	        END_REGION
+	        
+	        REGION StackCalculate
+	            "2000_Motion".StackMain.Parameters.StackCalculate.Direction := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.StackCalculate.Direction;
+	            
+	            "2000_Motion".StackMain.Parameters.StackCalculate.RatioOption := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.StackCalculate.RatioOption;
+	            
+	            "2000_Motion".StackMain.Parameters.StackCalculate.TimeOption := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.StackCalculate.TimeOption;
+	            
+	            "2000_Motion".StackMain.Parameters.StackCalculate.PosOption := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.StackCalculate.PosOption;
+	            
+	            "2000_Motion".StackMain.Parameters.StackCalculate.DoubleOption := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.StackCalculate.DoubleOption;
+	            
+	            "2000_Motion".StackMain.Parameters.StackCalculate.StageHeight := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.StackCalculate.StageHeight;
+	            
+	            "2000_Motion".StackMain.Parameters.StackCalculate.StageGap := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.StackCalculate.StageGap;
+	            
+	            "2000_Motion".StackMain.Parameters.StackCalculate.AccRatio := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.StackCalculate.AccRatio;
+	            
+	            REGION RATIO
+	                "2000_Motion".StackMain.Parameters.StackCalculate.Ratio.FinalRollerStart := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.StackCalculate.Ratio.FinalRollerStart;
+	                
+	                "2000_Motion".StackMain.Parameters.StackCalculate.Ratio.FinalRollerEnd := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.StackCalculate.Ratio.FinalRollerEnd;
+	                
+	                "2000_Motion".StackMain.Parameters.StackCalculate.Ratio.PnPXStart := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.StackCalculate.Ratio.PnPXStart;
+	                
+	                "2000_Motion".StackMain.Parameters.StackCalculate.Ratio.PnPXEnd := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.StackCalculate.Ratio.PnPXEnd;
+	                
+	                "2000_Motion".StackMain.Parameters.StackCalculate.Ratio.PnPZDownStart := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.StackCalculate.Ratio.PnPZDownStart;
+	                
+	                "2000_Motion".StackMain.Parameters.StackCalculate.Ratio.PnPZDownEnd := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.StackCalculate.Ratio.PnPZDownEnd;
+	                
+	                "2000_Motion".StackMain.Parameters.StackCalculate.Ratio.PnPZUpStart := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.StackCalculate.Ratio.PnPZUpStart;
+	                
+	                "2000_Motion".StackMain.Parameters.StackCalculate.Ratio.PnPZUpEnd := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.StackCalculate.Ratio.PnPZUpEnd;
+	                
+	                "2000_Motion".StackMain.Parameters.StackCalculate.Ratio.MandrelBwdStart := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.StackCalculate.Ratio.MandrelBwdStart;
+	                
+	                "2000_Motion".StackMain.Parameters.StackCalculate.Ratio.MandrelBwdEnd := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.StackCalculate.Ratio.MandrelBwdEnd;
+	                
+	                "2000_Motion".StackMain.Parameters.StackCalculate.Ratio.MandrelFwdStart := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.StackCalculate.Ratio.MandrelFwdStart;
+	                
+	                "2000_Motion".StackMain.Parameters.StackCalculate.Ratio.MandrelFwdEnd := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.StackCalculate.Ratio.MandrelFwdEnd;
+	                
+	                "2000_Motion".StackMain.Parameters.StackCalculate.Ratio.MandrelUpStart1 := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.StackCalculate.Ratio.MandrelUpStart1;
+	                
+	                "2000_Motion".StackMain.Parameters.StackCalculate.Ratio.MandrelUpEnd1 := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.StackCalculate.Ratio.MandrelUpEnd1;
+	                
+	                "2000_Motion".StackMain.Parameters.StackCalculate.Ratio.MandrelUpStart2 := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.StackCalculate.Ratio.MandrelUpStart2;
+	                
+	                "2000_Motion".StackMain.Parameters.StackCalculate.Ratio.MandrelUpEnd2 := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.StackCalculate.Ratio.MandrelUpEnd2;
+	                
+	                "2000_Motion".StackMain.Parameters.StackCalculate.Ratio.MandrelDownStart := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.StackCalculate.Ratio.MandrelDownStart;
+	                
+	                "2000_Motion".StackMain.Parameters.StackCalculate.Ratio.MandrelDownEnd := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.StackCalculate.Ratio.MandrelDownEnd;
+	                
+	                "2000_Motion".StackMain.Parameters.StackCalculate.Ratio.MandrelYTerm := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.StackCalculate.Ratio.MandrelYTerm;
+	                
+	                "2000_Motion".StackMain.Parameters.StackCalculate.Ratio.MandrelZTerm := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.StackCalculate.Ratio.MandrelZTerm;
+	                
+	                "2000_Motion".StackMain.Parameters.StackCalculate.Ratio.MandrelBwdOffset := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.StackCalculate.Ratio.MandrelBwdOffset;
+	                
+	                "2000_Motion".StackMain.Parameters.StackCalculate.Ratio.MandrelFwdOffset := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.StackCalculate.Ratio.MandrelFwdOffset;
+	            END_REGION
+	            
+	            REGION TIME
+	                "2000_Motion".StackMain.Parameters.StackCalculate."Time".FinalRollerStart := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.StackCalculate."Time".FinalRollerStart;
+	                
+	                "2000_Motion".StackMain.Parameters.StackCalculate."Time".FinalRollerEnd := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.StackCalculate."Time".FinalRollerEnd;
+	                
+	                "2000_Motion".StackMain.Parameters.StackCalculate."Time".PnPXStart := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.StackCalculate."Time".PnPXStart;
+	                
+	                "2000_Motion".StackMain.Parameters.StackCalculate."Time".PnPXEnd := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.StackCalculate."Time".PnPXEnd;
+	                
+	                "2000_Motion".StackMain.Parameters.StackCalculate."Time".PnPZDownStart := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.StackCalculate."Time".PnPZDownStart;
+	                
+	                "2000_Motion".StackMain.Parameters.StackCalculate."Time".PnPZDownEnd := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.StackCalculate."Time".PnPZDownEnd;
+	                
+	                "2000_Motion".StackMain.Parameters.StackCalculate."Time".PnPZUpStart := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.StackCalculate."Time".PnPZUpStart;
+	                
+	                "2000_Motion".StackMain.Parameters.StackCalculate."Time".PnPZUpEnd := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.StackCalculate."Time".PnPZUpEnd;
+	                
+	                "2000_Motion".StackMain.Parameters.StackCalculate."Time".MandrelBwdStart := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.StackCalculate."Time".MandrelBwdStart;
+	                
+	                "2000_Motion".StackMain.Parameters.StackCalculate."Time".MandrelBwdEnd := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.StackCalculate."Time".MandrelBwdEnd;
+	                
+	                "2000_Motion".StackMain.Parameters.StackCalculate."Time".MandrelFwdStart := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.StackCalculate."Time".MandrelFwdStart;
+	                
+	                "2000_Motion".StackMain.Parameters.StackCalculate."Time".MandrelFwdEnd := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.StackCalculate."Time".MandrelFwdEnd;
+	                
+	                "2000_Motion".StackMain.Parameters.StackCalculate."Time".MandrelUpStart1 := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.StackCalculate."Time".MandrelUpStart1;
+	                
+	                "2000_Motion".StackMain.Parameters.StackCalculate."Time".MandrelUpEnd1 := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.StackCalculate."Time".MandrelUpEnd1;
+	                
+	                "2000_Motion".StackMain.Parameters.StackCalculate."Time".MandrelUpStart2 := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.StackCalculate."Time".MandrelUpStart2;
+	                
+	                "2000_Motion".StackMain.Parameters.StackCalculate."Time".MandrelUpEnd2 := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.StackCalculate."Time".MandrelUpEnd2;
+	                
+	                "2000_Motion".StackMain.Parameters.StackCalculate."Time".MandrelDownStart := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.StackCalculate."Time".MandrelDownStart;
+	                
+	                "2000_Motion".StackMain.Parameters.StackCalculate."Time".MandrelDownEnd := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.StackCalculate."Time".MandrelDownEnd;
+	            END_REGION
+	            
+	            REGION POSITION
+	                "2000_Motion".StackMain.Parameters.StackCalculate.Position.FinalRollerBwdPos := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.StackCalculate.Position.FinalRollerBwdPos;
+	                
+	                "2000_Motion".StackMain.Parameters.StackCalculate.Position.FinalRollerFwdPos := "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.StackCalculate.Position.FinalRollerFwdPos;
+	            END_REGION
+	            
+	            REGION DISTANCE
+	                REGION COMPENSATOR
+	                    
+	                END_REGION
+	                
+	                REGION ANODE
+	                    "2000_Motion".StackMain.Parameters.StackCalculate.Distance.Anode.PnPX1Distance := ABS_LREAL("100_CommunicationPLC".PLCToMotion.Parameters.StackMain.StackCalculate.TeachingPos.EndPos.AnodePnPX1 - "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.StackCalculate.TeachingPos.StartPos.AnodePnPX1);
+	                    
+	                    "2000_Motion".StackMain.Parameters.StackCalculate.Distance.Anode.PnPX2Distance := ABS_LREAL("100_CommunicationPLC".PLCToMotion.Parameters.StackMain.StackCalculate.TeachingPos.EndPos.AnodePnPX2 - "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.StackCalculate.TeachingPos.StartPos.AnodePnPX2);
+	                    
+	                    "2000_Motion".StackMain.Parameters.StackCalculate.Distance.Anode.PnPZ1Distance1 := ABS_LREAL("100_CommunicationPLC".PLCToMotion.Parameters.StackMain.StackCalculate.TeachingPos.EndPos.AnodePnPZ1P1 - "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.StackCalculate.TeachingPos.StartPos.AnodePnPZ1);
+	                    
+	                    "2000_Motion".StackMain.Parameters.StackCalculate.Distance.Anode.PnPZ1Distance2 := ABS_LREAL("100_CommunicationPLC".PLCToMotion.Parameters.StackMain.StackCalculate.TeachingPos.EndPos.AnodePnPZ1P2 - "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.StackCalculate.TeachingPos.StartPos.AnodePnPZ1);
+	                    
+	                    "2000_Motion".StackMain.Parameters.StackCalculate.Distance.Anode.PnPZ2Distance1 := ABS_LREAL("100_CommunicationPLC".PLCToMotion.Parameters.StackMain.StackCalculate.TeachingPos.EndPos.AnodePnPZ2P1 - "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.StackCalculate.TeachingPos.StartPos.AnodePnPZ2);
+	                    
+	                    "2000_Motion".StackMain.Parameters.StackCalculate.Distance.Anode.PnPZ2Distance2 := ABS_LREAL("100_CommunicationPLC".PLCToMotion.Parameters.StackMain.StackCalculate.TeachingPos.EndPos.AnodePnPZ2P2 - "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.StackCalculate.TeachingPos.StartPos.AnodePnPZ2);
+	                END_REGION
+	                
+	                REGION CATHODE
+	                    "2000_Motion".StackMain.Parameters.StackCalculate.Distance.Cathode.PnPX1Distance := ABS_LREAL("100_CommunicationPLC".PLCToMotion.Parameters.StackMain.StackCalculate.TeachingPos.EndPos.CathodePnPX1 - "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.StackCalculate.TeachingPos.StartPos.CathodePnPX1);
+	                    
+	                    "2000_Motion".StackMain.Parameters.StackCalculate.Distance.Cathode.PnPX2Distance := ABS_LREAL("100_CommunicationPLC".PLCToMotion.Parameters.StackMain.StackCalculate.TeachingPos.EndPos.CathodePnPX2 - "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.StackCalculate.TeachingPos.StartPos.CathodePnPX2);
+	                    
+	                    "2000_Motion".StackMain.Parameters.StackCalculate.Distance.Cathode.PnPZ1Distance1 := ABS_LREAL("100_CommunicationPLC".PLCToMotion.Parameters.StackMain.StackCalculate.TeachingPos.EndPos.CathodePnPZ1P1 - "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.StackCalculate.TeachingPos.StartPos.CathodePnPZ1);
+	                    
+	                    "2000_Motion".StackMain.Parameters.StackCalculate.Distance.Cathode.PnPZ1Distance2 := ABS_LREAL("100_CommunicationPLC".PLCToMotion.Parameters.StackMain.StackCalculate.TeachingPos.EndPos.CathodePnPZ1P2 - "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.StackCalculate.TeachingPos.StartPos.CathodePnPZ1);
+	                    
+	                    "2000_Motion".StackMain.Parameters.StackCalculate.Distance.Cathode.PnPZ2Distance1 := ABS_LREAL("100_CommunicationPLC".PLCToMotion.Parameters.StackMain.StackCalculate.TeachingPos.EndPos.CathodePnPZ2P1 - "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.StackCalculate.TeachingPos.StartPos.CathodePnPZ2);
+	                    
+	                    "2000_Motion".StackMain.Parameters.StackCalculate.Distance.Cathode.PnPZ2Distance2 := ABS_LREAL("100_CommunicationPLC".PLCToMotion.Parameters.StackMain.StackCalculate.TeachingPos.EndPos.CathodePnPZ2P2 - "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.StackCalculate.TeachingPos.StartPos.CathodePnPZ2);
+	                END_REGION
+	                
+	                REGION FINAL ROLLER
+	                    "2000_Motion".StackMain.Parameters.StackCalculate.Distance.FinalRoller.Distance := ABS_LREAL("100_CommunicationPLC".PLCToMotion.Parameters.StackMain.StackCalculate.TeachingPos.EndPos.FinalRoller - "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.StackCalculate.TeachingPos.StartPos.FinalRoller);
+	                END_REGION
+	                
+	                REGION MANDREL
+	                    "2000_Motion".StackMain.Parameters.StackCalculate.Distance.Mandrel.AnodeMandrelYFrontDistance := ABS_LREAL("100_CommunicationPLC".PLCToMotion.Parameters.StackMain.StackCalculate.TeachingPos.EndPos.AnodeMandrelYFront - "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.StackCalculate.TeachingPos.StartPos.AnodeMandrelYFront);
+	                    
+	                    "2000_Motion".StackMain.Parameters.StackCalculate.Distance.Mandrel.AnodeMandrelYRearDistance := ABS_LREAL("100_CommunicationPLC".PLCToMotion.Parameters.StackMain.StackCalculate.TeachingPos.EndPos.AnodeMandrelYRear - "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.StackCalculate.TeachingPos.StartPos.AnodeMandrelYRear);
+	                    
+	                    "2000_Motion".StackMain.Parameters.StackCalculate.Distance.Mandrel.CathodeMandrelYFrontDistance := ABS_LREAL("100_CommunicationPLC".PLCToMotion.Parameters.StackMain.StackCalculate.TeachingPos.EndPos.CathodeMandrelYFront - "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.StackCalculate.TeachingPos.StartPos.CathodeMandrelYFront);
+	                    
+	                    "2000_Motion".StackMain.Parameters.StackCalculate.Distance.Mandrel.CathodeMandrelYRearDistance := ABS_LREAL("100_CommunicationPLC".PLCToMotion.Parameters.StackMain.StackCalculate.TeachingPos.EndPos.CathodeMandrelYRear - "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.StackCalculate.TeachingPos.StartPos.CathodeMandrelYRear);
+	                    
+	                    "2000_Motion".StackMain.Parameters.StackCalculate.Distance.Mandrel.AnodeMandrelZFrontDistance := ABS_LREAL("100_CommunicationPLC".PLCToMotion.Parameters.StackMain.StackCalculate.TeachingPos.EndPos.AnodeMandrelZFront - "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.StackCalculate.TeachingPos.StartPos.AnodeMandrelZFront);
+	                    
+	                    "2000_Motion".StackMain.Parameters.StackCalculate.Distance.Mandrel.AnodeMandrelZRearDistance := ABS_LREAL("100_CommunicationPLC".PLCToMotion.Parameters.StackMain.StackCalculate.TeachingPos.EndPos.AnodeMandrelZRear - "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.StackCalculate.TeachingPos.StartPos.AnodeMandrelZRear);
+	                    
+	                    "2000_Motion".StackMain.Parameters.StackCalculate.Distance.Mandrel.CathodeMandrelZFrontDistance := ABS_LREAL("100_CommunicationPLC".PLCToMotion.Parameters.StackMain.StackCalculate.TeachingPos.EndPos.CathodeMandrelZFront - "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.StackCalculate.TeachingPos.StartPos.CathodeMandrelZFront);
+	                    
+	                    "2000_Motion".StackMain.Parameters.StackCalculate.Distance.Mandrel.CathodeMandrelZRearDistance := ABS_LREAL("100_CommunicationPLC".PLCToMotion.Parameters.StackMain.StackCalculate.TeachingPos.EndPos.CathodeMandrelZRear - "100_CommunicationPLC".PLCToMotion.Parameters.StackMain.StackCalculate.TeachingPos.StartPos.CathodeMandrelZRear);
+	                END_REGION
+	            END_REGION
+	        END_REGION
+	    END_REGION
+	    
+	    REGION STATUS
+	        "100_CommunicationPLC".MotionToPLC.Status.StackMain.StopRequest := "2000_Motion".StackMain.Status.StopRequest;
+	        
+	        "100_CommunicationPLC".MotionToPLC.Status.StackMain.Busy.TotalBusy := "2000_Motion".StackMain.Status.Busy.TotalBusy;
+	        
+	        "100_CommunicationPLC".MotionToPLC.Status.StackMain.Busy.CalculateBusy := "2000_Motion".StackMain.Status.Busy.CalculateBusy;
+	        
+	        "100_CommunicationPLC".MotionToPLC.Status.StackMain.Busy.SemiStepBusy := "2000_Motion".StackMain.Status.Busy.SemiStepBusy;
+	        
+	        "100_CommunicationPLC".MotionToPLC.Status.StackMain.Busy.FullStepBusy := "2000_Motion".StackMain.Status.Busy.FullStepBusy;
+	        
+	        "100_CommunicationPLC".MotionToPLC.Status.StackMain.Busy.AutoBusy := "2000_Motion".StackMain.Status.Busy.AutoBusy;
+	        
+	        "100_CommunicationPLC".MotionToPLC.Status.StackMain.Busy.CycleStopBusy := "2000_Motion".StackMain.Status.Busy.CycleStopBusy;
+	        
+	        "100_CommunicationPLC".MotionToPLC.Status.StackMain.Busy.FastStopBusy := "2000_Motion".StackMain.Status.Busy.FastStopBusy;
+	        
+	        "100_CommunicationPLC".MotionToPLC.Status.StackMain.Busy.ResetBusy := "2000_Motion".StackMain.Status.Busy.ResetBusy;
+	        
+	        "100_CommunicationPLC".MotionToPLC.Status.StackMain.Done.TotalDone := "2000_Motion".StackMain.Status.Done.TotalDone;
+	        
+	        "100_CommunicationPLC".MotionToPLC.Status.StackMain.Done.CalculateDone := "2000_Motion".StackMain.Status.Done.CalculateDone;
+	        
+	        "100_CommunicationPLC".MotionToPLC.Status.StackMain.Done.SemiStepDone := "2000_Motion".StackMain.Status.Done.SemiStepDone;
+	        
+	        "100_CommunicationPLC".MotionToPLC.Status.StackMain.Done.FullStepDone := "2000_Motion".StackMain.Status.Done.FullStepDone;
+	        
+	        "100_CommunicationPLC".MotionToPLC.Status.StackMain.Done.AutoDone := "2000_Motion".StackMain.Status.Done.AutoDone;
+	        
+	        "100_CommunicationPLC".MotionToPLC.Status.StackMain.Done.CycleStopDone := "2000_Motion".StackMain.Status.Done.CycleStopDone;
+	        
+	        "100_CommunicationPLC".MotionToPLC.Status.StackMain.Done.FastStopDone := "2000_Motion".StackMain.Status.Done.FastStopDone;
+	        
+	        "100_CommunicationPLC".MotionToPLC.Status.StackMain.Done.ResetDone := "2000_Motion".StackMain.Status.Done.ResetDone;
+	        
+	        "100_CommunicationPLC".MotionToPLC.Status.StackMain.Error := "2000_Motion".StackMain.Status.Error;
+	        
+	        "100_CommunicationPLC".MotionToPLC.Status.StackMain.ErrorID := "2000_Motion".StackMain.Status.ErrorID;
+	        
+	        "100_CommunicationPLC".MotionToPLC.Status.StackMain.NowCmd := "2000_Motion".StackMain.Status.NowCmd;
+	        
+	        "100_CommunicationPLC".MotionToPLC.Status.StackMain.BeforeCmd := "2000_Motion".StackMain.Status.BeforeCmd;
+	        
+	        "100_CommunicationPLC".MotionToPLC.Status.StackMain.NowStep := "2000_Motion".StackMain.Status.NowStep;
+	        
+	        "100_CommunicationPLC".MotionToPLC.Status.StackMain.BeforeStep := "2000_Motion".StackMain.Status.BeforeStep;
+	    END_REGION
+	    
+	    REGION OUTPUT BITS
+	        "100_CommunicationPLC".MotionToPLC.Status.OutputData.StackCellCount := "2000_Motion".StackMain.OutputData.StackCellCount;
+	        
+	        "100_CommunicationPLC".MotionToPLC.Status.OutputBits.AnodePnP1Suction := "2000_Motion".StackMain.OutputBits.AnodePnP1Suction;
+	        
+	        "100_CommunicationPLC".MotionToPLC.Status.OutputBits.AnodePnP1Blow := "2000_Motion".StackMain.OutputBits.AnodePnP1Blow;
+	        
+	        "100_CommunicationPLC".MotionToPLC.Status.OutputBits.AnodePnP1ReelCutBlow := "2000_Motion".StackMain.OutputBits.AnodePnP1ReelCutBlow;
+	        
+	        "100_CommunicationPLC".MotionToPLC.Status.OutputBits.AnodePnP2Suction := "2000_Motion".StackMain.OutputBits.AnodePnP2Suction;
+	        
+	        "100_CommunicationPLC".MotionToPLC.Status.OutputBits.AnodePnP2Blow := "2000_Motion".StackMain.OutputBits.AnodePnP2Blow;
+	        
+	        "100_CommunicationPLC".MotionToPLC.Status.OutputBits.AnodeAlignSuction := "2000_Motion".StackMain.OutputBits.AnodeAlignSuction;
+	        
+	        "100_CommunicationPLC".MotionToPLC.Status.OutputBits.AnodeAlignBlow := "2000_Motion".StackMain.OutputBits.AnodeAlignBlow;
+	        
+	        "100_CommunicationPLC".MotionToPLC.Status.OutputBits.AnodeAlignVision := "2000_Motion".StackMain.OutputBits.AnodeAlignVision;
+	        
+	        "100_CommunicationPLC".MotionToPLC.Status.OutputBits.AnodePnP1RotaryWork := "2000_Motion".StackMain.OutputBits.AnodePnP1RotaryWork;
+	        
+	        "100_CommunicationPLC".MotionToPLC.Status.OutputBits.AnodePnP1RotaryHome := "2000_Motion".StackMain.OutputBits.AnodePnP1RotaryHome;
+	        
+	        "100_CommunicationPLC".MotionToPLC.Status.OutputBits.AnodeReelCutDataDelete := "2000_Motion".StackMain.OutputBits.AnodeReelCutDataDelete;
+	        
+	        "100_CommunicationPLC".MotionToPLC.Status.OutputBits.CathodePnP1Suction := "2000_Motion".StackMain.OutputBits.CathodePnP1Suction;
+	        
+	        "100_CommunicationPLC".MotionToPLC.Status.OutputBits.CathodePnP1Blow := "2000_Motion".StackMain.OutputBits.CathodePnP1Blow;
+	        
+	        "100_CommunicationPLC".MotionToPLC.Status.OutputBits.CathodePnP1ReelCutBlow := "2000_Motion".StackMain.OutputBits.CathodePnP1ReelCutBlow;
+	        
+	        "100_CommunicationPLC".MotionToPLC.Status.OutputBits.CathodePnP2Suction := "2000_Motion".StackMain.OutputBits.CathodePnP2Suction;
+	        
+	        "100_CommunicationPLC".MotionToPLC.Status.OutputBits.CathodePnP2Blow := "2000_Motion".StackMain.OutputBits.CathodePnP2Blow;
+	        
+	        "100_CommunicationPLC".MotionToPLC.Status.OutputBits.CathodeAlignSuction := "2000_Motion".StackMain.OutputBits.CathodeAlignSuction;
+	        
+	        "100_CommunicationPLC".MotionToPLC.Status.OutputBits.CathodeAlignBlow := "2000_Motion".StackMain.OutputBits.CathodeAlignBlow;
+	        
+	        "100_CommunicationPLC".MotionToPLC.Status.OutputBits.CathodeAlignVision := "2000_Motion".StackMain.OutputBits.CathodeAlignVision;
+	        
+	        "100_CommunicationPLC".MotionToPLC.Status.OutputBits.CathodePnP1RotaryWork := "2000_Motion".StackMain.OutputBits.CathodePnP1RotaryWork;
+	        
+	        "100_CommunicationPLC".MotionToPLC.Status.OutputBits.CathodePnP1RotaryHome := "2000_Motion".StackMain.OutputBits.CathodePnP1RotaryHome;
+	        
+	        "100_CommunicationPLC".MotionToPLC.Status.OutputBits.CathodeReelCutDataDelete := "2000_Motion".StackMain.OutputBits.CathodeReelCutDataDelete;
+	        
+	        "100_CommunicationPLC".MotionToPLC.Status.OutputBits.StackTableZAnodeDown := "2000_Motion".StackMain.OutputBits.StackTableZAnodeDown;
+	        
+	        "100_CommunicationPLC".MotionToPLC.Status.OutputBits.StackTableZCathodeDown := "2000_Motion".StackMain.OutputBits.StackTableZCathodeDown;
+	        
+	        "100_CommunicationPLC".MotionToPLC.Status.OutputBits.StackAnodeVision := "2000_Motion".StackMain.OutputBits.StackAnodeVision;
+	        
+	        "100_CommunicationPLC".MotionToPLC.Status.OutputBits.StackCathodeVision := "2000_Motion".StackMain.OutputBits.StackCathodeVision;
+	    END_REGION
+	    
+	    REGION Stack <> Reelcut Inteface
+	        "2000_Motion".StackMain.ReelcutInterface.AnodeReelcutStandby := "100_CommunicationPLC".PLCToMotion.Interface.AnodeReelcutStandby;
+	        
+	        "2000_Motion".StackMain.ReelcutInterface.AnodeReelcutStart := "100_CommunicationPLC".MotionToPLC.Status.Interface.AnodeReelcutStart;
+	        
+	        "2000_Motion".StackMain.ReelcutInterface.AnodeReelcutDone := "100_CommunicationPLC".PLCToMotion.Interface.AnodeReelcutDone;
+	        
+	        "2000_Motion".StackMain.ReelcutInterface.CathodeReelcutStandby := "100_CommunicationPLC".PLCToMotion.Interface.CathodeReelcutStandby;
+	        
+	        "2000_Motion".StackMain.ReelcutInterface.CathodeReelcutStart := "100_CommunicationPLC".MotionToPLC.Status.Interface.CathodeReelcutStart;
+	        
+	        "2000_Motion".StackMain.ReelcutInterface.CathodeReelcutDone := "100_CommunicationPLC".PLCToMotion.Interface.CathodeReelcutDone;
+	    END_REGION
+	END_REGION
+END_FUNCTION
+

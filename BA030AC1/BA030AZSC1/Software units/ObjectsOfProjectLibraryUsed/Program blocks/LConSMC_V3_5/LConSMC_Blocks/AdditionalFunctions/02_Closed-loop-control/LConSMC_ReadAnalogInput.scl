@@ -1,0 +1,126 @@
+﻿FUNCTION_BLOCK "LConSMC_ReadAnalogInput"
+{ S7_Optimized_Access := 'TRUE' ; Published := 'TRUE' }
+VERSION : 0.1
+//Analog input evaluation with PT1 filter, must be called in cyclic interrupt task i.e. OB30.  Function block ID: 1109
+   VAR_INPUT 
+      set { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := FALSE;   // TRUE: Set output to the value of "setValue"
+      x { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Word;   // Input Value
+      maxValue { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;   // Used as reference value for conversion  y = x/base * maxValue  The output is limited to +- 2*maxValue
+      base { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 16384.0;   // Scaling value for conversion  y=x/base*maxValue
+      setValue { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 0.0;   // Set value (if "set" = TRUE)
+      smoothingTime { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 100.0;   // [ms] Smoothing time constant [tCycle - 5000]
+      tCycle { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Real;   // [ms] Cycle time the function block is called
+   END_VAR
+
+   VAR_OUTPUT 
+      error { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := FALSE;   // TRUE: An error occured
+      errorID { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : DWord := 16#0000_0000;   // Detailed error description
+      y { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;   // Output value
+   END_VAR
+
+   VAR 
+      statX { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 0.0;
+      statTmax { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statXkm1 { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statYkm1 { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statFirstRun { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := TRUE;
+      statY { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 0.0;
+   END_VAR
+
+   VAR_TEMP 
+      tmpDenom : LReal;
+      tmpEnum : LReal;
+   END_VAR
+
+   VAR CONSTANT 
+      MAX_SMOOTHING : Real := 5000.0;
+      NO_ERROR : DWord := 16#0000_0000;
+   END_VAR
+
+
+BEGIN
+	REGION BLOCK INFO HEADER
+	  //===============================================================================
+	  // SIEMENS AG / (c)Copyright 2023
+	  //-------------------------------------------------------------------------------
+	  // Title:            LConSMC_ReadAnalogInput
+	  // Comment/Function: Analog input evaluation with PT1 filter
+	  // Library/Family:   LConSMC
+	  // Author:           APC Erlangen
+	  // Tested with:      FW 2.8
+	  // Engineering:      TIA Portal V16
+	  // Restrictions:     Needs to be called in a cyclic task
+	  // Requirements:     -
+	  //-------------------------------------------------------------------------------
+	  // Change log table:
+	  // Version  | Date       | Expert in charge       | Changes applied
+	  //----------|------------|------------------------|------------------------------
+	  // 01.02.00 | 2016-11-17 | APC Erlangen           | adapted to styleguide; warning "variable might not be initialized" removed)
+	  // 01.01.00 | 2013-08-16 | APC Erlangen           | replace "word_to_real" with convertion "word_to_int" and "int_to_real"
+	  // 01.00.00 | 2012-07-27 | APC Erlangen           | Creation
+	  //===============================================================================
+	  //
+	END_REGION BLOCK INFO HEADER
+	
+	REGION DESCRIPTION
+	(/*
+	This function converts an analog input signal in WORD format (x) into a REAL value using a normalization value (base) and the maximum reference value (maxValue).
+	The output value is limited between the values -2 * maxValue  -  2 * maxValue.
+	The WORD value will be converted to INT value and afterwards to REAL value.
+	
+	$ y = \frac{x}{base}\ \cdot maxValue $
+	
+	Optionally the analog value can be filtered with a settable PT1-filter using the filter time smoothingTime.
+	If the input parameter smoothingTime = 0, the filter is disabled. The internal limit for the filter time is 5000 ms.
+	*/)
+	END_REGION
+	
+	IF (#statFirstRun) THEN// only at the first Run       
+	    #statFirstRun := FALSE;
+	    #statXkm1 := 0.0;
+	END_IF;
+	
+	#error := #base = 0.0 OR (#tCycle = 0.0);
+	
+	IF (#error) THEN
+	    IF (#tCycle = 0.0) THEN
+	      #errorID :="LCON_ERROR_ANALOG_INPUT_INVALID_CYCLE_TIME";                                       // FB NOT running IN cyclic task (81)
+	    END_IF;
+	    IF #base = 0.0 THEN
+	      #errorID := "LCON_ERROR_ANALOG_INPUT_INVALID_CONFIGURATION";                              // Scaling base invalid
+	    END_IF;
+	ELSE
+	    #errorID := #NO_ERROR;
+	END_IF;
+	
+	IF (NOT #error) THEN                                                         // execute code if below error priority 1
+	    #statX := LIMIT(MN := -2.0 * #maxValue,
+	                    IN := (INT_TO_REAL(WORD_TO_INT(#x)) / #base) * #maxValue,
+	                    MX := 2.0 * #maxValue);
+	    IF (#smoothingTime <= 0.0) THEN                                          // Filter input
+	        #statY := #statX;
+	    ELSE
+	        #statTmax := 2.0 * LIMIT(MN := #tCycle,
+	                                 IN := #smoothingTime,
+	                                 MX := #MAX_SMOOTHING);
+	        IF (#set) THEN
+	            #statY := #setValue;
+	            #statXkm1 := #setValue;
+	        ELSE
+	            #tmpEnum := #statTmax - #tCycle;
+	            #tmpDenom := #statTmax + #tCycle;
+	            
+	            #statY := (#tmpEnum * #statYkm1 + #tCycle * (#statX + #statXkm1)) / #tmpDenom;
+	            #statXkm1 := #statX;                                                   //Xkm1 updated
+	        END_IF;
+	        #statYkm1 := #statY;                                                           //Ykm1 updated
+	    END_IF;
+	ELSE
+	    #statY := 0.0;
+	END_IF;
+	
+	// set outputs
+	#y := #statY;
+	
+END_FUNCTION_BLOCK
+

@@ -1,0 +1,1126 @@
+﻿FUNCTION_BLOCK "LConSMC_Winder"
+{ S7_Optimized_Access := 'TRUE' ; Published := 'TRUE' }
+VERSION : 0.1
+//Function block for the control of an axial winder. 
+//The function block must be called in a cyclic interrupt (e.g. OB30) or synchronous 
+//operation (e.g. OB60, OB95).  Function block ID: 5105
+   VAR_INPUT 
+      enable { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := FALSE;   // TRUE: Enable function block. With rising edge, a validation of parameter is done and communication with drive is started  FALSE: Disable the function block
+      speedMatch { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := FALSE;   // True: Enable web velocity setpoint ("lineAxisMotionVector"). The drive will synchronize up to web velocity using syncronization dynamics. If the velocity is reached the output "inSync" will become TRUE.  FALSE: Drive will decelerate to standstill using stop dynamics
+      cntrlEnable { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := FALSE;   // TRUE: Enable web tension control (enable torque limits, dancer position setpoint etc.)
+      jogPos { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := FALSE;   // TRUE: Drive is jogged in positive direction (see config.dynamics.jogDynamics)
+      jogNeg { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := FALSE;   // TRUE: Drive is jogged in negative direction (see config.dynamics.jogDynamics)
+      lineAxisMotionVector { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : "LConSMC_typeMotionVector";   // Setpoint of the web (position/velocity/acceleration)
+      lineAxisActualValues { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : "LConSMC_typeLineAxisActValues";   // Actual values of the web for diameter calculation.  Leading value (actual or setpoint values) must be connected to the input "lineAxisMotionVector"
+      additionalVelocity { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 0.0;   // [m/min] / [ft/min] Additional web velocity (always enabled)
+      typeOfWinder { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Int := "LCON_TYPE_OF_WINDER_REWIND_FROM_ABOVE";   // Definition of winding direction  0: Rewind from above  1: Rewind from below  2: Unwind from above  3: Unwind from below
+      controlMode { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Int := 0;   // Tension control mode  0: Dancer via speed setpoint adaption  1: Load cell via speed setpoint adaption  2: Load cell via torque limits  3: Indirect tension control  4: V-constant  5: Indirect tension control vis speed setpoint adaption
+      typeOfDiameterCalc { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Int := "LCON_DIAM_CALC_MODE_INTEGRAL";   // Type of diameter calculation  0: V/n  1: Thickness addition  2: Integral  3: External  4: WebLength  5: Position
+      holdDiameter { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := FALSE;   // TRUE: Hold diameter calculation  FALSE: Diameter calculation is active
+      setDiameter { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := FALSE;   // TRUE: Set diameter to the value in "winderConfig.diamConfig.diameterSetValue"
+      CntrlSetpoint { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 0.0;   // Tension setpoint [N]/[Lbf] / Dancer position setpoint [%]
+      CntrlActual { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 0.0;   // Tension actual value [N]/[Lbf] / Dancer actual position [%]
+      tCycle { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Real := 0.0;   // [ms] Cycle time the function block is called
+   END_VAR
+
+   VAR_OUTPUT 
+      busy { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := FALSE;   // TRUE : Function block is executed
+      active { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := FALSE;   // TRUE: Setpoints are send to the drive
+      ctrlBusy { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := FALSE;   // TRUE: Tension control is active
+      inSync { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := FALSE;   // TRUE: The drive has reached the web velocity and is synchronous
+      error { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := FALSE;   // TRUE: Function block has detected an error
+      errorID { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : DWord := 16#0000_0000;   // Detailed error description
+   END_VAR
+
+   VAR_IN_OUT 
+      winderAxis { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : DB_ANY;   // Winder axis
+      diameter { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;   // [m or inch] Current diameter
+      winderConfig : "LConSMC_typeWinderConfig";   // Winder configuration structure
+      winderDiag : "LConSMC_typeWinderDiag";   // Winder diagnostic structure
+   END_VAR
+
+   VAR 
+      statActive { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statTel750Active { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := FALSE;
+      statEnableWebBreakDetection { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statEnableWebBreakDetectionOld { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statDancerControl { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := FALSE;
+      statEnableOld { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statTorqueLimitUpperActive { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := FALSE;
+      statTorqueLimitLowerActive { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := FALSE;
+      statStartupError { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statWinderAxisCtrl { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statError { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := FALSE;
+      statInSync { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statCtrlBusyInternal { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statJogWinder { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statBusy { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statDeactivateJogDyn { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool := TRUE;
+      statDisableAdditiveTorque { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statCtrlBusyInternalOld { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statNumberOfSamplesInternal { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : UInt;
+      statNumberOfSamplesOld { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : UInt;
+      statVeloUnit { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : UDInt;
+      statTorqueUnit { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : UDInt;
+      statControlMode { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Int;
+      statTypeOfWinder { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Int;
+      statFLineSpeed { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Int;
+      statFPIDTorque { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Int;
+      statFPIDSpeed { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Int;
+      statFOverride { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Int;
+      statActualTorque { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statWinderAxisIntoRPM { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statVelocityLUPerMin { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statWndrTotalTorque { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statTensionSpeedLUPerMin { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statVelocitySetpointOld { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statActShaftSpeed1PerMin { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 0.0;
+      statIntDiameter { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 1.0;
+      statCircumference { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 1.0;
+      statTensionSetpoint { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statDiameterPosition { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statUpperTorqueLimitTOUnit { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 1.0;
+      statLineVelocityInternalLUPerMin { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statLineAccelerationInternalLUPerS2 { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statDiameterVelocity { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statLowerTorqueLimitTOUnit { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 1.0;
+      statActDriveSpeed1PerMin { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 0.0;
+      statSetDriveSpeed1PerMin { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statSetShaftSpeed1PerMin { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statWindingShaftSpeedSetpointPreCtrl1PerMin { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statActSpeedOverride1PerMin { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statReferenceTorque { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statUpperTorqueLimitLimited { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statLowerTorqueLimiLimited { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statGearRatioInternal { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal := 1.0;   // (*c_00059*)
+      statConvTorqueUnitToTO { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statAddPos { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statCommandMoveVelocityTOUnit { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statReferenceVelocityTOUnit { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statVDiff { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statVsync { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statOverride { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statShaftFeedback { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statPIDActualValue { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;
+      statAxisDefaultAcc { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Real;
+      statAxisDefaultJerk { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Real;
+      statGearInternal { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'; S7_SetPoint := 'False'} : "LConSMC_typeLoadGear";
+      statWinderMV { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'; S7_SetPoint := 'False'} : "LConSMC_typeActualDynamics";
+      statTorqueValues { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'; S7_SetPoint := 'False'} : "LConSMC_typeTorqueValues";
+      statDynamicsInternalTOUnit { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'; S7_SetPoint := 'False'} : "LConSMC_typeInternalDynamics";
+      instEnableInterface { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'; S7_SetPoint := 'False'} : "LConSMC_EnableInterface";
+      instTPID { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'; S7_SetPoint := 'False'} : "LConSMC_TPID";
+      instTorquePrecontrol { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'; S7_SetPoint := 'False'} : "LConSMC_WITorquePrecontrol";
+      instLevelControl { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'; S7_SetPoint := 'False'} : "LConSMC_LevelControl";
+      instDiamCalc { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'; S7_SetPoint := 'False'} : "LConSMC_DiameterCalculation";
+      instIntAddVelo { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'; S7_SetPoint := 'False'} : "LConSMC_Integrator";
+      instMoveAvg { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'; S7_SetPoint := 'False'} : "LConSMC_MovAverage";
+      instSetAxisSTW { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : "LConSMC_SetAxisSTW";
+      instGetActualTension { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : "LConSMC_CalcActualTension";
+      instOverspeedMonitoring { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : "LConSMC_OverspeedDetection";
+   END_VAR
+
+   VAR_TEMP 
+      tempAxisStartupData : "LConSMC_typeAxisStartupData";
+      tempAxisCyclicData : "LConSMC_typeAxisCyclicData";
+   END_VAR
+
+   VAR CONSTANT 
+      PERCENT_SCALE : Real := 100.0;
+      INTEGRATION_LIMIT : LReal := 1000000000000.0;
+      NO_ERROR : DWord := 16#0000_0000;
+   END_VAR
+
+
+BEGIN
+	REGION BLOCK INFO HEADER
+	  //===============================================================================
+	  // SIEMENS AG / (c)Copyright 2023
+	  //-------------------------------------------------------------------------------
+	  // Title:            LConSMC_Winder
+	  // Comment/Function: This function block realizes the control of a winder drive with differen tension control modes (e.g. dancer, load cell, indirect)
+	  // Library/Family:   LConSMC
+	  // Author:           APC Erlangen
+	  // Tested with:      FW 2.8
+	  // Engineering:      TIA Portal V16
+	  // Restrictions:     Must be called in a cyclic OB (E.g. OB6x,OB3x)
+	  // Requirements:     -
+	  //-------------------------------------------------------------------------------
+	  // Change log table:
+	  // Version  | Date       | Expert in charge       | Changes applied
+	  //----------|------------|------------------------|------------------------------
+	  // 03.02.01 | 2024-02-27 | APC Erlangen           | New function: Monitoring of drive runaway for torque-controlled modes. In case of a dectection the torque pre-control of friction and acceleration is disabled and a warning 16#5105_4006 is generated (*c_00061*)
+	  //                                                  Bugfix: The external diameter value (typeOfDiameterCalc = 3), was only used if inputs speedMatch and ctrlEnable was TRUE but e.g., not for the jogging function (*c_00058*)
+	  //                                                  Bugfix: Under some conditions an invalid diameter value (division by zero) was calculated when setting the diameter value (*c_00059*)
+	  // 03.02.00 | 2023-09-18 | APC Erlangen           | Bugfix: Possible error during startup was overwritten (*c_00056*)
+	  //                                                  Under some conditions the calculation of the output signal "inSync" was incorrect (*c_00058*)
+	  //                                                | New control mode "Indirect tension control via speed setpoint adaption" (controlMode = 5) 
+	  // 03.01.00 | 2022-10-13 | APC Erlangen           | see LConSMC_aVersion V3.3.0                                                  
+	  // 03.00.02 | 2022-09-05 | APC Erlangen           | Bugfix calculating the output signal "inSync" 
+	  // 03.00.01 | 2022-04-27 | APC Erlangen           | Bugfix: For some conditions the output "error" was not set correct
+	  // 03.00.00 | 2022-01-11 | APC Erlangen           | Adaption of FB structure (Deleted FB for each axis type)
+	  //                                                  Error occured when using the winder with the TO setting "Use position values with higher resolution" enabled (*c_00044*)
+	  //                                                  New #errorID if the FB is enabled but the drive is disabled (#error = TRUE & #errorID = 5105_8010)
+	  // 02.00.03 | 2021-06-22 | APC Erlangen           | see LConSMC_aVersion
+	  // 02.00.02 | 2021-01-29 | APC Erlangen           | Changed input "axis" to from input paramter to InOut parameter
+	  // 02.00.01 | 2020-04-29 | APC Erlangen           | Bugfix: Parametrizable deceleration possible via new datatype for winderMotionVector (*c_00025*)
+	  //                                                  Bugfix: Webbreak: Relationfactor multiplied in Numerator not longer in Denumerator (*c_00027*)
+	  //                                                  Enhancement: New Warning "LCON_WARNING_MAXVELOCITY_EXCEEDED" to  determine if the
+	  //                                                  lineVelocity + additionalVvelocity is higher then the configurated maxVelocity (*c_00031*)
+	  // 02.00.00 | 2019-10-23 | APC Erlangen           | called via DB_Any
+	  //                                                  new diag structure
+	  //                                                  new in- and outputs
+	  //                                                  communication of torque data via TO and not applicative
+	  //                                                  Kp_Adaption as a seperate function block
+	  //                                                  drive commands not via LAxisCtrl, now internal
+	  //                                                  No UserMode. If needed, LAxisCtrl can be downloaded in SIOS
+	  //                                                  new dynamic structures
+	  //                                                  webbreak detection implemented
+	  //                                                  Bugfix: the set web tension is maintained at maximum speed
+	  // 01.00.01 | 2018-07-25 | APC Erlangen           | New function: Use speed sepoint/actual speed value for friction torque precontrol (*c_00008*)
+	  //                                                  Bugfix calculating actual velocity (*c_00010*)
+	  //                                                  Calc output "setdriveSpeed" on drive side (*c_00011*)
+	  //                                                  Deleted input "openBrake"
+	  // 01.00.00 | 2017-08-22 | APC Erlangen           | Creation
+	  //===============================================================================
+	END_REGION BLOCK INFO HEADER
+	
+	REGION DESCRIPTION
+	(/*
+	This function block utilizes the WITorquePrecontrol, DiamCalc and TechPID, as well as EnableInterface function blocks of the SIMATIC Converting library.
+	This function block checks for valid configuration data and calls the individual function blocks to minimize application development time.
+	With the *enable* set to true, a plausibility check is done on the configuration data and will display an error with corresponding errorId should invalid data be entered.
+	If the function block is enabled and there are no errors the state will be shown by the outputs *busy* and *active*. 
+	
+	NOTE
+	:    Enabling of the axis (MC_Power) is not part of the function block and must be done by the user program.
+	
+	---
+	
+	With the enables and the input *speedMatch* set true the winder will follow the sum of the lineVelocity and additionalVelocity.
+	Winders are typically made to follow the master without any ramps.
+	Winders with splice are an exception as they need to be able to be detached from the running machine and therefore have separate ramps.
+	The winder configuration offers different dynamic settings therefor. The programmer is responsible for proper interlocks to prevent unwanted behavior.
+	The *operationDynamics* must be configured correctly so that the winder can follow the master.
+	
+	The configuration data has diameter calculation parameters, gear ratio and line speed parameters which are utilized to calculate the correct surface
+	velocity of the winder to match the section to the master line velocity.
+	The actual diameter of the winder can either be calculated using different calculation modes or can also be supplied from an external source using the
+	configuration structure of the function block.
+	The configuration data also has parameters for torque precontrol. Torque precontrol is necessary for torque-based tension control modes and is
+	optional for speed-based tension control modes. 
+	With the *enable*, *speedMatch* set to true and *Cntrlenable* then the CntrlSetpoint will be ramped up based on configuration data.
+	The Tension controller correction value will be added to the total speed setpoint or additional torque, scaled and sent to the drive using the telegram extension as required.
+	Function block output and diagnostic parameters allow the user to view the most important variables calculated within the winder function block (diameter, torque/speed setpoints etc.)
+	
+	The winder function block offers some additional functionality next to the winding function e.g., for winders with splicing functionality:
+	
+	#### Jogging
+	
+	The winder can be jogged with respect to the current diameter via the inputs *jogPos* and *jogNeg*. Therefor some conditions/ limitations must be considered:
+	
+	* Winder axis must be enabled (Not part of the winder function block)
+	* Dynamics can be parametrized via the winder configuration (*winderConfig.winderDynamics.jogDynamics*)
+	* Both inputs *speedMatch* and *ctrlEnable* must be FALSE
+	* Diameter calculation is not running
+	
+	#### Synchronizing/Stopping
+	
+	If the winder should be synchronized to a moving line (e.g. in case of a splice) the winder can be accelerated to the line speed
+	setpoint via the synchronization dynamics (*winderConfig.winderDynamics.syncDynamics*).
+	If the winder axis and the winder function block is enabled the winder can by synchronized to line speed via the input *speedMatch* = TRUE.
+	If the winder is in synchronism with the line speed the output *inSync* will become true.
+	If the winder should be stopped, without ramping the line speed setpoint to zero, the *speedMatch* input can be set to FALSE.
+	By this the internal setpoint will be ramped to zero, using the configured stop dynamics (*winderConfig.winderDynamics.stopDynamics*). 
+	The output *inSync* is only calculated during the synchronization process.
+	If the tension control and thus the "operationDynamics" is active, inSync is set to TRUE.
+	If the winder axis is un-synchronized, stopped, or mistyped, inSync = FALSE is set.
+	For this reason, it is necessary that the operationDynamics are configured high enough so that the winder axis can follow the master axis.
+	
+	---
+	
+	![Winder Synchronism](Winder_InSync.png)
+	
+	---
+	
+	+-----+--------------------------------------------------------------------------------------------------+
+	|State| Description                                                                                      |
+	+=====+==================================================================================================+
+	|1.   |The winder function block is enabled (enable= TRUE). If no error within the input and configuration parameter is detected and the interface has been enabled successfully (MoveVelocity, TorqueLimit, Additive torque) the ouput active will become TRUE.
+	+-----+--------------------------------------------------------------------------------------------------+
+	|2.   |With the inputs jogPos and jogNeg the winder can be jogged with respect to the current diameter (winderConfig.winderDynamics.jogDynamics). To use the jogging the inputs speedMatch and ctrlEnable must be FALSE. With jogPos = TRUE the winder will accelerate up to positive jogging velocity.
+	+-----+--------------------------------------------------------------------------------------------------+
+	|3.   |If both inputs jogPos and jogNeg are set to TRUE, the velocity setpoint will be zero. If the winder is already running it will be ramped down to zero via the jog dynamics. With jogNeg = TRUE and jogPos = FALSE the winder will run with negative jog velocity.
+	+-----+--------------------------------------------------------------------------------------------------+
+	|4.   |Setting the jog input to FALSE will ramp down the internal velocity setpoint with the jog dynamics.
+	+-----+--------------------------------------------------------------------------------------------------+
+	|5.   |By switching the input speedMatch = TRUE the winder will synchronize up to line speed via the configured synchronization dynamics (winderConfig.winderDynamics.syncDynamics). 
+	+-----+--------------------------------------------------------------------------------------------------+
+	|6.   |If the winder is in synchronism with the line speed the output inSync will become TRUE. If the line speed setpoint is zero, the inSync will become immediately TRUE with the rising edge of the speedMatch input.
+	+-----+--------------------------------------------------------------------------------------------------+
+	|7.   |Setting the speedMatch = FALSE with a line speed setpoint unequal to zero the winder will be decelerated to zero using the configured stop dynamics (winderConfig.winderDynamics.stopDynamics).
+	+-----+--------------------------------------------------------------------------------------------------+
+	
+	#### Overview of the dynamics
+	
+	In following table, you can see an overview of the resulting dynamics and velocity this FB will use.
+	The variables with "x" can be “true” or “false”, the resulting dynamics and velocity will be the same.  
+	  
+	
+	+------+----------+----------+-------+-------------+---------------------------------+
+	|Enable|SpeedMatch|CtrlEnable|JogPos/|Resulting    |Resulting                        |
+	|      |          |          |JogNeg |dynamics     |velocity                         |
+	+======+==========+==========+=======+=============+=================================+
+	|0     |x         |x         |x      |stop         |0
+	+------+----------+----------+-------+-------------+---------------------------------+
+	|1     |0         |0         |0      |stop         |0, because of TPID is not active, so tensionspeed = 0
+	+------+----------+----------+-------+-------------+---------------------------------+
+	|1     |1         |0         |0      |sync         |line + add + tension
+	+------+----------+----------+-------+-------------+---------------------------------+
+	|1     |0         |1         |0      |stop         |tension
+	+------+----------+----------+-------+-------------+---------------------------------+
+	|1     |1         |1         |0      |operation    |line + add + tension
+	+------+----------+----------+-------+-------------+---------------------------------+
+	|1     |0         |0         |1      |jog          |jog
+	+------+----------+----------+-------+-------------+---------------------------------+
+	|x     |x         |x         |1      |not possible!|not possible!
+	+------+----------+----------+-------+-------------+---------------------------------+
+	
+	#### Web break detection
+	
+	The integrated web break detection monitors the actual value of the technology controller (input value actValuePID)
+	or in case of indirect tension control the actual torque – depending on the configured control mode.
+	The monitoring consists of limits and the following switch-on delay. By the limits a lower and an upper error limit is described.
+	
+	NOTE
+	:    With controlMode = 4 (V_CONSTANT) no web break detection is possible
+	
+	---
+	
+	The web break detection is activated via the variable *enableDetection* in of the structure *winderConfig.webbreakDetectionConfig*.
+	In addition a velocity threshold (for line axis speed) can be defined by the variable *winderConfig.webbreakDetectionConfig.minLineVelocity*,
+	that activates the monitoring. The active monitoring is displayed using the *winderDiag.webbreakDiag.webbreakDetectionActive* feedback signal.
+	The actual value is provided for the FB in the input variable *cntrlActual*, for indirect tension control the actual torque is determined from the axis object itself.
+	The limits are adjusted via the parameters *lowerLimitError*, and *upperLimitError* in the structure *winderConfig.webbreakDetectionConfig*.
+	In addition, the output *webBreak* is set at the FB when crossing an error limit.
+	The response time of the feedback signals is parameterized using the delayTime response time.
+	
+	
+	NOTE
+	:    Internally, the signal deactivates the technology controller (except for indirect tension control); all other responses to the web break detection must be programmed in the user program.
+	
+	---
+	
+	In case of indirect tension control the difference between the setpoint and actual torque is evaluated. The difference is interpreted as a percentage value of the reference torque value.
+	Therefore the limit values are also defined in percentage of the reference torque.
+	
+	$ errorSignal = \frac{ABS(torqueSetpoint - torqueActual)}{torqueNominal}\ \cdot 100\% $
+	
+	![Web break detection](WebBreakDetection.png)
+	
+	#### External setpoint connection
+	
+	During normal operation the winder function block forwards the calculated velocity/ torque setpoints internally to the connected technology object automatically.
+	If the function block should just be used as a setpoint generation without forwarding the setpoints to the technology object, the axis control must be disabled
+	by setting *winderConfig.axisCtrl* = FALSE (e.g., when using the print standard library to forward the setpoints).  
+	In that case the winder diagnostic structure offers the following parameters to externally control the winder axis:  
+	
+	* winderDiag.referenceVelocity [TO unit]
+	* winderDiag.diameterFactor [0-200%]
+	
+	The effective velocity setpoint can be calculated according to the following formular:
+	
+	$ velocitySetpoint = referenceVelocity \cdot \frac{diameterFactor}{100.0}\ $
+	  
+	  
+	
+	There are three possibilities to forward the velocity setpoint to an axis:
+	  
+	
+	1. Via MC_MotionInVelocity
+	
+	The velocity setpoint is directly forwarded to the axis via the user setpoint interface 
+	
+	---
+	
+	NOTICE
+	:    **Dynamic limitations**
+	:    The velocity setpoint contains no dynamic limitation (= ramping). The setpoints will directly follow the leading value (input lineAxisMotionVector) of the winder.
+	This solution is not suitable if the winder needs to synchronize to a moving web (e.g., flying splice)
+	
+	---
+	
+	2. Using the velocity override of the technology object
+	
+	The TO offers the functionality to scale an active MC_MoveVelocity command in the range between 0 – 200% using the variable <TO>.Override.Velocity.
+	In that case the effective velocity of an axis can be adjusted without triggering a new motion command.
+	Additionally, the used dynamic limitations of the motion command are considered. The following figure shows an example how to realize this function:
+	
+	* **Network 2**: Cyclic copy of the diameterFactor to the velocity override parameter of the technology object
+	* **Network 3**: Trigger MC_MoveVelocity command if the referenceVelocity changes. Additional dynamics can be added to the motion command which are considered.
+	
+	---
+	
+	![External Setpoint](ExternalSpeedSetpoint.png)
+	
+	---
+	
+	The torque limits and additive torque value is provided in the diagnostic parameters:  
+	  
+	* winderDiag.torquePreControlDiag.upperTorqueLimit
+	* winderDiag.torquePreControlDiag.lowerTorqueLimit
+	* winderDiag.torquePreControlDiag.totalTorquePreControl  
+	  
+	They can be sent to the drive using the motion control commands MC_TorqueRange and MC_AdditiveTorque.  
+	  
+	
+	3. Using the library function block LConSMC_EnableInterface
+	
+	See function block description.
+	
+	#### Winder operating modes
+	
+	![Winding mode](WinderOperationModes.png)
+	
+	*/)
+	END_REGION DESCRIPTION
+	
+	//----------------------------------------------------------------------------------------------------------------------
+	//-                                              Start Winder                                                          -
+	//----------------------------------------------------------------------------------------------------------------------
+	REGION Start Winder
+	  IF #enable AND NOT #statEnableOld THEN
+	    #tempAxisStartupData := "LConSMC_GetAxisStartupData"(axis := #winderAxis, getAxisConfigAtStart := #winderConfig.getAxisConfigAtStart);
+	    #winderDiag.typeOfAxis := #tempAxisStartupData.typeOfAxis;
+	    #winderDiag.diameterFactor := 100.0;
+	    #winderDiag.referenceVelocity := 0.0;
+	    IF #winderDiag.typeOfAxis = "LCON_INVALID_AXIS_TYPE" THEN
+	      #statStartupError := TRUE;
+	      #statError := TRUE;
+	      #error := TRUE;
+	      #errorID := "LCON_ERROR_WINDER_INVALID_TYPE_OF_AXIS";
+	      RETURN;
+	    ELSIF #winderDiag.typeOfAxis = "LCON_SPEED_AXIS_TYPE"
+	      AND #typeOfDiameterCalc = "LCON_DIAM_CALC_MODE_POSITION"
+	    THEN
+	      #statStartupError := TRUE;
+	      #statError := TRUE;
+	      #error := TRUE;
+	      #errorID := "LCON_ERROR_WINDER_INVALID_DIAMETER_MODE";
+	      RETURN;
+	    ELSIF NOT #tempAxisStartupData.inOperation THEN
+	      #statStartupError := TRUE;
+	      #statError := TRUE;
+	      #error := TRUE;
+	      #errorID := "LCON_ERROR_WINDER_DRIVE_NOT_ENABLED";
+	      RETURN;
+	    END_IF;
+	    IF #winderConfig.getAxisConfigAtStart THEN
+	      IF #tempAxisStartupData.communicationOK
+	        AND (#tempAxisStartupData.adaptionState = 2  // ADAPTED
+	        OR #tempAxisStartupData.adaptionState = 3)   // NOT APPLICABLE
+	      THEN
+	        #statReferenceTorque := #tempAxisStartupData.referenceTorque;
+	        #statGearInternal.numerator := #tempAxisStartupData.loadGear.numerator;
+	        #statGearInternal.denominator := #tempAxisStartupData.loadGear.denominator;
+	        #statVeloUnit := #tempAxisStartupData.velocityUnit;
+	        #statTorqueUnit := #tempAxisStartupData.torqueUnit;
+	      ELSIF #tempAxisStartupData.adaptionState = 4 THEN  //APDATION_ERROR
+	        #statStartupError := TRUE;
+	        #statError := TRUE;
+	        #error := TRUE;
+	        #errorID := "LCON_ERROR_WINDER_DATA_ADAPTION";
+	        RETURN;
+	      ELSE
+	        RETURN;
+	      END_IF;
+	    ELSE
+	      #statReferenceTorque := #winderConfig.torquePrecontrolConfig.referenceTorque;
+	      #statGearInternal.numerator := #winderConfig.torquePrecontrolConfig.loadGear.numerator;
+	      #statGearInternal.denominator := #winderConfig.torquePrecontrolConfig.loadGear.denominator;
+	      #statVeloUnit := #winderConfig.unitConfiguration.axisVelocityUnit;
+	      #statTorqueUnit := #winderConfig.unitConfiguration.axisTorqueUnit;
+	    END_IF;
+	    #statTel750Active := #tempAxisStartupData.torqueDataEnabled;
+	    #statAxisDefaultAcc := LREAL_TO_REAL(#tempAxisStartupData.axisDefaultAcceleration);
+	    #statAxisDefaultJerk := LREAL_TO_REAL(#tempAxisStartupData.axisDefaultJerk);
+	    #winderDiag.torquePreControlDiag.referenceTorque := #statReferenceTorque;
+	    #winderDiag.torquePreControlDiag.loadGear := #statGearInternal;
+	    #statGearRatioInternal := UDINT_TO_LREAL(#statGearInternal.numerator) / UDINT_TO_LREAL(#statGearInternal.denominator); (*c_00020*)
+	    
+	    #statStartupError := FALSE;
+	    #statError := FALSE;
+	    #errorID := #NO_ERROR;
+	    #statControlMode := #controlMode;
+	    #statTypeOfWinder := #typeOfWinder;
+	    #statWinderAxisCtrl := #winderConfig.axisCtrl;
+	    #statWinderMV.s := 0.0;
+	    #statWinderMV.v := 0.0;
+	    #statWinderMV.a := 0.0;
+	    #statWinderMV.d := 0.0; (*c_00029*)
+	    #statVDiff := 0.0;
+	    #statVsync := 0.0;
+	    #statVelocitySetpointOld := 0.0;
+	    #statActive := FALSE;
+	    #statBusy := FALSE;
+	    #active := FALSE;
+	    IF #tCycle = 0.0 THEN
+	      #statStartupError := TRUE;
+	      #error := TRUE;
+	      #errorID := "LCON_ERROR_WINDER_INVALID_CYCLE_TIME";
+	      RETURN;
+	    ELSE
+	      "LConSMC_SetUnits"(lengthUnit            := 0,            // Only relevant for sectional drives --> No linear axis allowed for winder drives
+	                         velocityUnit          := #statVeloUnit,
+	                         unitForSectionalDrive := FALSE,
+	                         leadScrew             := 0.0,          // Only relevant for sectional drives --> No linear axis allowed for winder drives
+	                         axisVeloIntoRPM       => #statWinderAxisIntoRPM,
+	                         error                 => #statStartupError);
+	      #statConvTorqueUnitToTO := "LConSMC_TorqueConverter"(torqueUnitInput := SEL(G := #winderConfig.unitConfiguration.metricUnits, IN0 := 1530, IN1 := 1126)
+	                                                           , torqueUnitOutput := #statTorqueUnit);
+	      #statStartupError :=
+	      #statStartupError
+	      OR #statControlMode < 0
+	      OR #statControlMode > 5
+	      OR #statTypeOfWinder < 0
+	      OR #statTypeOfWinder > 3
+	      OR #typeOfDiameterCalc < 0
+	      OR #typeOfDiameterCalc > 5
+	      OR #winderConfig.diamConfig.minDia = 0.0
+	      OR #winderConfig.diamConfig.maxDia = 0.0
+	      OR #winderConfig.diamConfig.minDia >= #winderConfig.diamConfig.maxDia
+	      OR #statGearRatioInternal = 0.0;
+	    END_IF;
+	    REGION Windertype dependent calculation
+	      // Define signs
+	      IF #statTypeOfWinder = "LCON_TYPE_OF_WINDER_REWIND_FROM_ABOVE" THEN
+	        #statTorqueLimitUpperActive := TRUE;
+	        #statTorqueLimitLowerActive := FALSE;
+	        #statFPIDTorque := 1;
+	        #statFOverride := 1;
+	        #statFPIDSpeed := 1;
+	        #statFLineSpeed := 1;
+	      ELSIF #statTypeOfWinder = "LCON_TYPE_OF_WINDER_REWIND_FROM_BELOW" THEN
+	        #statTorqueLimitUpperActive := FALSE;
+	        #statTorqueLimitLowerActive := TRUE;
+	        #statFPIDTorque := +1; // Inverted in WITorquePrecontrol
+	        #statFOverride := -1;
+	        #statFPIDSpeed := -1;
+	        #statFLineSpeed := -1;
+	      ELSIF #statTypeOfWinder = "LCON_TYPE_OF_WINDER_UNWIND_FROM_ABOVE" THEN
+	        #statTorqueLimitUpperActive := FALSE;
+	        #statTorqueLimitLowerActive := TRUE;
+	        #statFPIDTorque := +1; // Inverted in WITorquePrecontrol
+	        #statFOverride := -1;
+	        #statFPIDSpeed := -1;
+	        #statFLineSpeed := +1;
+	      ELSE // mytypeOfWinder = UNWIND_FROM_BELOW THEN
+	        #statTorqueLimitUpperActive := TRUE;
+	        #statTorqueLimitLowerActive := FALSE;
+	        #statFPIDTorque := +1;
+	        #statFOverride := +1;
+	        #statFPIDSpeed := +1;
+	        #statFLineSpeed := -1;
+	      END_IF;
+	    END_REGION
+	    REGION Control mode dependent calculation
+	      // Set options
+	      IF #statControlMode = "LCON_CONTROL_MODE_DANCER_SPEED"
+	        OR #statControlMode = "LCON_CONTROL_MODE_TENSION_SPEED"
+	        OR #statControlMode = "LCON_CONTROL_MODE_INDIRECT_TENSION_SPEED_ADAPT"
+	      THEN // no torque limits, no override
+	        #statTorqueLimitUpperActive := FALSE;
+	        #statTorqueLimitLowerActive := FALSE;
+	        #statFOverride := 0;
+	        #statFPIDTorque := 0;
+	      ELSIF #statControlMode = "LCON_CONTROL_MODE_TENSION_TORQUE" THEN
+	        #statStartupError := #statStartupError OR NOT #statTel750Active; // (*c_00057*)
+	        #statFPIDSpeed := 0;
+	      ELSIF #statControlMode = "LCON_CONTROL_MODE_V_CONSTANT"
+	      THEN // no torque limits, no override
+	        #statTorqueLimitUpperActive := FALSE;
+	        #statTorqueLimitLowerActive := FALSE;
+	        #statFOverride := 0;
+	        #statFPIDTorque := 0;
+	        #statFPIDSpeed := 0;
+	      ELSE // INDIRECT, no PID
+	        #statStartupError := #statStartupError OR NOT #statTel750Active; // (*c_00057*)
+	        #statFPIDSpeed := 0;
+	        #statFPIDTorque := 0;
+	      END_IF;
+	    END_REGION
+	    IF #statStartupError THEN
+	      #error := TRUE;
+	      #errorID := "LCON_ERROR_WINDER_INVALID_CONFIGURATION";
+	      RETURN;
+	    END_IF;
+	    
+	    IF #statControlMode = "LCON_CONTROL_MODE_DANCER_SPEED" THEN
+	      #statDancerControl := TRUE;
+	    ELSE
+	      #statDancerControl := FALSE;
+	    END_IF;
+	    //for lower cyclic load
+	    #statEnableOld := #enable;
+	    RETURN;
+	  END_IF;
+	  #statEnableOld := #enable;
+	END_REGION
+	//----------------------------------------------------------------------------------------------------------------------
+	//-                                      Calculate input parameters                                                    -
+	//----------------------------------------------------------------------------------------------------------------------
+	REGION Calculate input parameters  
+	  #tempAxisCyclicData := "LConSMC_GetAxisDataCyclic"(axis := #winderAxis);
+	  #statActDriveSpeed1PerMin := #tempAxisCyclicData.actualSpeed;                                      //  [1/min] Drive side
+	  #statActShaftSpeed1PerMin := LREAL_TO_REAL(#statActDriveSpeed1PerMin / #statGearRatioInternal);    //  [1/min] Load side
+	  #statSetShaftSpeed1PerMin := #tempAxisCyclicData.velocity * #statWinderAxisIntoRPM;                //  [1/min] Load side 
+	  #statSetDriveSpeed1PerMin := #statSetShaftSpeed1PerMin * #statGearRatioInternal;                   //  [1/min] Drive side;
+	  #statActualTorque := #tempAxisCyclicData.actualTorque;                                     //  [Nm] Drive actual torque
+	  #statShaftFeedback := #tempAxisCyclicData.actualPosition;                                   //  [°] Actual position on load side
+	END_REGION
+	//----------------------------------------------------------------------------------------------------------------------
+	//-                                          Diameter calculation                                                      -
+	//----------------------------------------------------------------------------------------------------------------------
+	REGION Diameter Calculation
+	  IF #typeOfDiameterCalc = "LCON_DIAM_CALC_MODE_POSITION" THEN
+	    #instIntAddVelo(set          := #winderDiag.diamCalcDiag.diamIsHold OR NOT #enable OR NOT #instDiamCalc.busy,
+	                    x            := #additionalVelocity / 60.0,
+	                    setValue     := 0.0,
+	                    upperLimit   := #INTEGRATION_LIMIT,
+	                    lowerLimit   := - #INTEGRATION_LIMIT,
+	                    integralTime := 1000.0,
+	                    tCycle       := #tCycle);
+	  ELSE
+	    #instIntAddVelo(set          := TRUE,
+	                    x            := 0.0,
+	                    setValue     := 0.0,
+	                    upperLimit   := #INTEGRATION_LIMIT,
+	                    lowerLimit   := - #INTEGRATION_LIMIT,
+	                    integralTime := 1000.0,
+	                    tCycle       := #tCycle);
+	  END_IF;
+	  #statAddPos := #instIntAddVelo.y;
+	  IF #statControlMode = "LCON_CONTROL_MODE_V_CONSTANT"
+	    OR #winderConfig.diamConfig.useLineAxisActualValues
+	  THEN
+	    #statDiameterVelocity := #lineAxisActualValues.v + #additionalVelocity;
+	    #statDiameterPosition := #lineAxisActualValues.s + #statAddPos;
+	  ELSE
+	    #statDiameterVelocity := #lineAxisMotionVector.v + #additionalVelocity;
+	    #statDiameterPosition := #lineAxisMotionVector.s + #statAddPos;
+	  END_IF;
+	  #statDiameterPosition := "LConSMC_ModuloIEC"(value := #statDiameterPosition,
+	                                               moduloValue := #winderConfig.diamConfig.lineModLength);
+	  #statDiameterVelocity *= #statFLineSpeed;
+	  #winderDiag.diamCalcDiag.calculatedWebThickness := 0.0;
+	    
+	  #instDiamCalc(enable               := #enable OR #setDiameter,                    //  (*c_00043*) Possible to set new diameter value if winder FB is disabled
+	                holdDiameter         := #holdDiameter
+	                OR (((NOT #instTPID.busy AND NOT (#statControlMode = "LCON_CONTROL_MODE_V_CONSTANT"))
+	                OR NOT #speedMatch) AND NOT (#typeOfDiameterCalc = "LCON_DIAM_CALC_MODE_EXTERNAL")),    // (*c_00058*)
+	                metricUnits          := #winderConfig.unitConfiguration.metricUnits,
+	                setDiameter          := #setDiameter,
+	                lineFeedback         := #statDiameterPosition,
+	                lineVelocity         := #statDiameterVelocity,
+	                windingShaftFeedback := #statShaftFeedback,
+	                shaftSpeed           := #statActShaftSpeed1PerMin,
+	                selectDiamMode       := #typeOfDiameterCalc,
+	                typeOfWinder         := #statTypeOfWinder,
+	                tCycle               := #tCycle,
+	                diameter             := #diameter,
+	                diamConfig           := #winderConfig.diamConfig);
+	  
+	  #winderDiag.diamCalcDiag.calculatedWebThickness := #instDiamCalc.calculatedWebThickness;
+	  #winderDiag.diamCalcDiag.atMinDia := #instDiamCalc.atMinDia;
+	  #winderDiag.diamCalcDiag.atMaxDia := #instDiamCalc.atMaxDia;
+	  #winderDiag.diamCalcDiag.diamIsHold := #instDiamCalc.diamIsHold;
+	END_REGION
+	//----------------------------------------------------------------------------------------------------------------------
+	//-                                               Webbreak Detection                                                    -
+	//----------------------------------------------------------------------------------------------------------------------
+	REGION Webbreak
+	  #statEnableWebBreakDetection := #statActive
+	  AND #winderConfig.webbreakDetectionConfig.enableDetection
+	  AND ABS(#lineAxisMotionVector.v) > #winderConfig.webbreakDetectionConfig.minLineVelocity
+	  AND NOT (#statControlMode = "LCON_CONTROL_MODE_V_CONSTANT");
+	  
+	  IF #statEnableWebBreakDetection
+	    OR (NOT #statEnableWebBreakDetection AND #statEnableWebBreakDetectionOld)
+	  THEN
+	    #instLevelControl(run         := #statEnableWebBreakDetection,
+	                      x           := SEL(G := #statControlMode = "LCON_CONTROL_MODE_INDIRECT_TENSION",
+	                                         IN0 := #CntrlActual,
+	                                         IN1 := (#winderDiag.torquePreControlDiag.totalTorquePreControl - #statActualTorque) / LREAL_TO_REAL(#statReferenceTorque) * 100.0), (*c_00027*)
+	                      alarmHigh   := #winderConfig.webbreakDetectionConfig.upperLimitError,
+	                      warningHigh := 0.0,
+	                      warningLow  := 0.0,
+	                      alarmLow    := #winderConfig.webbreakDetectionConfig.lowerLimitError,
+	                      hyst        := 0.0,
+	                      delayTime   := #winderConfig.webbreakDetectionConfig.delayTime);
+	    
+	    #winderDiag.webbreakDiag.webBreak := #instLevelControl.alarmUpperLimit OR #instLevelControl.alarmLowerLimit;
+	  ELSE
+	    #winderDiag.webbreakDiag.webBreak := FALSE;
+	  END_IF;
+	  #statEnableWebBreakDetectionOld := #statEnableWebBreakDetection;
+	  #winderDiag.webbreakDiag.webbreakDetectionActive := #statEnableWebBreakDetection;
+	END_REGION ;
+	//----------------------------------------------------------------------------------------------------------------------
+	//-                                               Call TechPID                                                         -
+	//----------------------------------------------------------------------------------------------------------------------
+	REGION TechPID
+	  //scale the percent torque into a real setpoint value
+	  IF #winderConfig.technologyControllerConfig.tensionReference <= 0.0 THEN
+	    #statTensionSetpoint := #CntrlSetpoint;
+	  ELSE
+	    #statTensionSetpoint := #CntrlSetpoint / #PERCENT_SCALE * #winderConfig.technologyControllerConfig.tensionReference;
+	  END_IF;
+	  // Define sign of tension torque
+	  IF #statTypeOfWinder = "LCON_TYPE_OF_WINDER_REWIND_FROM_ABOVE"
+	    OR #statTypeOfWinder = "LCON_TYPE_OF_WINDER_UNWIND_FROM_BELOW"
+	  THEN
+	    // Positive torque is used to generate web tension
+	    #instGetActualTension.positiveTensionTorque := TRUE;
+	  ELSE
+	    // Negative torque is used to generate web tension
+	    #instGetActualTension.positiveTensionTorque := FALSE;
+	  END_IF;
+	  // Calculate actual tension from actual torque value
+	  // It is necessary that the acceleration torque and friction torque is precontrolled
+	  #instGetActualTension(enable                := #statControlMode = "LCON_CONTROL_MODE_INDIRECT_TENSION_SPEED_ADAPT" AND #statActive,
+	                        preCtrlMotor          := #instTorquePrecontrol.preCtrlMotor,
+	                        diameter              := #diameter,
+	                        actualTorque          := #statActualTorque,
+	                        gearRatio             := #statGearRatioInternal);
+	  
+	  // Forward PID actual value 
+	  IF #statControlMode = "LCON_CONTROL_MODE_INDIRECT_TENSION" THEN
+	    #statPIDActualValue := 0.0;
+	  ELSIF #statControlMode = "LCON_CONTROL_MODE_INDIRECT_TENSION_SPEED_ADAPT" THEN
+	    #statPIDActualValue := #instGetActualTension.tensionActual;
+	  ELSE
+	    #statPIDActualValue := #CntrlActual;
+	  END_IF;
+	  #instTPID(
+	            enable          := (#statActive AND #cntrlEnable AND (NOT #winderDiag.webbreakDiag.webBreak OR #statControlMode = "LCON_CONTROL_MODE_INDIRECT_TENSION") AND NOT (#statControlMode = "LCON_CONTROL_MODE_V_CONSTANT") AND NOT #statJogWinder), // #v
+	            openLoopCtrl    := #statControlMode = "LCON_CONTROL_MODE_INDIRECT_TENSION",
+	            setpointValue   := SEL(G := #statDancerControl, IN0 := #statTensionSetpoint, IN1 := #CntrlSetpoint),
+	            actualValue     := #statPIDActualValue,
+	            preControl      := 0.0,
+	            adaptionValue   := #winderConfig.technologyControllerConfig.KpAdaptionValue,
+	            holdIntChannel  := #winderConfig.technologyControllerConfig.holdIntChannel,
+	            setIntChannel   := #winderConfig.technologyControllerConfig.setIntChannel,
+	            x1              := #winderConfig.technologyControllerConfig.x1,
+	            Kp1             := #winderConfig.technologyControllerConfig.Kp1,
+	            x2              := #winderConfig.technologyControllerConfig.x2,
+	            Kp2             := #winderConfig.technologyControllerConfig.Kp2,
+	            limRampTime     := #winderConfig.technologyControllerConfig.limRampTime,
+	            setNominalValue := #winderConfig.technologyControllerConfig.setNominalValue,
+	            setRampTime     := #winderConfig.technologyControllerConfig.setRampTime,
+	            integTime       := #winderConfig.technologyControllerConfig.integTime,
+	            derivTime       := #winderConfig.technologyControllerConfig.derivTime,
+	            filterTime      := #winderConfig.technologyControllerConfig.filterTime,
+	            intSetValue     := #winderConfig.technologyControllerConfig.intSetValue,
+	            controlMode     := #winderConfig.technologyControllerConfig.derivControlMode,
+	            deadBand        := #winderConfig.technologyControllerConfig.deadBand,
+	            outValueFactor  := #winderConfig.technologyControllerConfig.outValueFactor,
+	            upperLimit      := #winderConfig.technologyControllerConfig.upperLimit,
+	            lowerLimit      := #winderConfig.technologyControllerConfig.lowerLimit,
+	            tCycle          := #tCycle);
+	  
+	  #winderDiag.technologyControllerDiag.pidUpperLimitReached := #instTPID.upperLimReached;
+	  #winderDiag.technologyControllerDiag.pidLowerLimitReached := #instTPID.lowerLimReached;
+	  #winderDiag.technologyControllerDiag.pidRFGSetpointReached := #instTPID.RFGSetpointReached;
+	  #winderDiag.technologyControllerDiag.pidoutValue := #instTPID.outValue;
+	  #winderDiag.technologyControllerDiag.pidEffectiveKp := #instTPID.effectiveKp;
+	  //#ctrlBusy := #instTPID.busy;
+	  
+	  IF #instTPID.busy THEN
+	    #statTensionSpeedLUPerMin := #winderConfig.overrideVelocity * #statFOverride + #instTPID.outValue * #statFPIDSpeed;
+	  ELSE
+	    #statTensionSpeedLUPerMin := 0.0;
+	  END_IF;
+	  
+	  
+	  REGION Calculate circumference
+	    IF NOT #winderConfig.unitConfiguration.metricUnits THEN
+	      IF (#diameter <= 0) THEN                                                // Check diameter Value
+	        #statIntDiameter := LREAL_TO_REAL(0.31831) * 12.0;                    // [inch] Setpoint will be in RPM
+	      ELSE
+	        #statIntDiameter := #diameter;                                        // [inch]
+	      END_IF;
+	      //Speed in FPM AND diameter in Inches convert TO motor RPM 
+	      #statCircumference := #statIntDiameter * "LCON_PI" / 12.0;                    // [Feet]
+	    ELSE
+	      IF (#diameter <= 0) THEN                                                // Check diameter Value
+	        #statIntDiameter := 0.31831;                                          //Setpoint will be in RPM
+	      ELSE
+	        #statIntDiameter := #diameter;                                        // [m]
+	      END_IF;
+	      // Speed in MPM AND diameter in meters convert TO motor RPM
+	      #statCircumference := #statIntDiameter * "LCON_PI";                           // [m]
+	    END_IF;
+	  END_REGION
+	END_REGION
+	//----------------------------------------------------------------------------------------------------------------------
+	//-                                         Calculate speed setpoint                                                   -
+	//----------------------------------------------------------------------------------------------------------------------
+	REGION Calculate Speed Setpoint
+	  // Addition setpoint velocity
+	  #statLineVelocityInternalLUPerMin := #lineAxisMotionVector.v;
+	  #statLineAccelerationInternalLUPerS2 := #lineAxisMotionVector.a;
+	  #statJogWinder := ((((#jogPos AND NOT #jogNeg) OR (#jogNeg AND NOT #jogPos)) AND NOT #speedMatch AND NOT #cntrlEnable)) AND #enable;
+	  // Add Speed Setpoints
+	  IF #statDeactivateJogDyn = FALSE THEN
+	    IF NOT #jogPos AND NOT #jogNeg THEN //jog was active bevore and it should decelerate
+	      #statVelocityLUPerMin := 0.0;
+	    END_IF;
+	    //Window for standstill
+	    IF #statSetShaftSpeed1PerMin = 0.0 THEN // set other dynamics only if axis is in standstill
+	      #statDeactivateJogDyn := TRUE; //in next cycle new dynamics can be set
+	    END_IF;
+	  END_IF;
+	  IF #statDeactivateJogDyn = TRUE THEN //if JOG was active before, then no other dynamics should be written until axis has not stopped
+	    IF #enable AND #speedMatch AND #cntrlEnable AND NOT #statJogWinder THEN
+	      #statDynamicsInternalTOUnit.abortAcceleration := FALSE;
+	      #statDynamicsInternalTOUnit.acceleration := SEL(G := #winderConfig.winderDynamics.operationDynamics.acceleration < 0.0, IN0 := #winderConfig.winderDynamics.operationDynamics.acceleration, IN1 := #statAxisDefaultAcc);(*c_00059*)
+	      #statDynamicsInternalTOUnit.deceleration := #winderConfig.winderDynamics.operationDynamics.deceleration;
+	      #statDynamicsInternalTOUnit.jerk := SEL(G := #winderConfig.winderDynamics.operationDynamics.jerk < 0.0, IN0 := #winderConfig.winderDynamics.operationDynamics.jerk, IN1 := #statAxisDefaultJerk); (*c_00059*)
+	      #statVelocityLUPerMin := LIMIT(MN := - #winderConfig.maxVelocity, IN := #statFLineSpeed * (#statLineVelocityInternalLUPerMin + #additionalVelocity), MX := #winderConfig.maxVelocity);    // linespeed without tensionspeed (*c_00039*)
+	      #statInSync := TRUE;
+	    ELSIF #enable AND #speedMatch AND NOT #statJogWinder THEN
+	      #statDynamicsInternalTOUnit.abortAcceleration := #winderConfig.winderDynamics.syncDynamics.abortAcceleration;
+	      #statDynamicsInternalTOUnit.acceleration := SEL(G := #winderConfig.winderDynamics.syncDynamics.acceleration < 0.0, IN0 := #winderConfig.winderDynamics.syncDynamics.acceleration, IN1 := #statAxisDefaultAcc);
+	      #statDynamicsInternalTOUnit.deceleration := #winderConfig.winderDynamics.syncDynamics.deceleration;
+	      #statDynamicsInternalTOUnit.jerk := SEL(G := #winderConfig.winderDynamics.syncDynamics.jerk < 0.0, IN0 := #winderConfig.winderDynamics.syncDynamics.jerk, IN1 := #statAxisDefaultJerk);
+	      #statVelocityLUPerMin := LIMIT(MN := - #winderConfig.maxVelocity, IN := #statFLineSpeed * (#statLineVelocityInternalLUPerMin + #additionalVelocity), MX := #winderConfig.maxVelocity);    // linespeed without tensionspeed (*c_00039*)
+	    ELSIF #enable AND #statJogWinder THEN //use jog dynamics because it shouldn´t be synchronized to line and no controlmode is active
+	      #statDeactivateJogDyn := FALSE;
+	      #statDynamicsInternalTOUnit.abortAcceleration := FALSE;
+	      #statDynamicsInternalTOUnit.acceleration := #winderConfig.winderDynamics.jogDynamics.acceleration;
+	      #statDynamicsInternalTOUnit.deceleration := #winderConfig.winderDynamics.jogDynamics.deceleration;
+	      #statDynamicsInternalTOUnit.jerk := #winderConfig.winderDynamics.jogDynamics.jerk;
+	      #statInSync := FALSE;
+	      IF #jogPos AND NOT #jogNeg THEN
+	        #statVelocityLUPerMin := ABS(#winderConfig.jogVelocity);
+	      ELSIF #jogNeg AND NOT #jogPos THEN
+	        #statVelocityLUPerMin := - ABS(#winderConfig.jogVelocity);
+	      ELSE
+	        #statVelocityLUPerMin := 0.0;
+	      END_IF;
+	    ELSIF NOT #enable THEN //stop with stopdynamics
+	      //winder will stop with MC_Halt, because of missing enable
+	      #statDynamicsInternalTOUnit.abortAcceleration := #winderConfig.winderDynamics.stopDynamics.abortAcceleration;
+	      #statDynamicsInternalTOUnit.acceleration := #winderConfig.winderDynamics.stopDynamics.deceleration;
+	      #statDynamicsInternalTOUnit.deceleration := #winderConfig.winderDynamics.stopDynamics.deceleration;
+	      #statDynamicsInternalTOUnit.jerk := #winderConfig.winderDynamics.stopDynamics.jerk;
+	      #statVelocityLUPerMin := 0.0;
+	      #statTensionSpeedLUPerMin := 0.0;
+	      #statInSync := FALSE;
+	    ELSE //speedMatch = False -> no linevelocity is active , but TensionSpeed is
+	      #statDynamicsInternalTOUnit.abortAcceleration := #winderConfig.winderDynamics.stopDynamics.abortAcceleration;
+	      #statDynamicsInternalTOUnit.acceleration := #winderConfig.winderDynamics.stopDynamics.deceleration;
+	      #statDynamicsInternalTOUnit.deceleration := #winderConfig.winderDynamics.stopDynamics.deceleration;
+	      #statDynamicsInternalTOUnit.jerk := #winderConfig.winderDynamics.stopDynamics.jerk;
+	      #statVelocityLUPerMin := 0.0;
+	      #statInSync := FALSE;
+	    END_IF;
+	  END_IF;
+	  // Moving average for line speed setpoint only in speedMatch mode
+	  #statNumberOfSamplesInternal := MAX(IN1 := 1, IN2 := #winderConfig.noOfSamplesLineVelocity);
+	  #instMoveAvg(enable             := #enable AND #speedMatch AND NOT #statJogWinder AND NOT #cntrlEnable,
+	               updateConfig       := #statNumberOfSamplesInternal <> #statNumberOfSamplesOld,
+	               sampleMode         := "LCON_SAMPLEBASED_MODE",
+	               inputSignal        := #statVelocityLUPerMin,
+	               subsetLength       := #statNumberOfSamplesInternal,
+	               cycleTime          := REAL_TO_UDINT(#tCycle) * UDINT#1000000);
+	  ;
+	  #statNumberOfSamplesOld := #statNumberOfSamplesInternal;
+	  IF #instMoveAvg.enable AND NOT #instMoveAvg.error THEN
+	    #statVelocityLUPerMin := #instMoveAvg.movingAverage;
+	  END_IF;
+	  REGION Generate WinderMotionVector for MC Commands
+	    //actual winder speed for MC Command
+	    #statWinderMV.v := (#statVelocityLUPerMin + #statTensionSpeedLUPerMin) / #statCircumference * 1.0 / #statWinderAxisIntoRPM; // statVelocity  and statTension Speed [LU/min] / statCircumference = [1/min] / statWinderAxisIntoRPM = TO Unit;
+	    #statWinderMV.a := #statDynamicsInternalTOUnit.acceleration;
+	    #statWinderMV.d := #statDynamicsInternalTOUnit.deceleration; (*c_00029*)
+	    #statWinderMV.j := #statDynamicsInternalTOUnit.jerk;
+	    
+	    //Reduction of reference speed using the override
+	    //Maximum winder veocity [TO Unit]
+	    // (*c_00034*)
+	    IF #winderConfig.unitConfiguration.metricUnits THEN
+	      #statReferenceVelocityTOUnit := (#winderConfig.maxVelocity + #winderConfig.overrideVelocity * ABS(#statFOverride))
+	      / (LREAL_TO_REAL(#winderConfig.diamConfig.minDia * #statWinderAxisIntoRPM) * "LCON_PI");
+	    ELSE //no metric units -> minDia 
+	      #statReferenceVelocityTOUnit := (#winderConfig.maxVelocity + #winderConfig.overrideVelocity * ABS(#statFOverride))
+	      / (LREAL_TO_REAL(#winderConfig.diamConfig.minDia / 12.0 * #statWinderAxisIntoRPM) * "LCON_PI");
+	    END_IF;
+	    //override only positive value -> taking care about directiondepentency
+	    IF #statWinderMV.v < 0.0 THEN //negative direction [TO Unit]
+	      #statCommandMoveVelocityTOUnit := - ABS(#statReferenceVelocityTOUnit); //[TO Unit]
+	    ELSE //positive direction
+	      #statCommandMoveVelocityTOUnit := ABS(#statReferenceVelocityTOUnit); //[TO Unit]
+	    END_IF;
+	    IF #enable THEN
+	      #statOverride := (ABS(#statWinderMV.v) / (ABS(#statReferenceVelocityTOUnit))) * 100.0;
+	    ELSE //reset override to standard
+	      #statOverride := 100.0;
+	      #statCommandMoveVelocityTOUnit := 0.0;
+	    END_IF;
+	  END_REGION
+	  REGION Calculate inSync if winder is in syncing mode
+	    IF #instMoveAvg.enable AND NOT #instMoveAvg.error THEN
+	      IF #statDynamicsInternalTOUnit.jerk = 0.0 THEN
+	        #statVsync := #statDynamicsInternalTOUnit.acceleration * #tCycle / 1.0e3 * #winderConfig.winderDynamics.syncDynamics.syncToleranceFactor; // [TOUnit]
+	      ELSE
+	        #statVsync := (#statDynamicsInternalTOUnit.jerk * (#tCycle / 1.0e3) ** 2) / 2.0 * #winderConfig.winderDynamics.syncDynamics.syncToleranceFactor; // [TOUnit]
+	      END_IF;
+	      #statVDiff := ABS((#statSetShaftSpeed1PerMin / #statWinderAxisIntoRPM) - (#statVelocityLUPerMin / #statCircumference * 1.0 / #statWinderAxisIntoRPM)); // [TOUnit]
+	      #statInSync := #statVDiff <= #statVsync;
+	    END_IF;
+	  END_REGION
+	END_REGION
+	//----------------------------------------------------------------------------------------------------------------------
+	//-                                             Torque precontrol                                                      -
+	//----------------------------------------------------------------------------------------------------------------------
+	REGION Torque Precontrol
+	  // c_00008 : Choose setpoint or actual speed value for friction compensation
+	  IF #winderConfig.unitConfiguration.metricUnits THEN
+	    #statActSpeedOverride1PerMin := (#winderConfig.overrideVelocity * #statFOverride) / (#diameter * "LCON_PI") * #statGearRatioInternal;
+	  ELSE
+	    #statActSpeedOverride1PerMin := (#winderConfig.overrideVelocity * #statFOverride) / (#diameter / 12.0 * "LCON_PI") * #statGearRatioInternal;
+	  END_IF;
+	  IF #winderConfig.torquePrecontrolConfig.useSetValForFrictionComp THEN
+	    IF (#lineAxisMotionVector.v <> 0.0) OR ((#statCtrlBusyInternal AND (#statFOverride = 0)) OR (#statControlMode = "LCON_CONTROL_MODE_V_CONSTANT")) THEN
+	      #statWindingShaftSpeedSetpointPreCtrl1PerMin := #statSetDriveSpeed1PerMin - #statActSpeedOverride1PerMin;
+	    ELSE
+	      #statWindingShaftSpeedSetpointPreCtrl1PerMin := 0.0;
+	    END_IF;
+	  ELSE
+	    #statWindingShaftSpeedSetpointPreCtrl1PerMin := #statActDriveSpeed1PerMin;
+	  END_IF;
+	  
+	  // Detection of a drive runaway in torque controlled modes (*c_00061*)
+	  // If the deviation between the actual circumference velocity and the line velocity setpoint is too high the torque pre-control of friction and acceleration is disabled
+	  #instOverspeedMonitoring(enable                 := #enable AND (#statTorqueLimitUpperActive OR #statTorqueLimitLowerActive) AND #statCtrlBusyInternal,
+	                           vLine                  := #statVelocityLUPerMin,
+	                           vOverride              := #statTensionSpeedLUPerMin,
+	                           vAct                   := #statActShaftSpeed1PerMin * "LCON_PI" * SEL(G := #winderConfig.unitConfiguration.metricUnits, IN0 := #diameter / 12.0, IN1 := #diameter),
+	                           velocityDeviationLimit := "LCON_VELO_MONITORING_ADJUSTMENT_PERCENT",
+	                           tCycle                 := #tCycle);
+	  
+	  #instTorquePrecontrol(
+	                        enable                 := #enable,
+	                        torqueOn               := (#statCtrlBusyInternal
+	                        OR ((#statControlMode = "LCON_CONTROL_MODE_V_CONSTANT") AND #statBusy)
+	                        (*AND (#statTorqueAdditive OR #statTorqueLimitUpperActive OR #statTorqueLimitLowerActive)*)) (*c_00021*)
+	                        AND #statTel750Active,
+	                        metricUnits            := #winderConfig.unitConfiguration.metricUnits,
+	                        typeOfWinder           := #statTypeOfWinder,
+	                        drivespeed             := LREAL_TO_REAL(#statWindingShaftSpeedSetpointPreCtrl1PerMin),
+	                        lineSpeed              := #lineAxisMotionVector.v + #additionalVelocity,
+	                        lineAcceleration       := #statLineAccelerationInternalLUPerS2,
+	                        diamActVal             := #diameter,
+	                        tensionSetpoint        := SEL(G := #statDancerControl OR (#statControlMode = "LCON_CONTROL_MODE_V_CONSTANT"),
+	                                                      IN0 := (#instTPID.RFGSetpointValue + #instTPID.outValue * #statFPIDTorque),
+	                                                      IN1 := 0.0),
+	                        additiveTorque         := #winderConfig.torquePrecontrolConfig.additiveTorque,
+	                        density                := #winderConfig.torquePrecontrolConfig.MaterialDensity,
+	                        diamMin                := #winderConfig.diamConfig.minDia,
+	                        diamMax                := #winderConfig.diamConfig.maxDia,
+	                        width                  := #winderConfig.torquePrecontrolConfig.MaterialWidth,
+	                        fillFactor             := #winderConfig.torquePrecontrolConfig.MaterialFillFactor,
+	                        JFix                   := #winderConfig.torquePrecontrolConfig.JFixed,
+	                        JMandrel               := #winderConfig.torquePrecontrolConfig.JMandrel,
+	                        JMot                   := #winderConfig.torquePrecontrolConfig.JMotor,
+	                        gearRatio              := LREAL_TO_REAL(#statGearRatioInternal),
+	                        frictionAdjustment     := #winderConfig.torquePrecontrolConfig.frictionAdjustment * #instOverspeedMonitoring.preControlAdjust,      (*c_00061*)
+	                        tensionAdjustment      := #winderConfig.torquePrecontrolConfig.tensionAdjustment,
+	                        accelerationAdjustment := #winderConfig.torquePrecontrolConfig.accelerationAdjustment * #instOverspeedMonitoring.preControlAdjust,  (*c_00061*)
+	                        dDdTAdjustment         := #winderConfig.torquePrecontrolConfig.dDdTAdjustment,
+	                        xn_speedValues         := #winderConfig.torquePrecontrolConfig.xn_speedValues,
+	                        yn_torqueValues        := #winderConfig.torquePrecontrolConfig.yn_torqueValues,
+	                        sizeOfArray            := #winderConfig.torquePrecontrolConfig.#sizeOfArray,
+	                        tCycle                 := #tCycle);
+	  
+	  IF #winderConfig.torquePrecontrolConfig.upperTorqueLimit > 2.0
+	    OR #winderConfig.torquePrecontrolConfig.upperTorqueLimit < 0.0
+	    OR #winderConfig.torquePrecontrolConfig.lowerTorqueLimit < -2.0
+	    OR #winderConfig.torquePrecontrolConfig.lowerTorqueLimit > 0
+	  THEN
+	    #statError := FALSE;
+	    #errorID := "LCON_WARNING_WINDER_OUTPUT_LIMITED";
+	    #statUpperTorqueLimitTOUnit := LIMIT(MN := 0.0, IN := #winderConfig.torquePrecontrolConfig.upperTorqueLimit, MX := 2.0) * #statReferenceTorque;  // [Unit of TO]
+	    #statLowerTorqueLimitTOUnit := LIMIT(MN := -2.0, IN := #winderConfig.torquePrecontrolConfig.lowerTorqueLimit, MX := 0.0) * #statReferenceTorque; // [Unit of TO]
+	  ELSE
+	    #errorID := #NO_ERROR;
+	    #statUpperTorqueLimitTOUnit := #winderConfig.torquePrecontrolConfig.upperTorqueLimit * #statReferenceTorque;
+	    #statLowerTorqueLimitTOUnit := #winderConfig.torquePrecontrolConfig.lowerTorqueLimit * #statReferenceTorque;
+	  END_IF;
+	  
+	  #winderDiag.torquePreControlDiag.totalTorquePreControl := #instTorquePrecontrol.totalTorquePreCtrl * #statConvTorqueUnitToTO;
+	  #winderDiag.torquePreControlDiag.totalInertia := #instTorquePrecontrol.totalinertia;
+	  #winderDiag.torquePreControlDiag.maxInertia := #instTorquePrecontrol.maxInertia;
+	  #statWndrTotalTorque := #winderDiag.torquePreControlDiag.totalTorquePreControl;
+	END_REGION
+	//----------------------------------------------------------------------------------------------------------------------
+	//-                                        Enable interface                                                            -
+	//----------------------------------------------------------------------------------------------------------------------
+	REGION Enable Inteface
+	  IF #statTorqueLimitUpperActive THEN
+	    #statUpperTorqueLimitLimited := LIMIT(MN := #statLowerTorqueLimitTOUnit, IN := #statWndrTotalTorque, MX := #statUpperTorqueLimitTOUnit);
+	    IF #instTPID.busy THEN
+	      #statCtrlBusyInternal := TRUE;
+	    ELSE
+	      IF #statSetDriveSpeed1PerMin = 0.0 AND #statCtrlBusyInternal THEN
+	        #statCtrlBusyInternal := FALSE;
+	      END_IF;
+	      IF NOT #statCtrlBusyInternal THEN
+	        #statUpperTorqueLimitLimited := #statUpperTorqueLimitTOUnit;
+	      END_IF;
+	    END_IF;
+	    #statLowerTorqueLimiLimited := #statLowerTorqueLimitTOUnit;
+	  ELSIF #statTorqueLimitLowerActive THEN
+	    #statLowerTorqueLimiLimited := LIMIT(MN := #statLowerTorqueLimitTOUnit, IN := #statWndrTotalTorque, MX := #statUpperTorqueLimitTOUnit);
+	    IF #instTPID.busy THEN
+	      #statCtrlBusyInternal := TRUE;
+	    ELSE
+	      IF #statSetDriveSpeed1PerMin = 0.0 AND #statCtrlBusyInternal THEN
+	        #statCtrlBusyInternal := FALSE;
+	      END_IF;
+	      IF NOT #statCtrlBusyInternal THEN
+	        #statLowerTorqueLimiLimited := #statLowerTorqueLimitTOUnit;
+	      END_IF;
+	    END_IF;
+	    #statUpperTorqueLimitLimited := #statUpperTorqueLimitTOUnit;
+	  ELSE
+	    #statCtrlBusyInternal := #instTPID.busy;
+	    #statUpperTorqueLimitLimited := #statUpperTorqueLimitTOUnit;
+	    #statLowerTorqueLimiLimited := #statLowerTorqueLimitTOUnit;
+	  END_IF;
+	  
+	  // Mask motor blocked fault for torque controlled modes and reset speed controller integrator after disabling tension control in torque controlled modes
+	  #instSetAxisSTW(enable                := #statActive,
+	                  resetSpeedInt         := (NOT #statCtrlBusyInternal AND #statCtrlBusyInternalOld AND (#statTorqueLimitUpperActive OR #statTorqueLimitLowerActive)),// (*c_00052*)
+	                  maskMotorBlockedFault := #statTorqueLimitUpperActive OR #statTorqueLimitLowerActive,  //(*c_00051*)
+	                  axis                  := #winderAxis);
+	  #statCtrlBusyInternalOld := #statCtrlBusyInternal;
+	  
+	  // Disable torque precontrol if the sign of the torque limit is changing (Only torque limit is active) and torque controlled mode is active
+	  // E.g. Winder is operating at the upper torque limit but its value becomes negative (friction + acceleration torque > tension torque)
+	  // --> Otherwise the resulting torque is too big (torque limit + torque precontrol)
+	  // (*c_00046*)
+	  #statDisableAdditiveTorque := FALSE;
+	  IF (#statTorqueLimitUpperActive OR #statTorqueLimitLowerActive)
+	    AND ((#statTypeOfWinder = "LCON_TYPE_OF_WINDER_UNWIND_FROM_ABOVE" AND #statWndrTotalTorque > 0.0)
+	    OR (#statTypeOfWinder = "LCON_TYPE_OF_WINDER_UNWIND_FROM_BELOW" AND #statWndrTotalTorque < 0.0)
+	    OR (#statTypeOfWinder = "LCON_TYPE_OF_WINDER_REWIND_FROM_BELOW" AND #statWndrTotalTorque > 0.0)
+	    OR (#statTypeOfWinder = "LCON_TYPE_OF_WINDER_REWIND_FROM_ABOVE" AND #statWndrTotalTorque < 0.0))
+	  THEN
+	    #statDisableAdditiveTorque := TRUE;
+	    #statWndrTotalTorque := 0.0;
+	  END_IF;
+	  
+	  #statTorqueValues.additiveTorque := #statWndrTotalTorque;
+	  #statTorqueValues.upperTorqueLimit := #statUpperTorqueLimitLimited;
+	  #statTorqueValues.lowerTorqueLimit := #statLowerTorqueLimiLimited;
+	  #instEnableInterface(enable                  := #statWinderAxisCtrl AND #enable,
+	                       enableVelocityInterface := #statWinderAxisCtrl AND #enable,
+	                       writeTorqueLimit        := #statWinderAxisCtrl AND #statTel750Active,
+	                       writeAdditiveTorque     := #statWinderAxisCtrl AND #statTel750Active,
+	                       positionControlled      := #winderConfig.positionControlled,
+	                       referenceVelocity       := #statCommandMoveVelocityTOUnit,
+	                       override                := #statOverride,
+	                       motionVector            := #statWinderMV,
+	                       torqueValues            := #statTorqueValues,
+	                       axis                    := #winderAxis);
+	END_REGION
+	//----------------------------------------------------------------------------------------------------------------------
+	//-                                        Calculate Output/Command values                                             -
+	//----------------------------------------------------------------------------------------------------------------------
+	REGION Calculate Output/Interface Values
+	  #statBusy := #enable;
+	  #busy := #statBusy;
+	  #statActive := (#statWinderAxisCtrl
+	  AND (#instEnableInterface.MCInterfaceActive) (*c_00026*)
+	  AND ((#instEnableInterface.torqueLimitActive AND #instEnableInterface.writeTorqueLimit) OR NOT #instEnableInterface.writeTorqueLimit)
+	  AND ((#instEnableInterface.additiveTorqueActive AND #instEnableInterface.writeAdditiveTorque) OR NOT #instEnableInterface.writeAdditiveTorque))
+	  OR (NOT #statWinderAxisCtrl AND #busy);
+	  
+	  #winderDiag.torquePreControlDiag.lowerTorqueLimit := LREAL_TO_REAL(#statLowerTorqueLimiLimited);
+	  #winderDiag.torquePreControlDiag.upperTorqueLimit := LREAL_TO_REAL(#statUpperTorqueLimitLimited);
+	  #winderDiag.referenceVelocity := #statCommandMoveVelocityTOUnit;
+	  #winderDiag.diameterFactor := #statOverride;
+	  IF #statActive THEN
+	    #winderDiag.torquePreControlDiag.totalTorquePreControl := #statWndrTotalTorque;
+	  ELSE
+	    #winderDiag.torquePreControlDiag.totalTorquePreControl := 0.0;
+	  END_IF;
+	  #active := #statActive;
+	  #inSync := #statInSync AND #enable;
+	  #ctrlBusy := #statCtrlBusyInternal;
+	END_REGION
+	//----------------------------------------------------------------------------------------------------------------------
+	//-                                              Error handling                                                        -
+	//----------------------------------------------------------------------------------------------------------------------
+	REGION Error Handling
+	  IF #statStartupError THEN
+	    IF NOT (#enable) THEN
+	      #statError := FALSE;
+	      #statStartupError := FALSE;
+	      #errorID := #NO_ERROR;
+	    END_IF;
+	  ELSIF #instDiamCalc.error THEN
+	    #statError := #instDiamCalc.error;
+	    #errorID := #instDiamCalc.errorID;
+	  ELSIF #instTorquePrecontrol.error THEN
+	    #statError := #instTorquePrecontrol.error;
+	    #errorID := #instTorquePrecontrol.errorID;
+	  ELSIF #instTPID.error THEN
+	    #statError := #instTPID.error;
+	    #errorID := #instTPID.errorId;
+	  ELSIF #instEnableInterface.error THEN
+	    #statError := #instEnableInterface.error;
+	    #errorID := #instEnableInterface.status;
+	  ELSIF #instGetActualTension.error THEN
+	    #statError := #instGetActualTension.error;
+	    #errorID := WORD_TO_DWORD(#instGetActualTension.status);
+	  ELSE
+	    #statError := FALSE;
+	    #errorID := #NO_ERROR;
+	  END_IF;
+	  
+	  // Warning handling
+	  IF NOT #statError AND #enable THEN
+	    IF #instDiamCalc.errorID <> #NO_ERROR THEN
+	      #errorID := #instDiamCalc.errorID;
+	    ELSIF #instTorquePrecontrol.errorID <> #NO_ERROR THEN
+	      #errorID := #instTorquePrecontrol.errorID;
+	    ELSIF #instTPID.errorId <> #NO_ERROR THEN
+	      #errorID := #instTPID.errorId;
+	    ELSIF (NOT #statTel750Active AND
+	      (#winderConfig.torquePrecontrolConfig.accelerationAdjustment <> 0
+	      OR #winderConfig.torquePrecontrolConfig.frictionAdjustment <> 0
+	      OR #winderConfig.torquePrecontrolConfig.tensionAdjustment <> 0
+	      OR #winderConfig.torquePrecontrolConfig.dDdTAdjustment <> 0.0 (*c_00038*)
+	      ))
+	    THEN
+	      #errorID := "LCON_WARNING_WINDER_TORQUE_PRECONTROL_ACTIVE";
+	    ELSIF (#winderConfig.webbreakDetectionConfig.enableDetection AND (#statControlMode = "LCON_CONTROL_MODE_V_CONSTANT")) THEN
+	      #errorID := "LCON_WARNING_WINDER_NO_WEB_BREAK_DETECTION_POSSIBLE";
+	    ELSIF ABS(#statVelocityLUPerMin) > ABS(#winderConfig.maxVelocity) THEN (*c_00031*)
+	      #errorID := "LCON_WARNING_WINDER_MAX_VELOCITY_EXCEEDED";
+	    ELSIF #statDisableAdditiveTorque THEN
+	      #errorID := "LCON_WARNING_WINDER_TORQUE_PRECONTROL_DISABLED";
+	    ELSIF #instOverspeedMonitoring.statRunAwayDetected THEN  (*c_00061*)
+	      #errorID := "LCON_WARNING_WINDER_RUN_AWAY_DETECTED";
+	    ELSE
+	      #statError := FALSE;
+	      #errorID := #NO_ERROR;
+	    END_IF;
+	  END_IF;
+	  #error := #statError;
+	END_REGION
+END_FUNCTION_BLOCK
+

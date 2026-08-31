@@ -1,0 +1,83 @@
+﻿FUNCTION "LConSMC_GetAxisStartupData" : "LConSMC_typeAxisStartupData"
+{ S7_Optimized_Access := 'TRUE' ; Published := 'TRUE' }
+VERSION : 0.1
+   VAR_INPUT 
+      axis : DB_ANY;
+      getAxisConfigAtStart : Bool;
+   END_VAR
+
+   VAR_TEMP 
+      tempRefSpeedAxis {InstructionName := 'TO_SpeedAxis'; LibVersion := '9.0'} : REF_TO TO_SpeedAxis;
+      tempRefPosAxis {InstructionName := 'TO_PositioningAxis'; LibVersion := '9.0'} : REF_TO TO_PositioningAxis;
+      tempRefSyncAxis {InstructionName := 'TO_SynchronousAxis'; LibVersion := '9.0'} : REF_TO TO_SynchronousAxis;
+      tempRetStruct : "LConSMC_typeAxisStartupData";
+   END_VAR
+
+
+BEGIN
+	REGION BLOCK INFO HEADER
+	  //===============================================================================
+	  // SIEMENS AG / (c)Copyright 2024
+	  //-------------------------------------------------------------------------------
+	  // Title:            LConSMC_GetAxisStartupData
+	  // Comment/Function: Read axis data from DBAny for winder/sectional drive
+	  // Library/Family:   LConSMC
+	  // Author:           APC Erlangen
+	  // Tested with:      FW 3.0
+	  // Engineering:      TIA Portal V18
+	  // Restrictions:     -
+	  // Requirements:     -
+	  //-------------------------------------------------------------------------------
+	  // Change log table:
+	  // Version  | Date       | Expert in charge       | Changes applied
+	  //----------|------------|------------------------|------------------------------
+	  // 02.00.00 | 2024-03-12 | APC Erlangen           | Use references instead of unpub blocks to read axis data (MC V7.0 required)
+	  // 01.00.00 | xxxx-xx-xx | APC Erlangen           | First creation
+	  //===============================================================================
+	END_REGION BLOCK INFO HEADER
+	
+	#tempRefSpeedAxis ?= #axis; // Try to assign DBAny to TO_SpeedAxis
+	
+	IF (#tempRefSpeedAxis <> NULL) THEN
+	  // Assignment successful --> DBAny is at least a Speed axis
+	  #tempRetStruct.typeOfAxis               := "LCON_SPEED_AXIS_TYPE";
+	  #tempRetStruct.torqueDataEnabled        := #tempRefSpeedAxis^.Actor.Interface.EnableTorqueData;
+	  #tempRetStruct.inOperation              := #tempRefSpeedAxis^.StatusDrive.InOperation;
+	  #tempRetStruct.axisDefaultAcceleration  := #tempRefSpeedAxis^.DynamicDefaults.Acceleration;
+	  #tempRetStruct.axisDefaultJerk          := #tempRefSpeedAxis^.DynamicDefaults.Jerk;
+	  
+	  IF #getAxisConfigAtStart THEN // Read additional axis configuration data
+	    #tempRetStruct.communicationOK      := #tempRefSpeedAxis^.StatusDrive.CommunicationOK;
+	    #tempRetStruct.adaptionState        := #tempRefSpeedAxis^.StatusDrive.AdaptionState;
+	    #tempRetStruct.referenceTorque      := #tempRefSpeedAxis^.Actor.DriveParameter.ReferenceTorque;
+	    #tempRetStruct.loadGear.numerator   := #tempRefSpeedAxis^.LoadGear.Numerator;
+	    #tempRetStruct.loadGear.denominator := #tempRefSpeedAxis^.LoadGear.Denominator;
+	    #tempRetStruct.velocityUnit         := #tempRefSpeedAxis^.Units.VelocityUnit;
+	    #tempRetStruct.torqueUnit           := #tempRefSpeedAxis^.Units.TorqueUnit;
+	  END_IF;
+	  
+	  #tempRefPosAxis ?= #axis; // Try to assign DBAny to TO_PositioningAxis
+	  IF (#tempRefPosAxis <> NULL) THEN
+	    // Assignment successful --> DBAny is at least a Positioning or a Synchrnous axis
+	    #tempRetStruct.typeOfAxis     := "LCON_POSITIONING_AXIS_TYPE";
+	    #tempRetStruct.leadScrew      := #tempRefPosAxis^.Mechanics.LeadScrew;
+	    #tempRetStruct.axisLengthUnit := #tempRefSpeedAxis^.Units.LengthUnit;
+	    #tempRefSyncAxis ?= #axis;  // Try to assign DBAny to TO_SynchronousAxis
+	    IF #tempRefSyncAxis <> NULL THEN
+	      // Assignment successful --> DBAny is a Synchrnous axis
+	      #tempRetStruct.typeOfAxis := "LCON_SYNCHRONOUS_AXIS_TYPE";
+	    END_IF;
+	  ELSE
+	    // Data are not available/relevant for TO_SpeedAxis
+	    #tempRetStruct.leadScrew      := 0.0;
+	    #tempRetStruct.axisLengthUnit := 0;
+	  END_IF;
+	ELSE
+	  // Invalid DBAny
+	  #tempRetStruct.typeOfAxis := "LCON_INVALID_AXIS_TYPE";
+	END_IF;
+	// Return value
+	#LConSMC_GetAxisStartupData := #tempRetStruct;
+	ENO := TRUE;
+END_FUNCTION
+

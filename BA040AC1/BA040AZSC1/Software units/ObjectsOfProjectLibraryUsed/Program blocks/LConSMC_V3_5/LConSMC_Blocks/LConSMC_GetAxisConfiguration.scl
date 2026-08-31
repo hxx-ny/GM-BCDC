@@ -1,0 +1,139 @@
+﻿FUNCTION_BLOCK "LConSMC_GetAxisConfiguration"
+{ S7_Optimized_Access := 'TRUE' ; Published := 'TRUE' }
+VERSION : 0.1
+//This function blocks reads out necessary axis settings from the technology object. It can be called in any cyclic task  Function block ID: 3110
+   VAR_INPUT 
+      execute { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;   // Read axis configuration with rising edge of enable
+      axis { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : DB_ANY;   // Reference of axis
+   END_VAR
+
+   VAR_OUTPUT 
+      busy { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;   // TRUE: Funtion block is activated
+      done { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;   // TRUE: Configuration has been read successfully
+      error { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;   // TRUE: An error has occured during the reading
+   END_VAR
+
+   VAR_IN_OUT 
+      referenceTorque { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;   // Reference Torque of axis (see p2003 in the SINAMICS)
+      loadGear : "LConSMC_typeLoadGear";   // Load gear
+      velocityUnit { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : UDInt;   // Velocity unit of axis (TO_Axis.Units.VelocityUnit)
+      torqueUnit { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : UDInt;   // Torque unit of axis (TO_Axis.Units.TorqueUnit)
+   END_VAR
+
+   VAR 
+      executeOld { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statBusy { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statDone { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      statError { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+   END_VAR
+
+   VAR_TEMP 
+      tempRefSpeedAxis {InstructionName := 'TO_SpeedAxis'; LibVersion := '9.0'} : REF_TO TO_SpeedAxis;
+   END_VAR
+
+
+BEGIN
+	REGION BLOCK INFO HEADER
+	  //===============================================================================
+	  // SIEMENS AG / (c)Copyright 2023
+	  //-------------------------------------------------------------------------------
+	  // Title:            LConSMC_GetAxisConfiguration
+	  // Comment/Function: Get necessary TO configuration for winder/sectional drive
+	  // Library/Family:   LConSMC
+	  // Author:           APC Erlangen
+	  // Tested with:      FW 2.8
+	  // Engineering:      TIA Portal V16
+	  // Restrictions:     Must be called in a cyclic OB (E.g. OB6x,OB3x)
+	  // Requirements:     -
+	  //-------------------------------------------------------------------------------
+	  // Change log table:
+	  // Version  | Date       | Expert in charge       | Changes applied
+	  //----------|------------|------------------------|------------------------------
+	  // 01.01.00 | 2024-03-10 | APC Erlangen           | Runtime optimizations using TO references with MC V7.0
+	  // 01.00.00 | 2019-10-23 | APC Erlangen           | Creation
+	  //===============================================================================
+	END_REGION BLOCK INFO HEADER
+	
+	REGION DESCRIPTION
+	(/*
+	This function block reads the necessary axis settings from the technology object "axis", that are needed for the configuration of a winder or a sectional drive:  
+	* ReferenceTorque
+	* LoadGear
+	* Velocity unit
+	* Torque unit
+	  
+	The IN_OUT variables can directly be connected to the configuration variables:  
+	 
+	| IN_OUT variable    | Configuration paramter                                                  |
+	|--------------------|-------------------------------------------------------------------------|
+	|referenceTorque     | winderConfig/sectionalDriveConfig.torquePrecontrolConfig.referenceTorque|
+	|loadGear            | winderConfig/sectionalDriveConfig.torquePrecontrolConfig.loadGear       |
+	|velocityUnit        | winderConfig/sectionalDriveConfig.UnitConfiguration.axisVelocityUnit    |
+	|torqueUnit          | winderConfig/sectionalDriveConfig.UnitConfiguration.axisTorqueUnit      |
+	 
+	---
+	
+	NOTE
+	:    To optimize the controller performance this function block can be used once to 
+	read the axis configuration within the main program cycle instead with a rising 
+	edge of the winder/ sectional drive function block in a synchronous organization 
+	block.
+	:    To use this, adjust the settings in the winder/sectional drive configuration 
+	structure, to prevent access to TO-variables during the initialization:
+	*winder/sectionalDriveConfig.getAxisConfigAtStart* := FALSE;
+	
+	---
+	*/)
+	END_REGION DESCRIPTION
+	
+	IF #execute AND NOT #executeOld THEN
+	  #statBusy := TRUE;
+	  #statDone := FALSE;
+	  #error := FALSE;
+	  #statError := FALSE;
+	  #referenceTorque := 0;
+	  #loadGear.denominator := 1;
+	  #loadGear.numerator := 0;
+	  #velocityUnit := 0;
+	  #torqueUnit := 0;
+	END_IF;
+	
+	IF #statBusy THEN
+	  #tempRefSpeedAxis ?= #axis; // Try to assign DBAny to TO_SpeedAxis
+	  IF (#tempRefSpeedAxis <> NULL) THEN
+	    // Assignment successful --> DBAny is at least a Speed axis
+	    IF #tempRefSpeedAxis^.StatusDrive.CommunicationOK
+	      AND (#tempRefSpeedAxis^.StatusDrive.AdaptionState = 2  // ADAPTED
+	      OR #tempRefSpeedAxis^.StatusDrive.AdaptionState = 3)   // NOT APPLICABLE
+	    THEN
+	      #referenceTorque      := #tempRefSpeedAxis^.Actor.DriveParameter.ReferenceTorque;
+	      #loadGear.numerator   := #tempRefSpeedAxis^.LoadGear.Numerator;
+	      #loadGear.denominator := #tempRefSpeedAxis^.LoadGear.Denominator;
+	      #velocityUnit         := #tempRefSpeedAxis^.Units.VelocityUnit;
+	      #torqueUnit           := #tempRefSpeedAxis^.Units.TorqueUnit;
+	      #statBusy := FALSE;
+	      #statDone := TRUE;
+	    ELSIF #tempRefSpeedAxis^.StatusDrive.AdaptionState = 4 THEN  //APDATION_ERROR
+	      #statBusy := FALSE;
+	      #statError := TRUE;
+	    ELSE
+	      ;
+	    END_IF;
+	  ELSE
+	    // Invalid DBAny
+	    #statBusy   := FALSE;
+	    #statError  := TRUE;
+	  END_IF;
+	ELSE
+	  #statDone   := #statDone AND #execute;
+	  #statError  := #statError AND #execute;
+	END_IF;
+	
+	
+	#busy := #statBusy;
+	#done := #statDone;
+	#error := #statError;
+	
+	#executeOld := #execute;
+END_FUNCTION_BLOCK
+

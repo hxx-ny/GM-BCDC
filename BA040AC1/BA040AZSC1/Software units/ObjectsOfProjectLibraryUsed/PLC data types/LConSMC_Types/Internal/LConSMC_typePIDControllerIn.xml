@@ -1,0 +1,273 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Document>
+  <Engineering version="V20" />
+  <SW.Types.PlcStruct ID="0">
+    <AttributeList>
+      <Access>Published</Access>
+      <Interface><Sections xmlns="http://www.siemens.com/automation/Openness/SW/Interface/v5">
+  <Section Name="None">
+    <Member Name="enable" Datatype="Bool">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">TRUE: Funktionsbaustein aktivieren</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">TRUE: Enable function block</MultiLanguageText>
+      </Comment>
+      <StartValue>FALSE</StartValue>
+    </Member>
+    <Member Name="reset" Datatype="Bool">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">TRUE: Funktionsbaustein zurücksetzen</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">TRUE: Reset function block</MultiLanguageText>
+      </Comment>
+      <StartValue>FALSE</StartValue>
+    </Member>
+    <Member Name="setpointValue" Datatype="LReal">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">[-] Sollwert</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">[-] Setpoint</MultiLanguageText>
+      </Comment>
+      <StartValue>0.0</StartValue>
+    </Member>
+    <Member Name="actualValue" Datatype="LReal">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">[-] Istwert</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">[-] Actual value</MultiLanguageText>
+      </Comment>
+      <StartValue>0.0</StartValue>
+    </Member>
+    <Member Name="preControl" Datatype="LReal">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">Reglervorsteuerung</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">Controler pre control value</MultiLanguageText>
+      </Comment>
+      <StartValue>0.0</StartValue>
+    </Member>
+    <Member Name="propGain" Datatype="LReal">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">Proportionalverstärkung  Ein Wert von 0 deaktiviert den P-Anteil</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">Proportional gain. A value of 0 disables the P-part</MultiLanguageText>
+      </Comment>
+      <StartValue>2.0</StartValue>
+    </Member>
+    <Member Name="integTime" Datatype="LReal">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">[ms] Integrationszeitkonstante  Ein Wert von 0 deaktiviert den I-Anteil</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">[ms] Time constant for integrator. A value of 0 disables the I-part</MultiLanguageText>
+      </Comment>
+      <StartValue>999.0</StartValue>
+    </Member>
+    <Member Name="derivTime" Datatype="LReal">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">[ms] Differentationszeitkonstante  Ein Wert von 0 deaktiviert den D-Anteil</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">[ms] Time constant for differentiator. A value of 0 disables the D-part</MultiLanguageText>
+      </Comment>
+      <StartValue>0.0</StartValue>
+    </Member>
+    <Member Name="filterTime" Datatype="LReal">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">[ms] PT1 - Istwertfilter  Ein Wert von 0 deaktiviert den Filter</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">[ms] PT1- Filter for actual value. A value of 0 disables the filter</MultiLanguageText>
+      </Comment>
+      <StartValue>10.0</StartValue>
+    </Member>
+    <Member Name="upperLimit" Datatype="LReal">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">Oberer Grenze des Reglerausgangs</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">Upper limit of the controller output</MultiLanguageText>
+      </Comment>
+      <StartValue>100.0</StartValue>
+    </Member>
+    <Member Name="lowerLimit" Datatype="LReal">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">Untere Grenze des Reglerausgangs</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">Lower limit of the controller output</MultiLanguageText>
+      </Comment>
+      <StartValue>0.0</StartValue>
+    </Member>
+    <Member Name="intSetValue" Datatype="LReal">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">Setzwert des Integrators (wenn "setIntChannel" = TRUE)</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">Integrator set value (if "setIntChannel" = TRUE)</MultiLanguageText>
+      </Comment>
+      <StartValue>0.0</StartValue>
+    </Member>
+    <Member Name="holdIntChannel" Datatype="Bool">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">TRUE: Integrator wird angehalten</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">TRUE: Integrator is hold</MultiLanguageText>
+      </Comment>
+      <StartValue>FALSE</StartValue>
+    </Member>
+    <Member Name="setIntChannel" Datatype="Bool">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">TRUE: Der Wert des Integrators wird auf "intSetValue" gesetzt</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">TRUE: The output of the integrator is set to "intSetValue"</MultiLanguageText>
+      </Comment>
+      <StartValue>FALSE</StartValue>
+    </Member>
+    <Member Name="controlMode" Datatype="Bool">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">TRUE: D-Komponente aktiv im Istwert-Pfad  FALSE: D-Komponente aktiv in der Reglerabweichung</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">TRUE: D component active in actual value branch  FALSE: D component in controller deviation</MultiLanguageText>
+      </Comment>
+      <StartValue>FALSE</StartValue>
+    </Member>
+    <Member Name="deadBand" Datatype="LReal">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <Comment>
+        <MultiLanguageText Lang="de-DE">Breite des Totbandes (symmetrisch). Ein Wert von 0 deaktiviert das Totband</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">Value of the dead band (symmetrical). A value of 0 disables the deadband</MultiLanguageText>
+      </Comment>
+      <StartValue>0.0</StartValue>
+    </Member>
+    <Member Name="actualValueFactor" Datatype="LReal">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">Multiplikativer Skalierungsfaktor des Istwertes</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">Multiplicative scaling of the actual value</MultiLanguageText>
+      </Comment>
+      <StartValue>1.0</StartValue>
+    </Member>
+    <Member Name="actualValueOffset" Datatype="LReal">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">Additiver Skalierungsfaktor des Istwertes</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">Additive scaling of the actual value</MultiLanguageText>
+      </Comment>
+      <StartValue>0.0</StartValue>
+    </Member>
+    <Member Name="outValueFactor" Datatype="LReal">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">Multiplikativer Skalierungsfaktor des Reglerausgangs</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">Multiplicative scaling of the controller output</MultiLanguageText>
+      </Comment>
+      <StartValue>1.0</StartValue>
+    </Member>
+    <Member Name="outValueOffset" Datatype="LReal">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">Additiver Skalierungsfaktor des Reglerausgangs</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">Additive scaling of the controller output</MultiLanguageText>
+      </Comment>
+      <StartValue>0.0</StartValue>
+    </Member>
+    <Member Name="tCycle" Datatype="Real">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">[ms] Zykluszeit in der der Baustein aufgerufen wird</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">[ms] Cycle time the function block is called</MultiLanguageText>
+      </Comment>
+      <StartValue>0.0</StartValue>
+    </Member>
+  </Section>
+</Sections></Interface>
+      <Name>LConSMC_typePIDControllerIn</Name>
+      <Namespace />
+    </AttributeList>
+    <ObjectList>
+      <MultilingualText ID="1" CompositionName="Comment">
+        <ObjectList>
+          <MultilingualTextItem ID="2" CompositionName="Items">
+            <AttributeList>
+              <Culture>de-DE</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="3" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-GB</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="4" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-US</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="5" CompositionName="Items">
+            <AttributeList>
+              <Culture>es-ES</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="6" CompositionName="Items">
+            <AttributeList>
+              <Culture>fr-FR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="7" CompositionName="Items">
+            <AttributeList>
+              <Culture>it-IT</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="8" CompositionName="Items">
+            <AttributeList>
+              <Culture>ko-KR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="9" CompositionName="Items">
+            <AttributeList>
+              <Culture>zh-CN</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+        </ObjectList>
+      </MultilingualText>
+      <MultilingualText ID="A" CompositionName="Title">
+        <ObjectList>
+          <MultilingualTextItem ID="B" CompositionName="Items">
+            <AttributeList>
+              <Culture>de-DE</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="C" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-GB</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="D" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-US</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="E" CompositionName="Items">
+            <AttributeList>
+              <Culture>es-ES</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="F" CompositionName="Items">
+            <AttributeList>
+              <Culture>fr-FR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="10" CompositionName="Items">
+            <AttributeList>
+              <Culture>it-IT</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="11" CompositionName="Items">
+            <AttributeList>
+              <Culture>ko-KR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="12" CompositionName="Items">
+            <AttributeList>
+              <Culture>zh-CN</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+        </ObjectList>
+      </MultilingualText>
+    </ObjectList>
+  </SW.Types.PlcStruct>
+</Document>
