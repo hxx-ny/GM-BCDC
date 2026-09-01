@@ -1,0 +1,280 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Document>
+  <Engineering version="V20" />
+  <SW.Blocks.InstanceDB ID="0">
+    <AttributeList>
+      <HeaderAuthor>SICAR</HeaderAuthor>
+      <HeaderFamily>Shiftmodel</HeaderFamily>
+      <HeaderVersion>1.0</HeaderVersion>
+      <InstanceOfName>LSicar_typeShiftmodelHmi</InstanceOfName>
+      <InstanceOfType>UDT</InstanceOfType>
+      <Interface><Sections xmlns="http://www.siemens.com/automation/Openness/SW/Interface/v5">
+  <Section Name="Static">
+    <Member Name="shiftTimesListIndex" Datatype="DInt" Remanence="Retain" />
+    <Member Name="actualTimesDay" Datatype="Array[0..7] of &quot;LSicar_typeShiftmodTime1Day&quot;" Remanence="Retain" />
+    <Member Name="actualSignalsDay" Datatype="Array[0..7] of &quot;LSicar_typeShiftmodSign1Day&quot;" Remanence="Retain" />
+    <Member Name="summary" Datatype="&quot;LSicar_typeShiftmodSumHmi&quot;" Remanence="Retain" />
+    <Member Name="actualDay" Datatype="USInt" Remanence="Retain" />
+    <Member Name="shiftTimesListOnOff" Datatype="Bool" Remanence="Retain">
+      <Comment>
+        <MultiLanguageText Lang="en-US">Shift times OnOff</MultiLanguageText>
+      </Comment>
+      <StartValue>TRUE</StartValue>
+    </Member>
+    <Member Name="setAdjTimes" Datatype="Bool" Remanence="Retain" />
+    <Member Name="hmiTimesValidFor" Datatype="Array[0..3] of &quot;LSicar_typeWeekdayBools&quot;" Remanence="Retain" />
+    <Member Name="hmiTimes" Datatype="Array[0..3] of &quot;LSicar_typeShiftmodTime1Shift&quot;" Remanence="Retain">
+      <Comment>
+        <MultiLanguageText Lang="en-US">Interface Local Times (Input on HMI)</MultiLanguageText>
+      </Comment>
+      <Sections>
+        <Section Name="None">
+          <Member Name="endCircuitTime" Datatype="Time_Of_Day">
+            <Subelement Path="1">
+              <StartValue>TOD#05:57:00</StartValue>
+            </Subelement>
+            <Subelement Path="2">
+              <StartValue>TOD#13:57:00</StartValue>
+            </Subelement>
+            <Subelement Path="3">
+              <StartValue>TOD#21:57:00</StartValue>
+            </Subelement>
+          </Member>
+          <Member Name="start" Datatype="Time_Of_Day">
+            <Subelement Path="1">
+              <StartValue>TOD#06:00:00</StartValue>
+            </Subelement>
+            <Subelement Path="2">
+              <StartValue>TOD#14:00:00</StartValue>
+            </Subelement>
+            <Subelement Path="3">
+              <StartValue>TOD#22:00:00</StartValue>
+            </Subelement>
+          </Member>
+          <Member Name="break" Datatype="Array[0..4] of &quot;LSicar_typeShiftmodTimeBreak&quot;">
+            <Sections>
+              <Section Name="None">
+                <Member Name="start" Datatype="Time_Of_Day">
+                  <Subelement Path="1,1">
+                    <StartValue>TOD#08:00:00</StartValue>
+                  </Subelement>
+                  <Subelement Path="1,2">
+                    <StartValue>TOD#10:00:00</StartValue>
+                  </Subelement>
+                  <Subelement Path="1,3">
+                    <StartValue>TOD#12:00:00</StartValue>
+                  </Subelement>
+                  <Subelement Path="1,4">
+                    <StartValue>TOD#00:00:00</StartValue>
+                  </Subelement>
+                  <Subelement Path="2,1">
+                    <StartValue>TOD#16:00:00</StartValue>
+                  </Subelement>
+                  <Subelement Path="2,2">
+                    <StartValue>TOD#18:00:00</StartValue>
+                  </Subelement>
+                  <Subelement Path="2,3">
+                    <StartValue>TOD#20:00:00</StartValue>
+                  </Subelement>
+                  <Subelement Path="2,4">
+                    <StartValue>TOD#00:00:00</StartValue>
+                  </Subelement>
+                  <Subelement Path="3,1">
+                    <StartValue>TOD#00:00:00</StartValue>
+                  </Subelement>
+                  <Subelement Path="3,2">
+                    <StartValue>TOD#02:00:00</StartValue>
+                  </Subelement>
+                  <Subelement Path="3,3">
+                    <StartValue>TOD#04:00:00</StartValue>
+                  </Subelement>
+                  <Subelement Path="3,4">
+                    <StartValue>TOD#00:00:00</StartValue>
+                  </Subelement>
+                </Member>
+                <Member Name="startCircuitTime" Datatype="Time_Of_Day">
+                  <Subelement Path="1,1">
+                    <StartValue>TOD#08:02:00</StartValue>
+                  </Subelement>
+                  <Subelement Path="1,2">
+                    <StartValue>TOD#00:00:00</StartValue>
+                  </Subelement>
+                  <Subelement Path="1,3">
+                    <StartValue>TOD#12:02:00</StartValue>
+                  </Subelement>
+                  <Subelement Path="1,4">
+                    <StartValue>TOD#00:00:00</StartValue>
+                  </Subelement>
+                  <Subelement Path="2,1">
+                    <StartValue>TOD#16:02:00</StartValue>
+                  </Subelement>
+                  <Subelement Path="2,2">
+                    <StartValue>TOD#00:00:00</StartValue>
+                  </Subelement>
+                  <Subelement Path="2,3">
+                    <StartValue>TOD#20:02:00</StartValue>
+                  </Subelement>
+                  <Subelement Path="2,4">
+                    <StartValue>TOD#00:00:00</StartValue>
+                  </Subelement>
+                  <Subelement Path="3,1">
+                    <StartValue>TOD#00:02:00</StartValue>
+                  </Subelement>
+                  <Subelement Path="3,2">
+                    <StartValue>TOD#00:00:00</StartValue>
+                  </Subelement>
+                  <Subelement Path="3,3">
+                    <StartValue>TOD#04:02:00</StartValue>
+                  </Subelement>
+                  <Subelement Path="3,4">
+                    <StartValue>TOD#00:00:00</StartValue>
+                  </Subelement>
+                </Member>
+                <Member Name="endCircuitTime" Datatype="Time_Of_Day">
+                  <Subelement Path="1,1">
+                    <StartValue>TOD#08:13:00</StartValue>
+                  </Subelement>
+                  <Subelement Path="1,2">
+                    <StartValue>TOD#00:00:00</StartValue>
+                  </Subelement>
+                  <Subelement Path="1,3">
+                    <StartValue>TOD#12:13:00</StartValue>
+                  </Subelement>
+                  <Subelement Path="1,4">
+                    <StartValue>TOD#00:00:00</StartValue>
+                  </Subelement>
+                  <Subelement Path="2,1">
+                    <StartValue>TOD#16:13:00</StartValue>
+                  </Subelement>
+                  <Subelement Path="2,2">
+                    <StartValue>TOD#00:00:00</StartValue>
+                  </Subelement>
+                  <Subelement Path="2,3">
+                    <StartValue>TOD#20:13:00</StartValue>
+                  </Subelement>
+                  <Subelement Path="2,4">
+                    <StartValue>TOD#00:00:00</StartValue>
+                  </Subelement>
+                  <Subelement Path="3,1">
+                    <StartValue>TOD#00:13:00</StartValue>
+                  </Subelement>
+                  <Subelement Path="3,2">
+                    <StartValue>TOD#00:00:00</StartValue>
+                  </Subelement>
+                  <Subelement Path="3,3">
+                    <StartValue>TOD#04:13:00</StartValue>
+                  </Subelement>
+                  <Subelement Path="3,4">
+                    <StartValue>TOD#00:00:00</StartValue>
+                  </Subelement>
+                </Member>
+                <Member Name="end" Datatype="Time_Of_Day">
+                  <Subelement Path="1,1">
+                    <StartValue>TOD#08:15:00</StartValue>
+                  </Subelement>
+                  <Subelement Path="1,2">
+                    <StartValue>TOD#10:10:00</StartValue>
+                  </Subelement>
+                  <Subelement Path="1,3">
+                    <StartValue>TOD#12:15:00</StartValue>
+                  </Subelement>
+                  <Subelement Path="1,4">
+                    <StartValue>TOD#00:00:00</StartValue>
+                  </Subelement>
+                  <Subelement Path="2,1">
+                    <StartValue>TOD#16:15:00</StartValue>
+                  </Subelement>
+                  <Subelement Path="2,2">
+                    <StartValue>TOD#18:10:00</StartValue>
+                  </Subelement>
+                  <Subelement Path="2,3">
+                    <StartValue>TOD#20:15:00</StartValue>
+                  </Subelement>
+                  <Subelement Path="2,4">
+                    <StartValue>TOD#00:00:00</StartValue>
+                  </Subelement>
+                  <Subelement Path="3,1">
+                    <StartValue>TOD#00:15:00</StartValue>
+                  </Subelement>
+                  <Subelement Path="3,2">
+                    <StartValue>TOD#02:10:00</StartValue>
+                  </Subelement>
+                  <Subelement Path="3,3">
+                    <StartValue>TOD#04:15:00</StartValue>
+                  </Subelement>
+                  <Subelement Path="3,4">
+                    <StartValue>TOD#00:00:00</StartValue>
+                  </Subelement>
+                </Member>
+              </Section>
+            </Sections>
+          </Member>
+          <Member Name="end" Datatype="Time_Of_Day">
+            <Subelement Path="1">
+              <StartValue>TOD#13:30:00</StartValue>
+            </Subelement>
+            <Subelement Path="2">
+              <StartValue>TOD#21:30:00</StartValue>
+            </Subelement>
+            <Subelement Path="3">
+              <StartValue>TOD#05:30:00</StartValue>
+            </Subelement>
+          </Member>
+          <Member Name="startCircuitTime" Datatype="Time_Of_Day">
+            <Subelement Path="1">
+              <StartValue>TOD#13:33:00</StartValue>
+            </Subelement>
+            <Subelement Path="2">
+              <StartValue>TOD#21:33:00</StartValue>
+            </Subelement>
+            <Subelement Path="3">
+              <StartValue>TOD#05:33:00</StartValue>
+            </Subelement>
+          </Member>
+        </Section>
+      </Sections>
+    </Member>
+    <Member Name="productionTimes" Datatype="&quot;LSicar_typeProdTimesHmi&quot;" Remanence="Retain" />
+  </Section>
+</Sections></Interface>
+      <Name>ShiftmodelInterfaceHmi</Name>
+      <Namespace />
+      <Number>103</Number>
+      <ProgrammingLanguage>DB</ProgrammingLanguage>
+    </AttributeList>
+    <ObjectList>
+      <MultilingualText ID="1" CompositionName="Comment">
+        <ObjectList>
+          <MultilingualTextItem ID="2" CompositionName="Items">
+            <AttributeList>
+              <Culture>de-DE</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="3" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-US</Culture>
+              <Text>Global DB for HMI interface</Text>
+            </AttributeList>
+          </MultilingualTextItem>
+        </ObjectList>
+      </MultilingualText>
+      <MultilingualText ID="4" CompositionName="Title">
+        <ObjectList>
+          <MultilingualTextItem ID="5" CompositionName="Items">
+            <AttributeList>
+              <Culture>de-DE</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="6" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-US</Culture>
+              <Text>ShiftmodelTimes</Text>
+            </AttributeList>
+          </MultilingualTextItem>
+        </ObjectList>
+      </MultilingualText>
+    </ObjectList>
+  </SW.Blocks.InstanceDB>
+</Document>

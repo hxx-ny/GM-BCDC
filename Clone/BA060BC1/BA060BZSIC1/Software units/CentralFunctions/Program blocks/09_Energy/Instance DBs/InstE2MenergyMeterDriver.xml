@@ -1,0 +1,150 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Document>
+  <Engineering version="V20" />
+  <SW.Blocks.InstanceDB ID="0">
+    <AttributeList>
+      <HeaderAuthor>SICAR</HeaderAuthor>
+      <HeaderFamily>E2M</HeaderFamily>
+      <HeaderName>E2M_AIEM</HeaderName>
+      <HeaderVersion>2.0</HeaderVersion>
+      <InstanceOfName>E2MenergyMeterDrv</InstanceOfName>
+      <InstanceOfType>FB</InstanceOfType>
+      <Interface><Sections xmlns="http://www.siemens.com/automation/Openness/SW/Interface/v5">
+  <Section Name="Input">
+    <Member Name="id" Datatype="HW_IO" />
+    <Member Name="firstByteData" Datatype="Int" />
+    <Member Name="connectionType" Datatype="Int" />
+    <Member Name="commResourceLimit" Datatype="Int" />
+    <Member Name="automaticUpdate" Datatype="Bool" />
+    <Member Name="resetMinMax" Datatype="Bool" />
+    <Member Name="resetEnergyCounter" Datatype="Bool" />
+    <Member Name="bitsConnectedHmi" Datatype="Bool" />
+    <Member Name="backupCycleEnCount" Datatype="Time" />
+  </Section>
+  <Section Name="Output">
+    <Member Name="timeBetweenUpdate" Datatype="Time" />
+    <Member Name="timeBetweenUpdateMax" Datatype="Time" />
+    <Member Name="timeStampMeasValues" Datatype="DTL" Version="1.0" />
+    <Member Name="driverData" Datatype="&quot;LSicar_typeEnMeterVisuStruct&quot;">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="energyCounter" Datatype="&quot;typeEnCounter&quot;">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="errorCode" Datatype="DWord" />
+    <Member Name="errorLocation" Datatype="Word" />
+    <Member Name="timeStampEnCount" Datatype="DTL" Version="1.0" />
+  </Section>
+  <Section Name="InOut">
+    <Member Name="bitsHmi" Datatype="&quot;typeEnMeterBits&quot;" />
+    <Member Name="commResourceCounter" Datatype="Int" />
+  </Section>
+  <Section Name="Static">
+    <Member Name="instReadDataRecord" Datatype="RDREC" Version="1.0">
+      <AttributeList>
+        <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="instWriteDataRecord" Datatype="WRREC" Version="1.1">
+      <AttributeList>
+        <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="instEnCountUpdateTimer" Datatype="TON_TIME" Version="1.0">
+      <AttributeList>
+        <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="instTimeMeasurement" Datatype="TON_TIME" Version="1.0">
+      <AttributeList>
+        <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="instWatchdog" Datatype="TON_TIME" Version="1.0">
+      <AttributeList>
+        <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="statInputVariablesOk" Datatype="Bool" />
+    <Member Name="statResetEnCountRequest" Datatype="Bool" />
+    <Member Name="statReadDataRecRequest" Datatype="Bool" />
+    <Member Name="statWriteDataRecRequest" Datatype="Bool" />
+    <Member Name="statRestoreEnergy" Datatype="Bool" />
+    <Member Name="statStartAcyclicHmiOld" Datatype="Bool" />
+    <Member Name="statResetEnergyHmiOld" Datatype="Bool" />
+    <Member Name="statResetEnergyOld" Datatype="Bool" />
+    <Member Name="statResetMinMaxHmiOld" Datatype="Bool" />
+    <Member Name="statResetMinMaxOld" Datatype="Bool" />
+    <Member Name="statRunUpdateTimer" Datatype="Bool" />
+    <Member Name="statWatchdogRun" Datatype="Bool" />
+    <Member Name="statUserDataVariant" Datatype="Byte" />
+    <Member Name="statSmState" Datatype="Int" />
+    <Member Name="statSmStateNext" Datatype="Int" />
+    <Member Name="statReadRecIndex" Datatype="Int" />
+    <Member Name="statReadRecMaxLength" Datatype="UInt" />
+    <Member Name="statTimetoUpdate" Datatype="Time" />
+    <Member Name="statVmeasurementValues" Datatype="&quot;typeEnMeterValues&quot;" />
+    <Member Name="statVenergyCounter" Datatype="&quot;typeEnMeterCounter&quot;" />
+    <Member Name="statBitsInternalHmi" Datatype="&quot;typeEnMeterBits&quot;" />
+    <Member Name="statRestoreEnCountValues" Datatype="&quot;typeEnMeterRestore&quot;" Remanence="Retain" />
+    <Member Name="statAuxTimeBetweenUpdateMax" Datatype="Time">
+      <AttributeList>
+        <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="statErrorCode" Datatype="DWord">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+    </Member>
+  </Section>
+</Sections></Interface>
+      <Name>InstE2MenergyMeterDriver</Name>
+      <Namespace />
+      <Number>56</Number>
+      <ProgrammingLanguage>DB</ProgrammingLanguage>
+    </AttributeList>
+    <ObjectList>
+      <MultilingualText ID="1" CompositionName="Comment">
+        <ObjectList>
+          <MultilingualTextItem ID="2" CompositionName="Items">
+            <AttributeList>
+              <Culture>de-DE</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="3" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-US</Culture>
+              <Text>Energy Meter</Text>
+            </AttributeList>
+          </MultilingualTextItem>
+        </ObjectList>
+      </MultilingualText>
+      <MultilingualText ID="4" CompositionName="Title">
+        <ObjectList>
+          <MultilingualTextItem ID="5" CompositionName="Items">
+            <AttributeList>
+              <Culture>de-DE</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="6" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-US</Culture>
+              <Text>Instance of FB  E2MenergyMeterDrv</Text>
+            </AttributeList>
+          </MultilingualTextItem>
+        </ObjectList>
+      </MultilingualText>
+    </ObjectList>
+  </SW.Blocks.InstanceDB>
+</Document>

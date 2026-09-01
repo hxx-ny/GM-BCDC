@@ -1,0 +1,647 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Document>
+  <Engineering version="V20" />
+  <SW.Blocks.FC ID="0">
+    <AttributeList>
+      <HeaderAuthor>SICAR</HeaderAuthor>
+      <HeaderFamily>Energy_EEM</HeaderFamily>
+      <HeaderVersion>1.0</HeaderVersion>
+      <Interface><Sections xmlns="http://www.siemens.com/automation/Openness/SW/Interface/v5">
+  <Section Name="Input" />
+  <Section Name="Output" />
+  <Section Name="InOut" />
+  <Section Name="Temp" />
+  <Section Name="Constant" />
+  <Section Name="Return">
+    <Member Name="Ret_Val" Datatype="Void">
+      <Comment>
+        <MultiLanguageText Lang="en-US">Ret_Val</MultiLanguageText>
+      </Comment>
+    </Member>
+  </Section>
+</Sections></Interface>
+      <IsIECCheckEnabled>true</IsIECCheckEnabled>
+      <Name>CallEnSeem</Name>
+      <Namespace />
+      <Number>34</Number>
+      <ProgrammingLanguage>LAD</ProgrammingLanguage>
+      <SetENOAutomatically>true</SetENOAutomatically>
+    </AttributeList>
+    <ObjectList>
+      <MultilingualText ID="1" CompositionName="Comment">
+        <ObjectList>
+          <MultilingualTextItem ID="2" CompositionName="Items">
+            <AttributeList>
+              <Culture>de-DE</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="3" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-US</Culture>
+              <Text>The S7 Energy Efficiency-Monitor (or S7 EE-Monitor) allows you to record the energy consumption of your machine in a SIMATIC controller, and to analyze the results on the basis of the energy and media requirements.
+
+
+ 
+
+ </Text>
+            </AttributeList>
+          </MultilingualTextItem>
+        </ObjectList>
+      </MultilingualText>
+      <SW.Blocks.CompileUnit ID="4" CompositionName="CompileUnits">
+        <AttributeList>
+          <NetworkSource />
+          <ProgrammingLanguage>LAD</ProgrammingLanguage>
+        </AttributeList>
+        <ObjectList>
+          <MultilingualText ID="5" CompositionName="Comment">
+            <ObjectList>
+              <MultilingualTextItem ID="6" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="7" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text>SIEMENS AG / (c)Copyright 2023
+------------------------------------------------------------------------------
+Title:            CallEnSeem (FC34)
+Comment/Function: The S7 Energy Efficiency-Monitor (or S7 EE-Monitor) allows you to record the energy consumption of your machine in a SIMATIC controller, and to analyze the results on the basis of the energy and media requirements.
+Library/Family:   Energy_EEM
+Author:           SICAR
+Tested with:      ---
+Engineering:      TIA Portal V19
+Restrictions:     -
+Requirements:     ---
+------------------------------------------------------------------------------
+Change log table:
+Version | Date | Expert in charge | Changes applied
+-------|---------|-------------|--------------------------------------------
+01.00.00 | 01.01.1999 | Person x | First released version
+01.00.01 | 02.01.1999 | Person y | Block was Updated </Text>
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+          <MultilingualText ID="8" CompositionName="Title">
+            <ObjectList>
+              <MultilingualTextItem ID="9" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="A" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text>BLOCK INFO HEADER</Text>
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+        </ObjectList>
+      </SW.Blocks.CompileUnit>
+      <SW.Blocks.CompileUnit ID="B" CompositionName="CompileUnits">
+        <AttributeList>
+          <NetworkSource />
+          <ProgrammingLanguage>LAD</ProgrammingLanguage>
+        </AttributeList>
+        <ObjectList>
+          <MultilingualText ID="C" CompositionName="Comment">
+            <ObjectList>
+              <MultilingualTextItem ID="D" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="E" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text>The Energy Efficiency Monitor “EEM” integrated in SICAR is based on the application example in entry ID: 109753230 V1.0 dated 02/2018 of the Siemens Industry Online Support, see: 
+
+https://support.industry.siemens.com/cs/document/109753230/-s7-energy-efficiency-monitor-for-machines?dti=0&amp;lc=en-WW 
+
+**License**  
+The software package has to be licensed. The necessary license key has to be entered in the data block for energy data “EEmData”, in the array item “licenseKey”. 
+ 
+{.pageWidth}
+![Image](EemEnPiCalc/en/image1.PNG)
+
+The S7 Energy Efficiency-Monitor (or S7 EE-Monitor) allows you to record the energy consumption of your machine in a SIMATIC controller, and to analyze the results on the basis of the energy and media requirements.  
+https://support.industry.siemens.com/cs/document/109753230/s7-energieeffizienz-monitor-für-maschinen?dti=0&amp;lc=de-WW 
+
+**PLC Data types**  
+ LSicar_typeEeMenPiCalc 
+ LSicar_typeEeMenPiEstate 
+ LSicar_typeEeMenPiLimit 
+ typeEnMeterOutputData 
+ typeMeasDataProfileE3 
+ 
+**WinCC Faceplates**  
+
+![Image](EemEnPiCalc/en/image3.PNG)
+
+**WinCC Screen**  
+ 
+![Image](EemEnPiCalc/en/image4.PNG)
+ 
+# Devices &amp; networks 
+
+An additional AI Energy Meter has been added and configured in the SICAR project. The user data has been  
+configured as module version “EE@Industry measured data profile e3”.  
+
+Select the module version according to your requirements. The data assignment in the FC blocks has to be adjusted according to the selected module version. 
+
+![Image](EemEnPiCalc/en/image5.PNG)
+ 
+ 
+
+#### PLC Programm blocks 
+
+##### CallEnSeem  
+The block is called in OB “CYCLIC_INTERRUPT_100MS_OB” (100ms cycle). The block contains the following instructions which can be found in “Instructions &gt; Optional packages &gt; Energy Suite extensions”.
+
+**EnS_EEm_Calc:**  
+The instruction calculates operating state-related energy data of machines and plants for uniform efficiency evaluation, in accordance with the VDMA 34179 measuring directive. 
+
+---
+Note
+:     The instruction calculates the energy efficiency value of the respective state for up to 8 operating states, and the global energy efficiency value. 
+:     The maximum number of configurable measuring points is 10. Refer to the documentation of the entry ID. 
+
+---
+
+**EnS_EEm_Report:**  
+The instruction writes the data for the efficiency report to the data log on the SIMATIC memory card, in accordance with the VDMA 34179 measuring directive. The data log is a CSV file. 
+
+#### CallEnEffMonitor
+---
+Note
+:     The assignment of the readings as well as the formation of additional signals can be represented only exemplarily here. It has to be adapted to the actual plant conditions! 
+
+---
+
+* Networks 1 &amp; 2: The readings of the two AI-Energy-Meters are entered in the DB “EeMonitor”, in an array [0..9] in accordance with the measurement data profile “typeMeasDataProfileE3”. 
+* Network 3: According to the selection of a measuring point on the HMI, data of the respective measuring point is routed to the HMI data area. The selection is done with a Pull-Down menu and a symbolic I/O field. 
+* Network 4: Several tags in the EnS…data types are not marked as accessible / visible. In order to display these tags on the HMI all the same, they are routed to DB “EeMonitor” in structure “typeEnMeterWorkHmi”. There the tags are marked as accessible / visible.  
+* Network 5: A collective signal is generated, according to the exemplary calls for OP area 1. This is only an example! The collective signal shows that the plant is producing parts, by a disjunction (OR) of all outputs. If an output is controlled, the plant is moving and producing parts. This collective signal is used later on to generate the energetic states “eState”. A delay of 3 seconds has been configured so that a short break in controlling the outputs will not change the energetic state. *
+* Network 6: The signals for the energetic states are generated here. 
+* Network 7: Simulation On/Off: A part counter is simulated here. Note: the simulation can be switched on and off with a button in the screen. 
+* Network 8: Simulation On/Off. Energy counters for both AI-Energy-Meters are simulated here. Note: the simulation can be switched on and off with a button in the screen. 
+* Network 9: Call of blocks “EemDemoSimulation” and “EemDemoResetValEMeter”. 
+* Network 10: Call of block “EemEnPiCalc” and data routing according to the selection of a measuring point on the HMI. 
+* Network 11: Error evaluation of block “EemEnPiCalc” to generate ProDiag messages. 
+* Network 12: Error evaluation of block “EnS_EEm_Report” to generate ProDiag messages.  
+
+#### EemDemoResetValEMeter  
+
+The block resets certain measurement values by controlling the respective outputs in the I/O area of the AI-Energy-Meter. 
+
+#### EemDemoSimulation  
+
+This block simulates higher or lower energy values, according to the energetic states “eState”. 
+
+#### EemEnPiCalc
+This block calculates the ENPI (Energy value Pro Item). It substitutes the script “EEm_EnPI_Efficiency” of the entry ID. 
+
+---
+Note
+:     All block parameters are provided with “pre-defined actual parameters”.
+
+---
+
+**Operation mode Automatic / Manual**  
+
+The blocks are independent of operation modes. Therefor they are not assigned to any operation mode area. 
+
+**PLC Alarm text list**  
+
+The following PLC alarm text lists have been created: 
+
+* **EEMonitor_Calc_Warn_PD** ProDiag alarm text list for alarms by instruction “EnS_EEm_Calc”.   
+* **EEMonitor_Report_Warn_PD** ProDiag alarm text list for alarms by instruction “EnS_EEm_Report”.   
+Both PLC alarm text lists have been entered in the PLC alarm text list “GLOBAL_GENERAL_AlarmTextList”. 
+
+---
+Note
+:     The alarm texts are provided in two languages (German, English). Please consider the multilingual nature of the entries. 
+
+---
+
+#### PLC Data types 
+
+PLC data types used for PLC program block or HMI faceplate:  
+![Image](_Icon/reference.PNG)  See ..\Library Types\LSicar_typeEeMenPiCalc.pdf  
+
+#### WinCC Objects 
+
+**WinCC HMI-tags**  
+
+The HMI tags are stored in the tag table “AI_EnergyMeter_EEM” in the SICAR project.  
+
+**WinCC Text and graphics lists**  
+
+The text list “EE-MONITOR_MEASUREPOINT” contains the texts necessary for the pull-down menu / symbolic I/O field in the screen. Please take into account the multilingual nature of the entries.  
+
+**WinCC Faceplates**  
+
+The faceplates are stored in the project library, in folder “types”. They have been created using several WinCC objects; they are animated depending on the state. 
+
+* EEM_EnPI_EnergyPerItem:	display of ENPI (ENergy Per Item) 
+* EEM_ViewBar_Diff-AVG-REF:	bar display to compare reference value and average value 
+* EEM_ViewBar_EState-Total:	bar display of energy status (not used at this time) 
+* EEM_ViewBarCurve_EState:	Total: bar display and curve display of the energy values  
+
+**WinCC-screen** 
+
+1. HMI Screens:	EE-MONITOR_ENERGY: display of the energy values 
+2. HMI Popup-screens 
+	* EEM_LEGEND_Popup: 		Legend 
+	* EEM_INFO-MACHINE_Popup: 	Machine information 
+	* EEM_STARTMEASURE_Popup: 	Popup to start the normal measurement or the reference measurement  
+	* EEM_UIPE_Popup: 		display of voltage, current, power, and energy 
+	* MORE_EEM_Popup: 		Popup with additional buttons 
+	* MORE_AddOn_Popup: 		supplemented  with button “EE-Monitor” 
+
+ 
+
+{.pageWidth}
+![Image](EemEnPiCalc/en/image6.PNG)
+ 
+ 
+
+#### Additional information
+
+#### Update info
+
+#### Further documentations</Text>
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+          <MultilingualText ID="F" CompositionName="Title">
+            <ObjectList>
+              <MultilingualTextItem ID="10" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="11" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text>DESCRIPTION</Text>
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+        </ObjectList>
+      </SW.Blocks.CompileUnit>
+      <SW.Blocks.CompileUnit ID="12" CompositionName="CompileUnits">
+        <AttributeList>
+          <NetworkSource><FlgNet xmlns="http://www.siemens.com/automation/Openness/SW/NetworkSource/FlgNet/v5">
+  <Parts>
+    <Access Scope="GlobalVariable" UId="21">
+      <Symbol>
+        <Component Name="EeMonitorData" />
+        <Component Name="machineOperation" />
+        <Component Name="triggerRecalcOutput" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="22">
+      <Symbol>
+        <Component Name="EeMonitorData" />
+        <Component Name="machineOperation" />
+        <Component Name="triggerRecalcOutput" />
+      </Symbol>
+    </Access>
+    <Part Name="Contact" UId="23">
+      <Negated Name="operand" />
+    </Part>
+    <Part Name="Coil" UId="24" />
+  </Parts>
+  <Wires>
+    <Wire UId="25">
+      <Powerrail />
+      <NameCon UId="23" Name="in" />
+    </Wire>
+    <Wire UId="26">
+      <IdentCon UId="21" />
+      <NameCon UId="23" Name="operand" />
+    </Wire>
+    <Wire UId="27">
+      <NameCon UId="23" Name="out" />
+      <NameCon UId="24" Name="in" />
+    </Wire>
+    <Wire UId="28">
+      <IdentCon UId="22" />
+      <NameCon UId="24" Name="operand" />
+    </Wire>
+  </Wires>
+</FlgNet></NetworkSource>
+          <ProgrammingLanguage>LAD</ProgrammingLanguage>
+        </AttributeList>
+        <ObjectList>
+          <MultilingualText ID="13" CompositionName="Comment">
+            <ObjectList>
+              <MultilingualTextItem ID="14" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="15" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text>Toggle for autom. updating the values in the screen every 2nd cycle (every 200ms)</Text>
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+          <MultilingualText ID="16" CompositionName="Title">
+            <ObjectList>
+              <MultilingualTextItem ID="17" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="18" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text>EE-Monitor: "Recalc"</Text>
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+        </ObjectList>
+      </SW.Blocks.CompileUnit>
+      <SW.Blocks.CompileUnit ID="19" CompositionName="CompileUnits">
+        <AttributeList>
+          <NetworkSource><FlgNet xmlns="http://www.siemens.com/automation/Openness/SW/NetworkSource/FlgNet/v5">
+  <Parts>
+    <Access Scope="GlobalVariable" UId="21">
+      <Symbol>
+        <Component Name="EeMonitorData" />
+        <Component Name="machineConfiguration" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="22">
+      <Symbol>
+        <Component Name="EeMonitorData" />
+        <Component Name="machineOperation" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="23">
+      <Symbol>
+        <Component Name="EeMonitorData" />
+        <Component Name="measConfiguration" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="24">
+      <Symbol>
+        <Component Name="EeMonitorData" />
+        <Component Name="measOperation" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="25">
+      <Symbol>
+        <Component Name="EeMonitorData" />
+        <Component Name="calcError" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="26">
+      <Symbol>
+        <Component Name="EeMonitorData" />
+        <Component Name="calcStatus" />
+      </Symbol>
+    </Access>
+    <Part Name="EnS_EEm_Calc" Version="3.3" UId="27" />
+  </Parts>
+  <Wires>
+    <Wire UId="28">
+      <Powerrail />
+      <NameCon UId="27" Name="en" />
+    </Wire>
+    <Wire UId="29">
+      <IdentCon UId="21" />
+      <NameCon UId="27" Name="machineConfiguration" />
+    </Wire>
+    <Wire UId="30">
+      <IdentCon UId="22" />
+      <NameCon UId="27" Name="machineOperation" />
+    </Wire>
+    <Wire UId="31">
+      <IdentCon UId="23" />
+      <NameCon UId="27" Name="measConfiguration" />
+    </Wire>
+    <Wire UId="32">
+      <IdentCon UId="24" />
+      <NameCon UId="27" Name="measOperation" />
+    </Wire>
+    <Wire UId="33">
+      <NameCon UId="27" Name="error" />
+      <IdentCon UId="25" />
+    </Wire>
+    <Wire UId="34">
+      <NameCon UId="27" Name="status" />
+      <IdentCon UId="26" />
+    </Wire>
+  </Wires>
+</FlgNet></NetworkSource>
+          <ProgrammingLanguage>LAD</ProgrammingLanguage>
+        </AttributeList>
+        <ObjectList>
+          <MultilingualText ID="1A" CompositionName="Comment">
+            <ObjectList>
+              <MultilingualTextItem ID="1B" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="1C" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text>Call &amp; measure-data into "EEmData_DB"</Text>
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+          <MultilingualText ID="1D" CompositionName="Title">
+            <ObjectList>
+              <MultilingualTextItem ID="1E" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="1F" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text>EE-Monitor: Call Ens_EEm_Calc</Text>
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+        </ObjectList>
+      </SW.Blocks.CompileUnit>
+      <SW.Blocks.CompileUnit ID="20" CompositionName="CompileUnits">
+        <AttributeList>
+          <NetworkSource><FlgNet xmlns="http://www.siemens.com/automation/Openness/SW/NetworkSource/FlgNet/v5">
+  <Parts>
+    <Access Scope="GlobalVariable" UId="21">
+      <Symbol>
+        <Component Name="EeMonitorData" />
+        <Component Name="reportCreateCsv" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="22">
+      <Symbol>
+        <Component Name="EeMonitorData" />
+        <Component Name="machineConfiguration" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="23">
+      <Symbol>
+        <Component Name="EeMonitorData" />
+        <Component Name="machineOperation" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="24">
+      <Symbol>
+        <Component Name="EeMonitorData" />
+        <Component Name="measConfiguration" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="25">
+      <Symbol>
+        <Component Name="EeMonitorData" />
+        <Component Name="measOperation" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="26">
+      <Symbol>
+        <Component Name="EeMonitorData" />
+        <Component Name="reportStatus" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="27">
+      <Symbol>
+        <Component Name="EeMonitorData" />
+        <Component Name="reportNameCsv" />
+      </Symbol>
+    </Access>
+    <Part Name="EnS_EEm_Report" Version="3.0" UId="28">
+      <Instance Scope="GlobalVariable" UId="29">
+        <Component Name="InstEnSeemReport" />
+      </Instance>
+    </Part>
+  </Parts>
+  <Wires>
+    <Wire UId="33">
+      <Powerrail />
+      <NameCon UId="28" Name="en" />
+    </Wire>
+    <Wire UId="34">
+      <IdentCon UId="21" />
+      <NameCon UId="28" Name="request" />
+    </Wire>
+    <Wire UId="35">
+      <IdentCon UId="22" />
+      <NameCon UId="28" Name="machineConfiguration" />
+    </Wire>
+    <Wire UId="36">
+      <IdentCon UId="23" />
+      <NameCon UId="28" Name="machineOperation" />
+    </Wire>
+    <Wire UId="37">
+      <IdentCon UId="24" />
+      <NameCon UId="28" Name="measValueConfiguration" />
+    </Wire>
+    <Wire UId="38">
+      <IdentCon UId="25" />
+      <NameCon UId="28" Name="measValueOperation" />
+    </Wire>
+    <Wire UId="39">
+      <NameCon UId="28" Name="busy" />
+      <OpenCon UId="30" />
+    </Wire>
+    <Wire UId="40">
+      <NameCon UId="28" Name="done" />
+      <OpenCon UId="31" />
+    </Wire>
+    <Wire UId="41">
+      <NameCon UId="28" Name="error" />
+      <OpenCon UId="32" />
+    </Wire>
+    <Wire UId="42">
+      <NameCon UId="28" Name="status" />
+      <IdentCon UId="26" />
+    </Wire>
+    <Wire UId="43">
+      <NameCon UId="28" Name="dataLogNameAct" />
+      <IdentCon UId="27" />
+    </Wire>
+  </Wires>
+</FlgNet></NetworkSource>
+          <ProgrammingLanguage>LAD</ProgrammingLanguage>
+        </AttributeList>
+        <ObjectList>
+          <MultilingualText ID="21" CompositionName="Comment">
+            <ObjectList>
+              <MultilingualTextItem ID="22" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="23" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text> EEm_Report - Write data to MMC</Text>
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+          <MultilingualText ID="24" CompositionName="Title">
+            <ObjectList>
+              <MultilingualTextItem ID="25" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="26" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text>EE-Monitor: Call EnS_EEm_Report</Text>
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+        </ObjectList>
+      </SW.Blocks.CompileUnit>
+      <MultilingualText ID="27" CompositionName="Title">
+        <ObjectList>
+          <MultilingualTextItem ID="28" CompositionName="Items">
+            <AttributeList>
+              <Culture>de-DE</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="29" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-US</Culture>
+              <Text>CallEnSeem</Text>
+            </AttributeList>
+          </MultilingualTextItem>
+        </ObjectList>
+      </MultilingualText>
+    </ObjectList>
+  </SW.Blocks.FC>
+</Document>

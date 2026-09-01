@@ -1,0 +1,742 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Document>
+  <Engineering version="V20" />
+  <SW.Blocks.GlobalDB ID="0">
+    <AttributeList>
+      <Access>Published</Access>
+      <Interface><Sections xmlns="http://www.siemens.com/automation/Openness/SW/Interface/v5">
+  <Section Name="Static">
+    <Member Name="unitStatus" Datatype="&quot;LAF_typeUnitStatus&quot;">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <Comment>
+        <MultiLanguageText Lang="en-US">Status of the unit</MultiLanguageText>
+      </Comment>
+    </Member>
+    <Member Name="emFeedback" Datatype="Array[0.._.U1_NO_OF_EMs] of &quot;LUC_typeEmFeedback&quot;">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <Comment>
+        <MultiLanguageText Lang="en-US">Status of the individual equipment modules</MultiLanguageText>
+      </Comment>
+    </Member>
+    <Member Name="emRelations" Datatype="Struct">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <Member Name="em00" Datatype="&quot;Unit1.type_emRelations_em0&quot;">
+        <AttributeList>
+          <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+        </AttributeList>
+      </Member>
+      <Member Name="em01" Datatype="&quot;Unit1.type_emRelations_em1&quot;">
+        <AttributeList>
+          <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+        </AttributeList>
+      </Member>
+      <Member Name="em02" Datatype="&quot;Unit1.type_emRelations_em2&quot;">
+        <AttributeList>
+          <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+        </AttributeList>
+      </Member>
+      <Member Name="em03" Datatype="&quot;Unit1.type_emRelations_em3&quot;">
+        <AttributeList>
+          <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+        </AttributeList>
+        <Sections>
+          <Section Name="None">
+            <Member Name="LReal" Datatype="Struct">
+              <Member Name="01" Datatype="LReal">
+                <StartValue>1000000.0</StartValue>
+              </Member>
+            </Member>
+          </Section>
+        </Sections>
+      </Member>
+      <Member Name="em04" Datatype="&quot;Unit1.type_emRelations_em4&quot;">
+        <AttributeList>
+          <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+        </AttributeList>
+        <Sections>
+          <Section Name="None">
+            <Member Name="LReal" Datatype="Struct">
+              <Member Name="01" Datatype="LReal">
+                <StartValue>1000000.0</StartValue>
+              </Member>
+            </Member>
+          </Section>
+        </Sections>
+      </Member>
+      <Member Name="em05" Datatype="&quot;Unit1.type_emRelations_em5&quot;">
+        <AttributeList>
+          <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+        </AttributeList>
+      </Member>
+      <Member Name="em06" Datatype="&quot;Unit1.type_emRelations_em6&quot;">
+        <AttributeList>
+          <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+        </AttributeList>
+      </Member>
+      <Member Name="em07" Datatype="&quot;Unit1.type_emRelations_em7&quot;">
+        <AttributeList>
+          <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+        </AttributeList>
+      </Member>
+      <Member Name="em08" Datatype="&quot;Unit1.type_emRelations_em8&quot;">
+        <AttributeList>
+          <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+        </AttributeList>
+        <AssignedProDiagFB>Unit1.ProDiag</AssignedProDiagFB>
+      </Member>
+      <Member Name="em09" Datatype="&quot;Unit1.type_emRelations_em9&quot;">
+        <AttributeList>
+          <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+        </AttributeList>
+      </Member>
+      <Member Name="em10" Datatype="&quot;Unit1.type_emRelations_em10&quot;">
+        <AttributeList>
+          <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+        </AttributeList>
+        <AssignedProDiagFB>Unit1.ProDiag</AssignedProDiagFB>
+      </Member>
+      <Member Name="em11" Datatype="&quot;Unit1.type_emRelations_em11&quot;">
+        <AttributeList>
+          <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+        </AttributeList>
+      </Member>
+      <Member Name="em12" Datatype="&quot;Unit1.type_emRelations_em12&quot;">
+        <AttributeList>
+          <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+        </AttributeList>
+      </Member>
+      <Member Name="em13" Datatype="&quot;Unit1.type_emRelations_em13&quot;">
+        <AttributeList>
+          <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+        </AttributeList>
+      </Member>
+    </Member>
+    <Member Name="emIt1" Datatype="Array[0..13] of &quot;LER_OEM_Data&quot;" />
+    <Member Name="emIt2" Datatype="Array[0..13] of &quot;LER_OEM_Data&quot;" />
+    <Member Name="enableControlInterfaces" Datatype="&quot;LAF_typeEnableControlInterfaces&quot;">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="oem" Datatype="Array[0..10] of &quot;LER_OEM_Data&quot;">
+      <AttributeList>
+        <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="FATModeSelect" Datatype="&quot;LER_TypeFATMode_ModeSelect&quot;">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="FATModeInterface" Datatype="&quot;LER_TypeFATModeInterface&quot;">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="signalStack" Datatype="&quot;LUC_typeSignalStackByBool&quot;">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="clock" Datatype="&quot;LAF_typeGlobalClockMem&quot;">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="sleep" Datatype="Struct">
+      <Member Name="State" Datatype="&quot;LER_typeSleepMode&quot;">
+        <AttributeList>
+          <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+        </AttributeList>
+      </Member>
+      <Member Name="command" Datatype="&quot;LER_typeSleep&quot;">
+        <AttributeList>
+          <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+        </AttributeList>
+      </Member>
+    </Member>
+    <Member Name="DryRunDataStatusCheck" Datatype="Array[0..7] of Bool">
+      <Subelement Path="0">
+        <Comment>
+          <MultiLanguageText Lang="en-US">True : Part OK / false : Part NG</MultiLanguageText>
+        </Comment>
+      </Subelement>
+      <Subelement Path="2">
+        <Comment>
+          <MultiLanguageText Lang="en-US">True : always NG</MultiLanguageText>
+        </Comment>
+      </Subelement>
+      <Subelement Path="3">
+        <Comment>
+          <MultiLanguageText Lang="en-US">True : always OK</MultiLanguageText>
+        </Comment>
+      </Subelement>
+    </Member>
+    <Member Name="SpecialFunctionMode" Datatype="Struct">
+      <Member Name="EM0_JRdetectPV" Datatype="Array[0..15] of Bool" />
+      <Member Name="EM1_JRdetectPV" Datatype="Array[0..15] of Bool" />
+      <Member Name="EM2_JRdetectPV" Datatype="Array[0..15] of Bool" />
+      <Member Name="EM3_JRdetectPV" Datatype="Array[0..15] of Bool" />
+      <Member Name="EM4_JRdetectPV" Datatype="Array[0..15] of Bool" />
+      <Member Name="EM5_JRdetectPV" Datatype="Array[0..15] of Bool" />
+      <Member Name="EM6_JRdetectPV" Datatype="Array[0..15] of Bool" />
+      <Member Name="EM7_JRdetectPV" Datatype="Array[0..15] of Bool" />
+      <Member Name="EM8_JRdetectPV" Datatype="Array[0..15] of Bool" />
+      <Member Name="EM9_JRdetectPV" Datatype="Array[0..15] of Bool" />
+      <Member Name="EM10_JRdetectPV" Datatype="Array[0..15] of Bool" />
+      <Member Name="EM11_JRdetectPV" Datatype="Array[0..15] of Bool" />
+      <Member Name="EM12_JRdetectPV" Datatype="Array[0..15] of Bool" />
+      <Member Name="EM13_JRdetectPV" Datatype="Array[0..15] of Bool" />
+    </Member>
+    <Member Name="motionOFF" Datatype="Struct">
+      <Member Name="DR1" Datatype="Bool" />
+      <Member Name="DR2" Datatype="Bool" />
+      <Member Name="DR3" Datatype="Bool" />
+      <Member Name="DR4" Datatype="Bool" />
+      <Member Name="DR5" Datatype="Bool" />
+      <Member Name="DR6" Datatype="Bool" />
+      <Member Name="DR7" Datatype="Bool" />
+      <Member Name="DR8" Datatype="Bool" />
+      <Member Name="DR9" Datatype="Bool" />
+      <Member Name="DR10" Datatype="Bool" />
+      <Member Name="DR11" Datatype="Bool" />
+      <Member Name="DR12" Datatype="Bool" />
+      <Member Name="DR13" Datatype="Bool" />
+      <Member Name="DR14" Datatype="Bool" />
+      <Member Name="DR15" Datatype="Bool" />
+      <Member Name="DR16" Datatype="Bool" />
+      <Member Name="DR17" Datatype="Bool" />
+      <Member Name="DR18" Datatype="Bool" />
+      <Member Name="DR19" Datatype="Bool" />
+      <Member Name="DR20" Datatype="Bool" />
+    </Member>
+    <Member Name="slmRunning" Datatype="Bool">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="slmPowerOff" Datatype="Bool">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="InterfaceTestMode" Datatype="Bool">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="CapabilityModeComplete" Datatype="Bool">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="SamplingModeComplete" Datatype="Bool">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="stateCommandsExecute" Datatype="Bool">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="unitAnyDoorUnlock" Datatype="Bool">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="emAnyDoorUnlock" Datatype="Bool" />
+    <Member Name="SleepModeActivationTime" Datatype="Time" />
+    <Member Name="DeepSleepModeActivationTime" Datatype="Time" />
+    <Member Name="SleepModeChangeReq" Datatype="Bool" />
+    <Member Name="DeepSleepModeChangeReq" Datatype="Bool" />
+    <Member Name="WakeupRecoveryRequired" Datatype="Bool" />
+    <Member Name="========Communication========" Datatype="Bool">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="BA010" Datatype="&quot;LER_typeCommunication&quot;" />
+    <Member Name="BA015" Datatype="&quot;LER_typeCommunication&quot;" />
+    <Member Name="BA030" Datatype="&quot;LER_typeCommunication&quot;">
+      <Sections>
+        <Section Name="None">
+          <Member Name="StackToInspection" Datatype="&quot;LER_typeCommunicationData_S2I&quot;">
+            <Sections>
+              <Section Name="None">
+                <Member Name="UnitStatus" Datatype="&quot;LER_typeCommunicationUnitStatus&quot;">
+                  <Sections>
+                    <Section Name="None">
+                      <Member Name="state" Datatype="&quot;LUC_typeStates&quot;">
+                        <Sections>
+                          <Section Name="None">
+                            <Member Name="stopped" Datatype="Bool">
+                              <StartValue>TRUE</StartValue>
+                            </Member>
+                          </Section>
+                        </Sections>
+                      </Member>
+                    </Section>
+                  </Sections>
+                </Member>
+                <Member Name="InterfaceData" Datatype="&quot;LER_typeCommunicationInterfaceData&quot;">
+                  <Sections>
+                    <Section Name="None">
+                      <Member Name="Bool" Datatype="Array[0..95] of Bool">
+                        <Subelement Path="4">
+                          <StartValue>TRUE</StartValue>
+                        </Subelement>
+                        <Subelement Path="51">
+                          <StartValue>TRUE</StartValue>
+                        </Subelement>
+                      </Member>
+                    </Section>
+                  </Sections>
+                </Member>
+              </Section>
+            </Sections>
+          </Member>
+        </Section>
+      </Sections>
+    </Member>
+    <Member Name="BA040" Datatype="&quot;LER_typeCommunication&quot;">
+      <Sections>
+        <Section Name="None">
+          <Member Name="StackToInspection" Datatype="&quot;LER_typeCommunicationData_S2I&quot;">
+            <Sections>
+              <Section Name="None">
+                <Member Name="UnitStatus" Datatype="&quot;LER_typeCommunicationUnitStatus&quot;">
+                  <Sections>
+                    <Section Name="None">
+                      <Member Name="state" Datatype="&quot;LUC_typeStates&quot;">
+                        <Sections>
+                          <Section Name="None">
+                            <Member Name="stopped" Datatype="Bool">
+                              <StartValue>TRUE</StartValue>
+                            </Member>
+                          </Section>
+                        </Sections>
+                      </Member>
+                    </Section>
+                  </Sections>
+                </Member>
+                <Member Name="InterfaceData" Datatype="&quot;LER_typeCommunicationInterfaceData&quot;">
+                  <Sections>
+                    <Section Name="None">
+                      <Member Name="Bool" Datatype="Array[0..95] of Bool">
+                        <Subelement Path="4">
+                          <StartValue>TRUE</StartValue>
+                        </Subelement>
+                        <Subelement Path="51">
+                          <StartValue>TRUE</StartValue>
+                        </Subelement>
+                      </Member>
+                    </Section>
+                  </Sections>
+                </Member>
+              </Section>
+            </Sections>
+          </Member>
+        </Section>
+      </Sections>
+    </Member>
+    <Member Name="BA100" Datatype="&quot;LER_type_mzc_Communication&quot;">
+      <AttributeList>
+        <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="UnitCommunication" Datatype="Struct">
+      <Member Name="ToConveyorA" Datatype="&quot;LER_typeCommunicationData_Conveyor&quot;">
+        <Sections>
+          <Section Name="None">
+            <Member Name="InterfaceData" Datatype="&quot;LER_typeCommunicationInterfaceData&quot;">
+              <Sections>
+                <Section Name="None">
+                  <Member Name="Bool" Datatype="Array[0..95] of Bool">
+                    <Subelement Path="0">
+                      <Comment>
+                        <MultiLanguageText Lang="en-US">Heartbeat</MultiLanguageText>
+                      </Comment>
+                    </Subelement>
+                    <Subelement Path="1">
+                      <Comment>
+                        <MultiLanguageText Lang="en-US">ReadyForOperation</MultiLanguageText>
+                      </Comment>
+                    </Subelement>
+                    <Subelement Path="2">
+                      <Comment>
+                        <MultiLanguageText Lang="en-US">MachineInOperation</MultiLanguageText>
+                      </Comment>
+                    </Subelement>
+                    <Subelement Path="3">
+                      <Comment>
+                        <MultiLanguageText Lang="en-US">NoInterference</MultiLanguageText>
+                      </Comment>
+                    </Subelement>
+                    <Subelement Path="10">
+                      <Comment>
+                        <MultiLanguageText Lang="en-US">PartOn</MultiLanguageText>
+                      </Comment>
+                    </Subelement>
+                    <Subelement Path="11">
+                      <Comment>
+                        <MultiLanguageText Lang="en-US">PartReady</MultiLanguageText>
+                      </Comment>
+                    </Subelement>
+                    <Subelement Path="20">
+                      <Comment>
+                        <MultiLanguageText Lang="en-US">LoaderOutsideModule</MultiLanguageText>
+                      </Comment>
+                    </Subelement>
+                    <Subelement Path="21">
+                      <Comment>
+                        <MultiLanguageText Lang="en-US">LoaderOutsideCollision</MultiLanguageText>
+                      </Comment>
+                    </Subelement>
+                    <Subelement Path="22">
+                      <Comment>
+                        <MultiLanguageText Lang="en-US">RequestCollisionON</MultiLanguageText>
+                      </Comment>
+                    </Subelement>
+                    <Subelement Path="30">
+                      <Comment>
+                        <MultiLanguageText Lang="en-US">UnloadRun</MultiLanguageText>
+                      </Comment>
+                    </Subelement>
+                    <Subelement Path="31">
+                      <Comment>
+                        <MultiLanguageText Lang="en-US">QrReadReady</MultiLanguageText>
+                      </Comment>
+                    </Subelement>
+                    <Subelement Path="32">
+                      <Comment>
+                        <MultiLanguageText Lang="en-US">UnloadReady</MultiLanguageText>
+                      </Comment>
+                    </Subelement>
+                    <Subelement Path="33">
+                      <Comment>
+                        <MultiLanguageText Lang="en-US">UnloadComplete</MultiLanguageText>
+                      </Comment>
+                    </Subelement>
+                  </Member>
+                </Section>
+              </Sections>
+            </Member>
+          </Section>
+        </Sections>
+      </Member>
+      <Member Name="FromConveyorA" Datatype="&quot;LER_typeCommunicationData_Conveyor&quot;">
+        <Sections>
+          <Section Name="None">
+            <Member Name="InterfaceData" Datatype="&quot;LER_typeCommunicationInterfaceData&quot;">
+              <Sections>
+                <Section Name="None">
+                  <Member Name="Bool" Datatype="Array[0..95] of Bool">
+                    <Subelement Path="0">
+                      <Comment>
+                        <MultiLanguageText Lang="en-US">Heartbeat</MultiLanguageText>
+                      </Comment>
+                    </Subelement>
+                    <Subelement Path="1">
+                      <Comment>
+                        <MultiLanguageText Lang="en-US">ReadyForOperation</MultiLanguageText>
+                      </Comment>
+                    </Subelement>
+                    <Subelement Path="2">
+                      <Comment>
+                        <MultiLanguageText Lang="en-US">MachineInOperation</MultiLanguageText>
+                      </Comment>
+                    </Subelement>
+                    <Subelement Path="3">
+                      <Comment>
+                        <MultiLanguageText Lang="en-US">NoInterference</MultiLanguageText>
+                      </Comment>
+                    </Subelement>
+                    <Subelement Path="10">
+                      <Comment>
+                        <MultiLanguageText Lang="en-US">PartOn</MultiLanguageText>
+                      </Comment>
+                    </Subelement>
+                    <Subelement Path="11">
+                      <Comment>
+                        <MultiLanguageText Lang="en-US">PartReady</MultiLanguageText>
+                      </Comment>
+                    </Subelement>
+                    <Subelement Path="20">
+                      <Comment>
+                        <MultiLanguageText Lang="en-US">CollisionAreaOn</MultiLanguageText>
+                      </Comment>
+                    </Subelement>
+                    <Subelement Path="21">
+                      <Comment>
+                        <MultiLanguageText Lang="en-US">CollisionAreaOff</MultiLanguageText>
+                      </Comment>
+                    </Subelement>
+                    <Subelement Path="30">
+                      <Comment>
+                        <MultiLanguageText Lang="en-US">RequestPart</MultiLanguageText>
+                      </Comment>
+                    </Subelement>
+                    <Subelement Path="31">
+                      <Comment>
+                        <MultiLanguageText Lang="en-US">QrReadComplete</MultiLanguageText>
+                      </Comment>
+                    </Subelement>
+                    <Subelement Path="32">
+                      <Comment>
+                        <MultiLanguageText Lang="en-US">UngripRequest</MultiLanguageText>
+                      </Comment>
+                    </Subelement>
+                    <Subelement Path="33">
+                      <Comment>
+                        <MultiLanguageText Lang="en-US">LoadComplete</MultiLanguageText>
+                      </Comment>
+                    </Subelement>
+                  </Member>
+                </Section>
+              </Sections>
+            </Member>
+          </Section>
+        </Sections>
+      </Member>
+    </Member>
+    <Member Name="========Safety========" Datatype="Bool">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="devicesSummary" Datatype="&quot;LWONIK_typeDevicesStatusSummary&quot;" />
+    <Member Name="safetyZone1OpEnable" Datatype="&quot;LWONIK_typeSafetyZoneManualOperation&quot;">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="safetyStatusZone1" Datatype="&quot;LWONIK_typeZoneStatus&quot;" />
+    <Member Name="mainOpMode" Datatype="&quot;LWONIK_typeOperationMode&quot;">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="pHmiMode" Datatype="&quot;LWONIK_typePhmiMode&quot;">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="ScsMode" Datatype="&quot;LWONIK_typeScsMode&quot;">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="ScrapBox1" Datatype="&quot;LWONIK_typeScrapBox&quot;" />
+    <Member Name="ScrapBox2" Datatype="&quot;LWONIK_typeScrapBox&quot;" />
+    <Member Name="ScrapBox3" Datatype="&quot;LWONIK_typeScrapBox&quot;" />
+    <Member Name="FdoorStatus" Datatype="&quot;LWONIK_typeFromSafetyDoorStatus&quot;">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="EstopStatus" Datatype="&quot;LWONIK_typeFromSafetyEstopStatus&quot;">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="OPLampStatus" Datatype="&quot;LWONIK_typeToSafetyLampStatus&quot;" />
+    <Member Name="doorOpenRequest" Datatype="Bool">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="=======ETC========" Datatype="Bool" />
+    <Member Name="unitRecipe" Datatype="&quot;LER_typeUnitRecipe&quot;">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <Sections>
+        <Section Name="None">
+          <Member Name="unitRecipe" Datatype="&quot;LER_typeRecipe&quot;">
+            <Sections>
+              <Section Name="None">
+                <Member Name="sideTaping1stCount" Datatype="Int">
+                  <StartValue>2</StartValue>
+                </Member>
+                <Member Name="sideTaping2ndCount" Datatype="Int">
+                  <StartValue>1</StartValue>
+                </Member>
+                <Member Name="sideTaping3rdCount" Datatype="Int">
+                  <StartValue>1</StartValue>
+                </Member>
+                <Member Name="sideTaping4thCount" Datatype="Int">
+                  <StartValue>1</StartValue>
+                </Member>
+              </Section>
+            </Sections>
+          </Member>
+        </Section>
+      </Sections>
+    </Member>
+    <Member Name="unitInterface" Datatype="Struct">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <Member Name="stack1AndNgBox1" Datatype="&quot;LER_typeBeforeInterface&quot;">
+        <AttributeList>
+          <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+        </AttributeList>
+      </Member>
+      <Member Name="Stack1AndOutPP" Datatype="&quot;LER_typeBeforeInterface&quot;" />
+      <Member Name="stack2AndNgBox2" Datatype="&quot;LER_typeBeforeInterface&quot;">
+        <AttributeList>
+          <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+        </AttributeList>
+      </Member>
+      <Member Name="Stack2AndOutPP" Datatype="&quot;LER_typeBeforeInterface&quot;">
+        <AttributeList>
+          <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+        </AttributeList>
+      </Member>
+    </Member>
+    <Member Name="emDistance" Datatype="Array[1..2] of &quot;LER_typeDistanceInterface&quot;">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <Sections>
+        <Section Name="None" />
+      </Sections>
+      <Subelement Path="1">
+        <Comment>
+          <MultiLanguageText Lang="en-US">JR PP left ↔ right X-axis</MultiLanguageText>
+        </Comment>
+      </Subelement>
+      <Subelement Path="2">
+        <Comment>
+          <MultiLanguageText Lang="en-US">Tranfer PP left ↔ right X-axis</MultiLanguageText>
+        </Comment>
+      </Subelement>
+    </Member>
+    <Member Name="allBrakeTest" Datatype="&quot;LER_typeBrakeTestUnitInterface&quot;">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="temperature" Datatype="Struct">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <Member Name="hotPressLeft" Datatype="Struct">
+        <Member Name="doorOpenOK" Datatype="&quot;Safety.typeHotPressTempOk&quot;" />
+      </Member>
+      <Member Name="hotPressRight" Datatype="Struct">
+        <Member Name="doorOpenOK" Datatype="&quot;Safety.typeHotPressTempOk&quot;" />
+      </Member>
+    </Member>
+    <Member Name="MQTT" Datatype="&quot;LMQTT_typeDB&quot;">
+      <Sections>
+        <Section Name="None">
+          <Member Name="connParam" Datatype="&quot;LMQTT_typeConnParam&quot;">
+            <Sections>
+              <Section Name="None">
+                <Member Name="hwId" Datatype="HW_ANY">
+                  <StartValue>72</StartValue>
+                </Member>
+                <Member Name="connId" Datatype="CONN_OUC">
+                  <StartValue>16#0199</StartValue>
+                </Member>
+                <Member Name="broker" Datatype="String">
+                  <StartValue>'192.168.1.251'</StartValue>
+                </Member>
+                <Member Name="keepAlive" Datatype="UInt">
+                  <StartValue>60</StartValue>
+                </Member>
+              </Section>
+            </Sections>
+          </Member>
+          <Member Name="clientIdentifier" Datatype="WString[20]">
+            <StartValue>WSTRING#'Siemens_PLC_01'</StartValue>
+          </Member>
+          <Member Name="qos" Datatype="USInt">
+            <StartValue>1</StartValue>
+          </Member>
+          <Member Name="mqttTopic" Datatype="WString[100]">
+            <StartValue>WSTRING#'Topic1'</StartValue>
+          </Member>
+          <Member Name="publishMsgLen" Datatype="UDInt">
+            <StartValue>19</StartValue>
+          </Member>
+        </Section>
+      </Sections>
+    </Member>
+    <Member Name="powerMeter" Datatype="&quot;LSicar_typeEnMeterVisuStruct&quot;">
+      <AttributeList>
+        <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="MobilePanelConnected" Datatype="Bool" />
+    <Member Name="=====Only Engineer Used=====" Datatype="Bool">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="historyDataAllClear" Datatype="Bool">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="simulationMode" Datatype="Bool">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+    </Member>
+  </Section>
+</Sections></Interface>
+      <MemoryReserve>100</MemoryReserve>
+      <Name>EmNodes</Name>
+      <Namespace>Unit1</Namespace>
+      <Number>146</Number>
+      <ProgrammingLanguage>DB</ProgrammingLanguage>
+    </AttributeList>
+    <ObjectList>
+      <MultilingualText ID="1" CompositionName="Comment">
+        <ObjectList>
+          <MultilingualTextItem ID="2" CompositionName="Items">
+            <AttributeList>
+              <Culture>de-DE</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="3" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-US</Culture>
+              <Text>Global DB for the data exchange between the module levels (Between Unit and EM or EM and CM)</Text>
+            </AttributeList>
+          </MultilingualTextItem>
+        </ObjectList>
+      </MultilingualText>
+      <MultilingualText ID="4" CompositionName="Title">
+        <ObjectList>
+          <MultilingualTextItem ID="5" CompositionName="Items">
+            <AttributeList>
+              <Culture>de-DE</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="6" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-US</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+        </ObjectList>
+      </MultilingualText>
+    </ObjectList>
+  </SW.Blocks.GlobalDB>
+</Document>

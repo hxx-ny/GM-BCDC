@@ -1,0 +1,98 @@
+﻿NAMESPACE Unit1.Em13
+FUNCTION "StepToString" : String
+{ S7_Optimized_Access := 'TRUE' ; Published := 'FALSE' }
+VERSION : 0.1
+   VAR_INPUT 
+      StepDINT : DInt;   // DINT value of the step
+      sequenceNumber : Int;
+   END_VAR
+
+
+BEGIN
+	// Translates the sequence step number to the step name
+	// This is an example and needs to be adjusted for the real use case
+	
+	IF #sequenceNumber = 1 THEN
+	    CASE #StepDINT OF
+	        1:
+	            #StepToString := 'Idle';
+	        101:
+	            #StepToString := 'JOB[1] Condition';
+	        110:
+	            #StepToString := 'Clamp Open';
+	        150:
+	            #StepToString := 'JR Unload P&P X-axis Work Ready Position';
+	        160:
+	            #StepToString := 'JR Unload P&P Z-axis Wait Position';
+	        170:
+	            #StepToString := 'JR Unload P&P X-axis Wait Position';
+	        180:
+	            #StepToString := 'JR Unload P&P C-axis Wait Position';
+	        190:
+	            #StepToString := 'JOB[1] Step End';
+	        201:
+	            #StepToString := 'JOB[2] Condition';
+	        210:
+	            #StepToString := 'JR Unload P&P C-axis Weight Check Position';
+	        220:
+	            #StepToString := 'JR Unload P&P X-axis Work Ready Position';
+	        230:
+	            #StepToString := 'JR Unload P&P Z-axis Weight Check Position';
+	        240:
+	            #StepToString := 'JR Unload P&P X-axis Weight Check Position';
+	        250:
+	            #StepToString := 'Clamp Close';
+	        290:
+	            #StepToString := 'JOB[2] Step End';
+	        301:
+	            #StepToString := 'JOB[3] Condition';
+	        310:
+	            #StepToString := 'JR Unload P&P X-axis Work Ready Position';
+	        320:
+	            #StepToString := 'JR Unload P&P Z-axis Wait Position';
+	        330:
+	            #StepToString := 'JR Unload P&P X-axis Wait Position';
+	        340:
+	            #StepToString := 'JR Unload P&P C-axis Conveyor Load Position';
+	        350:
+	            #StepToString := 'JR Unload P&P Z-axis Conveyor Load Position';
+	        360:
+	            #StepToString := 'JR Unload P&P X-axis Conveyor Load Position';
+	        370:
+	            #StepToString := 'Clamp Open';
+	        380:
+	            #StepToString := 'JR Unload P&P X/Z/C-Axis Wait Position';
+	        390:
+	            #StepToString := ' Job4 Step End';
+	        401:
+	            #StepToString := 'JOB[4] Condition';
+	        410:
+	            #StepToString := 'JR Unload P&P C-axis Stack NG Box Position';
+	        411:
+	            #StepToString := 'JR Unload P&P X-axis Work Ready Position';
+	        420:
+	            #StepToString := 'JR Unload P&P Z-axis Stack NG Box Position';
+	        430:
+	            #StepToString := 'JR Unload P&P X-axis Stack NG Box Position';
+	        431:
+	            #StepToString := 'JR Unloading P&P [Unloading Ready] => Stack NG Box';
+	        440:
+	            #StepToString := 'Clamp Open';
+	        450:
+	            #StepToString := 'JR Unload P&P X-axis Work Ready Position';
+	        480:
+	            #StepToString := 'JR Unload P&P X/Z/C-Axis Wait Position';
+	        490:
+	            #StepToString := 'JOB[4] Step End';
+	        9001:
+	            #StepToString := 'Immediate Stop';
+	            
+	        ELSE
+	            #StepToString := 'N/A';
+	    END_CASE;
+	ELSE
+	    #StepToString := 'N/A';
+	END_IF;
+END_FUNCTION
+END_NAMESPACE
+

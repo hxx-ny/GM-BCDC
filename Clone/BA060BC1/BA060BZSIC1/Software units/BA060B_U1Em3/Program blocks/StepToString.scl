@@ -1,0 +1,213 @@
+﻿NAMESPACE Unit1.Em3
+FUNCTION "StepToString" : String
+{ S7_Optimized_Access := 'TRUE' ; Published := 'FALSE' }
+VERSION : 0.1
+   VAR_INPUT 
+      StepDINT : DInt;   // DINT value of the step
+      sequenceNumber : Int;
+   END_VAR
+
+
+BEGIN
+	// Translates the sequence step number to the step name
+	// This is an example and needs to be adjusted for the real use case
+	
+	// Sequence_1_TopTapeLoading
+	IF #sequenceNumber = 1 THEN
+	  CASE #StepDINT OF
+	    1:
+	      #StepToString := 'Idle';
+	    101:
+	      #StepToString := 'JOB[1] Condition';
+	    110:
+	      #StepToString := 'Top Tape Loading Backward';
+	    120:
+	      #StepToString := 'Top Tape Loading Clamp Open';
+	    130:
+	      #StepToString := 'Top Tape Cutter Up';
+	    140:
+	      #StepToString := 'Top Tape Cutter Clamp Down';
+	    150:
+	      #StepToString := 'Top Tape Tension Backward ';
+	    190:
+	      #StepToString := 'JOB[1] Step End';
+	    201:
+	      #StepToString := 'JOB[2] Condition';
+	    210:
+	      #StepToString := 'Top Tape Loading Forward & Tension Backward';
+	    220:
+	      #StepToString := 'Top Tape Clamp Close';
+	    230:
+	      #StepToString := 'Top Tape Cutter Clamp Up';
+	    240:
+	      #StepToString := 'Top Tape Loading Backward & Tension Forward';
+	    250:
+	      #StepToString := 'Top Tape Cutter Clamp Down';
+	    260:
+	      #StepToString := 'Top Tape Tension Backward ';
+	    290:
+	      #StepToString := 'JOB[2] Step End';
+	    9001:
+	      #StepToString := 'Immediate Stop';
+	      
+	    ELSE
+	      #StepToString := 'N/A';
+	  END_CASE;
+	  
+	  // Sequence_2_TopTapeAttachment
+	ELSIF #sequenceNumber = 2 THEN
+	  CASE #StepDINT OF
+	    1:
+	      #StepToString := 'Idle';
+	    101:
+	      #StepToString := 'JOB[1] Condition';
+	    110:
+	      #StepToString := 'Attachment Up';
+	    120:
+	      #StepToString := 'Top Tape X-Axis Remains Attach Pos';
+	    130:
+	      #StepToString := 'Top Tape Attachment Down';
+	    140:
+	      #StepToString := 'Top Tape Attachment Vaccum Off';
+	    150:
+	      #StepToString := 'Top Tape Attachment Up';
+	    180:
+	      #StepToString := 'Top Tape X-Axis Wait Pos';
+	    190:
+	      #StepToString := 'JOB[1] Step End';
+	    201:
+	      #StepToString := 'JOB[2] Condition';
+	    210:
+	      #StepToString := 'Top Tape X-Axis Wait Pos';
+	    220:
+	      #StepToString := 'Top Tape Attachment Down';
+	    230:
+	      #StepToString := 'Top Tape Attachment Vaccum On';
+	    240:
+	      #StepToString := 'Top Tape Cutter Down';
+	    241:
+	      #StepToString := 'Top Tape Cutter Up';
+	    242:
+	      #StepToString := 'Top Tape Clamp Open';
+	    250:
+	      #StepToString := 'Top Tape Attachment Up';
+	    290:
+	      #StepToString := 'JOB[2] Step End';
+	    301:
+	      #StepToString := 'JOB[3] Condition';
+	    310:
+	      #StepToString := 'Top Tape X-Axis Tape-1 Pos';
+	    320:
+	      #StepToString := 'Top Tape Attachment Down';
+	    330:
+	      #StepToString := 'Top Tape Attachment Vaccum Off';
+	    370:
+	      #StepToString := 'Top Tape Attachment Up';
+	    380:
+	      #StepToString := 'Top Tape X-Axis Wait Pos';
+	    390:
+	      #StepToString := 'JOB[3] Step End';
+	    401:
+	      #StepToString := 'JOB[4] Condition';
+	    410:
+	      #StepToString := 'Top Tape X-Axis Tape-2 Pos';
+	    420:
+	      #StepToString := 'Top Tape Attachment Down';
+	    430:
+	      #StepToString := 'Top Tape Attachment Vaccum Off';
+	    470:
+	      #StepToString := 'Top Tape Attachment Up';
+	    480:
+	      #StepToString := 'Top Tape X-Axis Wait Pos';
+	    490:
+	      #StepToString := 'JOB[4] Step End';
+	    9001:
+	      #StepToString := 'Immediate Stop';
+	      
+	    ELSE
+	      #StepToString := 'N/A';
+	  END_CASE;
+	  
+	  // Sequence_3_TopTapeFixStage
+	ELSIF #sequenceNumber = 3 THEN
+	  CASE #StepDINT OF
+	    1:
+	      #StepToString := 'Idle';
+	    101:
+	      #StepToString := 'JOB[1] Condition';
+	    110:
+	      #StepToString := 'Top Tape Fix Stage Left/Center/Right Top Clamp Up';
+	    111:
+	      #StepToString := 'Top Tape Fix Stage Bottom Clamp Down';
+	    120:
+	      #StepToString := 'Top Tape Fix Stage Bottom Clamp Up';
+	    121:
+	      #StepToString := 'Top Tape Fix Stage Left/Center/Right Top Clamp Down';
+	    180:
+	      #StepToString := 'Top Tape Y-Axis Wait Pos';
+	    190:
+	      #StepToString := 'JOB[1] Step End';
+	    201:
+	      #StepToString := 'JOB[2] Condition';
+	    210:
+	      #StepToString := 'Top Tape Fix Stage [Loading Request] => JR PP Left';
+	    220:
+	      #StepToString := 'Top Tape Y-Axis JR Put/Get Pos';
+	    230:
+	      #StepToString := 'Top Tape Fix Stage Bottom Clamp Up';
+	    231:
+	      #StepToString := 'Top Tape Fix Stage Left/Center/Right Top Clamp Down';
+	    232:
+	      #StepToString := 'Top Tape Fix Stage [Unclamp Request] => JR PP Left';
+	    270:
+	      #StepToString := 'Spare';
+	    280:
+	      #StepToString := 'Top Tape Y-Axis Wait Pos';
+	    290:
+	      #StepToString := 'JOB[2] Step End';
+	    301:
+	      #StepToString := 'JOB[3] Conditiion';
+	    310:
+	      #StepToString := 'Top Tape Fix Stage => Call Attachment Tape-1';
+	    320:
+	      #StepToString := 'Spare';
+	    390:
+	      #StepToString := 'JOB[3] Step End';
+	    401:
+	      #StepToString := 'JOB[4] Conditiion';
+	    410:
+	      #StepToString := 'Top Tape Fix Stage => Call Attachment Tape-1';
+	    420:
+	      #StepToString := 'Spare';
+	    490:
+	      #StepToString := 'JOB[4] Step End';
+	    501:
+	      #StepToString := 'JOB[5] Condition';
+	    510:
+	      #StepToString := 'Top Tape Fix Stage [Unloading Request] => JR PP Right';
+	    520:
+	      #StepToString := 'Top Tape Fix Stage Y-Axis Put/Get Pos';
+	    530:
+	      #StepToString := 'Top Tape Fix Stage [Clamp Request] => JR PP Right';
+	    531:
+	      #StepToString := 'Top Tape Fix Stage Left/Center/Right Top Clamp Up';
+	    532:
+	      #StepToString := 'Top Tape Fix Stage Bottom Clamp Down';
+	    570:
+	      #StepToString := 'Spare';
+	    580:
+	      #StepToString := 'Top Tape Y-Axis Wait Pos';
+	    590:
+	      #StepToString := 'JOB[5] Step End';
+	    9001:
+	      #StepToString := 'Immediate Stop';
+	      
+	    ELSE
+	      #StepToString := 'N/A';
+	END_CASE;
+	ELSE
+	    #StepToString := 'N/A';
+	END_IF;
+END_FUNCTION
+END_NAMESPACE
+

@@ -1,0 +1,579 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Document>
+  <Engineering version="V20" />
+  <SW.Blocks.FB ID="0">
+    <AttributeList>
+      <Interface><Sections xmlns="http://www.siemens.com/automation/Openness/SW/Interface/v5">
+  <Section Name="Input" />
+  <Section Name="Output">
+    <Member Name="TMP_PMC_FaultIndex" Datatype="Int" />
+  </Section>
+  <Section Name="InOut">
+    <Member Name="FaultWords" Datatype="Array[0..499] of Word" />
+  </Section>
+  <Section Name="Static">
+    <Member Name="sFaultWords" Datatype="Array[0..499] of Word" />
+    <Member Name="sDestArray" Datatype="Array[1..8000] of Bool" />
+  </Section>
+  <Section Name="Temp">
+    <Member Name="tInitializeFaults" Datatype="Word" />
+    <Member Name="tIndex" Datatype="Int" />
+  </Section>
+  <Section Name="Constant" />
+</Sections></Interface>
+      <MemoryReserve>100</MemoryReserve>
+      <Name>zPMC_FaultWord</Name>
+      <Namespace>CITI_Logic</Namespace>
+      <Number>231</Number>
+      <ProgrammingLanguage>LAD</ProgrammingLanguage>
+      <SetENOAutomatically>false</SetENOAutomatically>
+    </AttributeList>
+    <ObjectList>
+      <MultilingualText ID="1" CompositionName="Comment">
+        <ObjectList>
+          <MultilingualTextItem ID="2" CompositionName="Items">
+            <AttributeList>
+              <Culture>de-DE</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="3" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-US</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+        </ObjectList>
+      </MultilingualText>
+      <SW.Blocks.CompileUnit ID="4" CompositionName="CompileUnits">
+        <AttributeList>
+          <NetworkSource><FlgNet xmlns="http://www.siemens.com/automation/Openness/SW/NetworkSource/FlgNet/v5">
+  <Parts>
+    <Access Scope="LiteralConstant" UId="21">
+      <Constant>
+        <ConstantType>Word</ConstantType>
+        <ConstantValue>0</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="LocalVariable" UId="22">
+      <Symbol>
+        <Component Name="tInitializeFaults" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="23">
+      <Symbol>
+        <Component Name="tInitializeFaults" />
+      </Symbol>
+    </Access>
+    <Access Scope="LiteralConstant" UId="24">
+      <Constant>
+        <ConstantType>UInt</ConstantType>
+        <ConstantValue>500</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="LocalVariable" UId="25">
+      <Symbol>
+        <Component Name="sFaultWords" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>0</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Part Name="Move" UId="26" DisabledENO="true">
+      <TemplateValue Name="Card" Type="Cardinality">1</TemplateValue>
+    </Part>
+    <Part Name="FillBlockI" UId="27" DisabledENO="true" />
+  </Parts>
+  <Wires>
+    <Wire UId="28">
+      <Powerrail />
+      <NameCon UId="26" Name="en" />
+    </Wire>
+    <Wire UId="29">
+      <IdentCon UId="21" />
+      <NameCon UId="26" Name="in" />
+    </Wire>
+    <Wire UId="30">
+      <NameCon UId="26" Name="eno" />
+      <NameCon UId="27" Name="en" />
+    </Wire>
+    <Wire UId="31">
+      <NameCon UId="26" Name="out1" />
+      <IdentCon UId="22" />
+    </Wire>
+    <Wire UId="32">
+      <IdentCon UId="23" />
+      <NameCon UId="27" Name="in" />
+    </Wire>
+    <Wire UId="33">
+      <IdentCon UId="24" />
+      <NameCon UId="27" Name="count" />
+    </Wire>
+    <Wire UId="34">
+      <NameCon UId="27" Name="out" />
+      <IdentCon UId="25" />
+    </Wire>
+  </Wires>
+</FlgNet></NetworkSource>
+          <ProgrammingLanguage>LAD</ProgrammingLanguage>
+        </AttributeList>
+        <ObjectList>
+          <MultilingualText ID="5" CompositionName="Comment">
+            <ObjectList>
+              <MultilingualTextItem ID="6" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="7" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+          <MultilingualText ID="8" CompositionName="Title">
+            <ObjectList>
+              <MultilingualTextItem ID="9" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="A" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text>Initialize fault words</Text>
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+        </ObjectList>
+      </SW.Blocks.CompileUnit>
+      <SW.Blocks.CompileUnit ID="B" CompositionName="CompileUnits">
+        <AttributeList>
+          <NetworkSource><StructuredText xmlns="http://www.siemens.com/automation/Openness/SW/NetworkSource/StructuredText/v4">
+  <Token Text="FOR" UId="21" />
+  <Blank UId="22" />
+  <Access Scope="LocalVariable" UId="23">
+    <Symbol UId="24">
+      <Component Name="tIndex" UId="25" />
+    </Symbol>
+  </Access>
+  <Blank UId="26" />
+  <Token Text=":=" UId="27" />
+  <Blank UId="28" />
+  <Access Scope="LiteralConstant" UId="29">
+    <Constant UId="30">
+      <ConstantValue UId="32">0</ConstantValue>
+    </Constant>
+  </Access>
+  <Blank UId="33" />
+  <Token Text="TO" UId="34" />
+  <Blank UId="35" />
+  <Access Scope="LiteralConstant" UId="36">
+    <Constant UId="37">
+      <ConstantValue UId="39">499</ConstantValue>
+    </Constant>
+  </Access>
+  <Blank UId="40" />
+  <Token Text="DO" UId="41" />
+  <NewLine UId="42" />
+  <Blank Num="4" UId="43" />
+  <LineComment UId="44">
+    <Text UId="45"> Statement section FOR</Text>
+  </LineComment>
+  <NewLine UId="46" />
+  <Blank Num="4" UId="47" />
+  <LineComment UId="48">
+    <Text UId="49"> </Text>
+  </LineComment>
+  <NewLine UId="50" />
+  <Blank Num="4" UId="51" />
+  <Access Scope="LocalVariable" UId="52">
+    <Symbol UId="53">
+      <Component Name="sFaultWords" UId="54">
+        <Token Text="[" UId="55" />
+        <Access Scope="LocalVariable" UId="56">
+          <Symbol UId="57">
+            <Component Name="tIndex" UId="58" />
+          </Symbol>
+        </Access>
+        <Token Text="]" UId="59" />
+      </Component>
+    </Symbol>
+  </Access>
+  <Token Text=":=" UId="60" />
+  <Blank UId="61" />
+  <Access Scope="Call" UId="62">
+    <Instruction Name="SWAP" UId="63">
+      <TemplateValue Name="value_type" Type="Type" UId="64">Word</TemplateValue>
+      <Token Text="(" UId="65" />
+      <NamelessParameter UId="66">
+        <Access Scope="LocalVariable" UId="67">
+          <Symbol UId="68">
+            <Component Name="FaultWords" UId="69">
+              <Token Text="[" UId="70" />
+              <Access Scope="LocalVariable" UId="71">
+                <Symbol UId="72">
+                  <Component Name="tIndex" UId="73" />
+                </Symbol>
+              </Access>
+              <Token Text="]" UId="74" />
+            </Component>
+          </Symbol>
+        </Access>
+      </NamelessParameter>
+      <Token Text=")" UId="76" />
+    </Instruction>
+  </Access>
+  <Token Text=";" UId="77" />
+  <NewLine UId="78" />
+  <Blank Num="4" UId="79" />
+  <NewLine UId="80" />
+  <Blank Num="4" UId="81" />
+  <Token Text=";" UId="82" />
+  <NewLine UId="83" />
+  <Token Text="END_FOR" UId="84" />
+  <Token Text=";" UId="85" />
+  <NewLine UId="86" />
+</StructuredText></NetworkSource>
+          <ProgrammingLanguage>SCL</ProgrammingLanguage>
+        </AttributeList>
+        <ObjectList>
+          <MultilingualText ID="C" CompositionName="Comment">
+            <ObjectList>
+              <MultilingualTextItem ID="D" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="E" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+          <MultilingualText ID="F" CompositionName="Title">
+            <ObjectList>
+              <MultilingualTextItem ID="10" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="11" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text>Swap byte order</Text>
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+        </ObjectList>
+      </SW.Blocks.CompileUnit>
+      <SW.Blocks.CompileUnit ID="12" CompositionName="CompileUnits">
+        <AttributeList>
+          <NetworkSource><FlgNet xmlns="http://www.siemens.com/automation/Openness/SW/NetworkSource/FlgNet/v5">
+  <Parts>
+    <Access Scope="LocalVariable" UId="21">
+      <Symbol>
+        <Component Name="sFaultWords" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="22">
+      <Symbol>
+        <Component Name="sDestArray" />
+      </Symbol>
+    </Access>
+    <Call UId="23">
+      <CallInfo Name="CITI_Logic.MoveAny256" BlockType="FC">
+        <Parameter Name="iSource" Section="Input" Type="Variant" />
+        <Parameter Name="iTarget" Section="Output" Type="Variant" />
+      </CallInfo>
+    </Call>
+  </Parts>
+  <Wires>
+    <Wire UId="24">
+      <Powerrail />
+      <NameCon UId="23" Name="en" />
+    </Wire>
+    <Wire UId="25">
+      <IdentCon UId="21" />
+      <NameCon UId="23" Name="iSource" />
+    </Wire>
+    <Wire UId="26">
+      <NameCon UId="23" Name="iTarget" />
+      <IdentCon UId="22" />
+    </Wire>
+  </Wires>
+</FlgNet></NetworkSource>
+          <ProgrammingLanguage>LAD</ProgrammingLanguage>
+        </AttributeList>
+        <ObjectList>
+          <MultilingualText ID="13" CompositionName="Comment">
+            <ObjectList>
+              <MultilingualTextItem ID="14" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="15" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+          <MultilingualText ID="16" CompositionName="Title">
+            <ObjectList>
+              <MultilingualTextItem ID="17" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="18" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+        </ObjectList>
+      </SW.Blocks.CompileUnit>
+      <SW.Blocks.CompileUnit ID="19" CompositionName="CompileUnits">
+        <AttributeList>
+          <NetworkSource><StructuredText xmlns="http://www.siemens.com/automation/Openness/SW/NetworkSource/StructuredText/v4">
+  <Token Text="FOR" UId="21" />
+  <Blank UId="22" />
+  <Access Scope="LocalVariable" UId="23">
+    <Symbol UId="24">
+      <Component Name="tIndex" UId="25" />
+    </Symbol>
+  </Access>
+  <Blank UId="26" />
+  <Token Text=":=" UId="27" />
+  <Blank UId="28" />
+  <Access Scope="LiteralConstant" UId="29">
+    <Constant UId="30">
+      <ConstantValue UId="32">1</ConstantValue>
+    </Constant>
+  </Access>
+  <Blank UId="33" />
+  <Token Text="TO" UId="34" />
+  <Blank UId="35" />
+  <Access Scope="LiteralConstant" UId="36">
+    <Constant UId="37">
+      <ConstantValue UId="39">8000</ConstantValue>
+    </Constant>
+  </Access>
+  <Blank UId="40" />
+  <Token Text="DO" UId="41" />
+  <NewLine UId="42" />
+  <Blank Num="4" UId="43" />
+  <LineComment UId="44">
+    <Text UId="45"> Statement section FOR</Text>
+  </LineComment>
+  <NewLine UId="46" />
+  <Blank Num="4" UId="47" />
+  <LineComment UId="48">
+    <Text UId="49"> </Text>
+  </LineComment>
+  <NewLine UId="50" />
+  <Blank Num="4" UId="51" />
+  <NewLine UId="52" />
+  <Blank Num="4" UId="53" />
+  <Token Text="IF" UId="54" />
+  <Blank UId="55" />
+  <Access Scope="LocalVariable" UId="56">
+    <Symbol UId="57">
+      <Component Name="sDestArray" UId="58">
+        <Token Text="[" UId="59" />
+        <Access Scope="LocalVariable" UId="60">
+          <Symbol UId="61">
+            <Component Name="tIndex" UId="62" />
+          </Symbol>
+        </Access>
+        <Token Text="]" UId="63" />
+      </Component>
+    </Symbol>
+  </Access>
+  <Blank UId="64" />
+  <Token Text="=" UId="65" />
+  <Blank UId="66" />
+  <Access Scope="LiteralConstant" UId="67">
+    <Constant UId="68">
+      <ConstantValue UId="70">TRUE</ConstantValue>
+    </Constant>
+  </Access>
+  <Blank UId="71" />
+  <Token Text="THEN" UId="72" />
+  <NewLine UId="73" />
+  <Blank Num="8" UId="74" />
+  <LineComment UId="75">
+    <Text UId="76"> Statement section IF</Text>
+  </LineComment>
+  <NewLine UId="77" />
+  <Blank Num="8" UId="78" />
+  <LineComment UId="79">
+    <Text UId="80"> </Text>
+  </LineComment>
+  <NewLine UId="81" />
+  <Blank Num="8" UId="82" />
+  <Access Scope="LocalVariable" UId="83">
+    <Symbol UId="84">
+      <Component Name="TMP_PMC_FaultIndex" UId="85" />
+    </Symbol>
+  </Access>
+  <Blank UId="86" />
+  <Token Text=":=" UId="87" />
+  <Blank UId="88" />
+  <Access Scope="LocalVariable" UId="89">
+    <Symbol UId="90">
+      <Component Name="tIndex" UId="91" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="92" />
+  <NewLine UId="93" />
+  <Blank Num="8" UId="94" />
+  <NewLine UId="95" />
+  <Blank Num="8" UId="96" />
+  <NewLine UId="97" />
+  <Blank Num="8" UId="98" />
+  <Token Text="EXIT" UId="99" />
+  <Token Text=";" UId="100" />
+  <NewLine UId="101" />
+  <Blank Num="8" UId="102" />
+  <NewLine UId="103" />
+  <Blank Num="8" UId="104" />
+  <NewLine UId="105" />
+  <Blank Num="8" UId="106" />
+  <Token Text=";" UId="107" />
+  <NewLine UId="108" />
+  <Blank Num="4" UId="109" />
+  <Token Text="END_IF" UId="110" />
+  <Token Text=";" UId="111" />
+  <NewLine UId="112" />
+  <Blank Num="4" UId="113" />
+  <NewLine UId="114" />
+  <Blank Num="4" UId="115" />
+  <NewLine UId="116" />
+  <Blank Num="4" UId="117" />
+  <NewLine UId="118" />
+  <Blank Num="4" UId="119" />
+  <NewLine UId="120" />
+  <Blank Num="4" UId="121" />
+  <Token Text=";" UId="122" />
+  <NewLine UId="123" />
+  <Token Text="END_FOR" UId="124" />
+  <Token Text=";" UId="125" />
+</StructuredText></NetworkSource>
+          <ProgrammingLanguage>SCL</ProgrammingLanguage>
+        </AttributeList>
+        <ObjectList>
+          <MultilingualText ID="1A" CompositionName="Comment">
+            <ObjectList>
+              <MultilingualTextItem ID="1B" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="1C" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+          <MultilingualText ID="1D" CompositionName="Title">
+            <ObjectList>
+              <MultilingualTextItem ID="1E" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="1F" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+        </ObjectList>
+      </SW.Blocks.CompileUnit>
+      <SW.Blocks.CompileUnit ID="20" CompositionName="CompileUnits">
+        <AttributeList>
+          <NetworkSource />
+          <ProgrammingLanguage>LAD</ProgrammingLanguage>
+        </AttributeList>
+        <ObjectList>
+          <MultilingualText ID="21" CompositionName="Comment">
+            <ObjectList>
+              <MultilingualTextItem ID="22" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="23" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+          <MultilingualText ID="24" CompositionName="Title">
+            <ObjectList>
+              <MultilingualTextItem ID="25" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="26" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+        </ObjectList>
+      </SW.Blocks.CompileUnit>
+      <MultilingualText ID="27" CompositionName="Title">
+        <ObjectList>
+          <MultilingualTextItem ID="28" CompositionName="Items">
+            <AttributeList>
+              <Culture>de-DE</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="29" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-US</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+        </ObjectList>
+      </MultilingualText>
+    </ObjectList>
+  </SW.Blocks.FB>
+</Document>

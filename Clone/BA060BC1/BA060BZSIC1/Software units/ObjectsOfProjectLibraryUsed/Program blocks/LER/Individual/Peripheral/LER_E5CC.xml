@@ -1,0 +1,5469 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Document>
+  <Engineering version="V20" />
+  <SW.Blocks.FB ID="0">
+    <AttributeList>
+      <Access>Published</Access>
+      <Interface><Sections xmlns="http://www.siemens.com/automation/Openness/SW/Interface/v5">
+  <Section Name="Input">
+    <Member Name="enable" Datatype="Bool" />
+    <Member Name="clock" Datatype="Bool" />
+    <Member Name="unitNo" Datatype="Int" />
+    <Member Name="save" Datatype="Bool" />
+    <Member Name="Reset" Datatype="Bool" />
+    <Member Name="AllHeaterRun" Datatype="Bool" />
+    <Member Name="AllHeaterStop" Datatype="Bool" />
+    <Member Name="AllHeaterAutoTuneRun" Datatype="Bool" />
+    <Member Name="AllHeaterAutoTuneStop" Datatype="Bool" />
+    <Member Name="HeaterCommands" Datatype="&quot;LER_typeE5CCCommands&quot;" />
+    <Member Name="HeaterConfiguration" Datatype="&quot;LER_typeE5CCConfiguration&quot;" />
+  </Section>
+  <Section Name="Output">
+    <Member Name="HeaterMonitoring" Datatype="&quot;LER_typeE5CCMonitoring&quot;" />
+  </Section>
+  <Section Name="InOut">
+    <Member Name="CurrentUnit" Datatype="Int" />
+    <Member Name="MBMasterBuffer" Datatype="&quot;LER_typeHeaterConfiguration_MB_Master&quot;" />
+  </Section>
+  <Section Name="Static">
+    <Member Name="statHeaterRun" Datatype="Bool" />
+    <Member Name="statHeaterStop" Datatype="Bool" />
+    <Member Name="statHeaterAutoTuneRun" Datatype="Bool" />
+    <Member Name="statHeaterAutoTuneStop" Datatype="Bool" />
+    <Member Name="statReadStep" Datatype="Int" />
+    <Member Name="statReadReq" Datatype="Array[0..9] of Bool" />
+    <Member Name="statWriteReq" Datatype="Array[0..9] of Bool" />
+    <Member Name="statPulse" Datatype="Array[0..19] of Bool" />
+    <Member Name="statTimer" Datatype="Array[0..9] of TON_TIME" Version="1.0">
+      <AttributeList>
+        <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="statReadTempPV" Datatype="Real" />
+    <Member Name="statReadStatus" Datatype="DWord" />
+    <Member Name="statTempSP" Datatype="Real" />
+    <Member Name="statAlarmValue1" Datatype="Real" />
+    <Member Name="statAlarmValue1_UpperLimit" Datatype="Real" />
+    <Member Name="statAlarmValue1_LowerLimit" Datatype="Real" />
+    <Member Name="statAlarmValue2" Datatype="Real" />
+    <Member Name="statAlarmValue2_UpperLimit" Datatype="Real" />
+    <Member Name="statAlarmValue2_LowerLimit" Datatype="Real" />
+    <Member Name="statReadStatus_Bool" Datatype="Array[0..31] of Bool">
+      <Subelement Path="0">
+        <Comment>
+          <MultiLanguageText Lang="en-US">Heater Current Value Exceeded (CT1)</MultiLanguageText>
+        </Comment>
+      </Subelement>
+      <Subelement Path="1">
+        <Comment>
+          <MultiLanguageText Lang="en-US">Heater Current Value Hold (CT1)</MultiLanguageText>
+        </Comment>
+      </Subelement>
+      <Subelement Path="2">
+        <Comment>
+          <MultiLanguageText Lang="en-US">AD converter abnormality</MultiLanguageText>
+        </Comment>
+      </Subelement>
+      <Subelement Path="3">
+        <Comment>
+          <MultiLanguageText Lang="en-US">HS (SSR Fault) Alert (CT1)</MultiLanguageText>
+        </Comment>
+      </Subelement>
+      <Subelement Path="4">
+        <Comment>
+          <MultiLanguageText Lang="en-US">RSP input abnormalities</MultiLanguageText>
+        </Comment>
+      </Subelement>
+      <Subelement Path="6">
+        <Comment>
+          <MultiLanguageText Lang="en-US">More than input</MultiLanguageText>
+        </Comment>
+      </Subelement>
+      <Subelement Path="7">
+        <Comment>
+          <MultiLanguageText Lang="en-US">Potenshometer input abnormal</MultiLanguageText>
+        </Comment>
+      </Subelement>
+      <Subelement Path="8">
+        <Comment>
+          <MultiLanguageText Lang="en-US">Control Output (Heated)/Open Output</MultiLanguageText>
+        </Comment>
+      </Subelement>
+      <Subelement Path="9">
+        <Comment>
+          <MultiLanguageText Lang="en-US">Control Output (Cool)/Close Output</MultiLanguageText>
+        </Comment>
+      </Subelement>
+      <Subelement Path="10">
+        <Comment>
+          <MultiLanguageText Lang="en-US">Heater Open Circuit (HB) Alarm (CT1)</MultiLanguageText>
+        </Comment>
+      </Subelement>
+      <Subelement Path="11">
+        <Comment>
+          <MultiLanguageText Lang="en-US">Heater Open Circuit (HB) Alarm (CT2)</MultiLanguageText>
+        </Comment>
+      </Subelement>
+      <Subelement Path="12">
+        <Comment>
+          <MultiLanguageText Lang="en-US">Alert 1</MultiLanguageText>
+        </Comment>
+      </Subelement>
+      <Subelement Path="13">
+        <Comment>
+          <MultiLanguageText Lang="en-US">Alert 2</MultiLanguageText>
+        </Comment>
+      </Subelement>
+      <Subelement Path="14">
+        <Comment>
+          <MultiLanguageText Lang="en-US">Alert 3</MultiLanguageText>
+        </Comment>
+      </Subelement>
+      <Subelement Path="15">
+        <Comment>
+          <MultiLanguageText Lang="en-US">Program END Output</MultiLanguageText>
+        </Comment>
+      </Subelement>
+      <Subelement Path="16">
+        <Comment>
+          <MultiLanguageText Lang="en-US">Event Input 1</MultiLanguageText>
+        </Comment>
+      </Subelement>
+      <Subelement Path="17">
+        <Comment>
+          <MultiLanguageText Lang="en-US">Event Input 2</MultiLanguageText>
+        </Comment>
+      </Subelement>
+      <Subelement Path="18">
+        <Comment>
+          <MultiLanguageText Lang="en-US">Event Input 3</MultiLanguageText>
+        </Comment>
+      </Subelement>
+      <Subelement Path="19">
+        <Comment>
+          <MultiLanguageText Lang="en-US">Event Input 4</MultiLanguageText>
+        </Comment>
+      </Subelement>
+      <Subelement Path="20">
+        <Comment>
+          <MultiLanguageText Lang="en-US">Write Mode</MultiLanguageText>
+        </Comment>
+      </Subelement>
+      <Subelement Path="21">
+        <Comment>
+          <MultiLanguageText Lang="en-US">Non-volatile Memory</MultiLanguageText>
+        </Comment>
+      </Subelement>
+      <Subelement Path="22">
+        <Comment>
+          <MultiLanguageText Lang="en-US">Setting Area</MultiLanguageText>
+        </Comment>
+      </Subelement>
+      <Subelement Path="23">
+        <Comment>
+          <MultiLanguageText Lang="en-US">AT Run/Stop</MultiLanguageText>
+        </Comment>
+      </Subelement>
+      <Subelement Path="24">
+        <Comment>
+          <MultiLanguageText Lang="en-US">RUN/STOP</MultiLanguageText>
+        </Comment>
+      </Subelement>
+      <Subelement Path="25">
+        <Comment>
+          <MultiLanguageText Lang="en-US">Communication Write</MultiLanguageText>
+        </Comment>
+      </Subelement>
+      <Subelement Path="26">
+        <Comment>
+          <MultiLanguageText Lang="en-US">Auto/Manual</MultiLanguageText>
+        </Comment>
+      </Subelement>
+      <Subelement Path="27">
+        <Comment>
+          <MultiLanguageText Lang="en-US">Program START</MultiLanguageText>
+        </Comment>
+      </Subelement>
+      <Subelement Path="28">
+        <Comment>
+          <MultiLanguageText Lang="en-US">Heater Current Value Exceeded (CT2)</MultiLanguageText>
+        </Comment>
+      </Subelement>
+      <Subelement Path="29">
+        <Comment>
+          <MultiLanguageText Lang="en-US">Heater Current Value Hold (CT2)</MultiLanguageText>
+        </Comment>
+      </Subelement>
+      <Subelement Path="31">
+        <Comment>
+          <MultiLanguageText Lang="en-US">HS (SSR Failure) Alarm (CT2)</MultiLanguageText>
+        </Comment>
+      </Subelement>
+    </Member>
+    <Member Name="statHeater_PV_Buf" Datatype="Real" />
+    <Member Name="statUpperComplete_Temp" Datatype="Real" />
+    <Member Name="statLowerComplete_Temp" Datatype="Real" />
+  </Section>
+  <Section Name="Temp">
+    <Member Name="tempErr" Datatype="Word" />
+  </Section>
+  <Section Name="Constant">
+    <Member Name="Addr_TempPV" Datatype="UDInt">
+      <StartValue>40001</StartValue>
+    </Member>
+    <Member Name="Addr_Status" Datatype="UDInt">
+      <StartValue>40003</StartValue>
+    </Member>
+    <Member Name="Addr_TempSP" Datatype="UDInt">
+      <StartValue>40263</StartValue>
+    </Member>
+    <Member Name="Addr_AlarmValue1" Datatype="UDInt">
+      <StartValue>40265</StartValue>
+    </Member>
+    <Member Name="Addr_AlarmValue1_UpperLimit" Datatype="UDInt">
+      <StartValue>40267</StartValue>
+    </Member>
+    <Member Name="Addr_AlarmValue1_LowerLimit" Datatype="UDInt">
+      <StartValue>40269</StartValue>
+    </Member>
+    <Member Name="Addr_AlarmValue2" Datatype="UDInt">
+      <StartValue>40271</StartValue>
+    </Member>
+    <Member Name="Addr_AlarmValue2_UpperLimit" Datatype="UDInt">
+      <StartValue>40273</StartValue>
+    </Member>
+    <Member Name="Addr_AlarmValue2_LowerLimit" Datatype="UDInt">
+      <StartValue>40275</StartValue>
+    </Member>
+    <Member Name="CMD_Run" Datatype="DWord">
+      <StartValue>16#01000000</StartValue>
+    </Member>
+    <Member Name="CMD_Stop" Datatype="DWord">
+      <StartValue>16#01010000</StartValue>
+    </Member>
+    <Member Name="CMD_AutoTune_Run" Datatype="DWord">
+      <StartValue>16#03020000</StartValue>
+    </Member>
+    <Member Name="CMD_AutoTune_Stop" Datatype="DWord">
+      <StartValue>16#03000000</StartValue>
+    </Member>
+    <Member Name="Mode_Read" Datatype="Int">
+      <StartValue>0</StartValue>
+    </Member>
+    <Member Name="Mode_Write" Datatype="Int">
+      <StartValue>1</StartValue>
+    </Member>
+    <Member Name="Read_Time" Datatype="Time">
+      <StartValue>T#1000MS</StartValue>
+    </Member>
+    <Member Name="STATUS_NO_ERROR_OCCURRED" Datatype="DWord">
+      <Comment>
+        <MultiLanguageText Lang="en-US">No error occurred.</MultiLanguageText>
+      </Comment>
+    </Member>
+    <Member Name="ERR_HEATER_CURRENT_VALUE_EXCEEDED_CT1" Datatype="DWord">
+      <StartValue>16#1</StartValue>
+    </Member>
+    <Member Name="ERR_HEATER_CURRENT_VALUE_HOLD_CT1" Datatype="DWord">
+      <StartValue>16#2</StartValue>
+    </Member>
+    <Member Name="ERR_AD_CONVERTER_ABNORMALITY" Datatype="DWord">
+      <StartValue>16#4</StartValue>
+    </Member>
+    <Member Name="ERR_HS_SSR_FAULT_ALERT_CT1" Datatype="DWord">
+      <StartValue>16#8</StartValue>
+    </Member>
+    <Member Name="ERR_RSP_INPUT_ABNORMALITIES" Datatype="DWord">
+      <StartValue>16#10</StartValue>
+    </Member>
+    <Member Name="ERR_MORE_THAN_INPUT" Datatype="DWord">
+      <StartValue>16#40</StartValue>
+    </Member>
+    <Member Name="ERR_POTENTIOMETER_INPUT_ABNORMAL" Datatype="DWord">
+      <StartValue>16#80</StartValue>
+    </Member>
+    <Member Name="ERR_CONTROL_OUTPUT_HEATED_OPEN_OUTPUT" Datatype="DWord">
+      <StartValue>16#100</StartValue>
+    </Member>
+    <Member Name="ERR_CONTROL_OUTPUT_COOL_CLOSE_OUTPUT" Datatype="DWord">
+      <StartValue>16#200</StartValue>
+    </Member>
+    <Member Name="ERR_HEATER_OPEN_CIRCUIT_HB_ALARM_CT1" Datatype="DWord">
+      <StartValue>16#400</StartValue>
+    </Member>
+    <Member Name="ERR_HEATER_OPEN_CIRCUIT_HB_ALARM_CT2" Datatype="DWord">
+      <StartValue>16#800</StartValue>
+    </Member>
+    <Member Name="ERR_ALERT_1" Datatype="DWord">
+      <StartValue>16#1000</StartValue>
+    </Member>
+    <Member Name="ERR_ALERT_2" Datatype="DWord">
+      <StartValue>16#2000</StartValue>
+    </Member>
+    <Member Name="ERR_ALERT_3" Datatype="DWord">
+      <StartValue>16#4000</StartValue>
+    </Member>
+    <Member Name="ERR_PROGRAM_END_OUTPUT" Datatype="DWord">
+      <StartValue>16#8000</StartValue>
+    </Member>
+    <Member Name="ERR_EVENT_INPUT_1" Datatype="DWord">
+      <StartValue>16#10000</StartValue>
+    </Member>
+    <Member Name="ERR_EVENT_INPUT_2" Datatype="DWord">
+      <StartValue>16#20000</StartValue>
+    </Member>
+    <Member Name="ERR_EVENT_INPUT_3" Datatype="DWord">
+      <StartValue>16#40000</StartValue>
+    </Member>
+    <Member Name="ERR_EVENT_INPUT_4" Datatype="DWord">
+      <StartValue>16#80000</StartValue>
+    </Member>
+    <Member Name="ERR_WRITE_MODE" Datatype="DWord">
+      <StartValue>16#100000</StartValue>
+    </Member>
+    <Member Name="ERR_NON_VOLATILE_MEMORY" Datatype="DWord">
+      <StartValue>16#200000</StartValue>
+    </Member>
+    <Member Name="ERR_SETTING_AREA" Datatype="DWord">
+      <StartValue>16#400000</StartValue>
+    </Member>
+    <Member Name="ERR_AT_RUN_STOP" Datatype="DWord">
+      <StartValue>16#800000</StartValue>
+    </Member>
+    <Member Name="ERR_RUN_STOP" Datatype="DWord">
+      <StartValue>16#1000000</StartValue>
+    </Member>
+    <Member Name="ERR_COMMUNICATION_WRITE" Datatype="DWord">
+      <StartValue>16#2000000</StartValue>
+    </Member>
+    <Member Name="ERR_AUTO_MANUAL" Datatype="DWord">
+      <StartValue>16#4000000</StartValue>
+    </Member>
+    <Member Name="ERR_PROGRAM_START" Datatype="DWord">
+      <StartValue>16#8000000</StartValue>
+    </Member>
+    <Member Name="ERR_HEATER_CURRENT_VALUE_EXCEEDED_CT2" Datatype="DWord">
+      <StartValue>16#10000000</StartValue>
+    </Member>
+    <Member Name="ERR_HEATER_CURRENT_VALUE_HOLD_CT2" Datatype="DWord">
+      <StartValue>16#20000000</StartValue>
+    </Member>
+    <Member Name="ERR_HS_SSR_FAILURE_ALARM_CT2" Datatype="DWord">
+      <StartValue>16#80000000</StartValue>
+    </Member>
+  </Section>
+</Sections></Interface>
+      <MemoryReserve>100</MemoryReserve>
+      <Name>LER_E5CC</Name>
+      <Namespace />
+      <Number>23</Number>
+      <ProgrammingLanguage>LAD</ProgrammingLanguage>
+      <SetENOAutomatically>false</SetENOAutomatically>
+    </AttributeList>
+    <ObjectList>
+      <MultilingualText ID="1" CompositionName="Comment">
+        <ObjectList>
+          <MultilingualTextItem ID="2" CompositionName="Items">
+            <AttributeList>
+              <Culture>de-DE</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="3" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-US</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+        </ObjectList>
+      </MultilingualText>
+      <SW.Blocks.CompileUnit ID="4" CompositionName="CompileUnits">
+        <AttributeList>
+          <NetworkSource><StructuredText xmlns="http://www.siemens.com/automation/Openness/SW/NetworkSource/StructuredText/v4">
+  <LineComment UId="21">
+    <Text UId="22">Input Mapping</Text>
+  </LineComment>
+  <NewLine UId="23" />
+  <Access Scope="LocalVariable" UId="24">
+    <Symbol UId="25">
+      <Component Name="statHeaterRun" UId="26" />
+    </Symbol>
+  </Access>
+  <Blank UId="27" />
+  <Token Text=":=" UId="28" />
+  <Blank UId="29" />
+  <Access Scope="LocalVariable" UId="30">
+    <Symbol UId="31">
+      <Component Name="AllHeaterRun" UId="32" />
+    </Symbol>
+  </Access>
+  <Blank UId="33" />
+  <Token Text="OR" UId="34" />
+  <Blank UId="35" />
+  <Access Scope="LocalVariable" UId="36">
+    <Symbol UId="37">
+      <Component Name="HeaterCommands" UId="38" />
+      <Token Text="." UId="39" />
+      <Component Name="Heater_Run" UId="40" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="41" />
+  <NewLine UId="42" />
+  <Access Scope="LocalVariable" UId="43">
+    <Symbol UId="44">
+      <Component Name="statHeaterStop" UId="45" />
+    </Symbol>
+  </Access>
+  <Blank UId="46" />
+  <Token Text=":=" UId="47" />
+  <Blank UId="48" />
+  <Access Scope="LocalVariable" UId="49">
+    <Symbol UId="50">
+      <Component Name="AllHeaterStop" UId="51" />
+    </Symbol>
+  </Access>
+  <Blank UId="52" />
+  <Token Text="OR" UId="53" />
+  <Blank UId="54" />
+  <Access Scope="LocalVariable" UId="55">
+    <Symbol UId="56">
+      <Component Name="HeaterCommands" UId="57" />
+      <Token Text="." UId="58" />
+      <Component Name="Heater_Stop" UId="59" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="60" />
+  <NewLine UId="61" />
+  <Access Scope="LocalVariable" UId="62">
+    <Symbol UId="63">
+      <Component Name="statHeaterAutoTuneRun" UId="64" />
+    </Symbol>
+  </Access>
+  <Blank UId="65" />
+  <Token Text=":=" UId="66" />
+  <Blank UId="67" />
+  <Access Scope="LocalVariable" UId="68">
+    <Symbol UId="69">
+      <Component Name="AllHeaterAutoTuneRun" UId="70" />
+    </Symbol>
+  </Access>
+  <Blank UId="71" />
+  <Token Text="OR" UId="72" />
+  <Blank UId="73" />
+  <Access Scope="LocalVariable" UId="74">
+    <Symbol UId="75">
+      <Component Name="HeaterCommands" UId="76" />
+      <Token Text="." UId="77" />
+      <Component Name="AutoTune_Run" UId="78" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="79" />
+  <NewLine UId="80" />
+  <Access Scope="LocalVariable" UId="81">
+    <Symbol UId="82">
+      <Component Name="statHeaterAutoTuneStop" UId="83" />
+    </Symbol>
+  </Access>
+  <Blank UId="84" />
+  <Token Text=":=" UId="85" />
+  <Blank UId="86" />
+  <Access Scope="LocalVariable" UId="87">
+    <Symbol UId="88">
+      <Component Name="AllHeaterAutoTuneStop" UId="89" />
+    </Symbol>
+  </Access>
+  <Blank UId="90" />
+  <Token Text="OR" UId="91" />
+  <Blank UId="92" />
+  <Access Scope="LocalVariable" UId="93">
+    <Symbol UId="94">
+      <Component Name="HeaterCommands" UId="95" />
+      <Token Text="." UId="96" />
+      <Component Name="AutoTune_Stop" UId="97" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="98" />
+  <NewLine Num="2" UId="99" />
+  <LineComment UId="100">
+    <Text UId="101">Read Step Initialization</Text>
+  </LineComment>
+  <NewLine UId="102" />
+  <Token Text="IF" UId="103" />
+  <Blank UId="104" />
+  <Access Scope="LocalVariable" UId="105">
+    <Symbol UId="106">
+      <Component Name="statReadStep" UId="107" />
+    </Symbol>
+  </Access>
+  <Blank UId="108" />
+  <Token Text="=" UId="109" />
+  <Blank UId="110" />
+  <Access Scope="LiteralConstant" UId="111">
+    <Constant UId="112">
+      <ConstantValue UId="114">0</ConstantValue>
+    </Constant>
+  </Access>
+  <Blank UId="115" />
+  <Token Text="THEN" UId="116" />
+  <NewLine UId="117" />
+  <Blank Num="4" UId="118" />
+  <Access Scope="LocalVariable" UId="119">
+    <Symbol UId="120">
+      <Component Name="statReadStep" UId="121" />
+    </Symbol>
+  </Access>
+  <Blank UId="122" />
+  <Token Text=":=" UId="123" />
+  <Blank UId="124" />
+  <Access Scope="LiteralConstant" UId="125">
+    <Constant UId="126">
+      <ConstantValue UId="128">1</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="129" />
+  <NewLine UId="130" />
+  <Token Text="ELSIF" UId="131" />
+  <Blank UId="132" />
+  <Access Scope="LocalVariable" UId="133">
+    <Symbol UId="134">
+      <Component Name="statReadStep" UId="135" />
+    </Symbol>
+  </Access>
+  <Blank UId="136" />
+  <Token Text="&gt;" UId="137" />
+  <Blank UId="138" />
+  <Access Scope="LiteralConstant" UId="139">
+    <Constant UId="140">
+      <ConstantValue UId="142">2</ConstantValue>
+    </Constant>
+  </Access>
+  <Blank UId="143" />
+  <Token Text="THEN" UId="144" />
+  <NewLine UId="145" />
+  <Blank Num="4" UId="146" />
+  <Access Scope="LocalVariable" UId="147">
+    <Symbol UId="148">
+      <Component Name="statReadStep" UId="149" />
+    </Symbol>
+  </Access>
+  <Blank UId="150" />
+  <Token Text=":=" UId="151" />
+  <Blank UId="152" />
+  <Access Scope="LiteralConstant" UId="153">
+    <Constant UId="154">
+      <ConstantValue UId="156">1</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="157" />
+  <NewLine UId="158" />
+  <Token Text="END_IF" UId="159" />
+  <Token Text=";" UId="160" />
+  <NewLine UId="161" />
+</StructuredText></NetworkSource>
+          <ProgrammingLanguage>SCL</ProgrammingLanguage>
+        </AttributeList>
+        <ObjectList>
+          <MultilingualText ID="5" CompositionName="Comment">
+            <ObjectList>
+              <MultilingualTextItem ID="6" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="7" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+          <MultilingualText ID="8" CompositionName="Title">
+            <ObjectList>
+              <MultilingualTextItem ID="9" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="A" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text>###### Input Mapping ######</Text>
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+        </ObjectList>
+      </SW.Blocks.CompileUnit>
+      <SW.Blocks.CompileUnit ID="B" CompositionName="CompileUnits">
+        <AttributeList>
+          <NetworkSource><FlgNet xmlns="http://www.siemens.com/automation/Openness/SW/NetworkSource/FlgNet/v5">
+  <Parts>
+    <Access Scope="LocalVariable" UId="21">
+      <Symbol>
+        <Component Name="enable" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="22">
+      <Symbol>
+        <Component Name="statWriteReq" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>9</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="23">
+      <Symbol>
+        <Component Name="CurrentUnit" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="24">
+      <Symbol>
+        <Component Name="unitNo" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="25">
+      <Symbol>
+        <Component Name="statReadStep" />
+      </Symbol>
+    </Access>
+    <Access Scope="LiteralConstant" UId="26">
+      <Constant>
+        <ConstantType>Int</ConstantType>
+        <ConstantValue>1</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="LocalConstant" UId="27">
+      <Constant Name="Read_Time" />
+    </Access>
+    <Access Scope="LocalVariable" UId="28">
+      <Symbol>
+        <Component Name="unitNo" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="29">
+      <Symbol>
+        <Component Name="MBMasterBuffer" />
+        <Component Name="MB_ADDR" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalConstant" UId="30">
+      <Constant Name="Mode_Read" />
+    </Access>
+    <Access Scope="LocalVariable" UId="31">
+      <Symbol>
+        <Component Name="MBMasterBuffer" />
+        <Component Name="MODE" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalConstant" UId="32">
+      <Constant Name="Addr_TempPV" />
+    </Access>
+    <Access Scope="LocalVariable" UId="33">
+      <Symbol>
+        <Component Name="MBMasterBuffer" />
+        <Component Name="DATA_ADDR" />
+      </Symbol>
+    </Access>
+    <Access Scope="LiteralConstant" UId="34">
+      <Constant>
+        <ConstantType>UInt</ConstantType>
+        <ConstantValue>4</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="LocalVariable" UId="35">
+      <Symbol>
+        <Component Name="MBMasterBuffer" />
+        <Component Name="DATA_LEN" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="36">
+      <Symbol>
+        <Component Name="statReadReq" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>0</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="37">
+      <Symbol>
+        <Component Name="MBMasterBuffer" />
+        <Component Name="DONE" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="38">
+      <Symbol>
+        <Component Name="statPulse" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>0</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="39">
+      <Symbol>
+        <Component Name="MBMasterBuffer" />
+        <Component Name="DataPTR" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>1</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="40">
+      <Symbol>
+        <Component Name="statReadTempPV" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="41">
+      <Symbol>
+        <Component Name="MBMasterBuffer" />
+        <Component Name="DataPTR" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>3</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="42">
+      <Symbol>
+        <Component Name="statReadStatus" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="43">
+      <Symbol>
+        <Component Name="statReadStep" />
+      </Symbol>
+    </Access>
+    <Part Name="Contact" UId="44" />
+    <Part Name="Contact" UId="45">
+      <Negated Name="operand" />
+    </Part>
+    <Part Name="Eq" UId="46">
+      <TemplateValue Name="SrcType" Type="Type">Int</TemplateValue>
+    </Part>
+    <Part Name="Eq" UId="47">
+      <TemplateValue Name="SrcType" Type="Type">Int</TemplateValue>
+    </Part>
+    <Part Name="TON" Version="1.0" UId="48">
+      <Instance Scope="LocalVariable" UId="49">
+        <Component Name="statTimer" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>0</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Instance>
+      <TemplateValue Name="time_type" Type="Type">Time</TemplateValue>
+    </Part>
+    <Part Name="Move" UId="50" DisabledENO="true">
+      <TemplateValue Name="Card" Type="Cardinality">1</TemplateValue>
+    </Part>
+    <Part Name="Move" UId="51" DisabledENO="true">
+      <TemplateValue Name="Card" Type="Cardinality">1</TemplateValue>
+    </Part>
+    <Part Name="Move" UId="52" DisabledENO="true">
+      <TemplateValue Name="Card" Type="Cardinality">1</TemplateValue>
+    </Part>
+    <Part Name="Move" UId="53" DisabledENO="true">
+      <TemplateValue Name="Card" Type="Cardinality">1</TemplateValue>
+    </Part>
+    <Part Name="Coil" UId="54" />
+    <Part Name="PContact" UId="55" />
+    <Part Name="Convert" UId="56" DisabledENO="true">
+      <TemplateValue Name="SrcType" Type="Type">DInt</TemplateValue>
+      <TemplateValue Name="DestType" Type="Type">Real</TemplateValue>
+    </Part>
+    <Part Name="Move" UId="57" DisabledENO="true">
+      <TemplateValue Name="Card" Type="Cardinality">1</TemplateValue>
+    </Part>
+    <Part Name="Inc" UId="58" DisabledENO="true">
+      <TemplateValue Name="DestType" Type="Type">Int</TemplateValue>
+    </Part>
+  </Parts>
+  <Wires>
+    <Wire UId="60">
+      <Powerrail />
+      <NameCon UId="44" Name="in" />
+    </Wire>
+    <Wire UId="61">
+      <IdentCon UId="21" />
+      <NameCon UId="44" Name="operand" />
+    </Wire>
+    <Wire UId="62">
+      <NameCon UId="44" Name="out" />
+      <NameCon UId="45" Name="in" />
+    </Wire>
+    <Wire UId="63">
+      <IdentCon UId="22" />
+      <NameCon UId="45" Name="operand" />
+    </Wire>
+    <Wire UId="64">
+      <NameCon UId="45" Name="out" />
+      <NameCon UId="46" Name="pre" />
+    </Wire>
+    <Wire UId="65">
+      <IdentCon UId="23" />
+      <NameCon UId="46" Name="in1" />
+    </Wire>
+    <Wire UId="66">
+      <IdentCon UId="24" />
+      <NameCon UId="46" Name="in2" />
+    </Wire>
+    <Wire UId="67">
+      <NameCon UId="46" Name="out" />
+      <NameCon UId="47" Name="pre" />
+    </Wire>
+    <Wire UId="68">
+      <IdentCon UId="25" />
+      <NameCon UId="47" Name="in1" />
+    </Wire>
+    <Wire UId="69">
+      <IdentCon UId="26" />
+      <NameCon UId="47" Name="in2" />
+    </Wire>
+    <Wire UId="70">
+      <NameCon UId="47" Name="out" />
+      <NameCon UId="48" Name="IN" />
+    </Wire>
+    <Wire UId="71">
+      <IdentCon UId="27" />
+      <NameCon UId="48" Name="PT" />
+    </Wire>
+    <Wire UId="72">
+      <NameCon UId="48" Name="Q" />
+      <NameCon UId="50" Name="en" />
+      <NameCon UId="52" Name="en" />
+      <NameCon UId="54" Name="in" />
+      <NameCon UId="55" Name="pre" />
+    </Wire>
+    <Wire UId="73">
+      <NameCon UId="48" Name="ET" />
+      <OpenCon UId="59" />
+    </Wire>
+    <Wire UId="74">
+      <IdentCon UId="28" />
+      <NameCon UId="50" Name="in" />
+    </Wire>
+    <Wire UId="75">
+      <NameCon UId="50" Name="eno" />
+      <NameCon UId="51" Name="en" />
+    </Wire>
+    <Wire UId="76">
+      <NameCon UId="50" Name="out1" />
+      <IdentCon UId="29" />
+    </Wire>
+    <Wire UId="77">
+      <IdentCon UId="30" />
+      <NameCon UId="51" Name="in" />
+    </Wire>
+    <Wire UId="78">
+      <NameCon UId="51" Name="out1" />
+      <IdentCon UId="31" />
+    </Wire>
+    <Wire UId="79">
+      <IdentCon UId="32" />
+      <NameCon UId="52" Name="in" />
+    </Wire>
+    <Wire UId="80">
+      <NameCon UId="52" Name="eno" />
+      <NameCon UId="53" Name="en" />
+    </Wire>
+    <Wire UId="81">
+      <NameCon UId="52" Name="out1" />
+      <IdentCon UId="33" />
+    </Wire>
+    <Wire UId="82">
+      <IdentCon UId="34" />
+      <NameCon UId="53" Name="in" />
+    </Wire>
+    <Wire UId="83">
+      <NameCon UId="53" Name="out1" />
+      <IdentCon UId="35" />
+    </Wire>
+    <Wire UId="84">
+      <IdentCon UId="36" />
+      <NameCon UId="54" Name="operand" />
+    </Wire>
+    <Wire UId="85">
+      <IdentCon UId="38" />
+      <NameCon UId="55" Name="bit" />
+    </Wire>
+    <Wire UId="86">
+      <IdentCon UId="37" />
+      <NameCon UId="55" Name="operand" />
+    </Wire>
+    <Wire UId="87">
+      <NameCon UId="55" Name="out" />
+      <NameCon UId="56" Name="en" />
+      <NameCon UId="58" Name="en" />
+    </Wire>
+    <Wire UId="88">
+      <IdentCon UId="39" />
+      <NameCon UId="56" Name="in" />
+    </Wire>
+    <Wire UId="89">
+      <NameCon UId="56" Name="eno" />
+      <NameCon UId="57" Name="en" />
+    </Wire>
+    <Wire UId="90">
+      <NameCon UId="56" Name="out" />
+      <IdentCon UId="40" />
+    </Wire>
+    <Wire UId="91">
+      <IdentCon UId="41" />
+      <NameCon UId="57" Name="in" />
+    </Wire>
+    <Wire UId="92">
+      <NameCon UId="57" Name="out1" />
+      <IdentCon UId="42" />
+    </Wire>
+    <Wire UId="93">
+      <IdentCon UId="43" />
+      <NameCon UId="58" Name="operand" />
+    </Wire>
+  </Wires>
+</FlgNet></NetworkSource>
+          <ProgrammingLanguage>LAD</ProgrammingLanguage>
+        </AttributeList>
+        <ObjectList>
+          <MultilingualText ID="C" CompositionName="Comment">
+            <ObjectList>
+              <MultilingualTextItem ID="D" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="E" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+          <MultilingualText ID="F" CompositionName="Title">
+            <ObjectList>
+              <MultilingualTextItem ID="10" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="11" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text>Read Temp PV + Status Command</Text>
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+        </ObjectList>
+      </SW.Blocks.CompileUnit>
+      <SW.Blocks.CompileUnit ID="12" CompositionName="CompileUnits">
+        <AttributeList>
+          <NetworkSource><FlgNet xmlns="http://www.siemens.com/automation/Openness/SW/NetworkSource/FlgNet/v5">
+  <Parts>
+    <Access Scope="LocalVariable" UId="21">
+      <Symbol>
+        <Component Name="enable" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="22">
+      <Symbol>
+        <Component Name="statWriteReq" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>9</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="23">
+      <Symbol>
+        <Component Name="CurrentUnit" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="24">
+      <Symbol>
+        <Component Name="unitNo" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="25">
+      <Symbol>
+        <Component Name="statReadStep" />
+      </Symbol>
+    </Access>
+    <Access Scope="LiteralConstant" UId="26">
+      <Constant>
+        <ConstantType>Int</ConstantType>
+        <ConstantValue>2</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="LocalConstant" UId="27">
+      <Constant Name="Read_Time" />
+    </Access>
+    <Access Scope="LocalVariable" UId="28">
+      <Symbol>
+        <Component Name="unitNo" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="29">
+      <Symbol>
+        <Component Name="MBMasterBuffer" />
+        <Component Name="MB_ADDR" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalConstant" UId="30">
+      <Constant Name="Mode_Read" />
+    </Access>
+    <Access Scope="LocalVariable" UId="31">
+      <Symbol>
+        <Component Name="MBMasterBuffer" />
+        <Component Name="MODE" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalConstant" UId="32">
+      <Constant Name="Addr_TempSP" />
+    </Access>
+    <Access Scope="LocalVariable" UId="33">
+      <Symbol>
+        <Component Name="MBMasterBuffer" />
+        <Component Name="DATA_ADDR" />
+      </Symbol>
+    </Access>
+    <Access Scope="LiteralConstant" UId="34">
+      <Constant>
+        <ConstantType>UInt</ConstantType>
+        <ConstantValue>14</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="LocalVariable" UId="35">
+      <Symbol>
+        <Component Name="MBMasterBuffer" />
+        <Component Name="DATA_LEN" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="36">
+      <Symbol>
+        <Component Name="statReadReq" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>1</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="37">
+      <Symbol>
+        <Component Name="MBMasterBuffer" />
+        <Component Name="DONE" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="38">
+      <Symbol>
+        <Component Name="statPulse" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>1</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="39">
+      <Symbol>
+        <Component Name="MBMasterBuffer" />
+        <Component Name="DataPTR" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>1</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="40">
+      <Symbol>
+        <Component Name="statTempSP" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="41">
+      <Symbol>
+        <Component Name="MBMasterBuffer" />
+        <Component Name="DataPTR" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>2</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="42">
+      <Symbol>
+        <Component Name="statAlarmValue1" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="43">
+      <Symbol>
+        <Component Name="MBMasterBuffer" />
+        <Component Name="DataPTR" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>3</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="44">
+      <Symbol>
+        <Component Name="statAlarmValue1_UpperLimit" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="45">
+      <Symbol>
+        <Component Name="MBMasterBuffer" />
+        <Component Name="DataPTR" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>4</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="46">
+      <Symbol>
+        <Component Name="statAlarmValue1_LowerLimit" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="47">
+      <Symbol>
+        <Component Name="MBMasterBuffer" />
+        <Component Name="DataPTR" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>5</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="48">
+      <Symbol>
+        <Component Name="statAlarmValue2" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="49">
+      <Symbol>
+        <Component Name="MBMasterBuffer" />
+        <Component Name="DataPTR" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>6</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="50">
+      <Symbol>
+        <Component Name="statAlarmValue2_UpperLimit" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="51">
+      <Symbol>
+        <Component Name="MBMasterBuffer" />
+        <Component Name="DataPTR" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>7</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="52">
+      <Symbol>
+        <Component Name="statAlarmValue2_LowerLimit" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="53">
+      <Symbol>
+        <Component Name="statReadStep" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="54">
+      <Symbol>
+        <Component Name="CurrentUnit" />
+      </Symbol>
+    </Access>
+    <Access Scope="LiteralConstant" UId="55">
+      <Constant>
+        <ConstantType>Int</ConstantType>
+        <ConstantValue>5</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="LiteralConstant" UId="56">
+      <Constant>
+        <ConstantType>Int</ConstantType>
+        <ConstantValue>0</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="LocalVariable" UId="57">
+      <Symbol>
+        <Component Name="CurrentUnit" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="58">
+      <Symbol>
+        <Component Name="CurrentUnit" />
+      </Symbol>
+    </Access>
+    <Access Scope="LiteralConstant" UId="59">
+      <Constant>
+        <ConstantType>Int</ConstantType>
+        <ConstantValue>5</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="LocalVariable" UId="60">
+      <Symbol>
+        <Component Name="CurrentUnit" />
+      </Symbol>
+    </Access>
+    <Part Name="Contact" UId="61" />
+    <Part Name="Contact" UId="62">
+      <Negated Name="operand" />
+    </Part>
+    <Part Name="Eq" UId="63">
+      <TemplateValue Name="SrcType" Type="Type">Int</TemplateValue>
+    </Part>
+    <Part Name="Eq" UId="64">
+      <TemplateValue Name="SrcType" Type="Type">Int</TemplateValue>
+    </Part>
+    <Part Name="TON" Version="1.0" UId="65">
+      <Instance Scope="LocalVariable" UId="66">
+        <Component Name="statTimer" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>1</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Instance>
+      <TemplateValue Name="time_type" Type="Type">Time</TemplateValue>
+    </Part>
+    <Part Name="Move" UId="67" DisabledENO="true">
+      <TemplateValue Name="Card" Type="Cardinality">1</TemplateValue>
+    </Part>
+    <Part Name="Move" UId="68" DisabledENO="true">
+      <TemplateValue Name="Card" Type="Cardinality">1</TemplateValue>
+    </Part>
+    <Part Name="Move" UId="69" DisabledENO="true">
+      <TemplateValue Name="Card" Type="Cardinality">1</TemplateValue>
+    </Part>
+    <Part Name="Move" UId="70" DisabledENO="true">
+      <TemplateValue Name="Card" Type="Cardinality">1</TemplateValue>
+    </Part>
+    <Part Name="Coil" UId="71" />
+    <Part Name="PContact" UId="72" />
+    <Part Name="Convert" UId="73" DisabledENO="true">
+      <TemplateValue Name="SrcType" Type="Type">DInt</TemplateValue>
+      <TemplateValue Name="DestType" Type="Type">Real</TemplateValue>
+    </Part>
+    <Part Name="Convert" UId="74" DisabledENO="true">
+      <TemplateValue Name="SrcType" Type="Type">DInt</TemplateValue>
+      <TemplateValue Name="DestType" Type="Type">Real</TemplateValue>
+    </Part>
+    <Part Name="Convert" UId="75" DisabledENO="true">
+      <TemplateValue Name="SrcType" Type="Type">DInt</TemplateValue>
+      <TemplateValue Name="DestType" Type="Type">Real</TemplateValue>
+    </Part>
+    <Part Name="Convert" UId="76" DisabledENO="true">
+      <TemplateValue Name="SrcType" Type="Type">DInt</TemplateValue>
+      <TemplateValue Name="DestType" Type="Type">Real</TemplateValue>
+    </Part>
+    <Part Name="Convert" UId="77" DisabledENO="true">
+      <TemplateValue Name="SrcType" Type="Type">DInt</TemplateValue>
+      <TemplateValue Name="DestType" Type="Type">Real</TemplateValue>
+    </Part>
+    <Part Name="Convert" UId="78" DisabledENO="true">
+      <TemplateValue Name="SrcType" Type="Type">DInt</TemplateValue>
+      <TemplateValue Name="DestType" Type="Type">Real</TemplateValue>
+    </Part>
+    <Part Name="Convert" UId="79" DisabledENO="true">
+      <TemplateValue Name="SrcType" Type="Type">DInt</TemplateValue>
+      <TemplateValue Name="DestType" Type="Type">Real</TemplateValue>
+    </Part>
+    <Part Name="Inc" UId="80" DisabledENO="true">
+      <TemplateValue Name="DestType" Type="Type">Int</TemplateValue>
+    </Part>
+    <Part Name="Ge" UId="81">
+      <TemplateValue Name="SrcType" Type="Type">Int</TemplateValue>
+    </Part>
+    <Part Name="Move" UId="82" DisabledENO="true">
+      <TemplateValue Name="Card" Type="Cardinality">1</TemplateValue>
+    </Part>
+    <Part Name="Lt" UId="83">
+      <TemplateValue Name="SrcType" Type="Type">Int</TemplateValue>
+    </Part>
+    <Part Name="Inc" UId="84" DisabledENO="true">
+      <TemplateValue Name="DestType" Type="Type">Int</TemplateValue>
+    </Part>
+  </Parts>
+  <Wires>
+    <Wire UId="86">
+      <Powerrail />
+      <NameCon UId="61" Name="in" />
+    </Wire>
+    <Wire UId="87">
+      <IdentCon UId="21" />
+      <NameCon UId="61" Name="operand" />
+    </Wire>
+    <Wire UId="88">
+      <NameCon UId="61" Name="out" />
+      <NameCon UId="62" Name="in" />
+    </Wire>
+    <Wire UId="89">
+      <IdentCon UId="22" />
+      <NameCon UId="62" Name="operand" />
+    </Wire>
+    <Wire UId="90">
+      <NameCon UId="62" Name="out" />
+      <NameCon UId="63" Name="pre" />
+    </Wire>
+    <Wire UId="91">
+      <IdentCon UId="23" />
+      <NameCon UId="63" Name="in1" />
+    </Wire>
+    <Wire UId="92">
+      <IdentCon UId="24" />
+      <NameCon UId="63" Name="in2" />
+    </Wire>
+    <Wire UId="93">
+      <NameCon UId="63" Name="out" />
+      <NameCon UId="64" Name="pre" />
+    </Wire>
+    <Wire UId="94">
+      <IdentCon UId="25" />
+      <NameCon UId="64" Name="in1" />
+    </Wire>
+    <Wire UId="95">
+      <IdentCon UId="26" />
+      <NameCon UId="64" Name="in2" />
+    </Wire>
+    <Wire UId="96">
+      <NameCon UId="64" Name="out" />
+      <NameCon UId="65" Name="IN" />
+    </Wire>
+    <Wire UId="97">
+      <IdentCon UId="27" />
+      <NameCon UId="65" Name="PT" />
+    </Wire>
+    <Wire UId="98">
+      <NameCon UId="65" Name="Q" />
+      <NameCon UId="67" Name="en" />
+      <NameCon UId="69" Name="en" />
+      <NameCon UId="71" Name="in" />
+      <NameCon UId="72" Name="pre" />
+    </Wire>
+    <Wire UId="99">
+      <NameCon UId="65" Name="ET" />
+      <OpenCon UId="85" />
+    </Wire>
+    <Wire UId="100">
+      <IdentCon UId="28" />
+      <NameCon UId="67" Name="in" />
+    </Wire>
+    <Wire UId="101">
+      <NameCon UId="67" Name="eno" />
+      <NameCon UId="68" Name="en" />
+    </Wire>
+    <Wire UId="102">
+      <NameCon UId="67" Name="out1" />
+      <IdentCon UId="29" />
+    </Wire>
+    <Wire UId="103">
+      <IdentCon UId="30" />
+      <NameCon UId="68" Name="in" />
+    </Wire>
+    <Wire UId="104">
+      <NameCon UId="68" Name="out1" />
+      <IdentCon UId="31" />
+    </Wire>
+    <Wire UId="105">
+      <IdentCon UId="32" />
+      <NameCon UId="69" Name="in" />
+    </Wire>
+    <Wire UId="106">
+      <NameCon UId="69" Name="eno" />
+      <NameCon UId="70" Name="en" />
+    </Wire>
+    <Wire UId="107">
+      <NameCon UId="69" Name="out1" />
+      <IdentCon UId="33" />
+    </Wire>
+    <Wire UId="108">
+      <IdentCon UId="34" />
+      <NameCon UId="70" Name="in" />
+    </Wire>
+    <Wire UId="109">
+      <NameCon UId="70" Name="out1" />
+      <IdentCon UId="35" />
+    </Wire>
+    <Wire UId="110">
+      <IdentCon UId="36" />
+      <NameCon UId="71" Name="operand" />
+    </Wire>
+    <Wire UId="111">
+      <IdentCon UId="38" />
+      <NameCon UId="72" Name="bit" />
+    </Wire>
+    <Wire UId="112">
+      <IdentCon UId="37" />
+      <NameCon UId="72" Name="operand" />
+    </Wire>
+    <Wire UId="113">
+      <NameCon UId="72" Name="out" />
+      <NameCon UId="73" Name="en" />
+      <NameCon UId="75" Name="en" />
+      <NameCon UId="77" Name="en" />
+      <NameCon UId="79" Name="en" />
+      <NameCon UId="80" Name="en" />
+    </Wire>
+    <Wire UId="114">
+      <IdentCon UId="39" />
+      <NameCon UId="73" Name="in" />
+    </Wire>
+    <Wire UId="115">
+      <NameCon UId="73" Name="eno" />
+      <NameCon UId="74" Name="en" />
+    </Wire>
+    <Wire UId="116">
+      <NameCon UId="73" Name="out" />
+      <IdentCon UId="40" />
+    </Wire>
+    <Wire UId="117">
+      <IdentCon UId="41" />
+      <NameCon UId="74" Name="in" />
+    </Wire>
+    <Wire UId="118">
+      <NameCon UId="74" Name="out" />
+      <IdentCon UId="42" />
+    </Wire>
+    <Wire UId="119">
+      <IdentCon UId="43" />
+      <NameCon UId="75" Name="in" />
+    </Wire>
+    <Wire UId="120">
+      <NameCon UId="75" Name="eno" />
+      <NameCon UId="76" Name="en" />
+    </Wire>
+    <Wire UId="121">
+      <NameCon UId="75" Name="out" />
+      <IdentCon UId="44" />
+    </Wire>
+    <Wire UId="122">
+      <IdentCon UId="45" />
+      <NameCon UId="76" Name="in" />
+    </Wire>
+    <Wire UId="123">
+      <NameCon UId="76" Name="out" />
+      <IdentCon UId="46" />
+    </Wire>
+    <Wire UId="124">
+      <IdentCon UId="47" />
+      <NameCon UId="77" Name="in" />
+    </Wire>
+    <Wire UId="125">
+      <NameCon UId="77" Name="eno" />
+      <NameCon UId="78" Name="en" />
+    </Wire>
+    <Wire UId="126">
+      <NameCon UId="77" Name="out" />
+      <IdentCon UId="48" />
+    </Wire>
+    <Wire UId="127">
+      <IdentCon UId="49" />
+      <NameCon UId="78" Name="in" />
+    </Wire>
+    <Wire UId="128">
+      <NameCon UId="78" Name="out" />
+      <IdentCon UId="50" />
+    </Wire>
+    <Wire UId="129">
+      <IdentCon UId="51" />
+      <NameCon UId="79" Name="in" />
+    </Wire>
+    <Wire UId="130">
+      <NameCon UId="79" Name="out" />
+      <IdentCon UId="52" />
+    </Wire>
+    <Wire UId="131">
+      <IdentCon UId="53" />
+      <NameCon UId="80" Name="operand" />
+    </Wire>
+    <Wire UId="132">
+      <NameCon UId="80" Name="eno" />
+      <NameCon UId="81" Name="pre" />
+      <NameCon UId="83" Name="pre" />
+    </Wire>
+    <Wire UId="133">
+      <IdentCon UId="54" />
+      <NameCon UId="81" Name="in1" />
+    </Wire>
+    <Wire UId="134">
+      <IdentCon UId="55" />
+      <NameCon UId="81" Name="in2" />
+    </Wire>
+    <Wire UId="135">
+      <NameCon UId="81" Name="out" />
+      <NameCon UId="82" Name="en" />
+    </Wire>
+    <Wire UId="136">
+      <IdentCon UId="56" />
+      <NameCon UId="82" Name="in" />
+    </Wire>
+    <Wire UId="137">
+      <NameCon UId="82" Name="out1" />
+      <IdentCon UId="57" />
+    </Wire>
+    <Wire UId="138">
+      <IdentCon UId="58" />
+      <NameCon UId="83" Name="in1" />
+    </Wire>
+    <Wire UId="139">
+      <IdentCon UId="59" />
+      <NameCon UId="83" Name="in2" />
+    </Wire>
+    <Wire UId="140">
+      <NameCon UId="83" Name="out" />
+      <NameCon UId="84" Name="en" />
+    </Wire>
+    <Wire UId="141">
+      <IdentCon UId="60" />
+      <NameCon UId="84" Name="operand" />
+    </Wire>
+  </Wires>
+</FlgNet></NetworkSource>
+          <ProgrammingLanguage>LAD</ProgrammingLanguage>
+        </AttributeList>
+        <ObjectList>
+          <MultilingualText ID="13" CompositionName="Comment">
+            <ObjectList>
+              <MultilingualTextItem ID="14" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="15" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+          <MultilingualText ID="16" CompositionName="Title">
+            <ObjectList>
+              <MultilingualTextItem ID="17" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="18" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text>Read TempSP + AlarmValue1 ~ AlarmValue2_LowerLimit Commad</Text>
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+        </ObjectList>
+      </SW.Blocks.CompileUnit>
+      <SW.Blocks.CompileUnit ID="19" CompositionName="CompileUnits">
+        <AttributeList>
+          <NetworkSource><FlgNet xmlns="http://www.siemens.com/automation/Openness/SW/NetworkSource/FlgNet/v5">
+  <Parts>
+    <Access Scope="LocalVariable" UId="21">
+      <Symbol>
+        <Component Name="enable" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="22">
+      <Symbol>
+        <Component Name="statWriteReq" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>9</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="23">
+      <Symbol>
+        <Component Name="statHeaterRun" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="24">
+      <Symbol>
+        <Component Name="statPulse" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>7</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="25">
+      <Symbol>
+        <Component Name="unitNo" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="26">
+      <Symbol>
+        <Component Name="MBMasterBuffer" />
+        <Component Name="MB_ADDR" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalConstant" UId="27">
+      <Constant Name="Mode_Write" />
+    </Access>
+    <Access Scope="LocalVariable" UId="28">
+      <Symbol>
+        <Component Name="MBMasterBuffer" />
+        <Component Name="MODE" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalConstant" UId="29">
+      <Constant Name="Addr_TempPV" />
+    </Access>
+    <Access Scope="LocalVariable" UId="30">
+      <Symbol>
+        <Component Name="MBMasterBuffer" />
+        <Component Name="DATA_ADDR" />
+      </Symbol>
+    </Access>
+    <Access Scope="LiteralConstant" UId="31">
+      <Constant>
+        <ConstantType>UInt</ConstantType>
+        <ConstantValue>1</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="LocalVariable" UId="32">
+      <Symbol>
+        <Component Name="MBMasterBuffer" />
+        <Component Name="DATA_LEN" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalConstant" UId="33">
+      <Constant Name="CMD_Run" />
+    </Access>
+    <Access Scope="LocalVariable" UId="34">
+      <Symbol>
+        <Component Name="MBMasterBuffer" />
+        <Component Name="DataPTR" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>1</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="35">
+      <Symbol>
+        <Component Name="statWriteReq" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>0</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="36">
+      <Symbol>
+        <Component Name="MBMasterBuffer" />
+        <Component Name="DONE" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="37">
+      <Symbol>
+        <Component Name="statPulse" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>2</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="38">
+      <Symbol>
+        <Component Name="statWriteReq" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>0</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Part Name="Contact" UId="39" />
+    <Part Name="Contact" UId="40">
+      <Negated Name="operand" />
+    </Part>
+    <Part Name="PContact" UId="41" />
+    <Part Name="Move" UId="42" DisabledENO="true">
+      <TemplateValue Name="Card" Type="Cardinality">1</TemplateValue>
+    </Part>
+    <Part Name="Move" UId="43" DisabledENO="true">
+      <TemplateValue Name="Card" Type="Cardinality">1</TemplateValue>
+    </Part>
+    <Part Name="Move" UId="44" DisabledENO="true">
+      <TemplateValue Name="Card" Type="Cardinality">1</TemplateValue>
+    </Part>
+    <Part Name="Move" UId="45" DisabledENO="true">
+      <TemplateValue Name="Card" Type="Cardinality">1</TemplateValue>
+    </Part>
+    <Part Name="Move" UId="46" DisabledENO="true">
+      <TemplateValue Name="Card" Type="Cardinality">1</TemplateValue>
+    </Part>
+    <Part Name="SCoil" UId="47" />
+    <Part Name="NContact" UId="48" />
+    <Part Name="RCoil" UId="49" />
+  </Parts>
+  <Wires>
+    <Wire UId="50">
+      <Powerrail />
+      <NameCon UId="39" Name="in" />
+    </Wire>
+    <Wire UId="51">
+      <IdentCon UId="21" />
+      <NameCon UId="39" Name="operand" />
+    </Wire>
+    <Wire UId="52">
+      <NameCon UId="39" Name="out" />
+      <NameCon UId="40" Name="in" />
+      <NameCon UId="48" Name="pre" />
+    </Wire>
+    <Wire UId="53">
+      <IdentCon UId="22" />
+      <NameCon UId="40" Name="operand" />
+    </Wire>
+    <Wire UId="54">
+      <NameCon UId="40" Name="out" />
+      <NameCon UId="41" Name="pre" />
+    </Wire>
+    <Wire UId="55">
+      <IdentCon UId="24" />
+      <NameCon UId="41" Name="bit" />
+    </Wire>
+    <Wire UId="56">
+      <IdentCon UId="23" />
+      <NameCon UId="41" Name="operand" />
+    </Wire>
+    <Wire UId="57">
+      <NameCon UId="41" Name="out" />
+      <NameCon UId="42" Name="en" />
+      <NameCon UId="44" Name="en" />
+      <NameCon UId="46" Name="en" />
+    </Wire>
+    <Wire UId="58">
+      <IdentCon UId="25" />
+      <NameCon UId="42" Name="in" />
+    </Wire>
+    <Wire UId="59">
+      <NameCon UId="42" Name="eno" />
+      <NameCon UId="43" Name="en" />
+    </Wire>
+    <Wire UId="60">
+      <NameCon UId="42" Name="out1" />
+      <IdentCon UId="26" />
+    </Wire>
+    <Wire UId="61">
+      <IdentCon UId="27" />
+      <NameCon UId="43" Name="in" />
+    </Wire>
+    <Wire UId="62">
+      <NameCon UId="43" Name="out1" />
+      <IdentCon UId="28" />
+    </Wire>
+    <Wire UId="63">
+      <IdentCon UId="29" />
+      <NameCon UId="44" Name="in" />
+    </Wire>
+    <Wire UId="64">
+      <NameCon UId="44" Name="eno" />
+      <NameCon UId="45" Name="en" />
+    </Wire>
+    <Wire UId="65">
+      <NameCon UId="44" Name="out1" />
+      <IdentCon UId="30" />
+    </Wire>
+    <Wire UId="66">
+      <IdentCon UId="31" />
+      <NameCon UId="45" Name="in" />
+    </Wire>
+    <Wire UId="67">
+      <NameCon UId="45" Name="out1" />
+      <IdentCon UId="32" />
+    </Wire>
+    <Wire UId="68">
+      <IdentCon UId="33" />
+      <NameCon UId="46" Name="in" />
+    </Wire>
+    <Wire UId="69">
+      <NameCon UId="46" Name="eno" />
+      <NameCon UId="47" Name="in" />
+    </Wire>
+    <Wire UId="70">
+      <NameCon UId="46" Name="out1" />
+      <IdentCon UId="34" />
+    </Wire>
+    <Wire UId="71">
+      <IdentCon UId="35" />
+      <NameCon UId="47" Name="operand" />
+    </Wire>
+    <Wire UId="72">
+      <IdentCon UId="37" />
+      <NameCon UId="48" Name="bit" />
+    </Wire>
+    <Wire UId="73">
+      <IdentCon UId="36" />
+      <NameCon UId="48" Name="operand" />
+    </Wire>
+    <Wire UId="74">
+      <NameCon UId="48" Name="out" />
+      <NameCon UId="49" Name="in" />
+    </Wire>
+    <Wire UId="75">
+      <IdentCon UId="38" />
+      <NameCon UId="49" Name="operand" />
+    </Wire>
+  </Wires>
+</FlgNet></NetworkSource>
+          <ProgrammingLanguage>LAD</ProgrammingLanguage>
+        </AttributeList>
+        <ObjectList>
+          <MultilingualText ID="1A" CompositionName="Comment">
+            <ObjectList>
+              <MultilingualTextItem ID="1B" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="1C" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+          <MultilingualText ID="1D" CompositionName="Title">
+            <ObjectList>
+              <MultilingualTextItem ID="1E" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="1F" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text>Write Heater Run Command</Text>
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+        </ObjectList>
+      </SW.Blocks.CompileUnit>
+      <SW.Blocks.CompileUnit ID="20" CompositionName="CompileUnits">
+        <AttributeList>
+          <NetworkSource><FlgNet xmlns="http://www.siemens.com/automation/Openness/SW/NetworkSource/FlgNet/v5">
+  <Parts>
+    <Access Scope="LocalVariable" UId="21">
+      <Symbol>
+        <Component Name="enable" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="22">
+      <Symbol>
+        <Component Name="statWriteReq" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>9</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="23">
+      <Symbol>
+        <Component Name="statHeaterStop" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="24">
+      <Symbol>
+        <Component Name="statPulse" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>8</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="25">
+      <Symbol>
+        <Component Name="unitNo" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="26">
+      <Symbol>
+        <Component Name="MBMasterBuffer" />
+        <Component Name="MB_ADDR" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalConstant" UId="27">
+      <Constant Name="Mode_Write" />
+    </Access>
+    <Access Scope="LocalVariable" UId="28">
+      <Symbol>
+        <Component Name="MBMasterBuffer" />
+        <Component Name="MODE" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalConstant" UId="29">
+      <Constant Name="Addr_TempPV" />
+    </Access>
+    <Access Scope="LocalVariable" UId="30">
+      <Symbol>
+        <Component Name="MBMasterBuffer" />
+        <Component Name="DATA_ADDR" />
+      </Symbol>
+    </Access>
+    <Access Scope="LiteralConstant" UId="31">
+      <Constant>
+        <ConstantType>UInt</ConstantType>
+        <ConstantValue>1</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="LocalVariable" UId="32">
+      <Symbol>
+        <Component Name="MBMasterBuffer" />
+        <Component Name="DATA_LEN" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalConstant" UId="33">
+      <Constant Name="CMD_Stop" />
+    </Access>
+    <Access Scope="LocalVariable" UId="34">
+      <Symbol>
+        <Component Name="MBMasterBuffer" />
+        <Component Name="DataPTR" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>1</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="35">
+      <Symbol>
+        <Component Name="statWriteReq" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>1</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="36">
+      <Symbol>
+        <Component Name="MBMasterBuffer" />
+        <Component Name="DONE" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="37">
+      <Symbol>
+        <Component Name="statPulse" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>3</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="38">
+      <Symbol>
+        <Component Name="statWriteReq" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>1</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Part Name="Contact" UId="39" />
+    <Part Name="Contact" UId="40">
+      <Negated Name="operand" />
+    </Part>
+    <Part Name="PContact" UId="41" />
+    <Part Name="Move" UId="42" DisabledENO="true">
+      <TemplateValue Name="Card" Type="Cardinality">1</TemplateValue>
+    </Part>
+    <Part Name="Move" UId="43" DisabledENO="true">
+      <TemplateValue Name="Card" Type="Cardinality">1</TemplateValue>
+    </Part>
+    <Part Name="Move" UId="44" DisabledENO="true">
+      <TemplateValue Name="Card" Type="Cardinality">1</TemplateValue>
+    </Part>
+    <Part Name="Move" UId="45" DisabledENO="true">
+      <TemplateValue Name="Card" Type="Cardinality">1</TemplateValue>
+    </Part>
+    <Part Name="Move" UId="46" DisabledENO="true">
+      <TemplateValue Name="Card" Type="Cardinality">1</TemplateValue>
+    </Part>
+    <Part Name="SCoil" UId="47" />
+    <Part Name="NContact" UId="48" />
+    <Part Name="RCoil" UId="49" />
+  </Parts>
+  <Wires>
+    <Wire UId="50">
+      <Powerrail />
+      <NameCon UId="39" Name="in" />
+    </Wire>
+    <Wire UId="51">
+      <IdentCon UId="21" />
+      <NameCon UId="39" Name="operand" />
+    </Wire>
+    <Wire UId="52">
+      <NameCon UId="39" Name="out" />
+      <NameCon UId="40" Name="in" />
+      <NameCon UId="48" Name="pre" />
+    </Wire>
+    <Wire UId="53">
+      <IdentCon UId="22" />
+      <NameCon UId="40" Name="operand" />
+    </Wire>
+    <Wire UId="54">
+      <NameCon UId="40" Name="out" />
+      <NameCon UId="41" Name="pre" />
+    </Wire>
+    <Wire UId="55">
+      <IdentCon UId="24" />
+      <NameCon UId="41" Name="bit" />
+    </Wire>
+    <Wire UId="56">
+      <IdentCon UId="23" />
+      <NameCon UId="41" Name="operand" />
+    </Wire>
+    <Wire UId="57">
+      <NameCon UId="41" Name="out" />
+      <NameCon UId="42" Name="en" />
+      <NameCon UId="44" Name="en" />
+      <NameCon UId="46" Name="en" />
+    </Wire>
+    <Wire UId="58">
+      <IdentCon UId="25" />
+      <NameCon UId="42" Name="in" />
+    </Wire>
+    <Wire UId="59">
+      <NameCon UId="42" Name="eno" />
+      <NameCon UId="43" Name="en" />
+    </Wire>
+    <Wire UId="60">
+      <NameCon UId="42" Name="out1" />
+      <IdentCon UId="26" />
+    </Wire>
+    <Wire UId="61">
+      <IdentCon UId="27" />
+      <NameCon UId="43" Name="in" />
+    </Wire>
+    <Wire UId="62">
+      <NameCon UId="43" Name="out1" />
+      <IdentCon UId="28" />
+    </Wire>
+    <Wire UId="63">
+      <IdentCon UId="29" />
+      <NameCon UId="44" Name="in" />
+    </Wire>
+    <Wire UId="64">
+      <NameCon UId="44" Name="eno" />
+      <NameCon UId="45" Name="en" />
+    </Wire>
+    <Wire UId="65">
+      <NameCon UId="44" Name="out1" />
+      <IdentCon UId="30" />
+    </Wire>
+    <Wire UId="66">
+      <IdentCon UId="31" />
+      <NameCon UId="45" Name="in" />
+    </Wire>
+    <Wire UId="67">
+      <NameCon UId="45" Name="out1" />
+      <IdentCon UId="32" />
+    </Wire>
+    <Wire UId="68">
+      <IdentCon UId="33" />
+      <NameCon UId="46" Name="in" />
+    </Wire>
+    <Wire UId="69">
+      <NameCon UId="46" Name="eno" />
+      <NameCon UId="47" Name="in" />
+    </Wire>
+    <Wire UId="70">
+      <NameCon UId="46" Name="out1" />
+      <IdentCon UId="34" />
+    </Wire>
+    <Wire UId="71">
+      <IdentCon UId="35" />
+      <NameCon UId="47" Name="operand" />
+    </Wire>
+    <Wire UId="72">
+      <IdentCon UId="37" />
+      <NameCon UId="48" Name="bit" />
+    </Wire>
+    <Wire UId="73">
+      <IdentCon UId="36" />
+      <NameCon UId="48" Name="operand" />
+    </Wire>
+    <Wire UId="74">
+      <NameCon UId="48" Name="out" />
+      <NameCon UId="49" Name="in" />
+    </Wire>
+    <Wire UId="75">
+      <IdentCon UId="38" />
+      <NameCon UId="49" Name="operand" />
+    </Wire>
+  </Wires>
+</FlgNet></NetworkSource>
+          <ProgrammingLanguage>LAD</ProgrammingLanguage>
+        </AttributeList>
+        <ObjectList>
+          <MultilingualText ID="21" CompositionName="Comment">
+            <ObjectList>
+              <MultilingualTextItem ID="22" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="23" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+          <MultilingualText ID="24" CompositionName="Title">
+            <ObjectList>
+              <MultilingualTextItem ID="25" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="26" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text>Write Heater Stop Command</Text>
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+        </ObjectList>
+      </SW.Blocks.CompileUnit>
+      <SW.Blocks.CompileUnit ID="27" CompositionName="CompileUnits">
+        <AttributeList>
+          <NetworkSource><FlgNet xmlns="http://www.siemens.com/automation/Openness/SW/NetworkSource/FlgNet/v5">
+  <Parts>
+    <Access Scope="LocalVariable" UId="21">
+      <Symbol>
+        <Component Name="enable" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="22">
+      <Symbol>
+        <Component Name="statWriteReq" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>9</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="23">
+      <Symbol>
+        <Component Name="statHeaterAutoTuneRun" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="24">
+      <Symbol>
+        <Component Name="statPulse" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>9</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="25">
+      <Symbol>
+        <Component Name="unitNo" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="26">
+      <Symbol>
+        <Component Name="MBMasterBuffer" />
+        <Component Name="MB_ADDR" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalConstant" UId="27">
+      <Constant Name="Mode_Write" />
+    </Access>
+    <Access Scope="LocalVariable" UId="28">
+      <Symbol>
+        <Component Name="MBMasterBuffer" />
+        <Component Name="MODE" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalConstant" UId="29">
+      <Constant Name="Addr_TempPV" />
+    </Access>
+    <Access Scope="LocalVariable" UId="30">
+      <Symbol>
+        <Component Name="MBMasterBuffer" />
+        <Component Name="DATA_ADDR" />
+      </Symbol>
+    </Access>
+    <Access Scope="LiteralConstant" UId="31">
+      <Constant>
+        <ConstantType>UInt</ConstantType>
+        <ConstantValue>1</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="LocalVariable" UId="32">
+      <Symbol>
+        <Component Name="MBMasterBuffer" />
+        <Component Name="DATA_LEN" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalConstant" UId="33">
+      <Constant Name="CMD_AutoTune_Run" />
+    </Access>
+    <Access Scope="LocalVariable" UId="34">
+      <Symbol>
+        <Component Name="MBMasterBuffer" />
+        <Component Name="DataPTR" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>1</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="35">
+      <Symbol>
+        <Component Name="statWriteReq" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>2</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="36">
+      <Symbol>
+        <Component Name="MBMasterBuffer" />
+        <Component Name="DONE" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="37">
+      <Symbol>
+        <Component Name="statPulse" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>4</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="38">
+      <Symbol>
+        <Component Name="statWriteReq" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>2</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Part Name="Contact" UId="39" />
+    <Part Name="Contact" UId="40">
+      <Negated Name="operand" />
+    </Part>
+    <Part Name="PContact" UId="41" />
+    <Part Name="Move" UId="42" DisabledENO="true">
+      <TemplateValue Name="Card" Type="Cardinality">1</TemplateValue>
+    </Part>
+    <Part Name="Move" UId="43" DisabledENO="true">
+      <TemplateValue Name="Card" Type="Cardinality">1</TemplateValue>
+    </Part>
+    <Part Name="Move" UId="44" DisabledENO="true">
+      <TemplateValue Name="Card" Type="Cardinality">1</TemplateValue>
+    </Part>
+    <Part Name="Move" UId="45" DisabledENO="true">
+      <TemplateValue Name="Card" Type="Cardinality">1</TemplateValue>
+    </Part>
+    <Part Name="Move" UId="46" DisabledENO="true">
+      <TemplateValue Name="Card" Type="Cardinality">1</TemplateValue>
+    </Part>
+    <Part Name="SCoil" UId="47" />
+    <Part Name="NContact" UId="48" />
+    <Part Name="RCoil" UId="49" />
+  </Parts>
+  <Wires>
+    <Wire UId="50">
+      <Powerrail />
+      <NameCon UId="39" Name="in" />
+    </Wire>
+    <Wire UId="51">
+      <IdentCon UId="21" />
+      <NameCon UId="39" Name="operand" />
+    </Wire>
+    <Wire UId="52">
+      <NameCon UId="39" Name="out" />
+      <NameCon UId="40" Name="in" />
+      <NameCon UId="48" Name="pre" />
+    </Wire>
+    <Wire UId="53">
+      <IdentCon UId="22" />
+      <NameCon UId="40" Name="operand" />
+    </Wire>
+    <Wire UId="54">
+      <NameCon UId="40" Name="out" />
+      <NameCon UId="41" Name="pre" />
+    </Wire>
+    <Wire UId="55">
+      <IdentCon UId="24" />
+      <NameCon UId="41" Name="bit" />
+    </Wire>
+    <Wire UId="56">
+      <IdentCon UId="23" />
+      <NameCon UId="41" Name="operand" />
+    </Wire>
+    <Wire UId="57">
+      <NameCon UId="41" Name="out" />
+      <NameCon UId="42" Name="en" />
+      <NameCon UId="44" Name="en" />
+      <NameCon UId="46" Name="en" />
+    </Wire>
+    <Wire UId="58">
+      <IdentCon UId="25" />
+      <NameCon UId="42" Name="in" />
+    </Wire>
+    <Wire UId="59">
+      <NameCon UId="42" Name="eno" />
+      <NameCon UId="43" Name="en" />
+    </Wire>
+    <Wire UId="60">
+      <NameCon UId="42" Name="out1" />
+      <IdentCon UId="26" />
+    </Wire>
+    <Wire UId="61">
+      <IdentCon UId="27" />
+      <NameCon UId="43" Name="in" />
+    </Wire>
+    <Wire UId="62">
+      <NameCon UId="43" Name="out1" />
+      <IdentCon UId="28" />
+    </Wire>
+    <Wire UId="63">
+      <IdentCon UId="29" />
+      <NameCon UId="44" Name="in" />
+    </Wire>
+    <Wire UId="64">
+      <NameCon UId="44" Name="eno" />
+      <NameCon UId="45" Name="en" />
+    </Wire>
+    <Wire UId="65">
+      <NameCon UId="44" Name="out1" />
+      <IdentCon UId="30" />
+    </Wire>
+    <Wire UId="66">
+      <IdentCon UId="31" />
+      <NameCon UId="45" Name="in" />
+    </Wire>
+    <Wire UId="67">
+      <NameCon UId="45" Name="out1" />
+      <IdentCon UId="32" />
+    </Wire>
+    <Wire UId="68">
+      <IdentCon UId="33" />
+      <NameCon UId="46" Name="in" />
+    </Wire>
+    <Wire UId="69">
+      <NameCon UId="46" Name="eno" />
+      <NameCon UId="47" Name="in" />
+    </Wire>
+    <Wire UId="70">
+      <NameCon UId="46" Name="out1" />
+      <IdentCon UId="34" />
+    </Wire>
+    <Wire UId="71">
+      <IdentCon UId="35" />
+      <NameCon UId="47" Name="operand" />
+    </Wire>
+    <Wire UId="72">
+      <IdentCon UId="37" />
+      <NameCon UId="48" Name="bit" />
+    </Wire>
+    <Wire UId="73">
+      <IdentCon UId="36" />
+      <NameCon UId="48" Name="operand" />
+    </Wire>
+    <Wire UId="74">
+      <NameCon UId="48" Name="out" />
+      <NameCon UId="49" Name="in" />
+    </Wire>
+    <Wire UId="75">
+      <IdentCon UId="38" />
+      <NameCon UId="49" Name="operand" />
+    </Wire>
+  </Wires>
+</FlgNet></NetworkSource>
+          <ProgrammingLanguage>LAD</ProgrammingLanguage>
+        </AttributeList>
+        <ObjectList>
+          <MultilingualText ID="28" CompositionName="Comment">
+            <ObjectList>
+              <MultilingualTextItem ID="29" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="2A" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+          <MultilingualText ID="2B" CompositionName="Title">
+            <ObjectList>
+              <MultilingualTextItem ID="2C" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="2D" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text>Write Auto Tune Run Command</Text>
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+        </ObjectList>
+      </SW.Blocks.CompileUnit>
+      <SW.Blocks.CompileUnit ID="2E" CompositionName="CompileUnits">
+        <AttributeList>
+          <NetworkSource><FlgNet xmlns="http://www.siemens.com/automation/Openness/SW/NetworkSource/FlgNet/v5">
+  <Parts>
+    <Access Scope="LocalVariable" UId="21">
+      <Symbol>
+        <Component Name="enable" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="22">
+      <Symbol>
+        <Component Name="statWriteReq" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>9</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="23">
+      <Symbol>
+        <Component Name="statHeaterAutoTuneStop" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="24">
+      <Symbol>
+        <Component Name="statPulse" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>10</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="25">
+      <Symbol>
+        <Component Name="unitNo" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="26">
+      <Symbol>
+        <Component Name="MBMasterBuffer" />
+        <Component Name="MB_ADDR" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalConstant" UId="27">
+      <Constant Name="Mode_Write" />
+    </Access>
+    <Access Scope="LocalVariable" UId="28">
+      <Symbol>
+        <Component Name="MBMasterBuffer" />
+        <Component Name="MODE" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalConstant" UId="29">
+      <Constant Name="Addr_TempPV" />
+    </Access>
+    <Access Scope="LocalVariable" UId="30">
+      <Symbol>
+        <Component Name="MBMasterBuffer" />
+        <Component Name="DATA_ADDR" />
+      </Symbol>
+    </Access>
+    <Access Scope="LiteralConstant" UId="31">
+      <Constant>
+        <ConstantType>UInt</ConstantType>
+        <ConstantValue>1</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="LocalVariable" UId="32">
+      <Symbol>
+        <Component Name="MBMasterBuffer" />
+        <Component Name="DATA_LEN" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalConstant" UId="33">
+      <Constant Name="CMD_AutoTune_Stop" />
+    </Access>
+    <Access Scope="LocalVariable" UId="34">
+      <Symbol>
+        <Component Name="MBMasterBuffer" />
+        <Component Name="DataPTR" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>1</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="35">
+      <Symbol>
+        <Component Name="statWriteReq" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>3</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="36">
+      <Symbol>
+        <Component Name="MBMasterBuffer" />
+        <Component Name="DONE" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="37">
+      <Symbol>
+        <Component Name="statPulse" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>5</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="38">
+      <Symbol>
+        <Component Name="statWriteReq" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>3</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Part Name="Contact" UId="39" />
+    <Part Name="Contact" UId="40">
+      <Negated Name="operand" />
+    </Part>
+    <Part Name="PContact" UId="41" />
+    <Part Name="Move" UId="42" DisabledENO="true">
+      <TemplateValue Name="Card" Type="Cardinality">1</TemplateValue>
+    </Part>
+    <Part Name="Move" UId="43" DisabledENO="true">
+      <TemplateValue Name="Card" Type="Cardinality">1</TemplateValue>
+    </Part>
+    <Part Name="Move" UId="44" DisabledENO="true">
+      <TemplateValue Name="Card" Type="Cardinality">1</TemplateValue>
+    </Part>
+    <Part Name="Move" UId="45" DisabledENO="true">
+      <TemplateValue Name="Card" Type="Cardinality">1</TemplateValue>
+    </Part>
+    <Part Name="Move" UId="46" DisabledENO="true">
+      <TemplateValue Name="Card" Type="Cardinality">1</TemplateValue>
+    </Part>
+    <Part Name="SCoil" UId="47" />
+    <Part Name="NContact" UId="48" />
+    <Part Name="RCoil" UId="49" />
+  </Parts>
+  <Wires>
+    <Wire UId="50">
+      <Powerrail />
+      <NameCon UId="39" Name="in" />
+    </Wire>
+    <Wire UId="51">
+      <IdentCon UId="21" />
+      <NameCon UId="39" Name="operand" />
+    </Wire>
+    <Wire UId="52">
+      <NameCon UId="39" Name="out" />
+      <NameCon UId="40" Name="in" />
+      <NameCon UId="48" Name="pre" />
+    </Wire>
+    <Wire UId="53">
+      <IdentCon UId="22" />
+      <NameCon UId="40" Name="operand" />
+    </Wire>
+    <Wire UId="54">
+      <NameCon UId="40" Name="out" />
+      <NameCon UId="41" Name="pre" />
+    </Wire>
+    <Wire UId="55">
+      <IdentCon UId="24" />
+      <NameCon UId="41" Name="bit" />
+    </Wire>
+    <Wire UId="56">
+      <IdentCon UId="23" />
+      <NameCon UId="41" Name="operand" />
+    </Wire>
+    <Wire UId="57">
+      <NameCon UId="41" Name="out" />
+      <NameCon UId="42" Name="en" />
+      <NameCon UId="44" Name="en" />
+      <NameCon UId="46" Name="en" />
+    </Wire>
+    <Wire UId="58">
+      <IdentCon UId="25" />
+      <NameCon UId="42" Name="in" />
+    </Wire>
+    <Wire UId="59">
+      <NameCon UId="42" Name="eno" />
+      <NameCon UId="43" Name="en" />
+    </Wire>
+    <Wire UId="60">
+      <NameCon UId="42" Name="out1" />
+      <IdentCon UId="26" />
+    </Wire>
+    <Wire UId="61">
+      <IdentCon UId="27" />
+      <NameCon UId="43" Name="in" />
+    </Wire>
+    <Wire UId="62">
+      <NameCon UId="43" Name="out1" />
+      <IdentCon UId="28" />
+    </Wire>
+    <Wire UId="63">
+      <IdentCon UId="29" />
+      <NameCon UId="44" Name="in" />
+    </Wire>
+    <Wire UId="64">
+      <NameCon UId="44" Name="eno" />
+      <NameCon UId="45" Name="en" />
+    </Wire>
+    <Wire UId="65">
+      <NameCon UId="44" Name="out1" />
+      <IdentCon UId="30" />
+    </Wire>
+    <Wire UId="66">
+      <IdentCon UId="31" />
+      <NameCon UId="45" Name="in" />
+    </Wire>
+    <Wire UId="67">
+      <NameCon UId="45" Name="out1" />
+      <IdentCon UId="32" />
+    </Wire>
+    <Wire UId="68">
+      <IdentCon UId="33" />
+      <NameCon UId="46" Name="in" />
+    </Wire>
+    <Wire UId="69">
+      <NameCon UId="46" Name="eno" />
+      <NameCon UId="47" Name="in" />
+    </Wire>
+    <Wire UId="70">
+      <NameCon UId="46" Name="out1" />
+      <IdentCon UId="34" />
+    </Wire>
+    <Wire UId="71">
+      <IdentCon UId="35" />
+      <NameCon UId="47" Name="operand" />
+    </Wire>
+    <Wire UId="72">
+      <IdentCon UId="37" />
+      <NameCon UId="48" Name="bit" />
+    </Wire>
+    <Wire UId="73">
+      <IdentCon UId="36" />
+      <NameCon UId="48" Name="operand" />
+    </Wire>
+    <Wire UId="74">
+      <NameCon UId="48" Name="out" />
+      <NameCon UId="49" Name="in" />
+    </Wire>
+    <Wire UId="75">
+      <IdentCon UId="38" />
+      <NameCon UId="49" Name="operand" />
+    </Wire>
+  </Wires>
+</FlgNet></NetworkSource>
+          <ProgrammingLanguage>LAD</ProgrammingLanguage>
+        </AttributeList>
+        <ObjectList>
+          <MultilingualText ID="2F" CompositionName="Comment">
+            <ObjectList>
+              <MultilingualTextItem ID="30" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="31" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+          <MultilingualText ID="32" CompositionName="Title">
+            <ObjectList>
+              <MultilingualTextItem ID="33" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="34" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text>Write Auto Tune Stop Command</Text>
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+        </ObjectList>
+      </SW.Blocks.CompileUnit>
+      <SW.Blocks.CompileUnit ID="35" CompositionName="CompileUnits">
+        <AttributeList>
+          <NetworkSource><FlgNet xmlns="http://www.siemens.com/automation/Openness/SW/NetworkSource/FlgNet/v5">
+  <Parts>
+    <Access Scope="LocalVariable" UId="21">
+      <Symbol>
+        <Component Name="enable" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="22">
+      <Symbol>
+        <Component Name="statWriteReq" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>9</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="23">
+      <Symbol>
+        <Component Name="save" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="24">
+      <Symbol>
+        <Component Name="statPulse" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>11</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="25">
+      <Symbol>
+        <Component Name="unitNo" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="26">
+      <Symbol>
+        <Component Name="MBMasterBuffer" />
+        <Component Name="MB_ADDR" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalConstant" UId="27">
+      <Constant Name="Mode_Write" />
+    </Access>
+    <Access Scope="LocalVariable" UId="28">
+      <Symbol>
+        <Component Name="MBMasterBuffer" />
+        <Component Name="MODE" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalConstant" UId="29">
+      <Constant Name="Addr_TempSP" />
+    </Access>
+    <Access Scope="LocalVariable" UId="30">
+      <Symbol>
+        <Component Name="MBMasterBuffer" />
+        <Component Name="DATA_ADDR" />
+      </Symbol>
+    </Access>
+    <Access Scope="LiteralConstant" UId="31">
+      <Constant>
+        <ConstantType>UInt</ConstantType>
+        <ConstantValue>14</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="LocalVariable" UId="32">
+      <Symbol>
+        <Component Name="MBMasterBuffer" />
+        <Component Name="DATA_LEN" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="33">
+      <Symbol>
+        <Component Name="HeaterConfiguration" />
+        <Component Name="Temp_SP" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="34">
+      <Symbol>
+        <Component Name="MBMasterBuffer" />
+        <Component Name="DataPTR" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>1</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="35">
+      <Symbol>
+        <Component Name="HeaterConfiguration" />
+        <Component Name="Temp_AlarmValue1" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="36">
+      <Symbol>
+        <Component Name="MBMasterBuffer" />
+        <Component Name="DataPTR" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>2</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="37">
+      <Symbol>
+        <Component Name="HeaterConfiguration" />
+        <Component Name="Temp_AlarmValue1_UpperLimit" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="38">
+      <Symbol>
+        <Component Name="MBMasterBuffer" />
+        <Component Name="DataPTR" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>3</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="39">
+      <Symbol>
+        <Component Name="HeaterConfiguration" />
+        <Component Name="Temp_AlarmValue1_LowerLimit" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="40">
+      <Symbol>
+        <Component Name="MBMasterBuffer" />
+        <Component Name="DataPTR" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>4</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="41">
+      <Symbol>
+        <Component Name="HeaterConfiguration" />
+        <Component Name="Temp_AlarmValue2" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="42">
+      <Symbol>
+        <Component Name="MBMasterBuffer" />
+        <Component Name="DataPTR" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>5</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="43">
+      <Symbol>
+        <Component Name="HeaterConfiguration" />
+        <Component Name="Temp_AlarmValue2_UpperLimit" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="44">
+      <Symbol>
+        <Component Name="MBMasterBuffer" />
+        <Component Name="DataPTR" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>6</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="45">
+      <Symbol>
+        <Component Name="HeaterConfiguration" />
+        <Component Name="Temp_AlarmValue2_LowerLimit" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="46">
+      <Symbol>
+        <Component Name="MBMasterBuffer" />
+        <Component Name="DataPTR" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>7</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="47">
+      <Symbol>
+        <Component Name="statWriteReq" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>4</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="48">
+      <Symbol>
+        <Component Name="MBMasterBuffer" />
+        <Component Name="DONE" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="49">
+      <Symbol>
+        <Component Name="statPulse" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>6</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="50">
+      <Symbol>
+        <Component Name="statWriteReq" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>4</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Part Name="Contact" UId="51" />
+    <Part Name="Contact" UId="52">
+      <Negated Name="operand" />
+    </Part>
+    <Part Name="PContact" UId="53" />
+    <Part Name="Move" UId="54" DisabledENO="true">
+      <TemplateValue Name="Card" Type="Cardinality">1</TemplateValue>
+    </Part>
+    <Part Name="Move" UId="55" DisabledENO="true">
+      <TemplateValue Name="Card" Type="Cardinality">1</TemplateValue>
+    </Part>
+    <Part Name="Move" UId="56" DisabledENO="true">
+      <TemplateValue Name="Card" Type="Cardinality">1</TemplateValue>
+    </Part>
+    <Part Name="Move" UId="57" DisabledENO="true">
+      <TemplateValue Name="Card" Type="Cardinality">1</TemplateValue>
+    </Part>
+    <Part Name="Move" UId="58" DisabledENO="true">
+      <TemplateValue Name="Card" Type="Cardinality">1</TemplateValue>
+    </Part>
+    <Part Name="Move" UId="59" DisabledENO="true">
+      <TemplateValue Name="Card" Type="Cardinality">1</TemplateValue>
+    </Part>
+    <Part Name="Move" UId="60" DisabledENO="true">
+      <TemplateValue Name="Card" Type="Cardinality">1</TemplateValue>
+    </Part>
+    <Part Name="Move" UId="61" DisabledENO="true">
+      <TemplateValue Name="Card" Type="Cardinality">1</TemplateValue>
+    </Part>
+    <Part Name="Move" UId="62" DisabledENO="true">
+      <TemplateValue Name="Card" Type="Cardinality">1</TemplateValue>
+    </Part>
+    <Part Name="Move" UId="63" DisabledENO="true">
+      <TemplateValue Name="Card" Type="Cardinality">1</TemplateValue>
+    </Part>
+    <Part Name="Move" UId="64" DisabledENO="true">
+      <TemplateValue Name="Card" Type="Cardinality">1</TemplateValue>
+    </Part>
+    <Part Name="SCoil" UId="65" />
+    <Part Name="NContact" UId="66" />
+    <Part Name="RCoil" UId="67" />
+  </Parts>
+  <Wires>
+    <Wire UId="68">
+      <Powerrail />
+      <NameCon UId="51" Name="in" />
+    </Wire>
+    <Wire UId="69">
+      <IdentCon UId="21" />
+      <NameCon UId="51" Name="operand" />
+    </Wire>
+    <Wire UId="70">
+      <NameCon UId="51" Name="out" />
+      <NameCon UId="52" Name="in" />
+      <NameCon UId="66" Name="pre" />
+    </Wire>
+    <Wire UId="71">
+      <IdentCon UId="22" />
+      <NameCon UId="52" Name="operand" />
+    </Wire>
+    <Wire UId="72">
+      <NameCon UId="52" Name="out" />
+      <NameCon UId="53" Name="pre" />
+    </Wire>
+    <Wire UId="73">
+      <IdentCon UId="24" />
+      <NameCon UId="53" Name="bit" />
+    </Wire>
+    <Wire UId="74">
+      <IdentCon UId="23" />
+      <NameCon UId="53" Name="operand" />
+    </Wire>
+    <Wire UId="75">
+      <NameCon UId="53" Name="out" />
+      <NameCon UId="54" Name="en" />
+      <NameCon UId="56" Name="en" />
+      <NameCon UId="58" Name="en" />
+      <NameCon UId="60" Name="en" />
+      <NameCon UId="62" Name="en" />
+      <NameCon UId="64" Name="en" />
+    </Wire>
+    <Wire UId="76">
+      <IdentCon UId="25" />
+      <NameCon UId="54" Name="in" />
+    </Wire>
+    <Wire UId="77">
+      <NameCon UId="54" Name="eno" />
+      <NameCon UId="55" Name="en" />
+    </Wire>
+    <Wire UId="78">
+      <NameCon UId="54" Name="out1" />
+      <IdentCon UId="26" />
+    </Wire>
+    <Wire UId="79">
+      <IdentCon UId="27" />
+      <NameCon UId="55" Name="in" />
+    </Wire>
+    <Wire UId="80">
+      <NameCon UId="55" Name="out1" />
+      <IdentCon UId="28" />
+    </Wire>
+    <Wire UId="81">
+      <IdentCon UId="29" />
+      <NameCon UId="56" Name="in" />
+    </Wire>
+    <Wire UId="82">
+      <NameCon UId="56" Name="eno" />
+      <NameCon UId="57" Name="en" />
+    </Wire>
+    <Wire UId="83">
+      <NameCon UId="56" Name="out1" />
+      <IdentCon UId="30" />
+    </Wire>
+    <Wire UId="84">
+      <IdentCon UId="31" />
+      <NameCon UId="57" Name="in" />
+    </Wire>
+    <Wire UId="85">
+      <NameCon UId="57" Name="out1" />
+      <IdentCon UId="32" />
+    </Wire>
+    <Wire UId="86">
+      <IdentCon UId="33" />
+      <NameCon UId="58" Name="in" />
+    </Wire>
+    <Wire UId="87">
+      <NameCon UId="58" Name="eno" />
+      <NameCon UId="59" Name="en" />
+    </Wire>
+    <Wire UId="88">
+      <NameCon UId="58" Name="out1" />
+      <IdentCon UId="34" />
+    </Wire>
+    <Wire UId="89">
+      <IdentCon UId="35" />
+      <NameCon UId="59" Name="in" />
+    </Wire>
+    <Wire UId="90">
+      <NameCon UId="59" Name="out1" />
+      <IdentCon UId="36" />
+    </Wire>
+    <Wire UId="91">
+      <IdentCon UId="37" />
+      <NameCon UId="60" Name="in" />
+    </Wire>
+    <Wire UId="92">
+      <NameCon UId="60" Name="eno" />
+      <NameCon UId="61" Name="en" />
+    </Wire>
+    <Wire UId="93">
+      <NameCon UId="60" Name="out1" />
+      <IdentCon UId="38" />
+    </Wire>
+    <Wire UId="94">
+      <IdentCon UId="39" />
+      <NameCon UId="61" Name="in" />
+    </Wire>
+    <Wire UId="95">
+      <NameCon UId="61" Name="out1" />
+      <IdentCon UId="40" />
+    </Wire>
+    <Wire UId="96">
+      <IdentCon UId="41" />
+      <NameCon UId="62" Name="in" />
+    </Wire>
+    <Wire UId="97">
+      <NameCon UId="62" Name="eno" />
+      <NameCon UId="63" Name="en" />
+    </Wire>
+    <Wire UId="98">
+      <NameCon UId="62" Name="out1" />
+      <IdentCon UId="42" />
+    </Wire>
+    <Wire UId="99">
+      <IdentCon UId="43" />
+      <NameCon UId="63" Name="in" />
+    </Wire>
+    <Wire UId="100">
+      <NameCon UId="63" Name="out1" />
+      <IdentCon UId="44" />
+    </Wire>
+    <Wire UId="101">
+      <IdentCon UId="45" />
+      <NameCon UId="64" Name="in" />
+    </Wire>
+    <Wire UId="102">
+      <NameCon UId="64" Name="eno" />
+      <NameCon UId="65" Name="in" />
+    </Wire>
+    <Wire UId="103">
+      <NameCon UId="64" Name="out1" />
+      <IdentCon UId="46" />
+    </Wire>
+    <Wire UId="104">
+      <IdentCon UId="47" />
+      <NameCon UId="65" Name="operand" />
+    </Wire>
+    <Wire UId="105">
+      <IdentCon UId="49" />
+      <NameCon UId="66" Name="bit" />
+    </Wire>
+    <Wire UId="106">
+      <IdentCon UId="48" />
+      <NameCon UId="66" Name="operand" />
+    </Wire>
+    <Wire UId="107">
+      <NameCon UId="66" Name="out" />
+      <NameCon UId="67" Name="in" />
+    </Wire>
+    <Wire UId="108">
+      <IdentCon UId="50" />
+      <NameCon UId="67" Name="operand" />
+    </Wire>
+  </Wires>
+</FlgNet></NetworkSource>
+          <ProgrammingLanguage>LAD</ProgrammingLanguage>
+        </AttributeList>
+        <ObjectList>
+          <MultilingualText ID="36" CompositionName="Comment">
+            <ObjectList>
+              <MultilingualTextItem ID="37" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="38" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+          <MultilingualText ID="39" CompositionName="Title">
+            <ObjectList>
+              <MultilingualTextItem ID="3A" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="3B" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text>Write TempSP + AlarmValue1 ~ AlarmValue2_LowerLimit Command</Text>
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+        </ObjectList>
+      </SW.Blocks.CompileUnit>
+      <SW.Blocks.CompileUnit ID="3C" CompositionName="CompileUnits">
+        <AttributeList>
+          <NetworkSource><FlgNet xmlns="http://www.siemens.com/automation/Openness/SW/NetworkSource/FlgNet/v5">
+  <Parts>
+    <Access Scope="LocalVariable" UId="21">
+      <Symbol>
+        <Component Name="statReadReq" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>0</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="22">
+      <Symbol>
+        <Component Name="statReadReq" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>1</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="23">
+      <Symbol>
+        <Component Name="statWriteReq" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>0</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="24">
+      <Symbol>
+        <Component Name="statWriteReq" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>1</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="25">
+      <Symbol>
+        <Component Name="statWriteReq" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>2</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="26">
+      <Symbol>
+        <Component Name="statWriteReq" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>3</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="27">
+      <Symbol>
+        <Component Name="statWriteReq" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>4</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="28">
+      <Symbol>
+        <Component Name="enable" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="29">
+      <Symbol>
+        <Component Name="MBMasterBuffer" />
+        <Component Name="BUSY" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="30">
+      <Symbol>
+        <Component Name="MBMasterBuffer" />
+        <Component Name="DONE" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="31">
+      <Symbol>
+        <Component Name="MBMasterBuffer" />
+        <Component Name="ERROR" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="32">
+      <Symbol>
+        <Component Name="MBMasterBuffer" />
+        <Component Name="REQ" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="33">
+      <Symbol>
+        <Component Name="statWriteReq" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>0</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="34">
+      <Symbol>
+        <Component Name="statWriteReq" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>1</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="35">
+      <Symbol>
+        <Component Name="statWriteReq" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>2</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="36">
+      <Symbol>
+        <Component Name="statWriteReq" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>3</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="37">
+      <Symbol>
+        <Component Name="statWriteReq" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>4</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="38">
+      <Symbol>
+        <Component Name="statWriteReq" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>9</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Part Name="Contact" UId="39">
+      <Negated Name="operand" />
+    </Part>
+    <Part Name="Contact" UId="40">
+      <Negated Name="operand" />
+    </Part>
+    <Part Name="Not" UId="41" />
+    <Part Name="Contact" UId="42">
+      <Negated Name="operand" />
+    </Part>
+    <Part Name="Contact" UId="43">
+      <Negated Name="operand" />
+    </Part>
+    <Part Name="Contact" UId="44">
+      <Negated Name="operand" />
+    </Part>
+    <Part Name="Contact" UId="45">
+      <Negated Name="operand" />
+    </Part>
+    <Part Name="Contact" UId="46">
+      <Negated Name="operand" />
+    </Part>
+    <Part Name="Not" UId="47" />
+    <Part Name="O" UId="48">
+      <TemplateValue Name="Card" Type="Cardinality">2</TemplateValue>
+    </Part>
+    <Part Name="Contact" UId="49" />
+    <Part Name="Contact" UId="50">
+      <Negated Name="operand" />
+    </Part>
+    <Part Name="Contact" UId="51">
+      <Negated Name="operand" />
+    </Part>
+    <Part Name="Contact" UId="52">
+      <Negated Name="operand" />
+    </Part>
+    <Part Name="Coil" UId="53" />
+    <Part Name="Contact" UId="54">
+      <Negated Name="operand" />
+    </Part>
+    <Part Name="Contact" UId="55">
+      <Negated Name="operand" />
+    </Part>
+    <Part Name="Contact" UId="56">
+      <Negated Name="operand" />
+    </Part>
+    <Part Name="Contact" UId="57">
+      <Negated Name="operand" />
+    </Part>
+    <Part Name="Contact" UId="58">
+      <Negated Name="operand" />
+    </Part>
+    <Part Name="Not" UId="59" />
+    <Part Name="Coil" UId="60" />
+  </Parts>
+  <Wires>
+    <Wire UId="61">
+      <Powerrail />
+      <NameCon UId="39" Name="in" />
+      <NameCon UId="42" Name="in" />
+      <NameCon UId="54" Name="in" />
+    </Wire>
+    <Wire UId="62">
+      <IdentCon UId="21" />
+      <NameCon UId="39" Name="operand" />
+    </Wire>
+    <Wire UId="63">
+      <NameCon UId="39" Name="out" />
+      <NameCon UId="40" Name="in" />
+    </Wire>
+    <Wire UId="64">
+      <IdentCon UId="22" />
+      <NameCon UId="40" Name="operand" />
+    </Wire>
+    <Wire UId="65">
+      <NameCon UId="40" Name="out" />
+      <NameCon UId="41" Name="in" />
+    </Wire>
+    <Wire UId="66">
+      <NameCon UId="41" Name="out" />
+      <NameCon UId="48" Name="in1" />
+    </Wire>
+    <Wire UId="67">
+      <IdentCon UId="23" />
+      <NameCon UId="42" Name="operand" />
+    </Wire>
+    <Wire UId="68">
+      <NameCon UId="42" Name="out" />
+      <NameCon UId="43" Name="in" />
+    </Wire>
+    <Wire UId="69">
+      <IdentCon UId="24" />
+      <NameCon UId="43" Name="operand" />
+    </Wire>
+    <Wire UId="70">
+      <NameCon UId="43" Name="out" />
+      <NameCon UId="44" Name="in" />
+    </Wire>
+    <Wire UId="71">
+      <IdentCon UId="25" />
+      <NameCon UId="44" Name="operand" />
+    </Wire>
+    <Wire UId="72">
+      <NameCon UId="44" Name="out" />
+      <NameCon UId="45" Name="in" />
+    </Wire>
+    <Wire UId="73">
+      <IdentCon UId="26" />
+      <NameCon UId="45" Name="operand" />
+    </Wire>
+    <Wire UId="74">
+      <NameCon UId="45" Name="out" />
+      <NameCon UId="46" Name="in" />
+    </Wire>
+    <Wire UId="75">
+      <IdentCon UId="27" />
+      <NameCon UId="46" Name="operand" />
+    </Wire>
+    <Wire UId="76">
+      <NameCon UId="46" Name="out" />
+      <NameCon UId="47" Name="in" />
+    </Wire>
+    <Wire UId="77">
+      <NameCon UId="47" Name="out" />
+      <NameCon UId="48" Name="in2" />
+    </Wire>
+    <Wire UId="78">
+      <NameCon UId="48" Name="out" />
+      <NameCon UId="49" Name="in" />
+    </Wire>
+    <Wire UId="79">
+      <IdentCon UId="28" />
+      <NameCon UId="49" Name="operand" />
+    </Wire>
+    <Wire UId="80">
+      <NameCon UId="49" Name="out" />
+      <NameCon UId="50" Name="in" />
+    </Wire>
+    <Wire UId="81">
+      <IdentCon UId="29" />
+      <NameCon UId="50" Name="operand" />
+    </Wire>
+    <Wire UId="82">
+      <NameCon UId="50" Name="out" />
+      <NameCon UId="51" Name="in" />
+    </Wire>
+    <Wire UId="83">
+      <IdentCon UId="30" />
+      <NameCon UId="51" Name="operand" />
+    </Wire>
+    <Wire UId="84">
+      <NameCon UId="51" Name="out" />
+      <NameCon UId="52" Name="in" />
+    </Wire>
+    <Wire UId="85">
+      <IdentCon UId="31" />
+      <NameCon UId="52" Name="operand" />
+    </Wire>
+    <Wire UId="86">
+      <NameCon UId="52" Name="out" />
+      <NameCon UId="53" Name="in" />
+    </Wire>
+    <Wire UId="87">
+      <IdentCon UId="32" />
+      <NameCon UId="53" Name="operand" />
+    </Wire>
+    <Wire UId="88">
+      <IdentCon UId="33" />
+      <NameCon UId="54" Name="operand" />
+    </Wire>
+    <Wire UId="89">
+      <NameCon UId="54" Name="out" />
+      <NameCon UId="55" Name="in" />
+    </Wire>
+    <Wire UId="90">
+      <IdentCon UId="34" />
+      <NameCon UId="55" Name="operand" />
+    </Wire>
+    <Wire UId="91">
+      <NameCon UId="55" Name="out" />
+      <NameCon UId="56" Name="in" />
+    </Wire>
+    <Wire UId="92">
+      <IdentCon UId="35" />
+      <NameCon UId="56" Name="operand" />
+    </Wire>
+    <Wire UId="93">
+      <NameCon UId="56" Name="out" />
+      <NameCon UId="57" Name="in" />
+    </Wire>
+    <Wire UId="94">
+      <IdentCon UId="36" />
+      <NameCon UId="57" Name="operand" />
+    </Wire>
+    <Wire UId="95">
+      <NameCon UId="57" Name="out" />
+      <NameCon UId="58" Name="in" />
+    </Wire>
+    <Wire UId="96">
+      <IdentCon UId="37" />
+      <NameCon UId="58" Name="operand" />
+    </Wire>
+    <Wire UId="97">
+      <NameCon UId="58" Name="out" />
+      <NameCon UId="59" Name="in" />
+    </Wire>
+    <Wire UId="98">
+      <NameCon UId="59" Name="out" />
+      <NameCon UId="60" Name="in" />
+    </Wire>
+    <Wire UId="99">
+      <IdentCon UId="38" />
+      <NameCon UId="60" Name="operand" />
+    </Wire>
+  </Wires>
+</FlgNet></NetworkSource>
+          <ProgrammingLanguage>LAD</ProgrammingLanguage>
+        </AttributeList>
+        <ObjectList>
+          <MultilingualText ID="3D" CompositionName="Comment">
+            <ObjectList>
+              <MultilingualTextItem ID="3E" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="3F" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+          <MultilingualText ID="40" CompositionName="Title">
+            <ObjectList>
+              <MultilingualTextItem ID="41" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="42" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text>Modbus Master Req</Text>
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+        </ObjectList>
+      </SW.Blocks.CompileUnit>
+      <SW.Blocks.CompileUnit ID="43" CompositionName="CompileUnits">
+        <AttributeList>
+          <NetworkSource><FlgNet xmlns="http://www.siemens.com/automation/Openness/SW/NetworkSource/FlgNet/v5">
+  <Parts>
+    <Access Scope="LocalVariable" UId="21">
+      <Symbol>
+        <Component Name="statReadTempPV" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="22">
+      <Symbol>
+        <Component Name="statHeater_PV_Buf" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="23">
+      <Symbol>
+        <Component Name="statHeater_PV_Buf" />
+      </Symbol>
+    </Access>
+    <Access Scope="LiteralConstant" UId="24">
+      <Constant>
+        <ConstantType>Real</ConstantType>
+        <ConstantValue>1.0</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="LocalVariable" UId="25">
+      <Symbol>
+        <Component Name="HeaterMonitoring" />
+        <Component Name="Temp_PV" />
+      </Symbol>
+    </Access>
+    <Part Name="Move" UId="26" DisabledENO="true">
+      <TemplateValue Name="Card" Type="Cardinality">1</TemplateValue>
+    </Part>
+    <Part Name="Div" UId="27" DisabledENO="true">
+      <AutomaticTyped Name="SrcType" />
+    </Part>
+  </Parts>
+  <Wires>
+    <Wire UId="28">
+      <Powerrail />
+      <NameCon UId="26" Name="en" />
+    </Wire>
+    <Wire UId="29">
+      <IdentCon UId="21" />
+      <NameCon UId="26" Name="in" />
+    </Wire>
+    <Wire UId="30">
+      <NameCon UId="26" Name="eno" />
+      <NameCon UId="27" Name="en" />
+    </Wire>
+    <Wire UId="31">
+      <NameCon UId="26" Name="out1" />
+      <IdentCon UId="22" />
+    </Wire>
+    <Wire UId="32">
+      <IdentCon UId="23" />
+      <NameCon UId="27" Name="in1" />
+    </Wire>
+    <Wire UId="33">
+      <IdentCon UId="24" />
+      <NameCon UId="27" Name="in2" />
+    </Wire>
+    <Wire UId="34">
+      <NameCon UId="27" Name="out" />
+      <IdentCon UId="25" />
+    </Wire>
+  </Wires>
+</FlgNet></NetworkSource>
+          <ProgrammingLanguage>LAD</ProgrammingLanguage>
+        </AttributeList>
+        <ObjectList>
+          <MultilingualText ID="44" CompositionName="Comment">
+            <ObjectList>
+              <MultilingualTextItem ID="45" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="46" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+          <MultilingualText ID="47" CompositionName="Title">
+            <ObjectList>
+              <MultilingualTextItem ID="48" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="49" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text>Temp_PV</Text>
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+        </ObjectList>
+      </SW.Blocks.CompileUnit>
+      <SW.Blocks.CompileUnit ID="4A" CompositionName="CompileUnits">
+        <AttributeList>
+          <NetworkSource><FlgNet xmlns="http://www.siemens.com/automation/Openness/SW/NetworkSource/FlgNet/v5">
+  <Parts>
+    <Access Scope="LocalVariable" UId="21">
+      <Symbol>
+        <Component Name="statTempSP" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="22">
+      <Symbol>
+        <Component Name="HeaterConfiguration" />
+        <Component Name="Temp_Upper_Complete_Range" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="23">
+      <Symbol>
+        <Component Name="statUpperComplete_Temp" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="24">
+      <Symbol>
+        <Component Name="statTempSP" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="25">
+      <Symbol>
+        <Component Name="HeaterConfiguration" />
+        <Component Name="Temp_Lower_Complete_Range" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="26">
+      <Symbol>
+        <Component Name="statLowerComplete_Temp" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="27">
+      <Symbol>
+        <Component Name="statLowerComplete_Temp" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="28">
+      <Symbol>
+        <Component Name="statReadTempPV" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="29">
+      <Symbol>
+        <Component Name="statUpperComplete_Temp" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="30">
+      <Symbol>
+        <Component Name="HeaterMonitoring" />
+        <Component Name="TempCheck_Complete" />
+      </Symbol>
+    </Access>
+    <Part Name="Add" UId="31" DisabledENO="true">
+      <TemplateValue Name="Card" Type="Cardinality">2</TemplateValue>
+      <AutomaticTyped Name="SrcType" />
+    </Part>
+    <Part Name="Add" UId="32" DisabledENO="true">
+      <TemplateValue Name="Card" Type="Cardinality">2</TemplateValue>
+      <AutomaticTyped Name="SrcType" />
+    </Part>
+    <Part Name="InRange" UId="33">
+      <TemplateValue Name="SrcType" Type="Type">Real</TemplateValue>
+    </Part>
+    <Part Name="Coil" UId="34" />
+  </Parts>
+  <Wires>
+    <Wire UId="35">
+      <Powerrail />
+      <NameCon UId="31" Name="en" />
+    </Wire>
+    <Wire UId="36">
+      <IdentCon UId="21" />
+      <NameCon UId="31" Name="in1" />
+    </Wire>
+    <Wire UId="37">
+      <IdentCon UId="22" />
+      <NameCon UId="31" Name="in2" />
+    </Wire>
+    <Wire UId="38">
+      <NameCon UId="31" Name="eno" />
+      <NameCon UId="32" Name="en" />
+    </Wire>
+    <Wire UId="39">
+      <NameCon UId="31" Name="out" />
+      <IdentCon UId="23" />
+    </Wire>
+    <Wire UId="40">
+      <IdentCon UId="24" />
+      <NameCon UId="32" Name="in1" />
+    </Wire>
+    <Wire UId="41">
+      <IdentCon UId="25" />
+      <NameCon UId="32" Name="in2" />
+    </Wire>
+    <Wire UId="42">
+      <NameCon UId="32" Name="eno" />
+      <NameCon UId="33" Name="pre" />
+    </Wire>
+    <Wire UId="43">
+      <NameCon UId="32" Name="out" />
+      <IdentCon UId="26" />
+    </Wire>
+    <Wire UId="44">
+      <IdentCon UId="27" />
+      <NameCon UId="33" Name="min" />
+    </Wire>
+    <Wire UId="45">
+      <IdentCon UId="28" />
+      <NameCon UId="33" Name="in" />
+    </Wire>
+    <Wire UId="46">
+      <IdentCon UId="29" />
+      <NameCon UId="33" Name="max" />
+    </Wire>
+    <Wire UId="47">
+      <NameCon UId="33" Name="out" />
+      <NameCon UId="34" Name="in" />
+    </Wire>
+    <Wire UId="48">
+      <IdentCon UId="30" />
+      <NameCon UId="34" Name="operand" />
+    </Wire>
+  </Wires>
+</FlgNet></NetworkSource>
+          <ProgrammingLanguage>LAD</ProgrammingLanguage>
+        </AttributeList>
+        <ObjectList>
+          <MultilingualText ID="4B" CompositionName="Comment">
+            <ObjectList>
+              <MultilingualTextItem ID="4C" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="4D" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+          <MultilingualText ID="4E" CompositionName="Title">
+            <ObjectList>
+              <MultilingualTextItem ID="4F" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="50" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text>Temp_PV Complete Check</Text>
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+        </ObjectList>
+      </SW.Blocks.CompileUnit>
+      <SW.Blocks.CompileUnit ID="51" CompositionName="CompileUnits">
+        <AttributeList>
+          <NetworkSource><FlgNet xmlns="http://www.siemens.com/automation/Openness/SW/NetworkSource/FlgNet/v5">
+  <Parts>
+    <Access Scope="LocalVariable" UId="21">
+      <Symbol>
+        <Component Name="statReadStatus_Bool" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>8</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="22">
+      <Symbol>
+        <Component Name="statReadStatus_Bool" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>24</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="23">
+      <Symbol>
+        <Component Name="statReadStatus_Bool" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>9</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="24">
+      <Symbol>
+        <Component Name="statReadStatus_Bool" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>24</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="25">
+      <Symbol>
+        <Component Name="clock" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="26">
+      <Symbol>
+        <Component Name="statReadStatus_Bool" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>24</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="27">
+      <Symbol>
+        <Component Name="HeaterMonitoring" />
+        <Component Name="TempCheck_Complete" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="28">
+      <Symbol>
+        <Component Name="HeaterMonitoring" />
+        <Component Name="Heater_Run_Lamp" />
+      </Symbol>
+    </Access>
+    <Part Name="Contact" UId="29" />
+    <Part Name="Contact" UId="30" />
+    <Part Name="Contact" UId="31" />
+    <Part Name="Contact" UId="32">
+      <Negated Name="operand" />
+    </Part>
+    <Part Name="O" UId="33">
+      <TemplateValue Name="Card" Type="Cardinality">2</TemplateValue>
+    </Part>
+    <Part Name="Contact" UId="34" />
+    <Part Name="Contact" UId="35">
+      <Negated Name="operand" />
+    </Part>
+    <Part Name="Contact" UId="36" />
+    <Part Name="O" UId="37">
+      <TemplateValue Name="Card" Type="Cardinality">2</TemplateValue>
+    </Part>
+    <Part Name="Coil" UId="38" />
+  </Parts>
+  <Wires>
+    <Wire UId="39">
+      <Powerrail />
+      <NameCon UId="29" Name="in" />
+      <NameCon UId="31" Name="in" />
+      <NameCon UId="35" Name="in" />
+    </Wire>
+    <Wire UId="40">
+      <IdentCon UId="21" />
+      <NameCon UId="29" Name="operand" />
+    </Wire>
+    <Wire UId="41">
+      <NameCon UId="29" Name="out" />
+      <NameCon UId="30" Name="in" />
+    </Wire>
+    <Wire UId="42">
+      <IdentCon UId="22" />
+      <NameCon UId="30" Name="operand" />
+    </Wire>
+    <Wire UId="43">
+      <NameCon UId="30" Name="out" />
+      <NameCon UId="33" Name="in1" />
+    </Wire>
+    <Wire UId="44">
+      <IdentCon UId="23" />
+      <NameCon UId="31" Name="operand" />
+    </Wire>
+    <Wire UId="45">
+      <NameCon UId="31" Name="out" />
+      <NameCon UId="32" Name="in" />
+    </Wire>
+    <Wire UId="46">
+      <IdentCon UId="24" />
+      <NameCon UId="32" Name="operand" />
+    </Wire>
+    <Wire UId="47">
+      <NameCon UId="32" Name="out" />
+      <NameCon UId="33" Name="in2" />
+    </Wire>
+    <Wire UId="48">
+      <NameCon UId="33" Name="out" />
+      <NameCon UId="34" Name="in" />
+    </Wire>
+    <Wire UId="49">
+      <IdentCon UId="25" />
+      <NameCon UId="34" Name="operand" />
+    </Wire>
+    <Wire UId="50">
+      <NameCon UId="34" Name="out" />
+      <NameCon UId="37" Name="in1" />
+    </Wire>
+    <Wire UId="51">
+      <IdentCon UId="26" />
+      <NameCon UId="35" Name="operand" />
+    </Wire>
+    <Wire UId="52">
+      <NameCon UId="35" Name="out" />
+      <NameCon UId="36" Name="in" />
+    </Wire>
+    <Wire UId="53">
+      <IdentCon UId="27" />
+      <NameCon UId="36" Name="operand" />
+    </Wire>
+    <Wire UId="54">
+      <NameCon UId="36" Name="out" />
+      <NameCon UId="37" Name="in2" />
+    </Wire>
+    <Wire UId="55">
+      <NameCon UId="37" Name="out" />
+      <NameCon UId="38" Name="in" />
+    </Wire>
+    <Wire UId="56">
+      <IdentCon UId="28" />
+      <NameCon UId="38" Name="operand" />
+    </Wire>
+  </Wires>
+</FlgNet></NetworkSource>
+          <ProgrammingLanguage>LAD</ProgrammingLanguage>
+        </AttributeList>
+        <ObjectList>
+          <MultilingualText ID="52" CompositionName="Comment">
+            <ObjectList>
+              <MultilingualTextItem ID="53" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="54" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+          <MultilingualText ID="55" CompositionName="Title">
+            <ObjectList>
+              <MultilingualTextItem ID="56" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="57" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text>Heater Run Lamp</Text>
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+        </ObjectList>
+      </SW.Blocks.CompileUnit>
+      <SW.Blocks.CompileUnit ID="58" CompositionName="CompileUnits">
+        <AttributeList>
+          <NetworkSource><FlgNet xmlns="http://www.siemens.com/automation/Openness/SW/NetworkSource/FlgNet/v5">
+  <Parts>
+    <Access Scope="LocalVariable" UId="21">
+      <Symbol>
+        <Component Name="statReadStatus_Bool" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>8</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="22">
+      <Symbol>
+        <Component Name="statReadStatus_Bool" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>23</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="23">
+      <Symbol>
+        <Component Name="clock" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="24">
+      <Symbol>
+        <Component Name="HeaterMonitoring" />
+        <Component Name="Heater_AutoTune_Lamp" />
+      </Symbol>
+    </Access>
+    <Part Name="Contact" UId="25" />
+    <Part Name="Contact" UId="26" />
+    <Part Name="Contact" UId="27" />
+    <Part Name="Coil" UId="28" />
+  </Parts>
+  <Wires>
+    <Wire UId="29">
+      <Powerrail />
+      <NameCon UId="25" Name="in" />
+    </Wire>
+    <Wire UId="30">
+      <IdentCon UId="21" />
+      <NameCon UId="25" Name="operand" />
+    </Wire>
+    <Wire UId="31">
+      <NameCon UId="25" Name="out" />
+      <NameCon UId="26" Name="in" />
+    </Wire>
+    <Wire UId="32">
+      <IdentCon UId="22" />
+      <NameCon UId="26" Name="operand" />
+    </Wire>
+    <Wire UId="33">
+      <NameCon UId="26" Name="out" />
+      <NameCon UId="27" Name="in" />
+    </Wire>
+    <Wire UId="34">
+      <IdentCon UId="23" />
+      <NameCon UId="27" Name="operand" />
+    </Wire>
+    <Wire UId="35">
+      <NameCon UId="27" Name="out" />
+      <NameCon UId="28" Name="in" />
+    </Wire>
+    <Wire UId="36">
+      <IdentCon UId="24" />
+      <NameCon UId="28" Name="operand" />
+    </Wire>
+  </Wires>
+</FlgNet></NetworkSource>
+          <ProgrammingLanguage>LAD</ProgrammingLanguage>
+        </AttributeList>
+        <ObjectList>
+          <MultilingualText ID="59" CompositionName="Comment">
+            <ObjectList>
+              <MultilingualTextItem ID="5A" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="5B" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+          <MultilingualText ID="5C" CompositionName="Title">
+            <ObjectList>
+              <MultilingualTextItem ID="5D" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="5E" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text>Heater Auto Turn Run Lamp</Text>
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+        </ObjectList>
+      </SW.Blocks.CompileUnit>
+      <SW.Blocks.CompileUnit ID="5F" CompositionName="CompileUnits">
+        <AttributeList>
+          <NetworkSource><StructuredText xmlns="http://www.siemens.com/automation/Openness/SW/NetworkSource/StructuredText/v4">
+  <Token Text="REGION" UId="21" />
+  <Blank Num="2" UId="22" />
+  <Text UId="23">E5CC Error Status</Text>
+  <NewLine UId="24" />
+  <Blank Num="4" UId="25" />
+  <LineComment UId="26">
+    <Text UId="27"> Dword to Bool</Text>
+  </LineComment>
+  <NewLine UId="28" />
+  <Blank Num="4" UId="29" />
+  <Access Scope="Call" UId="30">
+    <Instruction Name="SCATTER" UId="31">
+      <Token Text="(" UId="32" />
+      <Parameter Name="IN" UId="33">
+        <Blank UId="34" />
+        <Token Text=":=" UId="35" />
+        <Blank UId="36" />
+        <Access Scope="LocalVariable" UId="37">
+          <Symbol UId="38">
+            <Component Name="statReadStatus" UId="39" />
+          </Symbol>
+        </Access>
+      </Parameter>
+      <Token Text="," UId="40" />
+      <NewLine UId="41" />
+      <Blank Num="12" UId="42" />
+      <Parameter Name="OUT" UId="43">
+        <Blank UId="44" />
+        <Token Text="=&gt;" UId="45" />
+        <Blank UId="46" />
+        <Access Scope="LocalVariable" UId="47">
+          <Symbol UId="48">
+            <Component Name="statReadStatus_Bool" UId="49" />
+          </Symbol>
+        </Access>
+      </Parameter>
+      <Token Text=")" UId="50" />
+    </Instruction>
+  </Access>
+  <Token Text=";" UId="51" />
+  <NewLine UId="52" />
+  <Token Text="END_REGION" UId="53" />
+  <NewLine Num="3" UId="54" />
+  <Token Text="REGION" UId="55" />
+  <Blank UId="56" />
+  <Text UId="57">Error Code Search</Text>
+  <NewLine UId="58" />
+  <Blank Num="4" UId="59" />
+  <Token Text="IF" UId="60" />
+  <Blank UId="61" />
+  <Access Scope="LocalVariable" UId="62">
+    <Symbol UId="63">
+      <Component Name="statReadStatus" UId="64" />
+    </Symbol>
+  </Access>
+  <Blank UId="65" />
+  <Token Text="&lt;&gt;" UId="66" />
+  <Blank UId="67" />
+  <Access Scope="LiteralConstant" UId="68">
+    <Constant UId="69">
+      <ConstantValue UId="71">0</ConstantValue>
+    </Constant>
+  </Access>
+  <Blank UId="72" />
+  <Token Text="THEN" UId="73" />
+  <NewLine UId="74" />
+  <Blank Num="8" UId="75" />
+  <Token Text="CASE" UId="76" />
+  <Blank UId="77" />
+  <Access Scope="LocalVariable" UId="78">
+    <Symbol UId="79">
+      <Component Name="statReadStatus" UId="80" />
+    </Symbol>
+  </Access>
+  <Blank UId="81" />
+  <Token Text="OF" UId="82" />
+  <NewLine UId="83" />
+  <Blank Num="12" UId="84" />
+  <Access Scope="LocalConstant" UId="85">
+    <Constant Name="ERR_HEATER_CURRENT_VALUE_EXCEEDED_CT1" UId="86" />
+  </Access>
+  <Token Text=":" UId="89" />
+  <NewLine UId="90" />
+  <Blank Num="16" UId="91" />
+  <Access Scope="LocalVariable" UId="92">
+    <Symbol UId="93">
+      <Component Name="HeaterMonitoring" UId="94" />
+      <Token Text="." UId="95" />
+      <Component Name="Status" UId="96" />
+    </Symbol>
+  </Access>
+  <Blank UId="97" />
+  <Token Text=":=" UId="98" />
+  <Blank UId="99" />
+  <Access Scope="LocalConstant" UId="100">
+    <Constant Name="ERR_HEATER_CURRENT_VALUE_EXCEEDED_CT1" UId="101" />
+  </Access>
+  <Token Text=";" UId="104" />
+  <NewLine UId="105" />
+  <Blank Num="12" UId="106" />
+  <Access Scope="LocalConstant" UId="107">
+    <Constant Name="ERR_HEATER_CURRENT_VALUE_HOLD_CT1" UId="108" />
+  </Access>
+  <Token Text=":" UId="111" />
+  <NewLine UId="112" />
+  <Blank Num="16" UId="113" />
+  <Access Scope="LocalVariable" UId="114">
+    <Symbol UId="115">
+      <Component Name="HeaterMonitoring" UId="116" />
+      <Token Text="." UId="117" />
+      <Component Name="Status" UId="118" />
+    </Symbol>
+  </Access>
+  <Blank UId="119" />
+  <Token Text=":=" UId="120" />
+  <Blank UId="121" />
+  <Access Scope="LocalConstant" UId="122">
+    <Constant Name="ERR_HEATER_CURRENT_VALUE_HOLD_CT1" UId="123" />
+  </Access>
+  <Token Text=";" UId="126" />
+  <NewLine UId="127" />
+  <Blank Num="12" UId="128" />
+  <Access Scope="LocalConstant" UId="129">
+    <Constant Name="ERR_AD_CONVERTER_ABNORMALITY" UId="130" />
+  </Access>
+  <Token Text=":" UId="133" />
+  <NewLine UId="134" />
+  <Blank Num="16" UId="135" />
+  <Access Scope="LocalVariable" UId="136">
+    <Symbol UId="137">
+      <Component Name="HeaterMonitoring" UId="138" />
+      <Token Text="." UId="139" />
+      <Component Name="Status" UId="140" />
+    </Symbol>
+  </Access>
+  <Blank UId="141" />
+  <Token Text=":=" UId="142" />
+  <Blank UId="143" />
+  <Access Scope="LocalConstant" UId="144">
+    <Constant Name="ERR_AD_CONVERTER_ABNORMALITY" UId="145" />
+  </Access>
+  <Token Text=";" UId="148" />
+  <NewLine UId="149" />
+  <Blank Num="12" UId="150" />
+  <Access Scope="LocalConstant" UId="151">
+    <Constant Name="ERR_HS_SSR_FAULT_ALERT_CT1" UId="152" />
+  </Access>
+  <Token Text=":" UId="155" />
+  <NewLine UId="156" />
+  <Blank Num="16" UId="157" />
+  <Access Scope="LocalVariable" UId="158">
+    <Symbol UId="159">
+      <Component Name="HeaterMonitoring" UId="160" />
+      <Token Text="." UId="161" />
+      <Component Name="Status" UId="162" />
+    </Symbol>
+  </Access>
+  <Blank UId="163" />
+  <Token Text=":=" UId="164" />
+  <Blank UId="165" />
+  <Access Scope="LocalConstant" UId="166">
+    <Constant Name="ERR_HS_SSR_FAULT_ALERT_CT1" UId="167" />
+  </Access>
+  <Token Text=";" UId="170" />
+  <NewLine UId="171" />
+  <Blank Num="12" UId="172" />
+  <Access Scope="LocalConstant" UId="173">
+    <Constant Name="ERR_RSP_INPUT_ABNORMALITIES" UId="174" />
+  </Access>
+  <Token Text=":" UId="177" />
+  <NewLine UId="178" />
+  <Blank Num="16" UId="179" />
+  <Access Scope="LocalVariable" UId="180">
+    <Symbol UId="181">
+      <Component Name="HeaterMonitoring" UId="182" />
+      <Token Text="." UId="183" />
+      <Component Name="Status" UId="184" />
+    </Symbol>
+  </Access>
+  <Blank UId="185" />
+  <Token Text=":=" UId="186" />
+  <Blank UId="187" />
+  <Access Scope="LocalConstant" UId="188">
+    <Constant Name="ERR_RSP_INPUT_ABNORMALITIES" UId="189" />
+  </Access>
+  <Token Text=";" UId="192" />
+  <NewLine UId="193" />
+  <Blank Num="12" UId="194" />
+  <Access Scope="LocalConstant" UId="195">
+    <Constant Name="ERR_MORE_THAN_INPUT" UId="196" />
+  </Access>
+  <Token Text=":" UId="199" />
+  <NewLine UId="200" />
+  <Blank Num="16" UId="201" />
+  <Access Scope="LocalVariable" UId="202">
+    <Symbol UId="203">
+      <Component Name="HeaterMonitoring" UId="204" />
+      <Token Text="." UId="205" />
+      <Component Name="Status" UId="206" />
+    </Symbol>
+  </Access>
+  <Blank UId="207" />
+  <Token Text=":=" UId="208" />
+  <Blank UId="209" />
+  <Access Scope="LocalConstant" UId="210">
+    <Constant Name="ERR_MORE_THAN_INPUT" UId="211" />
+  </Access>
+  <Token Text=";" UId="214" />
+  <NewLine UId="215" />
+  <Blank Num="12" UId="216" />
+  <Access Scope="LocalConstant" UId="217">
+    <Constant Name="ERR_POTENTIOMETER_INPUT_ABNORMAL" UId="218" />
+  </Access>
+  <Token Text=":" UId="221" />
+  <NewLine UId="222" />
+  <Blank Num="16" UId="223" />
+  <Access Scope="LocalVariable" UId="224">
+    <Symbol UId="225">
+      <Component Name="HeaterMonitoring" UId="226" />
+      <Token Text="." UId="227" />
+      <Component Name="Status" UId="228" />
+    </Symbol>
+  </Access>
+  <Blank UId="229" />
+  <Token Text=":=" UId="230" />
+  <Blank UId="231" />
+  <Access Scope="LocalConstant" UId="232">
+    <Constant Name="ERR_POTENTIOMETER_INPUT_ABNORMAL" UId="233" />
+  </Access>
+  <Token Text=";" UId="236" />
+  <NewLine UId="237" />
+  <Blank Num="12" UId="238" />
+  <Access Scope="LocalConstant" UId="239">
+    <Constant Name="ERR_CONTROL_OUTPUT_HEATED_OPEN_OUTPUT" UId="240" />
+  </Access>
+  <Token Text=":" UId="243" />
+  <NewLine UId="244" />
+  <Blank Num="16" UId="245" />
+  <Access Scope="LocalVariable" UId="246">
+    <Symbol UId="247">
+      <Component Name="HeaterMonitoring" UId="248" />
+      <Token Text="." UId="249" />
+      <Component Name="Status" UId="250" />
+    </Symbol>
+  </Access>
+  <Blank UId="251" />
+  <Token Text=":=" UId="252" />
+  <Blank UId="253" />
+  <Access Scope="LocalConstant" UId="254">
+    <Constant Name="ERR_CONTROL_OUTPUT_HEATED_OPEN_OUTPUT" UId="255" />
+  </Access>
+  <Token Text=";" UId="258" />
+  <NewLine UId="259" />
+  <Blank Num="12" UId="260" />
+  <Access Scope="LocalConstant" UId="261">
+    <Constant Name="ERR_CONTROL_OUTPUT_COOL_CLOSE_OUTPUT" UId="262" />
+  </Access>
+  <Token Text=":" UId="265" />
+  <NewLine UId="266" />
+  <Blank Num="16" UId="267" />
+  <Access Scope="LocalVariable" UId="268">
+    <Symbol UId="269">
+      <Component Name="HeaterMonitoring" UId="270" />
+      <Token Text="." UId="271" />
+      <Component Name="Status" UId="272" />
+    </Symbol>
+  </Access>
+  <Blank UId="273" />
+  <Token Text=":=" UId="274" />
+  <Blank UId="275" />
+  <Access Scope="LocalConstant" UId="276">
+    <Constant Name="ERR_CONTROL_OUTPUT_COOL_CLOSE_OUTPUT" UId="277" />
+  </Access>
+  <Token Text=";" UId="280" />
+  <NewLine UId="281" />
+  <Blank Num="12" UId="282" />
+  <Access Scope="LocalConstant" UId="283">
+    <Constant Name="ERR_HEATER_OPEN_CIRCUIT_HB_ALARM_CT1" UId="284" />
+  </Access>
+  <Token Text=":" UId="287" />
+  <NewLine UId="288" />
+  <Blank Num="16" UId="289" />
+  <Access Scope="LocalVariable" UId="290">
+    <Symbol UId="291">
+      <Component Name="HeaterMonitoring" UId="292" />
+      <Token Text="." UId="293" />
+      <Component Name="Status" UId="294" />
+    </Symbol>
+  </Access>
+  <Blank UId="295" />
+  <Token Text=":=" UId="296" />
+  <Blank UId="297" />
+  <Access Scope="LocalConstant" UId="298">
+    <Constant Name="ERR_HEATER_OPEN_CIRCUIT_HB_ALARM_CT1" UId="299" />
+  </Access>
+  <Token Text=";" UId="302" />
+  <NewLine UId="303" />
+  <Blank Num="12" UId="304" />
+  <Access Scope="LocalConstant" UId="305">
+    <Constant Name="ERR_HEATER_OPEN_CIRCUIT_HB_ALARM_CT2" UId="306" />
+  </Access>
+  <Token Text=":" UId="309" />
+  <NewLine UId="310" />
+  <Blank Num="16" UId="311" />
+  <Access Scope="LocalVariable" UId="312">
+    <Symbol UId="313">
+      <Component Name="HeaterMonitoring" UId="314" />
+      <Token Text="." UId="315" />
+      <Component Name="Status" UId="316" />
+    </Symbol>
+  </Access>
+  <Blank UId="317" />
+  <Token Text=":=" UId="318" />
+  <Blank UId="319" />
+  <Access Scope="LocalConstant" UId="320">
+    <Constant Name="ERR_HEATER_OPEN_CIRCUIT_HB_ALARM_CT2" UId="321" />
+  </Access>
+  <Token Text=";" UId="324" />
+  <NewLine UId="325" />
+  <Blank Num="12" UId="326" />
+  <Access Scope="LocalConstant" UId="327">
+    <Constant Name="ERR_ALERT_1" UId="328" />
+  </Access>
+  <Token Text=":" UId="331" />
+  <NewLine UId="332" />
+  <Blank Num="16" UId="333" />
+  <Access Scope="LocalVariable" UId="334">
+    <Symbol UId="335">
+      <Component Name="HeaterMonitoring" UId="336" />
+      <Token Text="." UId="337" />
+      <Component Name="Status" UId="338" />
+    </Symbol>
+  </Access>
+  <Blank UId="339" />
+  <Token Text=":=" UId="340" />
+  <Blank UId="341" />
+  <Access Scope="LocalConstant" UId="342">
+    <Constant Name="ERR_ALERT_1" UId="343" />
+  </Access>
+  <Token Text=";" UId="346" />
+  <NewLine UId="347" />
+  <Blank Num="12" UId="348" />
+  <Access Scope="LocalConstant" UId="349">
+    <Constant Name="ERR_ALERT_2" UId="350" />
+  </Access>
+  <Token Text=":" UId="353" />
+  <NewLine UId="354" />
+  <Blank Num="16" UId="355" />
+  <Access Scope="LocalVariable" UId="356">
+    <Symbol UId="357">
+      <Component Name="HeaterMonitoring" UId="358" />
+      <Token Text="." UId="359" />
+      <Component Name="Status" UId="360" />
+    </Symbol>
+  </Access>
+  <Blank UId="361" />
+  <Token Text=":=" UId="362" />
+  <Blank UId="363" />
+  <Access Scope="LocalConstant" UId="364">
+    <Constant Name="ERR_ALERT_2" UId="365" />
+  </Access>
+  <Token Text=";" UId="368" />
+  <NewLine UId="369" />
+  <Blank Num="12" UId="370" />
+  <Access Scope="LocalConstant" UId="371">
+    <Constant Name="ERR_ALERT_3" UId="372" />
+  </Access>
+  <Token Text=":" UId="375" />
+  <NewLine UId="376" />
+  <Blank Num="16" UId="377" />
+  <Access Scope="LocalVariable" UId="378">
+    <Symbol UId="379">
+      <Component Name="HeaterMonitoring" UId="380" />
+      <Token Text="." UId="381" />
+      <Component Name="Status" UId="382" />
+    </Symbol>
+  </Access>
+  <Blank UId="383" />
+  <Token Text=":=" UId="384" />
+  <Blank UId="385" />
+  <Access Scope="LocalConstant" UId="386">
+    <Constant Name="ERR_ALERT_3" UId="387" />
+  </Access>
+  <Token Text=";" UId="390" />
+  <NewLine UId="391" />
+  <Blank Num="12" UId="392" />
+  <Access Scope="LocalConstant" UId="393">
+    <Constant Name="ERR_PROGRAM_END_OUTPUT" UId="394" />
+  </Access>
+  <Token Text=":" UId="397" />
+  <NewLine UId="398" />
+  <Blank Num="16" UId="399" />
+  <Access Scope="LocalVariable" UId="400">
+    <Symbol UId="401">
+      <Component Name="HeaterMonitoring" UId="402" />
+      <Token Text="." UId="403" />
+      <Component Name="Status" UId="404" />
+    </Symbol>
+  </Access>
+  <Blank UId="405" />
+  <Token Text=":=" UId="406" />
+  <Blank UId="407" />
+  <Access Scope="LocalConstant" UId="408">
+    <Constant Name="ERR_PROGRAM_END_OUTPUT" UId="409" />
+  </Access>
+  <Token Text=";" UId="412" />
+  <NewLine UId="413" />
+  <Blank Num="12" UId="414" />
+  <Access Scope="LocalConstant" UId="415">
+    <Constant Name="ERR_EVENT_INPUT_1" UId="416" />
+  </Access>
+  <Token Text=":" UId="419" />
+  <NewLine UId="420" />
+  <Blank Num="16" UId="421" />
+  <Access Scope="LocalVariable" UId="422">
+    <Symbol UId="423">
+      <Component Name="HeaterMonitoring" UId="424" />
+      <Token Text="." UId="425" />
+      <Component Name="Status" UId="426" />
+    </Symbol>
+  </Access>
+  <Blank UId="427" />
+  <Token Text=":=" UId="428" />
+  <Blank UId="429" />
+  <Access Scope="LocalConstant" UId="430">
+    <Constant Name="ERR_EVENT_INPUT_1" UId="431" />
+  </Access>
+  <Token Text=";" UId="434" />
+  <NewLine UId="435" />
+  <Blank Num="12" UId="436" />
+  <Access Scope="LocalConstant" UId="437">
+    <Constant Name="ERR_EVENT_INPUT_2" UId="438" />
+  </Access>
+  <Token Text=":" UId="441" />
+  <NewLine UId="442" />
+  <Blank Num="16" UId="443" />
+  <Access Scope="LocalVariable" UId="444">
+    <Symbol UId="445">
+      <Component Name="HeaterMonitoring" UId="446" />
+      <Token Text="." UId="447" />
+      <Component Name="Status" UId="448" />
+    </Symbol>
+  </Access>
+  <Blank UId="449" />
+  <Token Text=":=" UId="450" />
+  <Blank UId="451" />
+  <Access Scope="LocalConstant" UId="452">
+    <Constant Name="ERR_EVENT_INPUT_2" UId="453" />
+  </Access>
+  <Token Text=";" UId="456" />
+  <NewLine UId="457" />
+  <Blank Num="12" UId="458" />
+  <Access Scope="LocalConstant" UId="459">
+    <Constant Name="ERR_EVENT_INPUT_3" UId="460" />
+  </Access>
+  <Token Text=":" UId="463" />
+  <NewLine UId="464" />
+  <Blank Num="16" UId="465" />
+  <Access Scope="LocalVariable" UId="466">
+    <Symbol UId="467">
+      <Component Name="HeaterMonitoring" UId="468" />
+      <Token Text="." UId="469" />
+      <Component Name="Status" UId="470" />
+    </Symbol>
+  </Access>
+  <Blank UId="471" />
+  <Token Text=":=" UId="472" />
+  <Blank UId="473" />
+  <Access Scope="LocalConstant" UId="474">
+    <Constant Name="ERR_EVENT_INPUT_3" UId="475" />
+  </Access>
+  <Token Text=";" UId="478" />
+  <NewLine UId="479" />
+  <Blank Num="12" UId="480" />
+  <Access Scope="LocalConstant" UId="481">
+    <Constant Name="ERR_EVENT_INPUT_4" UId="482" />
+  </Access>
+  <Token Text=":" UId="485" />
+  <NewLine UId="486" />
+  <Blank Num="16" UId="487" />
+  <Access Scope="LocalVariable" UId="488">
+    <Symbol UId="489">
+      <Component Name="HeaterMonitoring" UId="490" />
+      <Token Text="." UId="491" />
+      <Component Name="Status" UId="492" />
+    </Symbol>
+  </Access>
+  <Blank UId="493" />
+  <Token Text=":=" UId="494" />
+  <Blank UId="495" />
+  <Access Scope="LocalConstant" UId="496">
+    <Constant Name="ERR_EVENT_INPUT_4" UId="497" />
+  </Access>
+  <Token Text=";" UId="500" />
+  <NewLine UId="501" />
+  <Blank Num="12" UId="502" />
+  <Access Scope="LocalConstant" UId="503">
+    <Constant Name="ERR_WRITE_MODE" UId="504" />
+  </Access>
+  <Token Text=":" UId="507" />
+  <NewLine UId="508" />
+  <Blank Num="16" UId="509" />
+  <Access Scope="LocalVariable" UId="510">
+    <Symbol UId="511">
+      <Component Name="HeaterMonitoring" UId="512" />
+      <Token Text="." UId="513" />
+      <Component Name="Status" UId="514" />
+    </Symbol>
+  </Access>
+  <Blank UId="515" />
+  <Token Text=":=" UId="516" />
+  <Blank UId="517" />
+  <Access Scope="LocalConstant" UId="518">
+    <Constant Name="ERR_WRITE_MODE" UId="519" />
+  </Access>
+  <Token Text=";" UId="522" />
+  <NewLine UId="523" />
+  <Blank Num="12" UId="524" />
+  <Access Scope="LocalConstant" UId="525">
+    <Constant Name="ERR_NON_VOLATILE_MEMORY" UId="526" />
+  </Access>
+  <Token Text=":" UId="529" />
+  <NewLine UId="530" />
+  <Blank Num="16" UId="531" />
+  <Access Scope="LocalVariable" UId="532">
+    <Symbol UId="533">
+      <Component Name="HeaterMonitoring" UId="534" />
+      <Token Text="." UId="535" />
+      <Component Name="Status" UId="536" />
+    </Symbol>
+  </Access>
+  <Blank UId="537" />
+  <Token Text=":=" UId="538" />
+  <Blank UId="539" />
+  <Access Scope="LocalConstant" UId="540">
+    <Constant Name="ERR_NON_VOLATILE_MEMORY" UId="541" />
+  </Access>
+  <Token Text=";" UId="544" />
+  <NewLine UId="545" />
+  <Blank Num="12" UId="546" />
+  <Access Scope="LocalConstant" UId="547">
+    <Constant Name="ERR_SETTING_AREA" UId="548" />
+  </Access>
+  <Token Text=":" UId="551" />
+  <NewLine UId="552" />
+  <Blank Num="16" UId="553" />
+  <Access Scope="LocalVariable" UId="554">
+    <Symbol UId="555">
+      <Component Name="HeaterMonitoring" UId="556" />
+      <Token Text="." UId="557" />
+      <Component Name="Status" UId="558" />
+    </Symbol>
+  </Access>
+  <Blank UId="559" />
+  <Token Text=":=" UId="560" />
+  <Blank UId="561" />
+  <Access Scope="LocalConstant" UId="562">
+    <Constant Name="ERR_SETTING_AREA" UId="563" />
+  </Access>
+  <Token Text=";" UId="566" />
+  <NewLine UId="567" />
+  <Blank Num="12" UId="568" />
+  <Access Scope="LocalConstant" UId="569">
+    <Constant Name="ERR_AT_RUN_STOP" UId="570" />
+  </Access>
+  <Token Text=":" UId="573" />
+  <NewLine UId="574" />
+  <Blank Num="16" UId="575" />
+  <Access Scope="LocalVariable" UId="576">
+    <Symbol UId="577">
+      <Component Name="HeaterMonitoring" UId="578" />
+      <Token Text="." UId="579" />
+      <Component Name="Status" UId="580" />
+    </Symbol>
+  </Access>
+  <Blank UId="581" />
+  <Token Text=":=" UId="582" />
+  <Blank UId="583" />
+  <Access Scope="LocalConstant" UId="584">
+    <Constant Name="ERR_AT_RUN_STOP" UId="585" />
+  </Access>
+  <Token Text=";" UId="588" />
+  <NewLine UId="589" />
+  <Blank Num="12" UId="590" />
+  <Access Scope="LocalConstant" UId="591">
+    <Constant Name="ERR_RUN_STOP" UId="592" />
+  </Access>
+  <Token Text=":" UId="595" />
+  <NewLine UId="596" />
+  <Blank Num="16" UId="597" />
+  <Access Scope="LocalVariable" UId="598">
+    <Symbol UId="599">
+      <Component Name="HeaterMonitoring" UId="600" />
+      <Token Text="." UId="601" />
+      <Component Name="Status" UId="602" />
+    </Symbol>
+  </Access>
+  <Blank UId="603" />
+  <Token Text=":=" UId="604" />
+  <Blank UId="605" />
+  <Access Scope="LocalConstant" UId="606">
+    <Constant Name="ERR_RUN_STOP" UId="607" />
+  </Access>
+  <Token Text=";" UId="610" />
+  <NewLine UId="611" />
+  <Blank Num="12" UId="612" />
+  <Access Scope="LocalConstant" UId="613">
+    <Constant Name="ERR_COMMUNICATION_WRITE" UId="614" />
+  </Access>
+  <Token Text=":" UId="617" />
+  <NewLine UId="618" />
+  <Blank Num="16" UId="619" />
+  <Access Scope="LocalVariable" UId="620">
+    <Symbol UId="621">
+      <Component Name="HeaterMonitoring" UId="622" />
+      <Token Text="." UId="623" />
+      <Component Name="Status" UId="624" />
+    </Symbol>
+  </Access>
+  <Blank UId="625" />
+  <Token Text=":=" UId="626" />
+  <Blank UId="627" />
+  <Access Scope="LocalConstant" UId="628">
+    <Constant Name="ERR_COMMUNICATION_WRITE" UId="629" />
+  </Access>
+  <Token Text=";" UId="632" />
+  <NewLine UId="633" />
+  <Blank Num="12" UId="634" />
+  <Access Scope="LocalConstant" UId="635">
+    <Constant Name="ERR_AUTO_MANUAL" UId="636" />
+  </Access>
+  <Token Text=":" UId="639" />
+  <NewLine UId="640" />
+  <Blank Num="16" UId="641" />
+  <Access Scope="LocalVariable" UId="642">
+    <Symbol UId="643">
+      <Component Name="HeaterMonitoring" UId="644" />
+      <Token Text="." UId="645" />
+      <Component Name="Status" UId="646" />
+    </Symbol>
+  </Access>
+  <Blank UId="647" />
+  <Token Text=":=" UId="648" />
+  <Blank UId="649" />
+  <Access Scope="LocalConstant" UId="650">
+    <Constant Name="ERR_AUTO_MANUAL" UId="651" />
+  </Access>
+  <Token Text=";" UId="654" />
+  <NewLine UId="655" />
+  <Blank Num="12" UId="656" />
+  <Access Scope="LocalConstant" UId="657">
+    <Constant Name="ERR_PROGRAM_START" UId="658" />
+  </Access>
+  <Token Text=":" UId="661" />
+  <NewLine UId="662" />
+  <Blank Num="16" UId="663" />
+  <Access Scope="LocalVariable" UId="664">
+    <Symbol UId="665">
+      <Component Name="HeaterMonitoring" UId="666" />
+      <Token Text="." UId="667" />
+      <Component Name="Status" UId="668" />
+    </Symbol>
+  </Access>
+  <Blank UId="669" />
+  <Token Text=":=" UId="670" />
+  <Blank UId="671" />
+  <Access Scope="LocalConstant" UId="672">
+    <Constant Name="ERR_PROGRAM_START" UId="673" />
+  </Access>
+  <Token Text=";" UId="676" />
+  <NewLine UId="677" />
+  <Blank Num="12" UId="678" />
+  <Access Scope="LocalConstant" UId="679">
+    <Constant Name="ERR_HEATER_CURRENT_VALUE_EXCEEDED_CT2" UId="680" />
+  </Access>
+  <Token Text=":" UId="683" />
+  <NewLine UId="684" />
+  <Blank Num="16" UId="685" />
+  <Access Scope="LocalVariable" UId="686">
+    <Symbol UId="687">
+      <Component Name="HeaterMonitoring" UId="688" />
+      <Token Text="." UId="689" />
+      <Component Name="Status" UId="690" />
+    </Symbol>
+  </Access>
+  <Blank UId="691" />
+  <Token Text=":=" UId="692" />
+  <Blank UId="693" />
+  <Access Scope="LocalConstant" UId="694">
+    <Constant Name="ERR_HEATER_CURRENT_VALUE_EXCEEDED_CT2" UId="695" />
+  </Access>
+  <Token Text=";" UId="698" />
+  <NewLine UId="699" />
+  <Blank Num="12" UId="700" />
+  <Access Scope="LocalConstant" UId="701">
+    <Constant Name="ERR_HEATER_CURRENT_VALUE_HOLD_CT2" UId="702" />
+  </Access>
+  <Token Text=":" UId="705" />
+  <NewLine UId="706" />
+  <Blank Num="16" UId="707" />
+  <Access Scope="LocalVariable" UId="708">
+    <Symbol UId="709">
+      <Component Name="HeaterMonitoring" UId="710" />
+      <Token Text="." UId="711" />
+      <Component Name="Status" UId="712" />
+    </Symbol>
+  </Access>
+  <Blank UId="713" />
+  <Token Text=":=" UId="714" />
+  <Blank UId="715" />
+  <Access Scope="LocalConstant" UId="716">
+    <Constant Name="ERR_HEATER_CURRENT_VALUE_HOLD_CT2" UId="717" />
+  </Access>
+  <Token Text=";" UId="720" />
+  <NewLine UId="721" />
+  <Blank Num="12" UId="722" />
+  <Access Scope="LocalConstant" UId="723">
+    <Constant Name="ERR_HS_SSR_FAILURE_ALARM_CT2" UId="724" />
+  </Access>
+  <Token Text=":" UId="727" />
+  <NewLine UId="728" />
+  <Blank Num="16" UId="729" />
+  <Access Scope="LocalVariable" UId="730">
+    <Symbol UId="731">
+      <Component Name="HeaterMonitoring" UId="732" />
+      <Token Text="." UId="733" />
+      <Component Name="Status" UId="734" />
+    </Symbol>
+  </Access>
+  <Blank UId="735" />
+  <Token Text=":=" UId="736" />
+  <Blank UId="737" />
+  <Access Scope="LocalConstant" UId="738">
+    <Constant Name="ERR_HS_SSR_FAILURE_ALARM_CT2" UId="739" />
+  </Access>
+  <Token Text=";" UId="742" />
+  <NewLine UId="743" />
+  <Blank Num="8" UId="744" />
+  <Token Text="END_CASE" UId="745" />
+  <Token Text=";" UId="746" />
+  <NewLine UId="747" />
+  <Blank Num="4" UId="748" />
+  <Token Text="ELSIF" UId="749" />
+  <Blank UId="750" />
+  <Access Scope="LocalVariable" UId="751">
+    <Symbol UId="752">
+      <Component Name="statReadStatus" UId="753" />
+    </Symbol>
+  </Access>
+  <Blank UId="754" />
+  <Token Text="=" UId="755" />
+  <Blank UId="756" />
+  <Access Scope="LiteralConstant" UId="757">
+    <Constant UId="758">
+      <ConstantValue UId="760">0</ConstantValue>
+    </Constant>
+  </Access>
+  <Blank UId="761" />
+  <Token Text="THEN" UId="762" />
+  <NewLine UId="763" />
+  <Blank Num="8" UId="764" />
+  <Access Scope="LocalVariable" UId="765">
+    <Symbol UId="766">
+      <Component Name="HeaterMonitoring" UId="767" />
+      <Token Text="." UId="768" />
+      <Component Name="Status" UId="769" />
+    </Symbol>
+  </Access>
+  <Blank UId="770" />
+  <Token Text=":=" UId="771" />
+  <Blank UId="772" />
+  <Access Scope="LiteralConstant" UId="773">
+    <Constant UId="774">
+      <ConstantValue UId="776">0</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="777" />
+  <NewLine UId="778" />
+  <Blank Num="4" UId="779" />
+  <Token Text="END_IF" UId="780" />
+  <Token Text=";" UId="781" />
+  <NewLine UId="782" />
+  <Token Text="END_REGION" UId="783" />
+  <NewLine Num="2" UId="784" />
+  <Access Scope="LocalVariable" UId="785">
+    <Symbol UId="786">
+      <Component Name="HeaterMonitoring" UId="787" />
+      <Token Text="." UId="788" />
+      <Component Name="Error" UId="789" />
+    </Symbol>
+  </Access>
+  <Blank UId="790" />
+  <Token Text=":=" UId="791" />
+  <Blank UId="792" />
+  <Access Scope="LocalVariable" UId="793">
+    <Symbol UId="794">
+      <Component Name="statReadStatus" UId="795" />
+    </Symbol>
+  </Access>
+  <Blank UId="796" />
+  <Token Text="&lt;&gt;" UId="797" />
+  <Blank UId="798" />
+  <Access Scope="LiteralConstant" UId="799">
+    <Constant UId="800">
+      <ConstantValue UId="802">0</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="803" />
+</StructuredText></NetworkSource>
+          <ProgrammingLanguage>SCL</ProgrammingLanguage>
+        </AttributeList>
+        <ObjectList>
+          <MultilingualText ID="60" CompositionName="Comment">
+            <ObjectList>
+              <MultilingualTextItem ID="61" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="62" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+          <MultilingualText ID="63" CompositionName="Title">
+            <ObjectList>
+              <MultilingualTextItem ID="64" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="65" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text>Error Check</Text>
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+        </ObjectList>
+      </SW.Blocks.CompileUnit>
+      <SW.Blocks.CompileUnit ID="66" CompositionName="CompileUnits">
+        <AttributeList>
+          <NetworkSource><StructuredText xmlns="http://www.siemens.com/automation/Openness/SW/NetworkSource/StructuredText/v4">
+  <LineComment UId="21">
+    <Text UId="22"> Output Mapping</Text>
+  </LineComment>
+  <NewLine UId="23" />
+  <Access Scope="LocalVariable" UId="24">
+    <Symbol UId="25">
+      <Component Name="HeaterMonitoring" UId="26" />
+      <Token Text="." UId="27" />
+      <Component Name="Temp_SP" UId="28" />
+    </Symbol>
+  </Access>
+  <Blank UId="29" />
+  <Token Text=":=" UId="30" />
+  <Blank UId="31" />
+  <Access Scope="LocalVariable" UId="32">
+    <Symbol UId="33">
+      <Component Name="statTempSP" UId="34" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="35" />
+  <NewLine UId="36" />
+  <Access Scope="LocalVariable" UId="37">
+    <Symbol UId="38">
+      <Component Name="HeaterMonitoring" UId="39" />
+      <Token Text="." UId="40" />
+      <Component Name="Temp_AlarmValue1" UId="41" />
+    </Symbol>
+  </Access>
+  <Blank UId="42" />
+  <Token Text=":=" UId="43" />
+  <Blank UId="44" />
+  <Access Scope="LocalVariable" UId="45">
+    <Symbol UId="46">
+      <Component Name="statAlarmValue1" UId="47" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="48" />
+  <NewLine UId="49" />
+  <Access Scope="LocalVariable" UId="50">
+    <Symbol UId="51">
+      <Component Name="HeaterMonitoring" UId="52" />
+      <Token Text="." UId="53" />
+      <Component Name="Temp_AlarmValue1_UpperLimit" UId="54" />
+    </Symbol>
+  </Access>
+  <Blank UId="55" />
+  <Token Text=":=" UId="56" />
+  <Blank UId="57" />
+  <Access Scope="LocalVariable" UId="58">
+    <Symbol UId="59">
+      <Component Name="statAlarmValue1_UpperLimit" UId="60" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="61" />
+  <NewLine UId="62" />
+  <Access Scope="LocalVariable" UId="63">
+    <Symbol UId="64">
+      <Component Name="HeaterMonitoring" UId="65" />
+      <Token Text="." UId="66" />
+      <Component Name="Temp_AlarmValue1_LowerLimit" UId="67" />
+    </Symbol>
+  </Access>
+  <Blank UId="68" />
+  <Token Text=":=" UId="69" />
+  <Blank UId="70" />
+  <Access Scope="LocalVariable" UId="71">
+    <Symbol UId="72">
+      <Component Name="statAlarmValue1_LowerLimit" UId="73" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="74" />
+  <NewLine UId="75" />
+  <Access Scope="LocalVariable" UId="76">
+    <Symbol UId="77">
+      <Component Name="HeaterMonitoring" UId="78" />
+      <Token Text="." UId="79" />
+      <Component Name="Temp_AlarmValue2" UId="80" />
+    </Symbol>
+  </Access>
+  <Blank UId="81" />
+  <Token Text=":=" UId="82" />
+  <Blank UId="83" />
+  <Access Scope="LocalVariable" UId="84">
+    <Symbol UId="85">
+      <Component Name="statAlarmValue2" UId="86" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="87" />
+  <NewLine UId="88" />
+  <Access Scope="LocalVariable" UId="89">
+    <Symbol UId="90">
+      <Component Name="HeaterMonitoring" UId="91" />
+      <Token Text="." UId="92" />
+      <Component Name="Temp_AlarmValue2_UpperLimit" UId="93" />
+    </Symbol>
+  </Access>
+  <Blank UId="94" />
+  <Token Text=":=" UId="95" />
+  <Blank UId="96" />
+  <Access Scope="LocalVariable" UId="97">
+    <Symbol UId="98">
+      <Component Name="statAlarmValue2_UpperLimit" UId="99" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="100" />
+  <NewLine UId="101" />
+  <Access Scope="LocalVariable" UId="102">
+    <Symbol UId="103">
+      <Component Name="HeaterMonitoring" UId="104" />
+      <Token Text="." UId="105" />
+      <Component Name="Temp_AlarmValue2_LowerLimit" UId="106" />
+    </Symbol>
+  </Access>
+  <Blank UId="107" />
+  <Token Text=":=" UId="108" />
+  <Blank UId="109" />
+  <Access Scope="LocalVariable" UId="110">
+    <Symbol UId="111">
+      <Component Name="statAlarmValue2_LowerLimit" UId="112" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="113" />
+  <NewLine UId="114" />
+  <Access Scope="LocalVariable" UId="115">
+    <Symbol UId="116">
+      <Component Name="HeaterMonitoring" UId="117" />
+      <Token Text="." UId="118" />
+      <Component Name="E5CC_Status" UId="119" />
+    </Symbol>
+  </Access>
+  <Blank UId="120" />
+  <Token Text=":=" UId="121" />
+  <Blank UId="122" />
+  <Access Scope="LocalVariable" UId="123">
+    <Symbol UId="124">
+      <Component Name="statReadStatus" UId="125" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="126" />
+  <NewLine UId="127" />
+  <Access Scope="LocalVariable" UId="128">
+    <Symbol UId="129">
+      <Component Name="HeaterMonitoring" UId="130" />
+      <Token Text="." UId="131" />
+      <Component Name="E5CC_Status_Bool" UId="132" />
+    </Symbol>
+  </Access>
+  <Blank UId="133" />
+  <Token Text=":=" UId="134" />
+  <Blank UId="135" />
+  <Access Scope="LocalVariable" UId="136">
+    <Symbol UId="137">
+      <Component Name="statReadStatus_Bool" UId="138" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="139" />
+</StructuredText></NetworkSource>
+          <ProgrammingLanguage>SCL</ProgrammingLanguage>
+        </AttributeList>
+        <ObjectList>
+          <MultilingualText ID="67" CompositionName="Comment">
+            <ObjectList>
+              <MultilingualTextItem ID="68" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="69" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+          <MultilingualText ID="6A" CompositionName="Title">
+            <ObjectList>
+              <MultilingualTextItem ID="6B" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="6C" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text>##### Outputs mapping #####</Text>
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+        </ObjectList>
+      </SW.Blocks.CompileUnit>
+      <MultilingualText ID="6D" CompositionName="Title">
+        <ObjectList>
+          <MultilingualTextItem ID="6E" CompositionName="Items">
+            <AttributeList>
+              <Culture>de-DE</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="6F" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-US</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+        </ObjectList>
+      </MultilingualText>
+    </ObjectList>
+  </SW.Blocks.FB>
+</Document>

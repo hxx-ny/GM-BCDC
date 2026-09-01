@@ -1,0 +1,3016 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Document>
+  <Engineering version="V20" />
+  <SW.Blocks.FC ID="0">
+    <AttributeList>
+      <Interface><Sections xmlns="http://www.siemens.com/automation/Openness/SW/Interface/v5">
+  <Section Name="Input" />
+  <Section Name="Output" />
+  <Section Name="InOut" />
+  <Section Name="Temp">
+    <Member Name="FlexNet_DataString_PUN" Datatype="Array[1..20] of Char" />
+    <Member Name="FlexNet_GM_PartNumber" Datatype="Array[1..8] of Char" />
+    <Member Name="FlexNet_OptionalData" Datatype="Array[1..12] of Char" />
+    <Member Name="FlexNet_Tracking_ID1" Datatype="Array[1..32] of Char" />
+    <Member Name="FlexNet_Track_ID1_Attrib" Datatype="Array[1..20] of Char" />
+    <Member Name="FlexNet_Tracking_ID2" Datatype="Array[1..32] of Char" />
+    <Member Name="FlexNet_Track_ID2_Attrib" Datatype="Array[1..20] of Char" />
+    <Member Name="FlexNet_Tracking_ID3" Datatype="Array[1..32] of Char" />
+    <Member Name="FlexNet_Track_ID3_Attrib" Datatype="Array[1..20] of Char" />
+    <Member Name="FlexNet_Tracking_ID4" Datatype="Array[1..32] of Char" />
+    <Member Name="FlexNet_Track_ID4_Attrib" Datatype="Array[1..20] of Char" />
+    <Member Name="FlexNet_Tracking_ID5" Datatype="Array[1..32] of Char" />
+    <Member Name="FlexNet_Track_ID5_Attrib" Datatype="Array[1..20] of Char" />
+    <Member Name="FlexNet_Tracking_ID6" Datatype="Array[1..32] of Char" />
+    <Member Name="FlexNet_Track_ID6_Attrib" Datatype="Array[1..20] of Char" />
+    <Member Name="FlexNet_Tracking_ID7" Datatype="Array[1..32] of Char" />
+    <Member Name="FlexNet_Track_ID7_Attrib" Datatype="Array[1..20] of Char" />
+    <Member Name="FlexNet_Tracking_ID8" Datatype="Array[1..32] of Char" />
+    <Member Name="FlexNet_Track_ID8_Attrib" Datatype="Array[1..20] of Char" />
+    <Member Name="FlexNet_Tracking_ID9" Datatype="Array[1..32] of Char" />
+    <Member Name="FlexNet_Track_ID9_Attrib" Datatype="Array[1..20] of Char" />
+    <Member Name="FlexNet_Tracking_ID10" Datatype="Array[1..32] of Char" />
+    <Member Name="FlexNet_Track_ID10_Attrib" Datatype="Array[1..20] of Char" />
+    <Member Name="TEMP_OEM_FnetNoRespWarn" Datatype="Bool">
+      <Comment>
+        <MultiLanguageText Lang="en-US">REPLACE THIS WITH CORRECT WARNING BIT</MultiLanguageText>
+      </Comment>
+    </Member>
+    <Member Name="TEMP_OEM_FnetRetryOccur" Datatype="Bool">
+      <Comment>
+        <MultiLanguageText Lang="en-US">REPLACE THIS WITH CORRECT WARNING BIT</MultiLanguageText>
+      </Comment>
+    </Member>
+    <Member Name="TEMP_OEM_FN_NoResponseL2" Datatype="Byte" />
+    <Member Name="OEM_FN_DATA_RECVD" Datatype="Bool" />
+    <Member Name="TracePoint" Datatype="Bool" />
+    <Member Name="Marriage" Datatype="Bool" />
+    <Member Name="QualityGate" Datatype="Bool" />
+    <Member Name="HostQuery" Datatype="Bool" />
+    <Member Name="OEM_to_Populate_FN_RESPONSE_COUNTS_ALLOWED" Datatype="Int" />
+  </Section>
+  <Section Name="Constant" />
+  <Section Name="Return">
+    <Member Name="Ret_Val" Datatype="Void" />
+  </Section>
+</Sections></Interface>
+      <Name>FNet_Map03</Name>
+      <Namespace>CITI_Logic</Namespace>
+      <Number>144</Number>
+      <ProgrammingLanguage>LAD</ProgrammingLanguage>
+      <SetENOAutomatically>false</SetENOAutomatically>
+    </AttributeList>
+    <ObjectList>
+      <MultilingualText ID="1" CompositionName="Comment">
+        <ObjectList>
+          <MultilingualTextItem ID="2" CompositionName="Items">
+            <AttributeList>
+              <Culture>de-DE</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="3" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-US</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+        </ObjectList>
+      </MultilingualText>
+      <SW.Blocks.CompileUnit ID="4" CompositionName="CompileUnits">
+        <AttributeList>
+          <NetworkSource><FlgNet xmlns="http://www.siemens.com/automation/Openness/SW/NetworkSource/FlgNet/v5">
+  <Parts>
+    <Access Scope="GlobalVariable" UId="21">
+      <Symbol>
+        <Component Name="Unit1.EmNodes" />
+        <Component Name="oem" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>3</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+        <Component Name="FlexNet" />
+        <Component Name="PartPass" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="22">
+      <Symbol>
+        <Component Name="CITI_Logic.OEM_CITI_Logic_Setup" />
+        <Component Name="OEM" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>3</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+        <Component Name="FlexNet" />
+        <Component Name="PartPass" />
+      </Symbol>
+    </Access>
+    <Part Name="Contact" UId="23" />
+    <Part Name="Coil" UId="24" />
+  </Parts>
+  <Wires>
+    <Wire UId="25">
+      <Powerrail />
+      <NameCon UId="23" Name="in" />
+    </Wire>
+    <Wire UId="26">
+      <IdentCon UId="21" />
+      <NameCon UId="23" Name="operand" />
+    </Wire>
+    <Wire UId="27">
+      <NameCon UId="23" Name="out" />
+      <NameCon UId="24" Name="in" />
+    </Wire>
+    <Wire UId="28">
+      <IdentCon UId="22" />
+      <NameCon UId="24" Name="operand" />
+    </Wire>
+  </Wires>
+</FlgNet></NetworkSource>
+          <ProgrammingLanguage>LAD</ProgrammingLanguage>
+        </AttributeList>
+        <ObjectList>
+          <MultilingualText ID="5" CompositionName="Comment">
+            <ObjectList>
+              <MultilingualTextItem ID="6" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="7" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text>**Replace the "CITI_Logic_Setup".OEM_TO_COMPLETE Bit with the correct Logic to drive the signal**
+
+Set the Pass Bit Always True for a Trace Point, Marriage, and Host Query.</Text>
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+          <MultilingualText ID="8" CompositionName="Title">
+            <ObjectList>
+              <MultilingualTextItem ID="9" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="A" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text>Part Pass</Text>
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+        </ObjectList>
+      </SW.Blocks.CompileUnit>
+      <SW.Blocks.CompileUnit ID="B" CompositionName="CompileUnits">
+        <AttributeList>
+          <NetworkSource><FlgNet xmlns="http://www.siemens.com/automation/Openness/SW/NetworkSource/FlgNet/v5">
+  <Parts>
+    <Access Scope="GlobalVariable" UId="21">
+      <Symbol>
+        <Component Name="Unit1.EmNodes" />
+        <Component Name="oem" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>3</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+        <Component Name="FlexNet" />
+        <Component Name="PartFail" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="22">
+      <Symbol>
+        <Component Name="CITI_Logic.OEM_CITI_Logic_Setup" />
+        <Component Name="OEM" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>3</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+        <Component Name="FlexNet" />
+        <Component Name="PartFail" />
+      </Symbol>
+    </Access>
+    <Part Name="Contact" UId="23" />
+    <Part Name="Coil" UId="24" />
+  </Parts>
+  <Wires>
+    <Wire UId="25">
+      <Powerrail />
+      <NameCon UId="23" Name="in" />
+    </Wire>
+    <Wire UId="26">
+      <IdentCon UId="21" />
+      <NameCon UId="23" Name="operand" />
+    </Wire>
+    <Wire UId="27">
+      <NameCon UId="23" Name="out" />
+      <NameCon UId="24" Name="in" />
+    </Wire>
+    <Wire UId="28">
+      <IdentCon UId="22" />
+      <NameCon UId="24" Name="operand" />
+    </Wire>
+  </Wires>
+</FlgNet></NetworkSource>
+          <ProgrammingLanguage>LAD</ProgrammingLanguage>
+        </AttributeList>
+        <ObjectList>
+          <MultilingualText ID="C" CompositionName="Comment">
+            <ObjectList>
+              <MultilingualTextItem ID="D" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="E" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text>**Replace the "CITI_Logic_Setup".OEM_TO_COMPLETE Bit with the correct Logic to drive the signal**</Text>
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+          <MultilingualText ID="F" CompositionName="Title">
+            <ObjectList>
+              <MultilingualTextItem ID="10" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="11" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text>Part Fail</Text>
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+        </ObjectList>
+      </SW.Blocks.CompileUnit>
+      <SW.Blocks.CompileUnit ID="12" CompositionName="CompileUnits">
+        <AttributeList>
+          <NetworkSource><FlgNet xmlns="http://www.siemens.com/automation/Openness/SW/NetworkSource/FlgNet/v5">
+  <Parts>
+    <Access Scope="GlobalVariable" UId="21">
+      <Symbol>
+        <Component Name="CITI_Logic.OEM_CITI_Logic_Setup" />
+        <Component Name="OEM" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>3</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+        <Component Name="FlexNet" />
+        <Component Name="PartPass" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="22">
+      <Symbol>
+        <Component Name="CITI_Logic.OEM_CITI_Logic_Setup" />
+        <Component Name="OEM" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>3</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+        <Component Name="FlexNet" />
+        <Component Name="PartFail" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="23">
+      <Symbol>
+        <Component Name="CITI_Logic.OEM_CITI_Logic_Setup" />
+        <Component Name="OEM" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>3</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+        <Component Name="CITI_OneShot" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>5</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="24">
+      <Symbol>
+        <Component Name="Unit1.EmNodes" />
+        <Component Name="oem" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>3</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+        <Component Name="FlexNet" />
+        <Component Name="PUN" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="25">
+      <Symbol>
+        <Component Name="CITI_Logic.OEM_CITI_Logic_Setup" />
+        <Component Name="OEM" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>3</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+        <Component Name="FlexNet" />
+        <Component Name="PUN" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="26">
+      <Symbol>
+        <Component Name="Unit1.EmNodes" />
+        <Component Name="oem" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>3</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+        <Component Name="FlexNet" />
+        <Component Name="GM_PartNumber" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="27">
+      <Symbol>
+        <Component Name="CITI_Logic.OEM_CITI_Logic_Setup" />
+        <Component Name="OEM" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>3</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+        <Component Name="FlexNet" />
+        <Component Name="GM_PartNumber" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="28">
+      <Symbol>
+        <Component Name="Unit1.EmNodes" />
+        <Component Name="oem" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>3</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+        <Component Name="FlexNet" />
+        <Component Name="OptionalData" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="29">
+      <Symbol>
+        <Component Name="CITI_Logic.OEM_CITI_Logic_Setup" />
+        <Component Name="OEM" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>3</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+        <Component Name="FlexNet" />
+        <Component Name="OptionalData" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="30">
+      <Symbol>
+        <Component Name="Unit1.EmNodes" />
+        <Component Name="oem" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>3</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+        <Component Name="FlexNet" />
+        <Component Name="TrackingID1" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="31">
+      <Symbol>
+        <Component Name="CITI_Logic.OEM_CITI_Logic_Setup" />
+        <Component Name="OEM" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>3</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+        <Component Name="FlexNet" />
+        <Component Name="TrackingID1" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="32">
+      <Symbol>
+        <Component Name="Unit1.EmNodes" />
+        <Component Name="oem" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>3</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+        <Component Name="FlexNet" />
+        <Component Name="TrackingID1Attribute" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="33">
+      <Symbol>
+        <Component Name="CITI_Logic.OEM_CITI_Logic_Setup" />
+        <Component Name="OEM" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>3</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+        <Component Name="FlexNet" />
+        <Component Name="TrackingID1Attribute" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="34">
+      <Symbol>
+        <Component Name="Unit1.EmNodes" />
+        <Component Name="oem" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>3</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+        <Component Name="FlexNet" />
+        <Component Name="TrackingID2" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="35">
+      <Symbol>
+        <Component Name="CITI_Logic.OEM_CITI_Logic_Setup" />
+        <Component Name="OEM" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>3</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+        <Component Name="FlexNet" />
+        <Component Name="TrackingID2" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="36">
+      <Symbol>
+        <Component Name="Unit1.EmNodes" />
+        <Component Name="oem" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>3</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+        <Component Name="FlexNet" />
+        <Component Name="TrackingID2Attribute" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="37">
+      <Symbol>
+        <Component Name="CITI_Logic.OEM_CITI_Logic_Setup" />
+        <Component Name="OEM" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>3</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+        <Component Name="FlexNet" />
+        <Component Name="TrackingID2Attribute" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="38">
+      <Symbol>
+        <Component Name="Unit1.EmNodes" />
+        <Component Name="oem" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>3</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+        <Component Name="FlexNet" />
+        <Component Name="TrackingID3" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="39">
+      <Symbol>
+        <Component Name="CITI_Logic.OEM_CITI_Logic_Setup" />
+        <Component Name="OEM" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>3</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+        <Component Name="FlexNet" />
+        <Component Name="TrackingID3" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="40">
+      <Symbol>
+        <Component Name="Unit1.EmNodes" />
+        <Component Name="oem" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>3</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+        <Component Name="FlexNet" />
+        <Component Name="TrackingID3Attribute" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="41">
+      <Symbol>
+        <Component Name="CITI_Logic.OEM_CITI_Logic_Setup" />
+        <Component Name="OEM" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>3</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+        <Component Name="FlexNet" />
+        <Component Name="TrackingID3Attribute" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="42">
+      <Symbol>
+        <Component Name="Unit1.EmNodes" />
+        <Component Name="oem" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>3</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+        <Component Name="FlexNet" />
+        <Component Name="TrackingID4" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="43">
+      <Symbol>
+        <Component Name="CITI_Logic.OEM_CITI_Logic_Setup" />
+        <Component Name="OEM" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>3</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+        <Component Name="FlexNet" />
+        <Component Name="TrackingID4" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="44">
+      <Symbol>
+        <Component Name="Unit1.EmNodes" />
+        <Component Name="oem" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>3</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+        <Component Name="FlexNet" />
+        <Component Name="TrackingID4Attribute" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="45">
+      <Symbol>
+        <Component Name="CITI_Logic.OEM_CITI_Logic_Setup" />
+        <Component Name="OEM" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>3</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+        <Component Name="FlexNet" />
+        <Component Name="TrackingID4Attribute" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="46">
+      <Symbol>
+        <Component Name="Unit1.EmNodes" />
+        <Component Name="oem" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>3</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+        <Component Name="FlexNet" />
+        <Component Name="TrackingID5" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="47">
+      <Symbol>
+        <Component Name="CITI_Logic.OEM_CITI_Logic_Setup" />
+        <Component Name="OEM" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>3</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+        <Component Name="FlexNet" />
+        <Component Name="TrackingID5" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="48">
+      <Symbol>
+        <Component Name="Unit1.EmNodes" />
+        <Component Name="oem" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>3</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+        <Component Name="FlexNet" />
+        <Component Name="TrackingID5Attribute" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="49">
+      <Symbol>
+        <Component Name="CITI_Logic.OEM_CITI_Logic_Setup" />
+        <Component Name="OEM" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>3</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+        <Component Name="FlexNet" />
+        <Component Name="TrackingID5Attribute" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="50">
+      <Symbol>
+        <Component Name="Unit1.EmNodes" />
+        <Component Name="oem" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>3</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+        <Component Name="FlexNet" />
+        <Component Name="TrackingID6" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="51">
+      <Symbol>
+        <Component Name="CITI_Logic.OEM_CITI_Logic_Setup" />
+        <Component Name="OEM" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>3</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+        <Component Name="FlexNet" />
+        <Component Name="TrackingID6" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="52">
+      <Symbol>
+        <Component Name="Unit1.EmNodes" />
+        <Component Name="oem" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>3</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+        <Component Name="FlexNet" />
+        <Component Name="TrackingID6Attribute" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="53">
+      <Symbol>
+        <Component Name="CITI_Logic.OEM_CITI_Logic_Setup" />
+        <Component Name="OEM" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>3</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+        <Component Name="FlexNet" />
+        <Component Name="TrackingID6Attribute" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="54">
+      <Symbol>
+        <Component Name="Unit1.EmNodes" />
+        <Component Name="oem" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>3</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+        <Component Name="FlexNet" />
+        <Component Name="TrackingID7" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="55">
+      <Symbol>
+        <Component Name="CITI_Logic.OEM_CITI_Logic_Setup" />
+        <Component Name="OEM" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>3</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+        <Component Name="FlexNet" />
+        <Component Name="TrackingID7" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="56">
+      <Symbol>
+        <Component Name="Unit1.EmNodes" />
+        <Component Name="oem" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>3</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+        <Component Name="FlexNet" />
+        <Component Name="TrackingID7Attribute" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="57">
+      <Symbol>
+        <Component Name="CITI_Logic.OEM_CITI_Logic_Setup" />
+        <Component Name="OEM" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>3</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+        <Component Name="FlexNet" />
+        <Component Name="TrackingID7Attribute" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="58">
+      <Symbol>
+        <Component Name="Unit1.EmNodes" />
+        <Component Name="oem" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>3</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+        <Component Name="FlexNet" />
+        <Component Name="TrackingID8" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="59">
+      <Symbol>
+        <Component Name="CITI_Logic.OEM_CITI_Logic_Setup" />
+        <Component Name="OEM" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>3</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+        <Component Name="FlexNet" />
+        <Component Name="TrackingID8" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="60">
+      <Symbol>
+        <Component Name="Unit1.EmNodes" />
+        <Component Name="oem" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>3</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+        <Component Name="FlexNet" />
+        <Component Name="TrackingID8Attribute" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="61">
+      <Symbol>
+        <Component Name="CITI_Logic.OEM_CITI_Logic_Setup" />
+        <Component Name="OEM" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>3</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+        <Component Name="FlexNet" />
+        <Component Name="TrackingID8Attribute" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="62">
+      <Symbol>
+        <Component Name="Unit1.EmNodes" />
+        <Component Name="oem" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>3</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+        <Component Name="FlexNet" />
+        <Component Name="TrackingID9" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="63">
+      <Symbol>
+        <Component Name="CITI_Logic.OEM_CITI_Logic_Setup" />
+        <Component Name="OEM" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>3</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+        <Component Name="FlexNet" />
+        <Component Name="TrackingID9" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="64">
+      <Symbol>
+        <Component Name="Unit1.EmNodes" />
+        <Component Name="oem" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>3</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+        <Component Name="FlexNet" />
+        <Component Name="TrackingID9Attribute" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="65">
+      <Symbol>
+        <Component Name="CITI_Logic.OEM_CITI_Logic_Setup" />
+        <Component Name="OEM" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>3</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+        <Component Name="FlexNet" />
+        <Component Name="TrackingID9Attribute" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="66">
+      <Symbol>
+        <Component Name="Unit1.EmNodes" />
+        <Component Name="oem" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>3</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+        <Component Name="FlexNet" />
+        <Component Name="TrackingID10" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="67">
+      <Symbol>
+        <Component Name="CITI_Logic.OEM_CITI_Logic_Setup" />
+        <Component Name="OEM" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>3</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+        <Component Name="FlexNet" />
+        <Component Name="TrackingID10" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="68">
+      <Symbol>
+        <Component Name="Unit1.EmNodes" />
+        <Component Name="oem" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>3</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+        <Component Name="FlexNet" />
+        <Component Name="TrackingID10Attribute" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="69">
+      <Symbol>
+        <Component Name="CITI_Logic.OEM_CITI_Logic_Setup" />
+        <Component Name="OEM" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>3</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+        <Component Name="FlexNet" />
+        <Component Name="TrackingID10Attribute" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="70">
+      <Symbol>
+        <Component Name="CITI_Logic.OEM_CITI_Logic_Setup" />
+        <Component Name="OEM" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>3</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+        <Component Name="FlexNet" />
+        <Component Name="PartPass" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="71">
+      <Symbol>
+        <Component Name="CITI_Logic.OEM_CITI_Logic_Setup" />
+        <Component Name="OEM" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>3</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+        <Component Name="FlexNet" />
+        <Component Name="PartFail" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="72">
+      <Symbol>
+        <Component Name="CITI_Logic.OEM_CITI_Logic_Setup" />
+        <Component Name="OEM" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>3</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+        <Component Name="FlexNet" />
+        <Component Name="DataReady" />
+      </Symbol>
+    </Access>
+    <Part Name="Contact" UId="73" />
+    <Part Name="Contact" UId="74" />
+    <Part Name="O" UId="75">
+      <TemplateValue Name="Card" Type="Cardinality">2</TemplateValue>
+    </Part>
+    <Part Name="PBox" UId="76" />
+    <Part Name="S_Move" UId="77" DisabledENO="true" />
+    <Part Name="S_Move" UId="78" DisabledENO="true" />
+    <Part Name="S_Move" UId="79" DisabledENO="true" />
+    <Part Name="S_Move" UId="80" DisabledENO="true" />
+    <Part Name="S_Move" UId="81" DisabledENO="true" />
+    <Part Name="S_Move" UId="82" DisabledENO="true" />
+    <Part Name="S_Move" UId="83" DisabledENO="true" />
+    <Part Name="S_Move" UId="84" DisabledENO="true" />
+    <Part Name="S_Move" UId="85" DisabledENO="true" />
+    <Part Name="S_Move" UId="86" DisabledENO="true" />
+    <Part Name="S_Move" UId="87" DisabledENO="true" />
+    <Part Name="S_Move" UId="88" DisabledENO="true" />
+    <Part Name="S_Move" UId="89" DisabledENO="true" />
+    <Part Name="S_Move" UId="90" DisabledENO="true" />
+    <Part Name="S_Move" UId="91" DisabledENO="true" />
+    <Part Name="S_Move" UId="92" DisabledENO="true" />
+    <Part Name="S_Move" UId="93" DisabledENO="true" />
+    <Part Name="S_Move" UId="94" DisabledENO="true" />
+    <Part Name="S_Move" UId="95" DisabledENO="true" />
+    <Part Name="S_Move" UId="96" DisabledENO="true" />
+    <Part Name="S_Move" UId="97" DisabledENO="true" />
+    <Part Name="S_Move" UId="98" DisabledENO="true" />
+    <Part Name="S_Move" UId="99" DisabledENO="true" />
+    <Part Name="Contact" UId="100" />
+    <Part Name="Contact" UId="101" />
+    <Part Name="O" UId="102">
+      <TemplateValue Name="Card" Type="Cardinality">2</TemplateValue>
+    </Part>
+    <Part Name="Coil" UId="103" />
+  </Parts>
+  <Wires>
+    <Wire UId="104">
+      <Powerrail />
+      <NameCon UId="73" Name="in" />
+      <NameCon UId="74" Name="in" />
+    </Wire>
+    <Wire UId="105">
+      <IdentCon UId="21" />
+      <NameCon UId="73" Name="operand" />
+    </Wire>
+    <Wire UId="106">
+      <NameCon UId="73" Name="out" />
+      <NameCon UId="75" Name="in1" />
+    </Wire>
+    <Wire UId="107">
+      <IdentCon UId="22" />
+      <NameCon UId="74" Name="operand" />
+    </Wire>
+    <Wire UId="108">
+      <NameCon UId="74" Name="out" />
+      <NameCon UId="75" Name="in2" />
+    </Wire>
+    <Wire UId="109">
+      <NameCon UId="75" Name="out" />
+      <NameCon UId="76" Name="in" />
+    </Wire>
+    <Wire UId="110">
+      <IdentCon UId="23" />
+      <NameCon UId="76" Name="bit" />
+    </Wire>
+    <Wire UId="111">
+      <NameCon UId="76" Name="out" />
+      <NameCon UId="77" Name="en" />
+      <NameCon UId="80" Name="en" />
+      <NameCon UId="82" Name="en" />
+      <NameCon UId="84" Name="en" />
+      <NameCon UId="86" Name="en" />
+      <NameCon UId="88" Name="en" />
+      <NameCon UId="90" Name="en" />
+      <NameCon UId="92" Name="en" />
+      <NameCon UId="94" Name="en" />
+      <NameCon UId="96" Name="en" />
+      <NameCon UId="98" Name="en" />
+      <NameCon UId="100" Name="in" />
+      <NameCon UId="101" Name="in" />
+    </Wire>
+    <Wire UId="112">
+      <IdentCon UId="24" />
+      <NameCon UId="77" Name="in" />
+    </Wire>
+    <Wire UId="113">
+      <NameCon UId="77" Name="eno" />
+      <NameCon UId="78" Name="en" />
+    </Wire>
+    <Wire UId="114">
+      <NameCon UId="77" Name="out" />
+      <IdentCon UId="25" />
+    </Wire>
+    <Wire UId="115">
+      <IdentCon UId="26" />
+      <NameCon UId="78" Name="in" />
+    </Wire>
+    <Wire UId="116">
+      <NameCon UId="78" Name="eno" />
+      <NameCon UId="79" Name="en" />
+    </Wire>
+    <Wire UId="117">
+      <NameCon UId="78" Name="out" />
+      <IdentCon UId="27" />
+    </Wire>
+    <Wire UId="118">
+      <IdentCon UId="28" />
+      <NameCon UId="79" Name="in" />
+    </Wire>
+    <Wire UId="119">
+      <NameCon UId="79" Name="out" />
+      <IdentCon UId="29" />
+    </Wire>
+    <Wire UId="120">
+      <IdentCon UId="30" />
+      <NameCon UId="80" Name="in" />
+    </Wire>
+    <Wire UId="121">
+      <NameCon UId="80" Name="eno" />
+      <NameCon UId="81" Name="en" />
+    </Wire>
+    <Wire UId="122">
+      <NameCon UId="80" Name="out" />
+      <IdentCon UId="31" />
+    </Wire>
+    <Wire UId="123">
+      <IdentCon UId="32" />
+      <NameCon UId="81" Name="in" />
+    </Wire>
+    <Wire UId="124">
+      <NameCon UId="81" Name="out" />
+      <IdentCon UId="33" />
+    </Wire>
+    <Wire UId="125">
+      <IdentCon UId="34" />
+      <NameCon UId="82" Name="in" />
+    </Wire>
+    <Wire UId="126">
+      <NameCon UId="82" Name="eno" />
+      <NameCon UId="83" Name="en" />
+    </Wire>
+    <Wire UId="127">
+      <NameCon UId="82" Name="out" />
+      <IdentCon UId="35" />
+    </Wire>
+    <Wire UId="128">
+      <IdentCon UId="36" />
+      <NameCon UId="83" Name="in" />
+    </Wire>
+    <Wire UId="129">
+      <NameCon UId="83" Name="out" />
+      <IdentCon UId="37" />
+    </Wire>
+    <Wire UId="130">
+      <IdentCon UId="38" />
+      <NameCon UId="84" Name="in" />
+    </Wire>
+    <Wire UId="131">
+      <NameCon UId="84" Name="eno" />
+      <NameCon UId="85" Name="en" />
+    </Wire>
+    <Wire UId="132">
+      <NameCon UId="84" Name="out" />
+      <IdentCon UId="39" />
+    </Wire>
+    <Wire UId="133">
+      <IdentCon UId="40" />
+      <NameCon UId="85" Name="in" />
+    </Wire>
+    <Wire UId="134">
+      <NameCon UId="85" Name="out" />
+      <IdentCon UId="41" />
+    </Wire>
+    <Wire UId="135">
+      <IdentCon UId="42" />
+      <NameCon UId="86" Name="in" />
+    </Wire>
+    <Wire UId="136">
+      <NameCon UId="86" Name="eno" />
+      <NameCon UId="87" Name="en" />
+    </Wire>
+    <Wire UId="137">
+      <NameCon UId="86" Name="out" />
+      <IdentCon UId="43" />
+    </Wire>
+    <Wire UId="138">
+      <IdentCon UId="44" />
+      <NameCon UId="87" Name="in" />
+    </Wire>
+    <Wire UId="139">
+      <NameCon UId="87" Name="out" />
+      <IdentCon UId="45" />
+    </Wire>
+    <Wire UId="140">
+      <IdentCon UId="46" />
+      <NameCon UId="88" Name="in" />
+    </Wire>
+    <Wire UId="141">
+      <NameCon UId="88" Name="eno" />
+      <NameCon UId="89" Name="en" />
+    </Wire>
+    <Wire UId="142">
+      <NameCon UId="88" Name="out" />
+      <IdentCon UId="47" />
+    </Wire>
+    <Wire UId="143">
+      <IdentCon UId="48" />
+      <NameCon UId="89" Name="in" />
+    </Wire>
+    <Wire UId="144">
+      <NameCon UId="89" Name="out" />
+      <IdentCon UId="49" />
+    </Wire>
+    <Wire UId="145">
+      <IdentCon UId="50" />
+      <NameCon UId="90" Name="in" />
+    </Wire>
+    <Wire UId="146">
+      <NameCon UId="90" Name="eno" />
+      <NameCon UId="91" Name="en" />
+    </Wire>
+    <Wire UId="147">
+      <NameCon UId="90" Name="out" />
+      <IdentCon UId="51" />
+    </Wire>
+    <Wire UId="148">
+      <IdentCon UId="52" />
+      <NameCon UId="91" Name="in" />
+    </Wire>
+    <Wire UId="149">
+      <NameCon UId="91" Name="out" />
+      <IdentCon UId="53" />
+    </Wire>
+    <Wire UId="150">
+      <IdentCon UId="54" />
+      <NameCon UId="92" Name="in" />
+    </Wire>
+    <Wire UId="151">
+      <NameCon UId="92" Name="eno" />
+      <NameCon UId="93" Name="en" />
+    </Wire>
+    <Wire UId="152">
+      <NameCon UId="92" Name="out" />
+      <IdentCon UId="55" />
+    </Wire>
+    <Wire UId="153">
+      <IdentCon UId="56" />
+      <NameCon UId="93" Name="in" />
+    </Wire>
+    <Wire UId="154">
+      <NameCon UId="93" Name="out" />
+      <IdentCon UId="57" />
+    </Wire>
+    <Wire UId="155">
+      <IdentCon UId="58" />
+      <NameCon UId="94" Name="in" />
+    </Wire>
+    <Wire UId="156">
+      <NameCon UId="94" Name="eno" />
+      <NameCon UId="95" Name="en" />
+    </Wire>
+    <Wire UId="157">
+      <NameCon UId="94" Name="out" />
+      <IdentCon UId="59" />
+    </Wire>
+    <Wire UId="158">
+      <IdentCon UId="60" />
+      <NameCon UId="95" Name="in" />
+    </Wire>
+    <Wire UId="159">
+      <NameCon UId="95" Name="out" />
+      <IdentCon UId="61" />
+    </Wire>
+    <Wire UId="160">
+      <IdentCon UId="62" />
+      <NameCon UId="96" Name="in" />
+    </Wire>
+    <Wire UId="161">
+      <NameCon UId="96" Name="eno" />
+      <NameCon UId="97" Name="en" />
+    </Wire>
+    <Wire UId="162">
+      <NameCon UId="96" Name="out" />
+      <IdentCon UId="63" />
+    </Wire>
+    <Wire UId="163">
+      <IdentCon UId="64" />
+      <NameCon UId="97" Name="in" />
+    </Wire>
+    <Wire UId="164">
+      <NameCon UId="97" Name="out" />
+      <IdentCon UId="65" />
+    </Wire>
+    <Wire UId="165">
+      <IdentCon UId="66" />
+      <NameCon UId="98" Name="in" />
+    </Wire>
+    <Wire UId="166">
+      <NameCon UId="98" Name="eno" />
+      <NameCon UId="99" Name="en" />
+    </Wire>
+    <Wire UId="167">
+      <NameCon UId="98" Name="out" />
+      <IdentCon UId="67" />
+    </Wire>
+    <Wire UId="168">
+      <IdentCon UId="68" />
+      <NameCon UId="99" Name="in" />
+    </Wire>
+    <Wire UId="169">
+      <NameCon UId="99" Name="out" />
+      <IdentCon UId="69" />
+    </Wire>
+    <Wire UId="170">
+      <IdentCon UId="70" />
+      <NameCon UId="100" Name="operand" />
+    </Wire>
+    <Wire UId="171">
+      <NameCon UId="100" Name="out" />
+      <NameCon UId="102" Name="in1" />
+    </Wire>
+    <Wire UId="172">
+      <IdentCon UId="71" />
+      <NameCon UId="101" Name="operand" />
+    </Wire>
+    <Wire UId="173">
+      <NameCon UId="101" Name="out" />
+      <NameCon UId="102" Name="in2" />
+    </Wire>
+    <Wire UId="174">
+      <NameCon UId="102" Name="out" />
+      <NameCon UId="103" Name="in" />
+    </Wire>
+    <Wire UId="175">
+      <IdentCon UId="72" />
+      <NameCon UId="103" Name="operand" />
+    </Wire>
+  </Wires>
+</FlgNet></NetworkSource>
+          <ProgrammingLanguage>LAD</ProgrammingLanguage>
+        </AttributeList>
+        <ObjectList>
+          <MultilingualText ID="13" CompositionName="Comment">
+            <ObjectList>
+              <MultilingualTextItem ID="14" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="15" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text>**Replace the "CITI_Logic_Setup".OEM_TO_COMPLETE Bit with the correct Logic to drive the signal**</Text>
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+          <MultilingualText ID="16" CompositionName="Title">
+            <ObjectList>
+              <MultilingualTextItem ID="17" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="18" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text>Pun, GM Part Number, Optional Data, Tracking ID, Tracking ID Attribute, and Data Ready</Text>
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+        </ObjectList>
+      </SW.Blocks.CompileUnit>
+      <SW.Blocks.CompileUnit ID="19" CompositionName="CompileUnits">
+        <AttributeList>
+          <NetworkSource><FlgNet xmlns="http://www.siemens.com/automation/Openness/SW/NetworkSource/FlgNet/v5">
+  <Parts>
+    <Access Scope="GlobalVariable" UId="21">
+      <Symbol>
+        <Component Name="CITI_Logic.OEM_CITI_Logic_Setup" />
+        <Component Name="OEM" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>3</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+        <Component Name="Always_ON" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="22">
+      <Symbol>
+        <Component Name="Unit1.EmNodes" />
+        <Component Name="oem" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>3</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+        <Component Name="FlexNet" />
+        <Component Name="TransactionType" SliceAccessModifier="x0" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="23">
+      <Symbol>
+        <Component Name="TracePoint" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="24">
+      <Symbol>
+        <Component Name="CITI_Logic.OEM_CITI_Logic_Setup" />
+        <Component Name="OEM" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>3</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+        <Component Name="FlexNet" />
+        <Component Name="TransactionType" SliceAccessModifier="x0" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="25">
+      <Symbol>
+        <Component Name="Unit1.EmNodes" />
+        <Component Name="oem" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>3</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+        <Component Name="FlexNet" />
+        <Component Name="TransactionType" SliceAccessModifier="x1" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="26">
+      <Symbol>
+        <Component Name="Marriage" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="27">
+      <Symbol>
+        <Component Name="CITI_Logic.OEM_CITI_Logic_Setup" />
+        <Component Name="OEM" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>3</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+        <Component Name="FlexNet" />
+        <Component Name="TransactionType" SliceAccessModifier="x1" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="28">
+      <Symbol>
+        <Component Name="Unit1.EmNodes" />
+        <Component Name="oem" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>3</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+        <Component Name="FlexNet" />
+        <Component Name="TransactionType" SliceAccessModifier="x2" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="29">
+      <Symbol>
+        <Component Name="QualityGate" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="30">
+      <Symbol>
+        <Component Name="CITI_Logic.OEM_CITI_Logic_Setup" />
+        <Component Name="OEM" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>3</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+        <Component Name="FlexNet" />
+        <Component Name="TransactionType" SliceAccessModifier="x2" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="31">
+      <Symbol>
+        <Component Name="Unit1.EmNodes" />
+        <Component Name="oem" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>3</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+        <Component Name="FlexNet" />
+        <Component Name="TransactionType" SliceAccessModifier="x3" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="32">
+      <Symbol>
+        <Component Name="HostQuery" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="33">
+      <Symbol>
+        <Component Name="CITI_Logic.OEM_CITI_Logic_Setup" />
+        <Component Name="OEM" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>3</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+        <Component Name="FlexNet" />
+        <Component Name="TransactionType" SliceAccessModifier="x3" />
+      </Symbol>
+    </Access>
+    <Part Name="Contact" UId="34" />
+    <Part Name="Contact" UId="35" />
+    <Part Name="Contact" UId="36">
+      <Negated Name="operand" />
+    </Part>
+    <Part Name="Coil" UId="37" />
+    <Part Name="Contact" UId="38" />
+    <Part Name="Contact" UId="39">
+      <Negated Name="operand" />
+    </Part>
+    <Part Name="Coil" UId="40" />
+    <Part Name="Contact" UId="41" />
+    <Part Name="Contact" UId="42">
+      <Negated Name="operand" />
+    </Part>
+    <Part Name="Coil" UId="43" />
+    <Part Name="Contact" UId="44" />
+    <Part Name="Contact" UId="45">
+      <Negated Name="operand" />
+    </Part>
+    <Part Name="Coil" UId="46" />
+  </Parts>
+  <Wires>
+    <Wire UId="47">
+      <Powerrail />
+      <NameCon UId="34" Name="in" />
+    </Wire>
+    <Wire UId="48">
+      <IdentCon UId="21" />
+      <NameCon UId="34" Name="operand" />
+    </Wire>
+    <Wire UId="49">
+      <NameCon UId="34" Name="out" />
+      <NameCon UId="35" Name="in" />
+      <NameCon UId="38" Name="in" />
+      <NameCon UId="41" Name="in" />
+      <NameCon UId="44" Name="in" />
+    </Wire>
+    <Wire UId="50">
+      <IdentCon UId="22" />
+      <NameCon UId="35" Name="operand" />
+    </Wire>
+    <Wire UId="51">
+      <NameCon UId="35" Name="out" />
+      <NameCon UId="36" Name="in" />
+    </Wire>
+    <Wire UId="52">
+      <IdentCon UId="23" />
+      <NameCon UId="36" Name="operand" />
+    </Wire>
+    <Wire UId="53">
+      <NameCon UId="36" Name="out" />
+      <NameCon UId="37" Name="in" />
+    </Wire>
+    <Wire UId="54">
+      <IdentCon UId="24" />
+      <NameCon UId="37" Name="operand" />
+    </Wire>
+    <Wire UId="55">
+      <IdentCon UId="25" />
+      <NameCon UId="38" Name="operand" />
+    </Wire>
+    <Wire UId="56">
+      <NameCon UId="38" Name="out" />
+      <NameCon UId="39" Name="in" />
+    </Wire>
+    <Wire UId="57">
+      <IdentCon UId="26" />
+      <NameCon UId="39" Name="operand" />
+    </Wire>
+    <Wire UId="58">
+      <NameCon UId="39" Name="out" />
+      <NameCon UId="40" Name="in" />
+    </Wire>
+    <Wire UId="59">
+      <IdentCon UId="27" />
+      <NameCon UId="40" Name="operand" />
+    </Wire>
+    <Wire UId="60">
+      <IdentCon UId="28" />
+      <NameCon UId="41" Name="operand" />
+    </Wire>
+    <Wire UId="61">
+      <NameCon UId="41" Name="out" />
+      <NameCon UId="42" Name="in" />
+    </Wire>
+    <Wire UId="62">
+      <IdentCon UId="29" />
+      <NameCon UId="42" Name="operand" />
+    </Wire>
+    <Wire UId="63">
+      <NameCon UId="42" Name="out" />
+      <NameCon UId="43" Name="in" />
+    </Wire>
+    <Wire UId="64">
+      <IdentCon UId="30" />
+      <NameCon UId="43" Name="operand" />
+    </Wire>
+    <Wire UId="65">
+      <IdentCon UId="31" />
+      <NameCon UId="44" Name="operand" />
+    </Wire>
+    <Wire UId="66">
+      <NameCon UId="44" Name="out" />
+      <NameCon UId="45" Name="in" />
+    </Wire>
+    <Wire UId="67">
+      <IdentCon UId="32" />
+      <NameCon UId="45" Name="operand" />
+    </Wire>
+    <Wire UId="68">
+      <NameCon UId="45" Name="out" />
+      <NameCon UId="46" Name="in" />
+    </Wire>
+    <Wire UId="69">
+      <IdentCon UId="33" />
+      <NameCon UId="46" Name="operand" />
+    </Wire>
+  </Wires>
+</FlgNet></NetworkSource>
+          <ProgrammingLanguage>LAD</ProgrammingLanguage>
+        </AttributeList>
+        <ObjectList>
+          <MultilingualText ID="1A" CompositionName="Comment">
+            <ObjectList>
+              <MultilingualTextItem ID="1B" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="1C" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text>**Replace the "CITI_Logic_Setup".OEM_TO_COMPLETE Bit with the correct Logic to drive the signal**
+
+For the Transaction Type:
+ 
+Flexnet TypeInteger Value
+Trace Point = 1
+Marriage = 2
+Quality Gate = 4
+Host Query = 8</Text>
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+          <MultilingualText ID="1D" CompositionName="Title">
+            <ObjectList>
+              <MultilingualTextItem ID="1E" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="1F" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text>Transaction Type</Text>
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+        </ObjectList>
+      </SW.Blocks.CompileUnit>
+      <SW.Blocks.CompileUnit ID="20" CompositionName="CompileUnits">
+        <AttributeList>
+          <NetworkSource><FlgNet xmlns="http://www.siemens.com/automation/Openness/SW/NetworkSource/FlgNet/v5">
+  <Parts>
+    <Access Scope="LocalVariable" UId="21">
+      <Symbol>
+        <Component Name="OEM_to_Populate_FN_RESPONSE_COUNTS_ALLOWED" />
+      </Symbol>
+    </Access>
+    <Access Scope="LiteralConstant" UId="22">
+      <Constant>
+        <ConstantType>Int</ConstantType>
+        <ConstantValue>0</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="GlobalVariable" UId="23">
+      <Symbol>
+        <Component Name="CITI_Logic.OEM_CITI_Logic_Setup" />
+        <Component Name="OEM" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>3</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+        <Component Name="FlexNet" />
+        <Component Name="Bypassed_Fault" />
+      </Symbol>
+    </Access>
+    <Part Name="Le" UId="24">
+      <TemplateValue Name="SrcType" Type="Type">Int</TemplateValue>
+    </Part>
+    <Part Name="Coil" UId="25" />
+  </Parts>
+  <Wires>
+    <Wire UId="26">
+      <Powerrail />
+      <NameCon UId="24" Name="pre" />
+    </Wire>
+    <Wire UId="27">
+      <IdentCon UId="21" />
+      <NameCon UId="24" Name="in1" />
+    </Wire>
+    <Wire UId="28">
+      <IdentCon UId="22" />
+      <NameCon UId="24" Name="in2" />
+    </Wire>
+    <Wire UId="29">
+      <NameCon UId="24" Name="out" />
+      <NameCon UId="25" Name="in" />
+    </Wire>
+    <Wire UId="30">
+      <IdentCon UId="23" />
+      <NameCon UId="25" Name="operand" />
+    </Wire>
+  </Wires>
+</FlgNet></NetworkSource>
+          <ProgrammingLanguage>LAD</ProgrammingLanguage>
+        </AttributeList>
+        <ObjectList>
+          <MultilingualText ID="21" CompositionName="Comment">
+            <ObjectList>
+              <MultilingualTextItem ID="22" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="23" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text>The Bypassed_Fault bit is ONLY to Bypass the FlexNet L2 No Response Fault.  The FlexNet transactions must still occur even while the Fault is Bypassed.</Text>
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+          <MultilingualText ID="24" CompositionName="Title">
+            <ObjectList>
+              <MultilingualTextItem ID="25" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="26" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text>Bypass FlexNet Fault</Text>
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+        </ObjectList>
+      </SW.Blocks.CompileUnit>
+      <SW.Blocks.CompileUnit ID="27" CompositionName="CompileUnits">
+        <AttributeList>
+          <NetworkSource><FlgNet xmlns="http://www.siemens.com/automation/Openness/SW/NetworkSource/FlgNet/v5">
+  <Parts>
+    <Access Scope="GlobalVariable" UId="21">
+      <Symbol>
+        <Component Name="Unit1.EmNodes" />
+        <Component Name="oem" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>3</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+        <Component Name="FlexNet" />
+        <Component Name="DataReset" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="22">
+      <Symbol>
+        <Component Name="CITI_Logic.OEM_CITI_Logic_Setup" />
+        <Component Name="OEM" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>3</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+        <Component Name="FlexNet" />
+        <Component Name="DataReset" />
+      </Symbol>
+    </Access>
+    <Part Name="Contact" UId="23" />
+    <Part Name="Coil" UId="24" />
+  </Parts>
+  <Wires>
+    <Wire UId="25">
+      <Powerrail />
+      <NameCon UId="23" Name="in" />
+    </Wire>
+    <Wire UId="26">
+      <IdentCon UId="21" />
+      <NameCon UId="23" Name="operand" />
+    </Wire>
+    <Wire UId="27">
+      <NameCon UId="23" Name="out" />
+      <NameCon UId="24" Name="in" />
+    </Wire>
+    <Wire UId="28">
+      <IdentCon UId="22" />
+      <NameCon UId="24" Name="operand" />
+    </Wire>
+  </Wires>
+</FlgNet></NetworkSource>
+          <ProgrammingLanguage>LAD</ProgrammingLanguage>
+        </AttributeList>
+        <ObjectList>
+          <MultilingualText ID="28" CompositionName="Comment">
+            <ObjectList>
+              <MultilingualTextItem ID="29" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="2A" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text>**Replace the "CITI_Logic_Setup".OEM_TO_COMPLETE Bit with the correct Logic to drive the signal**</Text>
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+          <MultilingualText ID="2B" CompositionName="Title">
+            <ObjectList>
+              <MultilingualTextItem ID="2C" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="2D" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text>Data Reset</Text>
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+        </ObjectList>
+      </SW.Blocks.CompileUnit>
+      <SW.Blocks.CompileUnit ID="2E" CompositionName="CompileUnits">
+        <AttributeList>
+          <NetworkSource><FlgNet xmlns="http://www.siemens.com/automation/Openness/SW/NetworkSource/FlgNet/v5">
+  <Parts>
+    <Access Scope="GlobalVariable" UId="21">
+      <Symbol>
+        <Component Name="Unit1.EmNodes" />
+        <Component Name="oem" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>3</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+        <Component Name="FlexNet" />
+        <Component Name="DryCycle" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="22">
+      <Symbol>
+        <Component Name="CITI_Logic.OEM_CITI_Logic_Setup" />
+        <Component Name="OEM" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>3</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+        <Component Name="FlexNet" />
+        <Component Name="DryCycle" />
+      </Symbol>
+    </Access>
+    <Part Name="Contact" UId="23" />
+    <Part Name="Coil" UId="24" />
+  </Parts>
+  <Wires>
+    <Wire UId="25">
+      <Powerrail />
+      <NameCon UId="23" Name="in" />
+    </Wire>
+    <Wire UId="26">
+      <IdentCon UId="21" />
+      <NameCon UId="23" Name="operand" />
+    </Wire>
+    <Wire UId="27">
+      <NameCon UId="23" Name="out" />
+      <NameCon UId="24" Name="in" />
+    </Wire>
+    <Wire UId="28">
+      <IdentCon UId="22" />
+      <NameCon UId="24" Name="operand" />
+    </Wire>
+  </Wires>
+</FlgNet></NetworkSource>
+          <ProgrammingLanguage>LAD</ProgrammingLanguage>
+        </AttributeList>
+        <ObjectList>
+          <MultilingualText ID="2F" CompositionName="Comment">
+            <ObjectList>
+              <MultilingualTextItem ID="30" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="31" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text>**Replace the "CITI_Logic_Setup".OEM_TO_COMPLETE Bit with the correct Logic to drive the signal**</Text>
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+          <MultilingualText ID="32" CompositionName="Title">
+            <ObjectList>
+              <MultilingualTextItem ID="33" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="34" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text>Dry Cycle</Text>
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+        </ObjectList>
+      </SW.Blocks.CompileUnit>
+      <SW.Blocks.CompileUnit ID="35" CompositionName="CompileUnits">
+        <AttributeList>
+          <NetworkSource><FlgNet xmlns="http://www.siemens.com/automation/Openness/SW/NetworkSource/FlgNet/v5">
+  <Parts>
+    <Access Scope="LiteralConstant" UId="21">
+      <Constant>
+        <ConstantType>Int</ConstantType>
+        <ConstantValue>3</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="LiteralConstant" UId="22">
+      <Constant>
+        <ConstantType>Int</ConstantType>
+        <ConstantValue>0</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="TypedConstant" UId="23">
+      <Constant>
+        <ConstantValue>DINT#5030</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="GlobalVariable" UId="24">
+      <Symbol>
+        <Component Name="CITI_Logic.OEM_CITI_Logic_Setup" />
+        <Component Name="OEM" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>3</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+        <Component Name="FlexNet" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="25">
+      <Symbol>
+        <Component Name="CITI_Logic.zFNet_Data" />
+        <Component Name="FNet_Data" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>0</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="26">
+      <Symbol>
+        <Component Name="CITI_Logic.OEM_CITI_Logic_Setup" />
+        <Component Name="OEM" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>3</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+        <Component Name="FlexNet_Response_Fault_Count" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="27">
+      <Symbol>
+        <Component Name="CITI_Logic.OEM_CITI_Logic_Setup" />
+        <Component Name="OEM" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>3</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+        <Component Name="FlexNet_DataReceivedByHost" />
+      </Symbol>
+    </Access>
+    <Call UId="28">
+      <CallInfo Name="CITI_Logic.zFNet_10Child" BlockType="FB">
+        <Instance Scope="GlobalVariable" UId="29">
+          <Component Name="CITI_Logic.zFNet_10Child_DB_03" />
+        </Instance>
+        <Parameter Name="IN_NumberOf_FN_Retries" Section="Input" Type="Int" />
+        <Parameter Name="IN_Component_Quantity" Section="Input" Type="Int" />
+        <Parameter Name="IN_FN_Response_FLT_Time" Section="Input" Type="DInt" />
+        <Parameter Name="IN_OEM_Data" Section="Input" Type="&quot;CITI_Logic.FlexNet_Data&quot;" />
+        <Parameter Name="FN_Data" Section="Output" Type="&quot;CITI_Logic.FlexNet_Data&quot;" />
+        <Parameter Name="FlexNet_White_Light" Section="Output" Type="Bool" />
+        <Parameter Name="FlexNet_Green_Light" Section="Output" Type="Bool" />
+        <Parameter Name="FlexNet_Buzzer" Section="Output" Type="Bool" />
+        <Parameter Name="FlexNet_No_Response_Count" Section="Output" Type="Int" />
+        <Parameter Name="FlexNet_DataReceivedByHost" Section="Output" Type="Bool" />
+        <Parameter Name="FlexNet_Last_ResponseTime" Section="Output" Type="DInt" />
+      </CallInfo>
+    </Call>
+  </Parts>
+  <Wires>
+    <Wire UId="34">
+      <Powerrail />
+      <NameCon UId="28" Name="en" />
+    </Wire>
+    <Wire UId="35">
+      <IdentCon UId="21" />
+      <NameCon UId="28" Name="IN_NumberOf_FN_Retries" />
+    </Wire>
+    <Wire UId="36">
+      <IdentCon UId="22" />
+      <NameCon UId="28" Name="IN_Component_Quantity" />
+    </Wire>
+    <Wire UId="37">
+      <IdentCon UId="23" />
+      <NameCon UId="28" Name="IN_FN_Response_FLT_Time" />
+    </Wire>
+    <Wire UId="38">
+      <IdentCon UId="24" />
+      <NameCon UId="28" Name="IN_OEM_Data" />
+    </Wire>
+    <Wire UId="39">
+      <NameCon UId="28" Name="FN_Data" />
+      <IdentCon UId="25" />
+    </Wire>
+    <Wire UId="40">
+      <NameCon UId="28" Name="FlexNet_White_Light" />
+      <OpenCon UId="30" />
+    </Wire>
+    <Wire UId="41">
+      <NameCon UId="28" Name="FlexNet_Green_Light" />
+      <OpenCon UId="31" />
+    </Wire>
+    <Wire UId="42">
+      <NameCon UId="28" Name="FlexNet_Buzzer" />
+      <OpenCon UId="32" />
+    </Wire>
+    <Wire UId="43">
+      <NameCon UId="28" Name="FlexNet_No_Response_Count" />
+      <IdentCon UId="26" />
+    </Wire>
+    <Wire UId="44">
+      <NameCon UId="28" Name="FlexNet_DataReceivedByHost" />
+      <IdentCon UId="27" />
+    </Wire>
+    <Wire UId="45">
+      <NameCon UId="28" Name="FlexNet_Last_ResponseTime" />
+      <OpenCon UId="33" />
+    </Wire>
+  </Wires>
+</FlgNet></NetworkSource>
+          <ProgrammingLanguage>LAD</ProgrammingLanguage>
+        </AttributeList>
+        <ObjectList>
+          <MultilingualText ID="36" CompositionName="Comment">
+            <ObjectList>
+              <MultilingualTextItem ID="37" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="38" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text>Input time for response fault can be directly entered or from another source. </Text>
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+          <MultilingualText ID="39" CompositionName="Title">
+            <ObjectList>
+              <MultilingualTextItem ID="3A" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="3B" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text>FlexNet 10 Child Block Call</Text>
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+        </ObjectList>
+      </SW.Blocks.CompileUnit>
+      <SW.Blocks.CompileUnit ID="3C" CompositionName="CompileUnits">
+        <AttributeList>
+          <NetworkSource><FlgNet xmlns="http://www.siemens.com/automation/Openness/SW/NetworkSource/FlgNet/v5">
+  <Parts>
+    <Access Scope="GlobalVariable" UId="21">
+      <Symbol>
+        <Component Name="CITI_Logic.OEM_CITI_Logic_Setup" />
+        <Component Name="OEM" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>3</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+        <Component Name="FlexNet_Response_Fault_Count" />
+      </Symbol>
+    </Access>
+    <Access Scope="LiteralConstant" UId="22">
+      <Constant>
+        <ConstantType>Int</ConstantType>
+        <ConstantValue>1</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="GlobalVariable" UId="23">
+      <Symbol>
+        <Component Name="CITI_Logic.OEM_CITI_Logic_Setup" />
+        <Component Name="OEM" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>3</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+        <Component Name="FlexNet_No_Response_Warning" />
+      </Symbol>
+    </Access>
+    <Part Name="Ge" UId="24">
+      <TemplateValue Name="SrcType" Type="Type">Int</TemplateValue>
+    </Part>
+    <Part Name="Coil" UId="25" />
+  </Parts>
+  <Wires>
+    <Wire UId="26">
+      <Powerrail />
+      <NameCon UId="24" Name="pre" />
+    </Wire>
+    <Wire UId="27">
+      <IdentCon UId="21" />
+      <NameCon UId="24" Name="in1" />
+    </Wire>
+    <Wire UId="28">
+      <IdentCon UId="22" />
+      <NameCon UId="24" Name="in2" />
+    </Wire>
+    <Wire UId="29">
+      <NameCon UId="24" Name="out" />
+      <NameCon UId="25" Name="in" />
+    </Wire>
+    <Wire UId="30">
+      <IdentCon UId="23" />
+      <NameCon UId="25" Name="operand" />
+    </Wire>
+  </Wires>
+</FlgNet></NetworkSource>
+          <ProgrammingLanguage>LAD</ProgrammingLanguage>
+        </AttributeList>
+        <ObjectList>
+          <MultilingualText ID="3D" CompositionName="Comment">
+            <ObjectList>
+              <MultilingualTextItem ID="3E" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="3F" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text>If the OUT_FN_Response_FLT_CNT (Coming from FB5603) is greater than or equal to 1 the FlexNet_OEM_No_Response_Warning bit will turn on.  This Bit needs to trigger a Warning message on the HMI.</Text>
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+          <MultilingualText ID="40" CompositionName="Title">
+            <ObjectList>
+              <MultilingualTextItem ID="41" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="42" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text>No FlexNet Response Warning Bit</Text>
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+        </ObjectList>
+      </SW.Blocks.CompileUnit>
+      <SW.Blocks.CompileUnit ID="43" CompositionName="CompileUnits">
+        <AttributeList>
+          <NetworkSource><FlgNet xmlns="http://www.siemens.com/automation/Openness/SW/NetworkSource/FlgNet/v5">
+  <Parts>
+    <Access Scope="GlobalVariable" UId="21">
+      <Symbol>
+        <Component Name="CITI_Logic.OEM_CITI_Logic_Setup" />
+        <Component Name="OEM" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>3</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+        <Component Name="FlexNet_Response_Fault_Count" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="22">
+      <Symbol>
+        <Component Name="OEM_to_Populate_FN_RESPONSE_COUNTS_ALLOWED" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="23">
+      <Symbol>
+        <Component Name="CITI_Logic.zFNet_10Child_DB_03" />
+        <Component Name="FN_Data" />
+        <Component Name="Bypassed_Fault" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="24">
+      <Symbol>
+        <Component Name="CITI_Logic.OEM_CITI_Logic_Setup" />
+        <Component Name="OEM" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>3</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+        <Component Name="FlexNet_No_Response_Fault" />
+      </Symbol>
+    </Access>
+    <Part Name="Ge" UId="25">
+      <TemplateValue Name="SrcType" Type="Type">Int</TemplateValue>
+    </Part>
+    <Part Name="Contact" UId="26">
+      <Negated Name="operand" />
+    </Part>
+    <Part Name="Coil" UId="27" />
+  </Parts>
+  <Wires>
+    <Wire UId="28">
+      <Powerrail />
+      <NameCon UId="25" Name="pre" />
+    </Wire>
+    <Wire UId="29">
+      <IdentCon UId="21" />
+      <NameCon UId="25" Name="in1" />
+    </Wire>
+    <Wire UId="30">
+      <IdentCon UId="22" />
+      <NameCon UId="25" Name="in2" />
+    </Wire>
+    <Wire UId="31">
+      <NameCon UId="25" Name="out" />
+      <NameCon UId="26" Name="in" />
+    </Wire>
+    <Wire UId="32">
+      <IdentCon UId="23" />
+      <NameCon UId="26" Name="operand" />
+    </Wire>
+    <Wire UId="33">
+      <NameCon UId="26" Name="out" />
+      <NameCon UId="27" Name="in" />
+    </Wire>
+    <Wire UId="34">
+      <IdentCon UId="24" />
+      <NameCon UId="27" Name="operand" />
+    </Wire>
+  </Wires>
+</FlgNet></NetworkSource>
+          <ProgrammingLanguage>LAD</ProgrammingLanguage>
+        </AttributeList>
+        <ObjectList>
+          <MultilingualText ID="44" CompositionName="Comment">
+            <ObjectList>
+              <MultilingualTextItem ID="45" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="46" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text>If the OUT_FN_Response_FLT_CNT (Coming from FB5603) is greater than or equal to the FN_RESPONSE_COUNT_ALLOWED number entered on the HMI the FlexNet_OEM_No_Response_Fault bit will turn on.  This Bit needs to trigger a L2 end of cycle fault.  If the FN_RESPONSE_COUNT_ALLOWED number entered on the HMI is set to Zero the Bypass bit will turn on and not allow the Fault bit to turn on.</Text>
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+          <MultilingualText ID="47" CompositionName="Title">
+            <ObjectList>
+              <MultilingualTextItem ID="48" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="49" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text>No FlexNet Response Fault Bit</Text>
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+        </ObjectList>
+      </SW.Blocks.CompileUnit>
+      <SW.Blocks.CompileUnit ID="4A" CompositionName="CompileUnits">
+        <AttributeList>
+          <NetworkSource><FlgNet xmlns="http://www.siemens.com/automation/Openness/SW/NetworkSource/FlgNet/v5">
+  <Parts>
+    <Access Scope="GlobalVariable" UId="21">
+      <Symbol>
+        <Component Name="CITI_Logic.zFNet_10Child_DB_03" />
+        <Component Name="FN_Num_Of_Retry_Cnt_HMI" />
+      </Symbol>
+    </Access>
+    <Access Scope="LiteralConstant" UId="22">
+      <Constant>
+        <ConstantType>Int</ConstantType>
+        <ConstantValue>1</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="GlobalVariable" UId="23">
+      <Symbol>
+        <Component Name="CITI_Logic.OEM_CITI_Logic_Setup" />
+        <Component Name="OEM" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>3</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+        <Component Name="FlexNet_Transaction_Retry_Occurred" />
+      </Symbol>
+    </Access>
+    <Part Name="Ge" UId="24">
+      <TemplateValue Name="SrcType" Type="Type">Int</TemplateValue>
+    </Part>
+    <Part Name="Coil" UId="25" />
+  </Parts>
+  <Wires>
+    <Wire UId="26">
+      <Powerrail />
+      <NameCon UId="24" Name="pre" />
+    </Wire>
+    <Wire UId="27">
+      <IdentCon UId="21" />
+      <NameCon UId="24" Name="in1" />
+    </Wire>
+    <Wire UId="28">
+      <IdentCon UId="22" />
+      <NameCon UId="24" Name="in2" />
+    </Wire>
+    <Wire UId="29">
+      <NameCon UId="24" Name="out" />
+      <NameCon UId="25" Name="in" />
+    </Wire>
+    <Wire UId="30">
+      <IdentCon UId="23" />
+      <NameCon UId="25" Name="operand" />
+    </Wire>
+  </Wires>
+</FlgNet></NetworkSource>
+          <ProgrammingLanguage>LAD</ProgrammingLanguage>
+        </AttributeList>
+        <ObjectList>
+          <MultilingualText ID="4B" CompositionName="Comment">
+            <ObjectList>
+              <MultilingualTextItem ID="4C" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="4D" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text>If the current Trasaction required a retry before there was a response from the FlexNet Server the FlexNet_OEM_Transaction_Retry_Occurred bit will turn on.  When this bit turns on there must be a Warning message on the HMI stating that a FlexNet Transaction Retry Occurred.</Text>
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+          <MultilingualText ID="4E" CompositionName="Title">
+            <ObjectList>
+              <MultilingualTextItem ID="4F" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="50" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text>Flexnet Retry Occured</Text>
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+        </ObjectList>
+      </SW.Blocks.CompileUnit>
+      <SW.Blocks.CompileUnit ID="51" CompositionName="CompileUnits">
+        <AttributeList>
+          <NetworkSource><FlgNet xmlns="http://www.siemens.com/automation/Openness/SW/NetworkSource/FlgNet/v5">
+  <Parts>
+    <Access Scope="GlobalVariable" UId="21">
+      <Symbol>
+        <Component Name="CITI_Logic.OEM_CITI_Logic_Setup" />
+        <Component Name="OEM" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>3</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+        <Component Name="FlexNet" />
+        <Component Name="DataReceivedByHost" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="22">
+      <Symbol>
+        <Component Name="CITI_Logic.OEM_CITI_Logic_Setup" />
+        <Component Name="OEM" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>3</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+        <Component Name="FlexNet" />
+        <Component Name="TransactionType" SliceAccessModifier="x3" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="23">
+      <Symbol>
+        <Component Name="CITI_Logic.zFNet_10Child_DB_03" />
+        <Component Name="FN_Data" />
+        <Component Name="ParentPartOnHold" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="24">
+      <Symbol>
+        <Component Name="CITI_Logic.zFNet_10Child_DB_03" />
+        <Component Name="FN_Data" />
+        <Component Name="ParentPartIsGood" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="25">
+      <Symbol>
+        <Component Name="CITI_Logic.zFNet_10Child_DB_03" />
+        <Component Name="FN_Data" />
+        <Component Name="ParentPartOnHold" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="26">
+      <Symbol>
+        <Component Name="CITI_Logic.zFNet_10Child_DB_03" />
+        <Component Name="FN_Data" />
+        <Component Name="ParentPartIsGood" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="27">
+      <Symbol>
+        <Component Name="CITI_Logic.zFNet_10Child_DB_03" />
+        <Component Name="FN_Data" />
+        <Component Name="ParentPartOnHold" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="28">
+      <Symbol>
+        <Component Name="CITI_Logic.zFNet_10Child_DB_03" />
+        <Component Name="FN_Data" />
+        <Component Name="ParentPartIsGood" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="29">
+      <Symbol>
+        <Component Name="CITI_Logic.zFNet_10Child_DB_03" />
+        <Component Name="FN_Data" />
+        <Component Name="TrackingComponent_1_OnHold" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="30">
+      <Symbol>
+        <Component Name="CITI_Logic.zFNet_10Child_DB_03" />
+        <Component Name="FN_Data" />
+        <Component Name="TrackingComponent_1_IsGood" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="31">
+      <Symbol>
+        <Component Name="CITI_Logic.zFNet_10Child_DB_03" />
+        <Component Name="FN_Data" />
+        <Component Name="TrackingComponent_1_OnHold" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="32">
+      <Symbol>
+        <Component Name="CITI_Logic.zFNet_10Child_DB_03" />
+        <Component Name="FN_Data" />
+        <Component Name="TrackingComponent_1_IsGood" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="33">
+      <Symbol>
+        <Component Name="CITI_Logic.zFNet_10Child_DB_03" />
+        <Component Name="FN_Data" />
+        <Component Name="TrackingComponent_1_OnHold" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="34">
+      <Symbol>
+        <Component Name="CITI_Logic.zFNet_10Child_DB_03" />
+        <Component Name="FN_Data" />
+        <Component Name="TrackingComponent_1_IsGood" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="35">
+      <Symbol>
+        <Component Name="CITI_Logic.zFNet_10Child_DB_03" />
+        <Component Name="FN_Data" />
+        <Component Name="TrackingComponent_2_OnHold" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="36">
+      <Symbol>
+        <Component Name="CITI_Logic.zFNet_10Child_DB_03" />
+        <Component Name="FN_Data" />
+        <Component Name="TrackingComponent_2_IsGood" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="37">
+      <Symbol>
+        <Component Name="CITI_Logic.zFNet_10Child_DB_03" />
+        <Component Name="FN_Data" />
+        <Component Name="TrackingComponent_2_OnHold" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="38">
+      <Symbol>
+        <Component Name="CITI_Logic.zFNet_10Child_DB_03" />
+        <Component Name="FN_Data" />
+        <Component Name="TrackingComponent_2_IsGood" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="39">
+      <Symbol>
+        <Component Name="CITI_Logic.zFNet_10Child_DB_03" />
+        <Component Name="FN_Data" />
+        <Component Name="TrackingComponent_2_OnHold" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="40">
+      <Symbol>
+        <Component Name="CITI_Logic.zFNet_10Child_DB_03" />
+        <Component Name="FN_Data" />
+        <Component Name="TrackingComponent_2_IsGood" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="41">
+      <Symbol>
+        <Component Name="CITI_Logic.zFNet_10Child_DB_03" />
+        <Component Name="FN_Data" />
+        <Component Name="Bypassed_Fault" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="42">
+      <Symbol>
+        <Component Name="CITI_Logic.OEM_CITI_Logic_Setup" />
+        <Component Name="OEM" AccessModifier="Array">
+          <Access Scope="LiteralConstant">
+            <Constant>
+              <ConstantType>DInt</ConstantType>
+              <ConstantValue>3</ConstantValue>
+            </Constant>
+          </Access>
+        </Component>
+        <Component Name="FlexNet" />
+        <Component Name="HQ_NOK" />
+      </Symbol>
+    </Access>
+    <Part Name="Contact" UId="43" />
+    <Part Name="Contact" UId="44" />
+    <Part Name="Contact" UId="45" />
+    <Part Name="Contact" UId="46">
+      <Negated Name="operand" />
+    </Part>
+    <Part Name="Contact" UId="47" />
+    <Part Name="Contact" UId="48" />
+    <Part Name="Contact" UId="49">
+      <Negated Name="operand" />
+    </Part>
+    <Part Name="Contact" UId="50">
+      <Negated Name="operand" />
+    </Part>
+    <Part Name="Contact" UId="51" />
+    <Part Name="Contact" UId="52">
+      <Negated Name="operand" />
+    </Part>
+    <Part Name="Contact" UId="53" />
+    <Part Name="Contact" UId="54" />
+    <Part Name="Contact" UId="55">
+      <Negated Name="operand" />
+    </Part>
+    <Part Name="Contact" UId="56">
+      <Negated Name="operand" />
+    </Part>
+    <Part Name="Contact" UId="57" />
+    <Part Name="Contact" UId="58">
+      <Negated Name="operand" />
+    </Part>
+    <Part Name="Contact" UId="59" />
+    <Part Name="Contact" UId="60" />
+    <Part Name="Contact" UId="61">
+      <Negated Name="operand" />
+    </Part>
+    <Part Name="Contact" UId="62">
+      <Negated Name="operand" />
+    </Part>
+    <Part Name="O" UId="63">
+      <TemplateValue Name="Card" Type="Cardinality">9</TemplateValue>
+    </Part>
+    <Part Name="Contact" UId="64">
+      <Negated Name="operand" />
+    </Part>
+    <Part Name="Coil" UId="65" />
+  </Parts>
+  <Wires>
+    <Wire UId="66">
+      <Powerrail />
+      <NameCon UId="43" Name="in" />
+    </Wire>
+    <Wire UId="67">
+      <IdentCon UId="21" />
+      <NameCon UId="43" Name="operand" />
+    </Wire>
+    <Wire UId="68">
+      <NameCon UId="43" Name="out" />
+      <NameCon UId="44" Name="in" />
+    </Wire>
+    <Wire UId="69">
+      <IdentCon UId="22" />
+      <NameCon UId="44" Name="operand" />
+    </Wire>
+    <Wire UId="70">
+      <NameCon UId="44" Name="out" />
+      <NameCon UId="45" Name="in" />
+      <NameCon UId="47" Name="in" />
+      <NameCon UId="49" Name="in" />
+      <NameCon UId="51" Name="in" />
+      <NameCon UId="53" Name="in" />
+      <NameCon UId="55" Name="in" />
+      <NameCon UId="57" Name="in" />
+      <NameCon UId="59" Name="in" />
+      <NameCon UId="61" Name="in" />
+    </Wire>
+    <Wire UId="71">
+      <IdentCon UId="23" />
+      <NameCon UId="45" Name="operand" />
+    </Wire>
+    <Wire UId="72">
+      <NameCon UId="45" Name="out" />
+      <NameCon UId="46" Name="in" />
+    </Wire>
+    <Wire UId="73">
+      <IdentCon UId="24" />
+      <NameCon UId="46" Name="operand" />
+    </Wire>
+    <Wire UId="74">
+      <NameCon UId="46" Name="out" />
+      <NameCon UId="63" Name="in1" />
+    </Wire>
+    <Wire UId="75">
+      <IdentCon UId="25" />
+      <NameCon UId="47" Name="operand" />
+    </Wire>
+    <Wire UId="76">
+      <NameCon UId="47" Name="out" />
+      <NameCon UId="48" Name="in" />
+    </Wire>
+    <Wire UId="77">
+      <IdentCon UId="26" />
+      <NameCon UId="48" Name="operand" />
+    </Wire>
+    <Wire UId="78">
+      <NameCon UId="48" Name="out" />
+      <NameCon UId="63" Name="in2" />
+    </Wire>
+    <Wire UId="79">
+      <IdentCon UId="27" />
+      <NameCon UId="49" Name="operand" />
+    </Wire>
+    <Wire UId="80">
+      <NameCon UId="49" Name="out" />
+      <NameCon UId="50" Name="in" />
+    </Wire>
+    <Wire UId="81">
+      <IdentCon UId="28" />
+      <NameCon UId="50" Name="operand" />
+    </Wire>
+    <Wire UId="82">
+      <NameCon UId="50" Name="out" />
+      <NameCon UId="63" Name="in3" />
+    </Wire>
+    <Wire UId="83">
+      <IdentCon UId="29" />
+      <NameCon UId="51" Name="operand" />
+    </Wire>
+    <Wire UId="84">
+      <NameCon UId="51" Name="out" />
+      <NameCon UId="52" Name="in" />
+    </Wire>
+    <Wire UId="85">
+      <IdentCon UId="30" />
+      <NameCon UId="52" Name="operand" />
+    </Wire>
+    <Wire UId="86">
+      <NameCon UId="52" Name="out" />
+      <NameCon UId="63" Name="in4" />
+    </Wire>
+    <Wire UId="87">
+      <IdentCon UId="31" />
+      <NameCon UId="53" Name="operand" />
+    </Wire>
+    <Wire UId="88">
+      <NameCon UId="53" Name="out" />
+      <NameCon UId="54" Name="in" />
+    </Wire>
+    <Wire UId="89">
+      <IdentCon UId="32" />
+      <NameCon UId="54" Name="operand" />
+    </Wire>
+    <Wire UId="90">
+      <NameCon UId="54" Name="out" />
+      <NameCon UId="63" Name="in5" />
+    </Wire>
+    <Wire UId="91">
+      <IdentCon UId="33" />
+      <NameCon UId="55" Name="operand" />
+    </Wire>
+    <Wire UId="92">
+      <NameCon UId="55" Name="out" />
+      <NameCon UId="56" Name="in" />
+    </Wire>
+    <Wire UId="93">
+      <IdentCon UId="34" />
+      <NameCon UId="56" Name="operand" />
+    </Wire>
+    <Wire UId="94">
+      <NameCon UId="56" Name="out" />
+      <NameCon UId="63" Name="in6" />
+    </Wire>
+    <Wire UId="95">
+      <IdentCon UId="35" />
+      <NameCon UId="57" Name="operand" />
+    </Wire>
+    <Wire UId="96">
+      <NameCon UId="57" Name="out" />
+      <NameCon UId="58" Name="in" />
+    </Wire>
+    <Wire UId="97">
+      <IdentCon UId="36" />
+      <NameCon UId="58" Name="operand" />
+    </Wire>
+    <Wire UId="98">
+      <NameCon UId="58" Name="out" />
+      <NameCon UId="63" Name="in7" />
+    </Wire>
+    <Wire UId="99">
+      <IdentCon UId="37" />
+      <NameCon UId="59" Name="operand" />
+    </Wire>
+    <Wire UId="100">
+      <NameCon UId="59" Name="out" />
+      <NameCon UId="60" Name="in" />
+    </Wire>
+    <Wire UId="101">
+      <IdentCon UId="38" />
+      <NameCon UId="60" Name="operand" />
+    </Wire>
+    <Wire UId="102">
+      <NameCon UId="60" Name="out" />
+      <NameCon UId="63" Name="in8" />
+    </Wire>
+    <Wire UId="103">
+      <IdentCon UId="39" />
+      <NameCon UId="61" Name="operand" />
+    </Wire>
+    <Wire UId="104">
+      <NameCon UId="61" Name="out" />
+      <NameCon UId="62" Name="in" />
+    </Wire>
+    <Wire UId="105">
+      <IdentCon UId="40" />
+      <NameCon UId="62" Name="operand" />
+    </Wire>
+    <Wire UId="106">
+      <NameCon UId="62" Name="out" />
+      <NameCon UId="63" Name="in9" />
+    </Wire>
+    <Wire UId="107">
+      <NameCon UId="63" Name="out" />
+      <NameCon UId="64" Name="in" />
+    </Wire>
+    <Wire UId="108">
+      <IdentCon UId="41" />
+      <NameCon UId="64" Name="operand" />
+    </Wire>
+    <Wire UId="109">
+      <NameCon UId="64" Name="out" />
+      <NameCon UId="65" Name="in" />
+    </Wire>
+    <Wire UId="110">
+      <IdentCon UId="42" />
+      <NameCon UId="65" Name="operand" />
+    </Wire>
+  </Wires>
+</FlgNet></NetworkSource>
+          <ProgrammingLanguage>LAD</ProgrammingLanguage>
+        </AttributeList>
+        <ObjectList>
+          <MultilingualText ID="52" CompositionName="Comment">
+            <ObjectList>
+              <MultilingualTextItem ID="53" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="54" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text>This example shows how to structure the responses for the Parent Part Good/Hold and a couple of the Tracking Components Good/Hold.  Please add additional tracking components if they are used or delete any tracking components that are not needed.
+
+This is an example. The OEM is responsible for the correct implementation.</Text>
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+          <MultilingualText ID="55" CompositionName="Title">
+            <ObjectList>
+              <MultilingualTextItem ID="56" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="57" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text>FlexNet Host Query "Part NOK" Example Fault for Machining</Text>
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+        </ObjectList>
+      </SW.Blocks.CompileUnit>
+      <MultilingualText ID="58" CompositionName="Title">
+        <ObjectList>
+          <MultilingualTextItem ID="59" CompositionName="Items">
+            <AttributeList>
+              <Culture>de-DE</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="5A" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-US</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+        </ObjectList>
+      </MultilingualText>
+    </ObjectList>
+  </SW.Blocks.FC>
+</Document>

@@ -1,0 +1,731 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Document>
+  <Engineering version="V20" />
+  <SW.Blocks.FB ID="0">
+    <AttributeList>
+      <Access>Published</Access>
+      <Interface><Sections xmlns="http://www.siemens.com/automation/Openness/SW/Interface/v5">
+  <Section Name="Input">
+    <Member Name="unitMode" Datatype="DInt">
+      <Comment>
+        <MultiLanguageText Lang="en-US">Requested unit mode</MultiLanguageText>
+      </Comment>
+    </Member>
+  </Section>
+  <Section Name="Output">
+    <Member Name="Error" Datatype="Bool" />
+    <Member Name="status" Datatype="Word" />
+  </Section>
+  <Section Name="InOut">
+    <Member Name="configuration" Datatype="&quot;LER_typePAC3220Configuration&quot;" />
+    <Member Name="controlNode" Datatype="&quot;LER_typePAC3220ControlNode&quot;" />
+    <Member Name="moduleInterface" Datatype="&quot;LER_typePAC3220Interface&quot;" />
+  </Section>
+  <Section Name="Static">
+    <Member Name="statInput_Status" Datatype="&quot;LER_typePAC3220Input_Status&quot;" />
+    <Member Name="statOuput_Status" Datatype="&quot;LER_typePAC3220Output_Status&quot;" />
+    <Member Name="statRetValWord" Datatype="Array[1..#count] of Word">
+      <AttributeList>
+        <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="statRetValInt" Datatype="Array[1..#count] of Int" />
+  </Section>
+  <Section Name="Temp">
+    <Member Name="tempRET_VAL" Datatype="Array[1..#count] of Word" />
+    <Member Name="tempIndex" Datatype="Int" />
+  </Section>
+  <Section Name="Constant">
+    <Member Name="count" Datatype="Int">
+      <StartValue>2</StartValue>
+    </Member>
+    <Member Name="True" Datatype="Bool">
+      <Comment>
+        <MultiLanguageText Lang="en-US">OEM: replace with ProDiag statuses that command unit state</MultiLanguageText>
+      </Comment>
+      <StartValue>true</StartValue>
+    </Member>
+    <Member Name="False" Datatype="Bool">
+      <Comment>
+        <MultiLanguageText Lang="en-US">OEM: replace with ProDiag statuses that command unit state</MultiLanguageText>
+      </Comment>
+    </Member>
+    <Member Name="STATUS_NO_ERROR_OCCURRED" Datatype="Word">
+      <Comment>
+        <MultiLanguageText Lang="en-US">No error occurred.</MultiLanguageText>
+      </Comment>
+    </Member>
+    <Member Name="ERR_HWID_NOT_CONFIGURED" Datatype="Word">
+      <Comment>
+        <MultiLanguageText Lang="en-US">You have not configured a module for the specified hardware identifier or You have ignored the restriction concerning the length of consistent data, or you have not specified a hardware identifier as an address at parameter LADDR </MultiLanguageText>
+      </Comment>
+      <StartValue>16#8090</StartValue>
+    </Member>
+    <Member Name="ERR_RECORD_DATA_TYPE" Datatype="Word">
+      <Comment>
+        <MultiLanguageText Lang="en-US">Non-supported data type in the RECORD parameter.</MultiLanguageText>
+      </Comment>
+      <StartValue>16#8092</StartValue>
+    </Member>
+    <Member Name="ERR_NO_DP_PROFINET_IO_MOUDLE" Datatype="Word">
+      <Comment>
+        <MultiLanguageText Lang="en-US">No DP module/PROFINET IO device from which you can read consistent data exists for the hardware identifier specified in LADDR . This error code also occurs if the module addressed by means of LADDR does not have inputs.</MultiLanguageText>
+      </Comment>
+      <StartValue>16#8093</StartValue>
+    </Member>
+    <Member Name="ERR_IO_ACCESS_PERMISSION" Datatype="Word">
+      <Comment>
+        <MultiLanguageText Lang="en-US">An access error was detected when accessing the I/O.</MultiLanguageText>
+      </Comment>
+      <StartValue>16#80A0</StartValue>
+    </Member>
+    <Member Name="ERR_ERCORD_LENGTH_INSUFFICIENT" Datatype="Word">
+      <Comment>
+        <MultiLanguageText Lang="en-US">The length of the specified destination area at parameter RECORD is shorter than the configured user data length.</MultiLanguageText>
+      </Comment>
+      <StartValue>16#80B1</StartValue>
+    </Member>
+    <Member Name="ERR_DATA_NOT_RECEIVED" Datatype="Word">
+      <Comment>
+        <MultiLanguageText Lang="en-US">The data have not been read yet.</MultiLanguageText>
+      </Comment>
+      <StartValue>16#80C0</StartValue>
+    </Member>
+  </Section>
+</Sections></Interface>
+      <MemoryReserve>100</MemoryReserve>
+      <Name>LER_PowerMeter_7KM</Name>
+      <Namespace />
+      <Number>175</Number>
+      <ProgrammingLanguage>LAD</ProgrammingLanguage>
+      <SetENOAutomatically>false</SetENOAutomatically>
+    </AttributeList>
+    <ObjectList>
+      <MultilingualText ID="1" CompositionName="Comment">
+        <ObjectList>
+          <MultilingualTextItem ID="2" CompositionName="Items">
+            <AttributeList>
+              <Culture>de-DE</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="3" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-US</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+        </ObjectList>
+      </MultilingualText>
+      <SW.Blocks.CompileUnit ID="4" CompositionName="CompileUnits">
+        <AttributeList>
+          <NetworkSource><StructuredText xmlns="http://www.siemens.com/automation/Openness/SW/NetworkSource/StructuredText/v4">
+  <Access Scope="LocalVariable" UId="21">
+    <Symbol UId="22">
+      <Component Name="statRetValInt" UId="23">
+        <Token Text="[" UId="24" />
+        <Access Scope="LiteralConstant" UId="25">
+          <Constant UId="26">
+            <ConstantValue UId="28">1</ConstantValue>
+          </Constant>
+        </Access>
+        <Token Text="]" UId="29" />
+      </Component>
+    </Symbol>
+  </Access>
+  <Blank UId="30" />
+  <Token Text=":=" UId="31" />
+  <Blank UId="32" />
+  <Access Scope="Call" UId="33">
+    <Instruction Name="DPRD_DAT" UId="34">
+      <Token Text="(" UId="35" />
+      <Parameter Name="LADDR" UId="36">
+        <Blank UId="37" />
+        <Token Text=":=" UId="38" />
+        <Blank UId="39" />
+        <Access Scope="LocalVariable" UId="40">
+          <Symbol UId="41">
+            <Component Name="configuration" UId="42" />
+            <Token Text="." UId="43" />
+            <Component Name="Basic type 3_HW_ID" UId="44" />
+          </Symbol>
+        </Access>
+      </Parameter>
+      <Token Text="," UId="45" />
+      <Blank UId="46" />
+      <Parameter Name="RECORD" UId="47">
+        <Blank UId="48" />
+        <Token Text="=&gt;" UId="49" />
+        <Blank UId="50" />
+        <Access Scope="LocalVariable" UId="51">
+          <Symbol UId="52">
+            <Component Name="statInput_Status" UId="53" />
+          </Symbol>
+        </Access>
+      </Parameter>
+      <Token Text=")" UId="55" />
+    </Instruction>
+  </Access>
+  <Token Text=";" UId="56" />
+  <NewLine UId="57" />
+  <Access Scope="LocalVariable" UId="58">
+    <Symbol UId="59">
+      <Component Name="statRetValInt" UId="60">
+        <Token Text="[" UId="61" />
+        <Access Scope="LiteralConstant" UId="62">
+          <Constant UId="63">
+            <ConstantValue UId="65">2</ConstantValue>
+          </Constant>
+        </Access>
+        <Token Text="]" UId="66" />
+      </Component>
+    </Symbol>
+  </Access>
+  <Blank UId="67" />
+  <Token Text=":=" UId="68" />
+  <Blank UId="69" />
+  <Access Scope="Call" UId="70">
+    <Instruction Name="DPRD_DAT" UId="71">
+      <Token Text="(" UId="72" />
+      <Parameter Name="LADDR" UId="73">
+        <Blank UId="74" />
+        <Token Text=":=" UId="75" />
+        <Blank UId="76" />
+        <Access Scope="LocalVariable" UId="77">
+          <Symbol UId="78">
+            <Component Name="configuration" UId="79" />
+            <Token Text="." UId="80" />
+            <Component Name="Basic type 3_HW_ID" UId="81" />
+          </Symbol>
+        </Access>
+      </Parameter>
+      <Token Text="," UId="82" />
+      <Blank UId="83" />
+      <Parameter Name="RECORD" UId="84">
+        <Blank UId="85" />
+        <Token Text="=&gt;" UId="86" />
+        <Blank UId="87" />
+        <Access Scope="LocalVariable" UId="88">
+          <Symbol UId="89">
+            <Component Name="statOuput_Status" UId="90" />
+          </Symbol>
+        </Access>
+      </Parameter>
+      <Token Text=")" UId="92" />
+    </Instruction>
+  </Access>
+  <Token Text=";" UId="93" />
+  <NewLine UId="94" />
+  <Blank Num="4" UId="95" />
+</StructuredText></NetworkSource>
+          <ProgrammingLanguage>SCL</ProgrammingLanguage>
+        </AttributeList>
+        <ObjectList>
+          <MultilingualText ID="5" CompositionName="Comment">
+            <ObjectList>
+              <MultilingualTextItem ID="6" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="7" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+          <MultilingualText ID="8" CompositionName="Title">
+            <ObjectList>
+              <MultilingualTextItem ID="9" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="A" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text>###### Hardwere ID mapping #######</Text>
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+        </ObjectList>
+      </SW.Blocks.CompileUnit>
+      <SW.Blocks.CompileUnit ID="B" CompositionName="CompileUnits">
+        <AttributeList>
+          <NetworkSource><StructuredText xmlns="http://www.siemens.com/automation/Openness/SW/NetworkSource/StructuredText/v4">
+  <Token Text="REGION" UId="21" />
+  <Blank Num="2" UId="22" />
+  <Text UId="23">Error Code Search</Text>
+  <NewLine UId="24" />
+  <Blank Num="4" UId="25" />
+  <NewLine UId="26" />
+  <Blank Num="4" UId="27" />
+  <LineComment UId="28">
+    <Text UId="29"> Hardwere ID mapping Error</Text>
+  </LineComment>
+  <NewLine UId="30" />
+  <Blank Num="4" UId="31" />
+  <Token Text="IF" UId="32" />
+  <Blank UId="33" />
+  <Token Text="(" UId="34" />
+  <Access Scope="LocalVariable" UId="35">
+    <Symbol UId="36">
+      <Component Name="statRetValWord" UId="37" />
+    </Symbol>
+  </Access>
+  <Blank UId="38" />
+  <Token Text="&lt;&gt;" UId="39" />
+  <Blank UId="40" />
+  <Access Scope="LocalVariable" UId="41">
+    <Symbol UId="42">
+      <Component Name="tempRET_VAL" UId="43" />
+    </Symbol>
+  </Access>
+  <Token Text=")" UId="44" />
+  <Blank UId="45" />
+  <Token Text="THEN" UId="46" />
+  <NewLine UId="47" />
+  <Blank Num="8" UId="48" />
+  <Token Text="FOR" UId="49" />
+  <Blank UId="50" />
+  <Access Scope="LocalVariable" UId="51">
+    <Symbol UId="52">
+      <Component Name="tempIndex" UId="53" />
+    </Symbol>
+  </Access>
+  <Blank UId="54" />
+  <Token Text=":=" UId="55" />
+  <Blank UId="56" />
+  <Access Scope="LiteralConstant" UId="57">
+    <Constant UId="58">
+      <ConstantValue UId="60">1</ConstantValue>
+    </Constant>
+  </Access>
+  <Blank UId="61" />
+  <Token Text="TO" UId="62" />
+  <Blank UId="63" />
+  <Access Scope="LocalConstant" UId="64">
+    <Constant Name="count" UId="65" />
+  </Access>
+  <Blank UId="68" />
+  <Token Text="DO" UId="69" />
+  <NewLine UId="70" />
+  <Blank Num="12" UId="71" />
+  <Token Text="CASE" UId="72" />
+  <Blank UId="73" />
+  <Access Scope="LocalVariable" UId="74">
+    <Symbol UId="75">
+      <Component Name="statRetValWord" UId="76">
+        <Token Text="[" UId="77" />
+        <Access Scope="LocalVariable" UId="78">
+          <Symbol UId="79">
+            <Component Name="tempIndex" UId="80" />
+          </Symbol>
+        </Access>
+        <Token Text="]" UId="81" />
+      </Component>
+    </Symbol>
+  </Access>
+  <Blank UId="82" />
+  <Token Text="OF" UId="83" />
+  <NewLine UId="84" />
+  <Blank Num="12" UId="85" />
+  <NewLine UId="86" />
+  <Blank Num="12" UId="87" />
+  <Access Scope="LocalConstant" UId="88">
+    <Constant Name="ERR_HWID_NOT_CONFIGURED" UId="89" />
+  </Access>
+  <Token Text=":" UId="92" />
+  <NewLine UId="93" />
+  <Blank Num="12" UId="94" />
+  <Access Scope="LocalVariable" UId="95">
+    <Symbol UId="96">
+      <Component Name="status" UId="97" />
+    </Symbol>
+  </Access>
+  <Blank UId="98" />
+  <Token Text=":=" UId="99" />
+  <Blank UId="100" />
+  <Access Scope="LocalConstant" UId="101">
+    <Constant Name="ERR_HWID_NOT_CONFIGURED" UId="102" />
+  </Access>
+  <Token Text=";" UId="105" />
+  <NewLine UId="106" />
+  <Blank Num="12" UId="107" />
+  <NewLine UId="108" />
+  <Blank Num="12" UId="109" />
+  <Access Scope="LocalConstant" UId="110">
+    <Constant Name="ERR_RECORD_DATA_TYPE" UId="111" />
+  </Access>
+  <Token Text=":" UId="114" />
+  <NewLine UId="115" />
+  <Blank Num="12" UId="116" />
+  <Access Scope="LocalVariable" UId="117">
+    <Symbol UId="118">
+      <Component Name="status" UId="119" />
+    </Symbol>
+  </Access>
+  <Blank UId="120" />
+  <Token Text=":=" UId="121" />
+  <Blank UId="122" />
+  <Access Scope="LocalConstant" UId="123">
+    <Constant Name="ERR_RECORD_DATA_TYPE" UId="124" />
+  </Access>
+  <Token Text=";" UId="127" />
+  <NewLine UId="128" />
+  <Blank Num="12" UId="129" />
+  <NewLine UId="130" />
+  <Blank Num="12" UId="131" />
+  <Access Scope="LocalConstant" UId="132">
+    <Constant Name="ERR_NO_DP_PROFINET_IO_MOUDLE" UId="133" />
+  </Access>
+  <Token Text=":" UId="136" />
+  <NewLine UId="137" />
+  <Blank Num="12" UId="138" />
+  <Access Scope="LocalVariable" UId="139">
+    <Symbol UId="140">
+      <Component Name="status" UId="141" />
+    </Symbol>
+  </Access>
+  <Blank UId="142" />
+  <Token Text=":=" UId="143" />
+  <Blank UId="144" />
+  <Access Scope="LocalConstant" UId="145">
+    <Constant Name="ERR_NO_DP_PROFINET_IO_MOUDLE" UId="146" />
+  </Access>
+  <Token Text=";" UId="149" />
+  <NewLine UId="150" />
+  <Blank Num="12" UId="151" />
+  <NewLine UId="152" />
+  <Blank Num="12" UId="153" />
+  <Access Scope="LocalConstant" UId="154">
+    <Constant Name="ERR_IO_ACCESS_PERMISSION" UId="155" />
+  </Access>
+  <Token Text=":" UId="158" />
+  <NewLine UId="159" />
+  <Blank Num="12" UId="160" />
+  <Access Scope="LocalVariable" UId="161">
+    <Symbol UId="162">
+      <Component Name="status" UId="163" />
+    </Symbol>
+  </Access>
+  <Blank UId="164" />
+  <Token Text=":=" UId="165" />
+  <Blank UId="166" />
+  <Access Scope="LocalConstant" UId="167">
+    <Constant Name="ERR_IO_ACCESS_PERMISSION" UId="168" />
+  </Access>
+  <Token Text=";" UId="171" />
+  <NewLine UId="172" />
+  <Blank Num="12" UId="173" />
+  <NewLine UId="174" />
+  <Blank Num="12" UId="175" />
+  <Access Scope="LocalConstant" UId="176">
+    <Constant Name="ERR_ERCORD_LENGTH_INSUFFICIENT" UId="177" />
+  </Access>
+  <Token Text=":" UId="180" />
+  <NewLine UId="181" />
+  <Blank Num="12" UId="182" />
+  <Access Scope="LocalVariable" UId="183">
+    <Symbol UId="184">
+      <Component Name="status" UId="185" />
+    </Symbol>
+  </Access>
+  <Blank UId="186" />
+  <Token Text=":=" UId="187" />
+  <Blank UId="188" />
+  <Access Scope="LocalConstant" UId="189">
+    <Constant Name="ERR_ERCORD_LENGTH_INSUFFICIENT" UId="190" />
+  </Access>
+  <Token Text=";" UId="193" />
+  <NewLine UId="194" />
+  <Blank Num="12" UId="195" />
+  <NewLine UId="196" />
+  <Blank Num="12" UId="197" />
+  <Access Scope="LocalConstant" UId="198">
+    <Constant Name="ERR_DATA_NOT_RECEIVED" UId="199" />
+  </Access>
+  <Token Text=":" UId="202" />
+  <NewLine UId="203" />
+  <Blank Num="12" UId="204" />
+  <Access Scope="LocalVariable" UId="205">
+    <Symbol UId="206">
+      <Component Name="status" UId="207" />
+    </Symbol>
+  </Access>
+  <Blank UId="208" />
+  <Token Text=":=" UId="209" />
+  <Blank UId="210" />
+  <Access Scope="LocalConstant" UId="211">
+    <Constant Name="ERR_DATA_NOT_RECEIVED" UId="212" />
+  </Access>
+  <Token Text=";" UId="215" />
+  <NewLine UId="216" />
+  <Blank Num="12" UId="217" />
+  <NewLine UId="218" />
+  <Blank Num="12" UId="219" />
+  <Token Text="END_CASE" UId="220" />
+  <Token Text=";" UId="221" />
+  <NewLine UId="222" />
+  <Blank Num="12" UId="223" />
+  <Token Text="EXIT" UId="224" />
+  <Token Text=";" UId="225" />
+  <NewLine UId="226" />
+  <Blank Num="8" UId="227" />
+  <Token Text="END_FOR" UId="228" />
+  <Token Text=";" UId="229" />
+  <NewLine UId="230" />
+  <Blank Num="8" UId="231" />
+  <NewLine UId="232" />
+  <Blank Num="4" UId="233" />
+  <Token Text="ELSE" UId="234" />
+  <NewLine UId="235" />
+  <Blank Num="8" UId="236" />
+  <Access Scope="LocalVariable" UId="237">
+    <Symbol UId="238">
+      <Component Name="status" UId="239" />
+    </Symbol>
+  </Access>
+  <Blank UId="240" />
+  <Token Text=":=" UId="241" />
+  <Blank UId="242" />
+  <Access Scope="LocalConstant" UId="243">
+    <Constant Name="STATUS_NO_ERROR_OCCURRED" UId="244" />
+  </Access>
+  <Token Text=";" UId="247" />
+  <NewLine UId="248" />
+  <Blank Num="8" UId="249" />
+  <NewLine UId="250" />
+  <Blank Num="4" UId="251" />
+  <Token Text="END_IF" UId="252" />
+  <Token Text=";" UId="253" />
+  <NewLine UId="254" />
+  <Blank Num="4" UId="255" />
+  <NewLine UId="256" />
+  <Token Text="END_REGION" UId="257" />
+  <NewLine Num="3" UId="258" />
+  <LineComment UId="259">
+    <Text UId="260"> Error Bit</Text>
+  </LineComment>
+  <NewLine UId="261" />
+  <Access Scope="LocalVariable" UId="262">
+    <Symbol UId="263">
+      <Component Name="Error" UId="264" />
+    </Symbol>
+  </Access>
+  <Blank UId="265" />
+  <Token Text=":=" UId="266" />
+  <Blank UId="267" />
+  <Access Scope="LocalVariable" UId="268">
+    <Symbol UId="269">
+      <Component Name="status" UId="270" />
+    </Symbol>
+  </Access>
+  <Blank UId="271" />
+  <Token Text="&lt;&gt;" UId="272" />
+  <Blank UId="273" />
+  <Access Scope="LiteralConstant" UId="274">
+    <Constant UId="275">
+      <ConstantValue UId="277">0</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="278" />
+</StructuredText></NetworkSource>
+          <ProgrammingLanguage>SCL</ProgrammingLanguage>
+        </AttributeList>
+        <ObjectList>
+          <MultilingualText ID="C" CompositionName="Comment">
+            <ObjectList>
+              <MultilingualTextItem ID="D" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="E" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+          <MultilingualText ID="F" CompositionName="Title">
+            <ObjectList>
+              <MultilingualTextItem ID="10" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="11" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text>Error Check</Text>
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+        </ObjectList>
+      </SW.Blocks.CompileUnit>
+      <SW.Blocks.CompileUnit ID="12" CompositionName="CompileUnits">
+        <AttributeList>
+          <NetworkSource><StructuredText xmlns="http://www.siemens.com/automation/Openness/SW/NetworkSource/StructuredText/v4">
+  <LineComment UId="21">
+    <Text UId="22"> moduleInterface, controlNode Data Move</Text>
+  </LineComment>
+  <NewLine UId="23" />
+  <Access Scope="LocalVariable" UId="24">
+    <Symbol UId="25">
+      <Component Name="moduleInterface" UId="26" />
+      <Token Text="." UId="27" />
+      <Component Name="monitoring" UId="28" />
+      <Token Text="." UId="29" />
+      <Component Name="Input_Status" UId="30" />
+    </Symbol>
+  </Access>
+  <Blank UId="31" />
+  <Token Text=":=" UId="32" />
+  <Blank UId="33" />
+  <Access Scope="LocalVariable" UId="34">
+    <Symbol UId="35">
+      <Component Name="controlNode" UId="36" />
+      <Token Text="." UId="37" />
+      <Component Name="monitoring" UId="38" />
+      <Token Text="." UId="39" />
+      <Component Name="Input_Status" UId="40" />
+    </Symbol>
+  </Access>
+  <Blank UId="41" />
+  <Token Text=":=" UId="42" />
+  <Blank UId="43" />
+  <Access Scope="LocalVariable" UId="44">
+    <Symbol UId="45">
+      <Component Name="statInput_Status" UId="46" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="47" />
+  <NewLine UId="48" />
+  <Access Scope="LocalVariable" UId="49">
+    <Symbol UId="50">
+      <Component Name="moduleInterface" UId="51" />
+      <Token Text="." UId="52" />
+      <Component Name="monitoring" UId="53" />
+      <Token Text="." UId="54" />
+      <Component Name="Ouput_Status" UId="55" />
+    </Symbol>
+  </Access>
+  <Blank UId="56" />
+  <Token Text=":=" UId="57" />
+  <Blank UId="58" />
+  <Access Scope="LocalVariable" UId="59">
+    <Symbol UId="60">
+      <Component Name="controlNode" UId="61" />
+      <Token Text="." UId="62" />
+      <Component Name="monitoring" UId="63" />
+      <Token Text="." UId="64" />
+      <Component Name="Ouput_Status" UId="65" />
+    </Symbol>
+  </Access>
+  <Blank UId="66" />
+  <Token Text=":=" UId="67" />
+  <Blank UId="68" />
+  <Access Scope="LocalVariable" UId="69">
+    <Symbol UId="70">
+      <Component Name="statOuput_Status" UId="71" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="72" />
+  <NewLine UId="73" />
+  <Access Scope="LocalVariable" UId="74">
+    <Symbol UId="75">
+      <Component Name="moduleInterface" UId="76" />
+      <Token Text="." UId="77" />
+      <Component Name="monitoring" UId="78" />
+      <Token Text="." UId="79" />
+      <Component Name="Error" UId="80" />
+    </Symbol>
+  </Access>
+  <Blank UId="81" />
+  <Token Text=":=" UId="82" />
+  <Blank UId="83" />
+  <Access Scope="LocalVariable" UId="84">
+    <Symbol UId="85">
+      <Component Name="controlNode" UId="86" />
+      <Token Text="." UId="87" />
+      <Component Name="monitoring" UId="88" />
+      <Token Text="." UId="89" />
+      <Component Name="Error" UId="90" />
+    </Symbol>
+  </Access>
+  <Blank UId="91" />
+  <Token Text=":=" UId="92" />
+  <Blank UId="93" />
+  <Access Scope="LocalVariable" UId="94">
+    <Symbol UId="95">
+      <Component Name="Error" UId="96" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="97" />
+</StructuredText></NetworkSource>
+          <ProgrammingLanguage>SCL</ProgrammingLanguage>
+        </AttributeList>
+        <ObjectList>
+          <MultilingualText ID="13" CompositionName="Comment">
+            <ObjectList>
+              <MultilingualTextItem ID="14" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="15" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+          <MultilingualText ID="16" CompositionName="Title">
+            <ObjectList>
+              <MultilingualTextItem ID="17" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="18" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text>##### Outputs mapping #####</Text>
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+        </ObjectList>
+      </SW.Blocks.CompileUnit>
+      <MultilingualText ID="19" CompositionName="Title">
+        <ObjectList>
+          <MultilingualTextItem ID="1A" CompositionName="Items">
+            <AttributeList>
+              <Culture>de-DE</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="1B" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-US</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+        </ObjectList>
+      </MultilingualText>
+    </ObjectList>
+  </SW.Blocks.FB>
+</Document>

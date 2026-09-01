@@ -1,0 +1,115 @@
+﻿FUNCTION "LER_SoftCam_JH" : Void
+{ S7_Optimized_Access := 'TRUE' ; Published := 'TRUE' }
+VERSION : 0.1
+   VAR_INPUT 
+      axis : DB_ANY;
+      postivePosition : LReal;
+      negativePosition : LReal;
+   END_VAR
+
+   VAR_OUTPUT 
+      error : Bool;
+      status : Word;
+      inPos : Bool;
+      isBefore : Bool;
+      isAfter : Bool;
+   END_VAR
+
+   VAR_TEMP 
+      tempRefPosAxis {InstructionName := 'TO_PositioningAxis'; LibVersion := '9.0'} : REF_TO TO_PositioningAxis;
+      tempInpos : Bool;
+      tempError : Bool;
+   END_VAR
+
+   VAR CONSTANT 
+      POSITION_ZERO : LReal := 0.0;
+      STATUS_INITIALIZE : Word := 16#0000;
+      STATUS_NO_ERROR_OCCURRED : Word := 16#7000;
+      ERR_INVALID_AXIS_TYPE : Word := 16#8001;
+      ERR_INVALID_POSITION : Word := 16#8002;
+   END_VAR
+
+
+BEGIN
+	REGION BLOCK INFO HEADER
+	  
+	  
+	  
+	END_REGION
+	
+	REGION DESCRIPTION
+	  
+	  
+	  
+	END_REGION DESCRIPTION
+	
+	REGION Initialize Parameters
+	  #error := FALSE;
+	  #status := #STATUS_INITIALIZE;
+	  #inPos := FALSE;
+	  #isBefore := FALSE;
+	  #isAfter := FALSE;
+	  
+	  
+	END_REGION
+	
+	
+	REGION Read out actual position
+	  // Read axis parameter
+	  #tempRefPosAxis ?= #axis;
+	  //read synch axis parameters
+	  
+	END_REGION
+	
+	REGION ErrorCheck
+	  
+	  //
+	  IF NOT (#tempRefPosAxis <> NULL) THEN
+	    // Invalid TO specification
+	    #tempError := TRUE;
+	    #status := #ERR_INVALID_AXIS_TYPE;
+	  END_IF;
+	  
+	  IF #negativePosition > #postivePosition OR #negativePosition = #POSITION_ZERO OR #postivePosition = #POSITION_ZERO THEN
+	    #tempError := TRUE;
+	    #status := #ERR_INVALID_POSITION;
+	  END_IF;
+	  
+	  IF #tempRefPosAxis^.Modulo.Enable THEN
+	    IF #postivePosition > 360.0 OR #negativePosition < 0.0 THEN
+	      #tempError := TRUE;
+	      #status := #ERR_INVALID_POSITION;
+	    END_IF;
+	  END_IF;
+	  
+	  IF #tempError THEN
+	    #error := #tempError;
+	    RETURN;
+	  END_IF;
+	  
+	END_REGION
+	
+	REGION Found Axis Position
+	  
+	  IF (#tempRefPosAxis^.ActualPosition > #negativePosition) AND (#tempRefPosAxis^.ActualPosition < #postivePosition) THEN
+	    #inPos := TRUE AND #tempRefPosAxis^.StatusWord.%X7;
+	  END_IF;
+	  
+	  IF #tempRefPosAxis^.ActualPosition < #negativePosition THEN
+	    #isBefore := TRUE;
+	    #isAfter := FALSE;
+	  ELSIF #tempRefPosAxis^.ActualPosition > #postivePosition THEN
+	    #isBefore := FALSE;
+	    #isAfter := TRUE;
+	  END_IF;
+	  
+	END_REGION
+	
+	REGION Write Process data to outputs
+	  
+	  #error := #tempError;
+	  #status := #STATUS_NO_ERROR_OCCURRED;
+	  
+	END_REGION
+END_FUNCTION
+

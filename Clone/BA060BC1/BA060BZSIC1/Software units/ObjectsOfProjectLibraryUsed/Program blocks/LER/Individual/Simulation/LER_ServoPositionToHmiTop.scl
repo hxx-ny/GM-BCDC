@@ -1,0 +1,47 @@
+﻿FUNCTION "LER_ServoPositionToHmiTop" : DInt
+TITLE = FC_ServoPositionToHmiTop
+{ S7_Optimized_Access := 'TRUE' ; Published := 'TRUE' }
+VERSION : 0.1
+//Calculates the HMI top position from the servo position using absolute movement and drawing limits.
+   VAR_INPUT 
+      ActualPos : LReal;   // Actual servo position
+      AllowedMinPos : LReal;   // Lowest servo position allowed for mapping
+      AllowedMaxPos : LReal;   // Highest servo position allowed for mapping
+      DrawTopAtMin : LReal;   // HMI top position when the servo is at the minimum position
+      DrawTopAtMax : LReal;   // HMI top position when the servo is at the maximum position
+   END_VAR
+
+   VAR_TEMP 
+      tempClampedPos : LReal;
+      tempMappedTop : LReal;
+   END_VAR
+
+
+BEGIN
+	
+	 // Fall back to the minimum position if the mapping window is invalid
+	 IF #AllowedMaxPos <= #AllowedMinPos THEN
+	     #tempClampedPos := #AllowedMinPos;
+	 ELSE
+	     // Clamp the actual position into the configured absolute movement window
+	     #tempClampedPos := #ActualPos;
+	 
+	     IF #tempClampedPos < #AllowedMinPos THEN
+	         #tempClampedPos := #AllowedMinPos;
+	     END_IF;
+	     IF #tempClampedPos > #AllowedMaxPos THEN
+	         #tempClampedPos := #AllowedMaxPos;
+	     END_IF;
+	 END_IF;
+	 
+	 // Convert the limited servo position into the HMI top pixel position
+	 IF #AllowedMaxPos <= #AllowedMinPos THEN
+	     #tempMappedTop := #DrawTopAtMin;
+	 ELSE
+	     #tempMappedTop := #DrawTopAtMin + ((#tempClampedPos - #AllowedMinPos) * (#DrawTopAtMax - #DrawTopAtMin) / (#AllowedMaxPos - #AllowedMinPos));
+	 END_IF;
+	 
+	 // Return the integer HMI top position
+	 #LER_ServoPositionToHmiTop := TRUNC(#tempMappedTop);
+END_FUNCTION
+

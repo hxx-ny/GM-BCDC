@@ -1,0 +1,1149 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Document>
+  <Engineering version="V20" />
+  <SW.Blocks.FB ID="0">
+    <AttributeList>
+      <Access>Published</Access>
+      <Interface><Sections xmlns="http://www.siemens.com/automation/Openness/SW/Interface/v5">
+  <Section Name="Input">
+    <Member Name="cmsetPositions" Datatype="Array[0..63] of &quot;LBC_typeAxis64PosSetPosition&quot;">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="cmMonitoringActualPosition" Datatype="LReal">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="cmConfigTargetposition" Datatype="LReal" />
+    <Member Name="cmSelectSetPosition" Datatype="SInt">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="enble" Datatype="Bool" />
+    <Member Name="axis" Datatype="DB_ANY" />
+  </Section>
+  <Section Name="Output">
+    <Member Name="SoftcamStatus" Datatype="&quot;emSoftcamInterface&quot;" />
+  </Section>
+  <Section Name="InOut">
+    <Member Name="SoftcamListAxisHmi" Datatype="&quot;LER_typeSoftCamInterface&quot;" />
+  </Section>
+  <Section Name="Static" />
+  <Section Name="Temp">
+    <Member Name="LoopCount" Datatype="Int" />
+    <Member Name="TempIndex" Datatype="SInt" />
+  </Section>
+  <Section Name="Constant" />
+</Sections></Interface>
+      <MemoryReserve>100</MemoryReserve>
+      <Name>LER_SoftCam_Interface_JH</Name>
+      <Namespace />
+      <Number>7</Number>
+      <ProgrammingLanguage>LAD</ProgrammingLanguage>
+      <SetENOAutomatically>false</SetENOAutomatically>
+    </AttributeList>
+    <ObjectList>
+      <MultilingualText ID="1" CompositionName="Comment">
+        <ObjectList>
+          <MultilingualTextItem ID="2" CompositionName="Items">
+            <AttributeList>
+              <Culture>de-DE</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="3" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-US</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+        </ObjectList>
+      </MultilingualText>
+      <SW.Blocks.CompileUnit ID="4" CompositionName="CompileUnits">
+        <AttributeList>
+          <NetworkSource><FlgNet xmlns="http://www.siemens.com/automation/Openness/SW/NetworkSource/FlgNet/v5">
+  <Parts>
+    <Access Scope="LocalVariable" UId="21">
+      <Symbol>
+        <Component Name="cmSelectSetPosition" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="22">
+      <Symbol>
+        <Component Name="TempIndex" />
+      </Symbol>
+    </Access>
+    <Part Name="Move" UId="23" DisabledENO="true">
+      <TemplateValue Name="Card" Type="Cardinality">1</TemplateValue>
+    </Part>
+  </Parts>
+  <Wires>
+    <Wire UId="24">
+      <Powerrail />
+      <NameCon UId="23" Name="en" />
+    </Wire>
+    <Wire UId="25">
+      <IdentCon UId="21" />
+      <NameCon UId="23" Name="in" />
+    </Wire>
+    <Wire UId="26">
+      <NameCon UId="23" Name="out1" />
+      <IdentCon UId="22" />
+    </Wire>
+  </Wires>
+</FlgNet></NetworkSource>
+          <ProgrammingLanguage>LAD</ProgrammingLanguage>
+        </AttributeList>
+        <ObjectList>
+          <MultilingualText ID="5" CompositionName="Comment">
+            <ObjectList>
+              <MultilingualTextItem ID="6" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="7" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+          <MultilingualText ID="8" CompositionName="Title">
+            <ObjectList>
+              <MultilingualTextItem ID="9" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="A" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text>TempIndex</Text>
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+        </ObjectList>
+      </SW.Blocks.CompileUnit>
+      <SW.Blocks.CompileUnit ID="B" CompositionName="CompileUnits">
+        <AttributeList>
+          <NetworkSource><FlgNet xmlns="http://www.siemens.com/automation/Openness/SW/NetworkSource/FlgNet/v5">
+  <Parts>
+    <Access Scope="LocalVariable" UId="21">
+      <Symbol>
+        <Component Name="cmMonitoringActualPosition" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="22">
+      <Symbol>
+        <Component Name="SoftcamListAxisHmi" />
+        <Component Name="ActualPosition" />
+      </Symbol>
+    </Access>
+    <Part Name="Move" UId="23" DisabledENO="true">
+      <TemplateValue Name="Card" Type="Cardinality">1</TemplateValue>
+    </Part>
+  </Parts>
+  <Wires>
+    <Wire UId="24">
+      <Powerrail />
+      <NameCon UId="23" Name="en" />
+    </Wire>
+    <Wire UId="25">
+      <IdentCon UId="21" />
+      <NameCon UId="23" Name="in" />
+    </Wire>
+    <Wire UId="26">
+      <NameCon UId="23" Name="out1" />
+      <IdentCon UId="22" />
+    </Wire>
+  </Wires>
+</FlgNet></NetworkSource>
+          <ProgrammingLanguage>LAD</ProgrammingLanguage>
+        </AttributeList>
+        <ObjectList>
+          <MultilingualText ID="C" CompositionName="Comment">
+            <ObjectList>
+              <MultilingualTextItem ID="D" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="E" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+          <MultilingualText ID="F" CompositionName="Title">
+            <ObjectList>
+              <MultilingualTextItem ID="10" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="11" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text>ActualPosition</Text>
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+        </ObjectList>
+      </SW.Blocks.CompileUnit>
+      <SW.Blocks.CompileUnit ID="12" CompositionName="CompileUnits">
+        <AttributeList>
+          <NetworkSource><FlgNet xmlns="http://www.siemens.com/automation/Openness/SW/NetworkSource/FlgNet/v5">
+  <Parts>
+    <Access Scope="LocalVariable" UId="21">
+      <Symbol>
+        <Component Name="cmConfigTargetposition" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="22">
+      <Symbol>
+        <Component Name="SoftcamListAxisHmi" />
+        <Component Name="TargetPosition" />
+      </Symbol>
+    </Access>
+    <Part Name="Move" UId="23" DisabledENO="true">
+      <TemplateValue Name="Card" Type="Cardinality">1</TemplateValue>
+    </Part>
+  </Parts>
+  <Wires>
+    <Wire UId="24">
+      <Powerrail />
+      <NameCon UId="23" Name="en" />
+    </Wire>
+    <Wire UId="25">
+      <IdentCon UId="21" />
+      <NameCon UId="23" Name="in" />
+    </Wire>
+    <Wire UId="26">
+      <NameCon UId="23" Name="out1" />
+      <IdentCon UId="22" />
+    </Wire>
+  </Wires>
+</FlgNet></NetworkSource>
+          <ProgrammingLanguage>LAD</ProgrammingLanguage>
+        </AttributeList>
+        <ObjectList>
+          <MultilingualText ID="13" CompositionName="Comment">
+            <ObjectList>
+              <MultilingualTextItem ID="14" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="15" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+          <MultilingualText ID="16" CompositionName="Title">
+            <ObjectList>
+              <MultilingualTextItem ID="17" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="18" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text>Target Position</Text>
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+        </ObjectList>
+      </SW.Blocks.CompileUnit>
+      <SW.Blocks.CompileUnit ID="19" CompositionName="CompileUnits">
+        <AttributeList>
+          <NetworkSource><FlgNet xmlns="http://www.siemens.com/automation/Openness/SW/NetworkSource/FlgNet/v5">
+  <Parts>
+    <Access Scope="LocalVariable" UId="21">
+      <Symbol>
+        <Component Name="axis" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="22">
+      <Symbol>
+        <Component Name="SoftcamListAxisHmi" />
+        <Component Name="position" AccessModifier="Array">
+          <Access Scope="LocalVariable">
+            <Symbol>
+              <Component Name="TempIndex" />
+            </Symbol>
+          </Access>
+        </Component>
+        <Component Name="SetValue" />
+        <Component Name="Postive" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="23">
+      <Symbol>
+        <Component Name="SoftcamListAxisHmi" />
+        <Component Name="position" AccessModifier="Array">
+          <Access Scope="LocalVariable">
+            <Symbol>
+              <Component Name="TempIndex" />
+            </Symbol>
+          </Access>
+        </Component>
+        <Component Name="SetValue" />
+        <Component Name="Negative" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="24">
+      <Symbol>
+        <Component Name="SoftcamListAxisHmi" />
+        <Component Name="error" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="25">
+      <Symbol>
+        <Component Name="SoftcamListAxisHmi" />
+        <Component Name="status" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="26">
+      <Symbol>
+        <Component Name="SoftcamListAxisHmi" />
+        <Component Name="position" AccessModifier="Array">
+          <Access Scope="LocalVariable">
+            <Symbol>
+              <Component Name="TempIndex" />
+            </Symbol>
+          </Access>
+        </Component>
+        <Component Name="ProcessValue" />
+        <Component Name="inPos" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="27">
+      <Symbol>
+        <Component Name="SoftcamListAxisHmi" />
+        <Component Name="position" AccessModifier="Array">
+          <Access Scope="LocalVariable">
+            <Symbol>
+              <Component Name="TempIndex" />
+            </Symbol>
+          </Access>
+        </Component>
+        <Component Name="ProcessValue" />
+        <Component Name="isBefore" />
+      </Symbol>
+    </Access>
+    <Access Scope="LocalVariable" UId="28">
+      <Symbol>
+        <Component Name="SoftcamListAxisHmi" />
+        <Component Name="position" AccessModifier="Array">
+          <Access Scope="LocalVariable">
+            <Symbol>
+              <Component Name="TempIndex" />
+            </Symbol>
+          </Access>
+        </Component>
+        <Component Name="ProcessValue" />
+        <Component Name="isAfter" />
+      </Symbol>
+    </Access>
+    <Call UId="29">
+      <CallInfo Name="LER_SoftCam_JH" BlockType="FC">
+        <Parameter Name="axis" Section="Input" Type="DB_ANY" />
+        <Parameter Name="postivePosition" Section="Input" Type="LReal" />
+        <Parameter Name="negativePosition" Section="Input" Type="LReal" />
+        <Parameter Name="error" Section="Output" Type="Bool" />
+        <Parameter Name="status" Section="Output" Type="Word" />
+        <Parameter Name="inPos" Section="Output" Type="Bool" />
+        <Parameter Name="isBefore" Section="Output" Type="Bool" />
+        <Parameter Name="isAfter" Section="Output" Type="Bool" />
+      </CallInfo>
+    </Call>
+  </Parts>
+  <Wires>
+    <Wire UId="30">
+      <Powerrail />
+      <NameCon UId="29" Name="en" />
+    </Wire>
+    <Wire UId="31">
+      <IdentCon UId="21" />
+      <NameCon UId="29" Name="axis" />
+    </Wire>
+    <Wire UId="32">
+      <IdentCon UId="22" />
+      <NameCon UId="29" Name="postivePosition" />
+    </Wire>
+    <Wire UId="33">
+      <IdentCon UId="23" />
+      <NameCon UId="29" Name="negativePosition" />
+    </Wire>
+    <Wire UId="34">
+      <NameCon UId="29" Name="error" />
+      <IdentCon UId="24" />
+    </Wire>
+    <Wire UId="35">
+      <NameCon UId="29" Name="status" />
+      <IdentCon UId="25" />
+    </Wire>
+    <Wire UId="36">
+      <NameCon UId="29" Name="inPos" />
+      <IdentCon UId="26" />
+    </Wire>
+    <Wire UId="37">
+      <NameCon UId="29" Name="isBefore" />
+      <IdentCon UId="27" />
+    </Wire>
+    <Wire UId="38">
+      <NameCon UId="29" Name="isAfter" />
+      <IdentCon UId="28" />
+    </Wire>
+  </Wires>
+</FlgNet></NetworkSource>
+          <ProgrammingLanguage>LAD</ProgrammingLanguage>
+        </AttributeList>
+        <ObjectList>
+          <MultilingualText ID="1A" CompositionName="Comment">
+            <ObjectList>
+              <MultilingualTextItem ID="1B" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="1C" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+          <MultilingualText ID="1D" CompositionName="Title">
+            <ObjectList>
+              <MultilingualTextItem ID="1E" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="1F" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text>SoftCam</Text>
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+        </ObjectList>
+      </SW.Blocks.CompileUnit>
+      <SW.Blocks.CompileUnit ID="20" CompositionName="CompileUnits">
+        <AttributeList>
+          <NetworkSource><StructuredText xmlns="http://www.siemens.com/automation/Openness/SW/NetworkSource/StructuredText/v4">
+  <LineComment UId="21">
+    <Text UId="22"> sw_cam of Position axis</Text>
+  </LineComment>
+  <NewLine Num="2" UId="23" />
+  <Access Scope="LocalVariable" UId="24">
+    <Symbol UId="25">
+      <Component Name="SoftcamListAxisHmi" UId="26" />
+      <Token Text="." UId="27" />
+      <Component Name="position" UId="28">
+        <Token Text="[" UId="29" />
+        <Access Scope="LiteralConstant" UId="30">
+          <Constant UId="31">
+            <ConstantValue UId="33">0</ConstantValue>
+          </Constant>
+        </Access>
+        <Token Text="]" UId="34" />
+      </Component>
+      <Token Text="." UId="35" />
+      <Component Name="ProcessValue" UId="36" />
+      <Token Text="." UId="37" />
+      <Component Name="SetPos" UId="38" />
+    </Symbol>
+  </Access>
+  <Blank UId="39" />
+  <Token Text=":=" UId="40" />
+  <Blank UId="41" />
+  <Access Scope="LocalVariable" UId="42">
+    <Symbol UId="43">
+      <Component Name="cmsetPositions" UId="44">
+        <Token Text="[" UId="45" />
+        <Access Scope="LiteralConstant" UId="46">
+          <Constant UId="47">
+            <ConstantValue UId="49">0</ConstantValue>
+          </Constant>
+        </Access>
+        <Token Text="]" UId="50" />
+      </Component>
+      <Token Text="." UId="51" />
+      <Component Name="position" UId="52" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="53" />
+  <NewLine UId="54" />
+  <Access Scope="LocalVariable" UId="55">
+    <Symbol UId="56">
+      <Component Name="SoftcamListAxisHmi" UId="57" />
+      <Token Text="." UId="58" />
+      <Component Name="position" UId="59">
+        <Token Text="[" UId="60" />
+        <Access Scope="LiteralConstant" UId="61">
+          <Constant UId="62">
+            <ConstantValue UId="64">1</ConstantValue>
+          </Constant>
+        </Access>
+        <Token Text="]" UId="65" />
+      </Component>
+      <Token Text="." UId="66" />
+      <Component Name="ProcessValue" UId="67" />
+      <Token Text="." UId="68" />
+      <Component Name="SetPos" UId="69" />
+    </Symbol>
+  </Access>
+  <Blank UId="70" />
+  <Token Text=":=" UId="71" />
+  <Blank UId="72" />
+  <Access Scope="LocalVariable" UId="73">
+    <Symbol UId="74">
+      <Component Name="cmsetPositions" UId="75">
+        <Token Text="[" UId="76" />
+        <Access Scope="LiteralConstant" UId="77">
+          <Constant UId="78">
+            <ConstantValue UId="80">1</ConstantValue>
+          </Constant>
+        </Access>
+        <Token Text="]" UId="81" />
+      </Component>
+      <Token Text="." UId="82" />
+      <Component Name="position" UId="83" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="84" />
+  <NewLine UId="85" />
+  <Access Scope="LocalVariable" UId="86">
+    <Symbol UId="87">
+      <Component Name="SoftcamListAxisHmi" UId="88" />
+      <Token Text="." UId="89" />
+      <Component Name="position" UId="90">
+        <Token Text="[" UId="91" />
+        <Access Scope="LiteralConstant" UId="92">
+          <Constant UId="93">
+            <ConstantValue UId="95">2</ConstantValue>
+          </Constant>
+        </Access>
+        <Token Text="]" UId="96" />
+      </Component>
+      <Token Text="." UId="97" />
+      <Component Name="ProcessValue" UId="98" />
+      <Token Text="." UId="99" />
+      <Component Name="SetPos" UId="100" />
+    </Symbol>
+  </Access>
+  <Blank UId="101" />
+  <Token Text=":=" UId="102" />
+  <Blank UId="103" />
+  <Access Scope="LocalVariable" UId="104">
+    <Symbol UId="105">
+      <Component Name="cmsetPositions" UId="106">
+        <Token Text="[" UId="107" />
+        <Access Scope="LiteralConstant" UId="108">
+          <Constant UId="109">
+            <ConstantValue UId="111">2</ConstantValue>
+          </Constant>
+        </Access>
+        <Token Text="]" UId="112" />
+      </Component>
+      <Token Text="." UId="113" />
+      <Component Name="position" UId="114" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="115" />
+  <NewLine UId="116" />
+  <Access Scope="LocalVariable" UId="117">
+    <Symbol UId="118">
+      <Component Name="SoftcamListAxisHmi" UId="119" />
+      <Token Text="." UId="120" />
+      <Component Name="position" UId="121">
+        <Token Text="[" UId="122" />
+        <Access Scope="LiteralConstant" UId="123">
+          <Constant UId="124">
+            <ConstantValue UId="126">3</ConstantValue>
+          </Constant>
+        </Access>
+        <Token Text="]" UId="127" />
+      </Component>
+      <Token Text="." UId="128" />
+      <Component Name="ProcessValue" UId="129" />
+      <Token Text="." UId="130" />
+      <Component Name="SetPos" UId="131" />
+    </Symbol>
+  </Access>
+  <Blank UId="132" />
+  <Token Text=":=" UId="133" />
+  <Blank UId="134" />
+  <Access Scope="LocalVariable" UId="135">
+    <Symbol UId="136">
+      <Component Name="cmsetPositions" UId="137">
+        <Token Text="[" UId="138" />
+        <Access Scope="LiteralConstant" UId="139">
+          <Constant UId="140">
+            <ConstantValue UId="142">3</ConstantValue>
+          </Constant>
+        </Access>
+        <Token Text="]" UId="143" />
+      </Component>
+      <Token Text="." UId="144" />
+      <Component Name="position" UId="145" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="146" />
+  <NewLine UId="147" />
+  <Access Scope="LocalVariable" UId="148">
+    <Symbol UId="149">
+      <Component Name="SoftcamListAxisHmi" UId="150" />
+      <Token Text="." UId="151" />
+      <Component Name="position" UId="152">
+        <Token Text="[" UId="153" />
+        <Access Scope="LiteralConstant" UId="154">
+          <Constant UId="155">
+            <ConstantValue UId="157">4</ConstantValue>
+          </Constant>
+        </Access>
+        <Token Text="]" UId="158" />
+      </Component>
+      <Token Text="." UId="159" />
+      <Component Name="ProcessValue" UId="160" />
+      <Token Text="." UId="161" />
+      <Component Name="SetPos" UId="162" />
+    </Symbol>
+  </Access>
+  <Blank UId="163" />
+  <Token Text=":=" UId="164" />
+  <Blank UId="165" />
+  <Access Scope="LocalVariable" UId="166">
+    <Symbol UId="167">
+      <Component Name="cmsetPositions" UId="168">
+        <Token Text="[" UId="169" />
+        <Access Scope="LiteralConstant" UId="170">
+          <Constant UId="171">
+            <ConstantValue UId="173">4</ConstantValue>
+          </Constant>
+        </Access>
+        <Token Text="]" UId="174" />
+      </Component>
+      <Token Text="." UId="175" />
+      <Component Name="position" UId="176" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="177" />
+  <NewLine UId="178" />
+  <Access Scope="LocalVariable" UId="179">
+    <Symbol UId="180">
+      <Component Name="SoftcamListAxisHmi" UId="181" />
+      <Token Text="." UId="182" />
+      <Component Name="position" UId="183">
+        <Token Text="[" UId="184" />
+        <Access Scope="LiteralConstant" UId="185">
+          <Constant UId="186">
+            <ConstantValue UId="188">5</ConstantValue>
+          </Constant>
+        </Access>
+        <Token Text="]" UId="189" />
+      </Component>
+      <Token Text="." UId="190" />
+      <Component Name="ProcessValue" UId="191" />
+      <Token Text="." UId="192" />
+      <Component Name="SetPos" UId="193" />
+    </Symbol>
+  </Access>
+  <Blank UId="194" />
+  <Token Text=":=" UId="195" />
+  <Blank UId="196" />
+  <Access Scope="LocalVariable" UId="197">
+    <Symbol UId="198">
+      <Component Name="cmsetPositions" UId="199">
+        <Token Text="[" UId="200" />
+        <Access Scope="LiteralConstant" UId="201">
+          <Constant UId="202">
+            <ConstantValue UId="204">5</ConstantValue>
+          </Constant>
+        </Access>
+        <Token Text="]" UId="205" />
+      </Component>
+      <Token Text="." UId="206" />
+      <Component Name="position" UId="207" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="208" />
+  <NewLine UId="209" />
+  <Access Scope="LocalVariable" UId="210">
+    <Symbol UId="211">
+      <Component Name="SoftcamListAxisHmi" UId="212" />
+      <Token Text="." UId="213" />
+      <Component Name="position" UId="214">
+        <Token Text="[" UId="215" />
+        <Access Scope="LiteralConstant" UId="216">
+          <Constant UId="217">
+            <ConstantValue UId="219">6</ConstantValue>
+          </Constant>
+        </Access>
+        <Token Text="]" UId="220" />
+      </Component>
+      <Token Text="." UId="221" />
+      <Component Name="ProcessValue" UId="222" />
+      <Token Text="." UId="223" />
+      <Component Name="SetPos" UId="224" />
+    </Symbol>
+  </Access>
+  <Blank UId="225" />
+  <Token Text=":=" UId="226" />
+  <Blank UId="227" />
+  <Access Scope="LocalVariable" UId="228">
+    <Symbol UId="229">
+      <Component Name="cmsetPositions" UId="230">
+        <Token Text="[" UId="231" />
+        <Access Scope="LiteralConstant" UId="232">
+          <Constant UId="233">
+            <ConstantValue UId="235">6</ConstantValue>
+          </Constant>
+        </Access>
+        <Token Text="]" UId="236" />
+      </Component>
+      <Token Text="." UId="237" />
+      <Component Name="position" UId="238" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="239" />
+  <NewLine UId="240" />
+  <Access Scope="LocalVariable" UId="241">
+    <Symbol UId="242">
+      <Component Name="SoftcamListAxisHmi" UId="243" />
+      <Token Text="." UId="244" />
+      <Component Name="position" UId="245">
+        <Token Text="[" UId="246" />
+        <Access Scope="LiteralConstant" UId="247">
+          <Constant UId="248">
+            <ConstantValue UId="250">7</ConstantValue>
+          </Constant>
+        </Access>
+        <Token Text="]" UId="251" />
+      </Component>
+      <Token Text="." UId="252" />
+      <Component Name="ProcessValue" UId="253" />
+      <Token Text="." UId="254" />
+      <Component Name="SetPos" UId="255" />
+    </Symbol>
+  </Access>
+  <Blank UId="256" />
+  <Token Text=":=" UId="257" />
+  <Blank UId="258" />
+  <Access Scope="LocalVariable" UId="259">
+    <Symbol UId="260">
+      <Component Name="cmsetPositions" UId="261">
+        <Token Text="[" UId="262" />
+        <Access Scope="LiteralConstant" UId="263">
+          <Constant UId="264">
+            <ConstantValue UId="266">7</ConstantValue>
+          </Constant>
+        </Access>
+        <Token Text="]" UId="267" />
+      </Component>
+      <Token Text="." UId="268" />
+      <Component Name="position" UId="269" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="270" />
+  <NewLine UId="271" />
+  <Access Scope="LocalVariable" UId="272">
+    <Symbol UId="273">
+      <Component Name="SoftcamListAxisHmi" UId="274" />
+      <Token Text="." UId="275" />
+      <Component Name="position" UId="276">
+        <Token Text="[" UId="277" />
+        <Access Scope="LiteralConstant" UId="278">
+          <Constant UId="279">
+            <ConstantValue UId="281">8</ConstantValue>
+          </Constant>
+        </Access>
+        <Token Text="]" UId="282" />
+      </Component>
+      <Token Text="." UId="283" />
+      <Component Name="ProcessValue" UId="284" />
+      <Token Text="." UId="285" />
+      <Component Name="SetPos" UId="286" />
+    </Symbol>
+  </Access>
+  <Blank UId="287" />
+  <Token Text=":=" UId="288" />
+  <Blank UId="289" />
+  <Access Scope="LocalVariable" UId="290">
+    <Symbol UId="291">
+      <Component Name="cmsetPositions" UId="292">
+        <Token Text="[" UId="293" />
+        <Access Scope="LiteralConstant" UId="294">
+          <Constant UId="295">
+            <ConstantValue UId="297">8</ConstantValue>
+          </Constant>
+        </Access>
+        <Token Text="]" UId="298" />
+      </Component>
+      <Token Text="." UId="299" />
+      <Component Name="position" UId="300" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="301" />
+  <NewLine Num="2" UId="302" />
+  <LineComment UId="303">
+    <Text UId="304"> InPos</Text>
+  </LineComment>
+  <NewLine UId="305" />
+  <Token Text="FOR" UId="306" />
+  <Blank UId="307" />
+  <Access Scope="LocalVariable" UId="308">
+    <Symbol UId="309">
+      <Component Name="LoopCount" UId="310" />
+    </Symbol>
+  </Access>
+  <Blank UId="311" />
+  <Token Text=":=" UId="312" />
+  <Blank UId="313" />
+  <Access Scope="LiteralConstant" UId="314">
+    <Constant UId="315">
+      <ConstantValue UId="317">0</ConstantValue>
+    </Constant>
+  </Access>
+  <Blank UId="318" />
+  <Token Text="TO" UId="319" />
+  <Blank UId="320" />
+  <Access Scope="LiteralConstant" UId="321">
+    <Constant UId="322">
+      <ConstantValue UId="324">8</ConstantValue>
+    </Constant>
+  </Access>
+  <Blank UId="325" />
+  <Token Text="DO" UId="326" />
+  <NewLine UId="327" />
+  <Blank Num="4" UId="328" />
+  <Token Text="IF" UId="329" />
+  <Blank UId="330" />
+  <Access Scope="LocalVariable" UId="331">
+    <Symbol UId="332">
+      <Component Name="enble" UId="333" />
+    </Symbol>
+  </Access>
+  <Blank UId="334" />
+  <Token Text="AND" UId="335" />
+  <Blank UId="336" />
+  <Token Text="(" UId="337" />
+  <Access Scope="LocalVariable" UId="338">
+    <Symbol UId="339">
+      <Component Name="cmMonitoringActualPosition" UId="340" />
+    </Symbol>
+  </Access>
+  <Blank UId="341" />
+  <Token Text="&gt;" UId="342" />
+  <Blank UId="343" />
+  <Access Scope="LocalVariable" UId="344">
+    <Symbol UId="345">
+      <Component Name="SoftcamListAxisHmi" UId="346" />
+      <Token Text="." UId="347" />
+      <Component Name="position" UId="348">
+        <Token Text="[" UId="349" />
+        <Access Scope="LocalVariable" UId="350">
+          <Symbol UId="351">
+            <Component Name="LoopCount" UId="352" />
+          </Symbol>
+        </Access>
+        <Token Text="]" UId="353" />
+      </Component>
+      <Token Text="." UId="354" />
+      <Component Name="SetValue" UId="355" />
+      <Token Text="." UId="356" />
+      <Component Name="Postive" UId="357" />
+    </Symbol>
+  </Access>
+  <Token Text=")" UId="358" />
+  <Blank UId="359" />
+  <Token Text="AND" UId="360" />
+  <Blank UId="361" />
+  <Token Text="(" UId="362" />
+  <Access Scope="LocalVariable" UId="363">
+    <Symbol UId="364">
+      <Component Name="cmMonitoringActualPosition" UId="365" />
+    </Symbol>
+  </Access>
+  <Blank UId="366" />
+  <Token Text="&lt;" UId="367" />
+  <Blank UId="368" />
+  <Access Scope="LocalVariable" UId="369">
+    <Symbol UId="370">
+      <Component Name="SoftcamListAxisHmi" UId="371" />
+      <Token Text="." UId="372" />
+      <Component Name="position" UId="373">
+        <Token Text="[" UId="374" />
+        <Access Scope="LocalVariable" UId="375">
+          <Symbol UId="376">
+            <Component Name="LoopCount" UId="377" />
+          </Symbol>
+        </Access>
+        <Token Text="]" UId="378" />
+      </Component>
+      <Token Text="." UId="379" />
+      <Component Name="SetValue" UId="380" />
+      <Token Text="." UId="381" />
+      <Component Name="Negative" UId="382" />
+    </Symbol>
+  </Access>
+  <Token Text=")" UId="383" />
+  <Blank UId="384" />
+  <Token Text="AND" UId="385" />
+  <Blank UId="386" />
+  <Access Scope="LocalVariable" UId="387">
+    <Symbol UId="388">
+      <Component Name="SoftcamStatus" UId="389" />
+      <Token Text="." UId="390" />
+      <Component Name="Softcam" UId="391" />
+      <Token Text="." UId="392" />
+      <Component Name="inPos" UId="393" />
+    </Symbol>
+  </Access>
+  <Blank UId="394" />
+  <Token Text="THEN" UId="395" />
+  <NewLine UId="396" />
+  <Blank Num="8" UId="397" />
+  <Access Scope="LocalVariable" UId="398">
+    <Symbol UId="399">
+      <Component Name="SoftcamStatus" UId="400" />
+      <Token Text="." UId="401" />
+      <Component Name="Softcam" UId="402" />
+      <Token Text="." UId="403" />
+      <Component Name="InPosSignals" UId="404">
+        <Token Text="[" UId="405" />
+        <Access Scope="LocalVariable" UId="406">
+          <Symbol UId="407">
+            <Component Name="LoopCount" UId="408" />
+          </Symbol>
+        </Access>
+        <Token Text="]" UId="409" />
+      </Component>
+    </Symbol>
+  </Access>
+  <Blank UId="410" />
+  <Token Text=":=" UId="411" />
+  <Blank UId="412" />
+  <Access Scope="LiteralConstant" UId="413">
+    <Constant UId="414">
+      <ConstantValue UId="416">true</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="417" />
+  <NewLine UId="418" />
+  <Blank Num="4" UId="419" />
+  <Token Text="ELSE" UId="420" />
+  <NewLine UId="421" />
+  <Blank Num="8" UId="422" />
+  <Access Scope="LocalVariable" UId="423">
+    <Symbol UId="424">
+      <Component Name="SoftcamStatus" UId="425" />
+      <Token Text="." UId="426" />
+      <Component Name="Softcam" UId="427" />
+      <Token Text="." UId="428" />
+      <Component Name="InPosSignals" UId="429">
+        <Token Text="[" UId="430" />
+        <Access Scope="LocalVariable" UId="431">
+          <Symbol UId="432">
+            <Component Name="LoopCount" UId="433" />
+          </Symbol>
+        </Access>
+        <Token Text="]" UId="434" />
+      </Component>
+    </Symbol>
+  </Access>
+  <Blank UId="435" />
+  <Token Text=":=" UId="436" />
+  <Blank UId="437" />
+  <Access Scope="LiteralConstant" UId="438">
+    <Constant UId="439">
+      <ConstantValue UId="441">FALSE</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="442" />
+  <NewLine UId="443" />
+  <Blank Num="4" UId="444" />
+  <Token Text="END_IF" UId="445" />
+  <Token Text=";" UId="446" />
+  <NewLine UId="447" />
+  <Token Text="END_FOR" UId="448" />
+  <Token Text=";" UId="449" />
+  <NewLine UId="450" />
+  <LineComment UId="451">
+    <Text UId="452"> PosNo</Text>
+  </LineComment>
+  <NewLine UId="453" />
+  <Token Text="FOR" UId="454" />
+  <Blank UId="455" />
+  <Access Scope="LocalVariable" UId="456">
+    <Symbol UId="457">
+      <Component Name="LoopCount" UId="458" />
+    </Symbol>
+  </Access>
+  <Blank UId="459" />
+  <Token Text=":=" UId="460" />
+  <Blank UId="461" />
+  <Access Scope="LiteralConstant" UId="462">
+    <Constant UId="463">
+      <ConstantValue UId="465">0</ConstantValue>
+    </Constant>
+  </Access>
+  <Blank UId="466" />
+  <Token Text="TO" UId="467" />
+  <Blank UId="468" />
+  <Access Scope="LiteralConstant" UId="469">
+    <Constant UId="470">
+      <ConstantValue UId="472">8</ConstantValue>
+    </Constant>
+  </Access>
+  <Blank UId="473" />
+  <Token Text="DO" UId="474" />
+  <NewLine UId="475" />
+  <Blank Num="4" UId="476" />
+  <Token Text="IF" UId="477" />
+  <Blank UId="478" />
+  <Access Scope="LocalVariable" UId="479">
+    <Symbol UId="480">
+      <Component Name="SoftcamStatus" UId="481" />
+      <Token Text="." UId="482" />
+      <Component Name="Softcam" UId="483" />
+      <Token Text="." UId="484" />
+      <Component Name="InPosSignals" UId="485">
+        <Token Text="[" UId="486" />
+        <Access Scope="LocalVariable" UId="487">
+          <Symbol UId="488">
+            <Component Name="LoopCount" UId="489" />
+          </Symbol>
+        </Access>
+        <Token Text="]" UId="490" />
+      </Component>
+    </Symbol>
+  </Access>
+  <Blank UId="491" />
+  <Token Text="THEN" UId="492" />
+  <NewLine UId="493" />
+  <Blank Num="8" UId="494" />
+  <Access Scope="LocalVariable" UId="495">
+    <Symbol UId="496">
+      <Component Name="SoftcamStatus" UId="497" />
+      <Token Text="." UId="498" />
+      <Component Name="Softcam" UId="499" />
+      <Token Text="." UId="500" />
+      <Component Name="PosNo" UId="501" />
+    </Symbol>
+  </Access>
+  <Blank UId="502" />
+  <Token Text=":=" UId="503" />
+  <Blank UId="504" />
+  <Access Scope="Call" UId="505">
+    <Instruction Name="INT_TO_DINT" UId="506">
+      <Token Text="(" UId="507" />
+      <NamelessParameter UId="508">
+        <Token Text="(" UId="509" />
+        <Access Scope="LocalVariable" UId="510">
+          <Symbol UId="511">
+            <Component Name="LoopCount" UId="512" />
+          </Symbol>
+        </Access>
+        <Token Text=")" UId="513" />
+      </NamelessParameter>
+      <Token Text=")" UId="515" />
+    </Instruction>
+  </Access>
+  <Token Text=";" UId="516" />
+  <NewLine UId="517" />
+  <Blank Num="4" UId="518" />
+  <Token Text="END_IF" UId="519" />
+  <Token Text=";" UId="520" />
+  <NewLine UId="521" />
+  <Token Text="END_FOR" UId="522" />
+  <Token Text=";" UId="523" />
+</StructuredText></NetworkSource>
+          <ProgrammingLanguage>SCL</ProgrammingLanguage>
+        </AttributeList>
+        <ObjectList>
+          <MultilingualText ID="21" CompositionName="Comment">
+            <ObjectList>
+              <MultilingualTextItem ID="22" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="23" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+          <MultilingualText ID="24" CompositionName="Title">
+            <ObjectList>
+              <MultilingualTextItem ID="25" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="26" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text>FOR Pos</Text>
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+        </ObjectList>
+      </SW.Blocks.CompileUnit>
+      <MultilingualText ID="27" CompositionName="Title">
+        <ObjectList>
+          <MultilingualTextItem ID="28" CompositionName="Items">
+            <AttributeList>
+              <Culture>de-DE</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="29" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-US</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+        </ObjectList>
+      </MultilingualText>
+    </ObjectList>
+  </SW.Blocks.FB>
+</Document>

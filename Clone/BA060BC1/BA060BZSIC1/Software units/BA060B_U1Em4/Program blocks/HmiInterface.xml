@@ -1,0 +1,252 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Document>
+  <Engineering version="V20" />
+  <SW.Blocks.GlobalDB ID="0">
+    <AttributeList>
+      <Access>Published</Access>
+      <Interface><Sections xmlns="http://www.siemens.com/automation/Openness/SW/Interface/v5">
+  <Section Name="Static">
+    <Member Name="em" Datatype="&quot;LAF_typeEmInterface&quot;" />
+    <Member Name="cm" Datatype="&quot;Unit1.Em4.typeCmHmiInterface&quot;" />
+    <Member Name="sideTapeLoading" Datatype="&quot;LER_typeSequenceInterface&quot;" />
+    <Member Name="sideTapeAttachment" Datatype="&quot;LER_typeSequenceInterface&quot;" />
+    <Member Name="sideTapeFixStage" Datatype="&quot;LER_typeSequenceInterface&quot;" />
+    <Member Name="SideTapeIdleTime" Datatype="&quot;Unit1.Em4.typeSideTapeIdleTimeHmiInterface&quot;">
+      <Sections>
+        <Section Name="None">
+          <Member Name="processCount" Datatype="Time">
+            <StartValue>T#5M</StartValue>
+          </Member>
+        </Section>
+      </Sections>
+    </Member>
+    <Member Name="sideTapeCuttingCount" Datatype="&quot;LER_typeAlarmCounterInterface&quot;">
+      <Sections>
+        <Section Name="None">
+          <Member Name="referenceDesignator" Datatype="WString">
+            <StartValue>WSTRING#'Em4 Side Tape Cutting Count'</StartValue>
+          </Member>
+          <Member Name="ProcessValue" Datatype="&quot;LER_typeAlarmCounterPV&quot;">
+            <Sections>
+              <Section Name="None">
+                <Member Name="faultCount" Datatype="DInt">
+                  <StartValue>5000</StartValue>
+                </Member>
+              </Section>
+            </Sections>
+          </Member>
+          <Member Name="SetValue" Datatype="&quot;LER_typeAlarmCounterSV&quot;">
+            <Sections>
+              <Section Name="None">
+                <Member Name="faultCount" Datatype="DInt">
+                  <StartValue>50000</StartValue>
+                </Member>
+              </Section>
+            </Sections>
+          </Member>
+        </Section>
+      </Sections>
+    </Member>
+    <Member Name="cmSideTapeSafetyPin" Datatype="&quot;LBC_typeDigitalSignalInterface&quot;" />
+    <Member Name="cmSideTapeJRDetect" Datatype="&quot;LBC_typeDigitalSignalInterface&quot;" />
+    <Member Name="cmSideTapeDiameter" Datatype="&quot;LBC_typeDigitalSignalInterface&quot;" />
+    <Member Name="cmSideTapeFixStageAxisX" Datatype="&quot;LBC_typeAxis64PosInterface&quot;" />
+    <Member Name="cmSideTapeFixStageAxisC" Datatype="&quot;LBC_typeAxis64PosInterface&quot;">
+      <Sections>
+        <Section Name="None">
+          <Member Name="configuration" Datatype="&quot;LBC_typeAxis64PosConfiguration&quot;">
+            <Sections>
+              <Section Name="None">
+                <Member Name="setPositions" Datatype="Array[0..15] of &quot;LBC_typeAxis64PosSetPosition&quot;">
+                  <Sections>
+                    <Section Name="None">
+                      <Member Name="name" Datatype="String[32]">
+                        <Subelement Path="0">
+                          <StartValue>'Wait [Tape1]'</StartValue>
+                        </Subelement>
+                        <Subelement Path="1">
+                          <StartValue>'Tape2'</StartValue>
+                        </Subelement>
+                        <Subelement Path="2">
+                          <StartValue>'Tape3'</StartValue>
+                        </Subelement>
+                        <Subelement Path="3">
+                          <StartValue>'Tape4'</StartValue>
+                        </Subelement>
+                      </Member>
+                    </Section>
+                  </Sections>
+                </Member>
+              </Section>
+            </Sections>
+          </Member>
+        </Section>
+      </Sections>
+    </Member>
+    <Member Name="cmSideTapeAttachmentAxisX" Datatype="&quot;LBC_typeAxis64PosInterface&quot;">
+      <Sections>
+        <Section Name="None">
+          <Member Name="configuration" Datatype="&quot;LBC_typeAxis64PosConfiguration&quot;">
+            <Sections>
+              <Section Name="None">
+                <Member Name="setPositions" Datatype="Array[0..15] of &quot;LBC_typeAxis64PosSetPosition&quot;">
+                  <Sections>
+                    <Section Name="None">
+                      <Member Name="name" Datatype="String[32]">
+                        <Subelement Path="0">
+                          <StartValue>'Wait'</StartValue>
+                        </Subelement>
+                        <Subelement Path="1">
+                          <StartValue>'Right Tape Get'</StartValue>
+                        </Subelement>
+                        <Subelement Path="2">
+                          <StartValue>'Left Tape Get'</StartValue>
+                        </Subelement>
+                        <Subelement Path="3">
+                          <StartValue>'Tape1 Put'</StartValue>
+                        </Subelement>
+                        <Subelement Path="4">
+                          <StartValue>'Tape2 Put'</StartValue>
+                        </Subelement>
+                        <Subelement Path="5">
+                          <StartValue>'Tape3 Put'</StartValue>
+                        </Subelement>
+                        <Subelement Path="6">
+                          <StartValue>'Tape4 Put'</StartValue>
+                        </Subelement>
+                        <Subelement Path="7">
+                          <StartValue>'Remain Attachment Left'</StartValue>
+                        </Subelement>
+                        <Subelement Path="8">
+                          <StartValue>'Remain Attachment Right'</StartValue>
+                        </Subelement>
+                        <Subelement Path="9">
+                          <StartValue>'Tape Put Zone'</StartValue>
+                        </Subelement>
+                      </Member>
+                    </Section>
+                  </Sections>
+                </Member>
+              </Section>
+            </Sections>
+          </Member>
+        </Section>
+      </Sections>
+    </Member>
+    <Member Name="cmSideTapeAttachmentAxisY" Datatype="&quot;LBC_typeAxis64PosInterface&quot;">
+      <Sections>
+        <Section Name="None">
+          <Member Name="configuration" Datatype="&quot;LBC_typeAxis64PosConfiguration&quot;">
+            <Sections>
+              <Section Name="None">
+                <Member Name="setPositions" Datatype="Array[0..15] of &quot;LBC_typeAxis64PosSetPosition&quot;">
+                  <Sections>
+                    <Section Name="None">
+                      <Member Name="name" Datatype="String[32]">
+                        <Subelement Path="0">
+                          <StartValue>'Wait'</StartValue>
+                        </Subelement>
+                        <Subelement Path="1">
+                          <StartValue>'Right Tape Get'</StartValue>
+                        </Subelement>
+                        <Subelement Path="2">
+                          <StartValue>'Left Tape Get'</StartValue>
+                        </Subelement>
+                        <Subelement Path="3">
+                          <StartValue>'Tape1 Put'</StartValue>
+                        </Subelement>
+                        <Subelement Path="4">
+                          <StartValue>'Tape2 Put'</StartValue>
+                        </Subelement>
+                        <Subelement Path="5">
+                          <StartValue>'Tape3 Put'</StartValue>
+                        </Subelement>
+                        <Subelement Path="6">
+                          <StartValue>'Tape4 Put'</StartValue>
+                        </Subelement>
+                        <Subelement Path="7">
+                          <StartValue>'Remain Attachment Left'</StartValue>
+                        </Subelement>
+                        <Subelement Path="8">
+                          <StartValue>'Remain Attachment Right'</StartValue>
+                        </Subelement>
+                        <Subelement Path="9">
+                          <StartValue>'No Interference Zone'</StartValue>
+                        </Subelement>
+                      </Member>
+                    </Section>
+                  </Sections>
+                </Member>
+              </Section>
+            </Sections>
+          </Member>
+        </Section>
+      </Sections>
+    </Member>
+    <Member Name="cmSideTapeLoadingDownUp" Datatype="&quot;LBC_typeTwoWayActuatorInterface&quot;" />
+    <Member Name="cmSideTapeLoadingClampOpenClose" Datatype="&quot;LBC_typeTwoWayActuatorInterface&quot;" />
+    <Member Name="cmSideTapeCutterBwdFwd" Datatype="&quot;LBC_typeTwoWayActuatorInterface&quot;" />
+    <Member Name="cmSideTapeCutterClampBwdFwd" Datatype="&quot;LBC_typeTwoWayActuatorInterface&quot;" />
+    <Member Name="cmSideTapeTensionBwdFwd" Datatype="&quot;LBC_typeTwoWayActuatorInterface&quot;" />
+    <Member Name="cmSideTapeAttachmentLeftBwdFwd" Datatype="&quot;LBC_typeTwoWayActuatorInterface&quot;" />
+    <Member Name="cmSideTapeAttachmentRightBwdFwd" Datatype="&quot;LBC_typeTwoWayActuatorInterface&quot;" />
+    <Member Name="cmSideTapeAttachmentBtmBwdFwd" Datatype="&quot;LBC_typeTwoWayActuatorInterface&quot;" />
+    <Member Name="cmSideTapeFixStageClampOpenClose" Datatype="&quot;LBC_typeTwoWayActuatorInterface&quot;" />
+    <Member Name="cmSideTapeAttachment1TopVaccumOffOn" Datatype="&quot;LBC_typeTwoWayActuatorInterface&quot;" />
+    <Member Name="cmSideTapeAttachment1BtmVaccumOffOn" Datatype="&quot;LBC_typeTwoWayActuatorInterface&quot;" />
+    <Member Name="cmSideTapeAttachment2TopVaccumOffOn" Datatype="&quot;LBC_typeTwoWayActuatorInterface&quot;" />
+    <Member Name="cmSideTapeAttachment2BtmVaccumOffOn" Datatype="&quot;LBC_typeTwoWayActuatorInterface&quot;" />
+    <Member Name="cmQrHandyReader" Datatype="&quot;LER_typeDM8700Interface&quot;" />
+    <Member Name="=====사용유무 확인필요=====" Datatype="Bool">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="sequenceUnused" Datatype="Array[0.._.U1EM4_NO_OF_SEQUENCE] of Bool" />
+    <Member Name="intCondition" Datatype="&quot;Unit1.Em4.typeIntConditionHmiInterface&quot;" />
+  </Section>
+</Sections></Interface>
+      <MemoryReserve>100</MemoryReserve>
+      <Name>HmiInterface</Name>
+      <Namespace>Unit1.Em4</Namespace>
+      <Number>177</Number>
+      <ProgrammingLanguage>DB</ProgrammingLanguage>
+    </AttributeList>
+    <ObjectList>
+      <MultilingualText ID="1" CompositionName="Comment">
+        <ObjectList>
+          <MultilingualTextItem ID="2" CompositionName="Items">
+            <AttributeList>
+              <Culture>de-DE</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="3" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-US</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+        </ObjectList>
+      </MultilingualText>
+      <MultilingualText ID="4" CompositionName="Title">
+        <ObjectList>
+          <MultilingualTextItem ID="5" CompositionName="Items">
+            <AttributeList>
+              <Culture>de-DE</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="6" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-US</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+        </ObjectList>
+      </MultilingualText>
+    </ObjectList>
+  </SW.Blocks.GlobalDB>
+</Document>

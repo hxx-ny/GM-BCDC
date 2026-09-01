@@ -1,0 +1,68 @@
+﻿NAMESPACE Unit1.Em11
+FUNCTION "StepToString" : String
+{ S7_Optimized_Access := 'TRUE' ; Published := 'FALSE' }
+VERSION : 0.1
+   VAR_INPUT 
+      StepDINT : DInt;   // DINT value of the step
+      sequenceNumber : Int;
+   END_VAR
+
+
+BEGIN
+	// Translates the sequence step number to the step name
+	// This is an example and needs to be adjusted for the real use case
+	
+	IF #sequenceNumber = 1 THEN
+	  CASE #StepDINT OF
+	    1:
+	      #StepToString := 'Idle';
+	    101:
+	      #StepToString := 'JOB[1] Condition';
+	    110:
+	      #StepToString := 'Stage Lift Down';
+	    190:
+	      #StepToString := 'JOB[1] Step End';
+	    201:
+	      #StepToString := 'JOB[2] Condition';
+	    210:
+	      #StepToString := 'Weight Check Loading Request => Transfer PP Right';
+	    230:
+	      #StepToString := 'Stage Lift Up';
+	    240:
+	      #StepToString := 'Weight Check Loading Check => Transfer PP Right';
+	    250:
+	      #StepToString := 'Weight Check JR Detection Check';
+	    290:
+	      #StepToString := 'JOB[2] Step End';
+	    301:
+	      #StepToString := 'JOB[3] Condition';
+	    310:
+	      #StepToString := 'Stage Lift Down';
+	    330:
+	      #StepToString := 'Weight Check';
+	    390:
+	      #StepToString := 'JOB[3] Step End';
+	    401:
+	      #StepToString := 'JOB[4] Condition';
+	    410:
+	      #StepToString := 'Stage Lift Up';
+	    430:
+	      #StepToString := 'Weight Check Unloading Request => JR Unload P&P';
+	    431:
+	      #StepToString := 'Weight Check Unloading Check => JR Unload P&P';
+	    480:
+	      #StepToString := 'Stage Lift Down';
+	    490:
+	      #StepToString := 'JOB[4] Step End';
+	    9001:
+	      #StepToString := 'Immediate Stop';
+	      
+	    ELSE
+	      #StepToString := 'N/A';
+	END_CASE;
+	ELSE
+	    #StepToString := 'N/A';
+	END_IF;
+END_FUNCTION
+END_NAMESPACE
+

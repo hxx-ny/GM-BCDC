@@ -1,0 +1,332 @@
+﻿NAMESPACE Unit1.Em4
+FUNCTION "StepToString" : String
+{ S7_Optimized_Access := 'TRUE' ; Published := 'FALSE' }
+VERSION : 0.1
+   VAR_INPUT 
+      StepDINT : DInt;   // DINT value of the step
+      sequenceNumber : Int;
+   END_VAR
+
+
+BEGIN
+	// Translates the sequence step number to the step name
+	// This is an example and needs to be adjusted for the real use case
+	
+	// Sequence_1_SideTapeLoading
+	IF #sequenceNumber = 1 THEN
+	  CASE #StepDINT OF
+	    1:
+	      #StepToString := 'Idle';
+	    101:
+	      #StepToString := 'JOB[1] Condition';
+	    110:
+	      #StepToString := 'Side Tape Loading Down';
+	    120:
+	      #StepToString := 'Side Tape Clamp Open';
+	    130:
+	      #StepToString := 'Side Tape Cutter Backward';
+	    140:
+	      #StepToString := 'Side Tape Cutter Clamp Forward';
+	    150:
+	      #StepToString := 'Side Tape Tension Backward';
+	    190:
+	      #StepToString := 'JOB[1] Step End';
+	    201:
+	      #StepToString := 'JOB[2] Condition';
+	    210:
+	      #StepToString := 'Side Tape Loading Up, Tension Backward';
+	    220:
+	      #StepToString := 'Side Tape Clamp Close';
+	    230:
+	      #StepToString := 'Side Tape Cutter Clamp Backward';
+	    240:
+	      #StepToString := 'Side Tape Loading Down, Tension Forward';
+	    250:
+	      #StepToString := 'Side Tape Cutter Clamp Forward';
+	    260:
+	      #StepToString := 'Side Tape Tension Backward';
+	    290:
+	      #StepToString := 'JOB[2] Step End';
+	    9001:
+	      #StepToString := 'Immediate Stop';
+	      
+	    ELSE
+	      #StepToString := 'N/A';
+	  END_CASE;
+	  
+	  // Sequence_2_SideTapeAttachment
+	ELSIF #sequenceNumber = 2 THEN
+	  CASE #StepDINT OF
+	    1:
+	      #StepToString := 'Idle';
+	    101:
+	      #StepToString := 'JOB[1] Condition';
+	    110:
+	      #StepToString := 'Side Tape Attachment Left, Right Backward';
+	    111:
+	      #StepToString := 'Side Tape Attachment Y-Axis Wait Pos';
+	    120:
+	      #StepToString := 'Side Tape Attachment Bottom Forward';
+	    130:
+	      #StepToString := 'Side Tape Attachment Remain Attach Left Condition';
+	    131:
+	      #StepToString := 'Side Tape Attachment X-Axis Remain Attach Left Position';
+	    132:
+	      #StepToString := 'Side Tape Attachment Y-Axis Remain Attach Left Position';
+	    133:
+	      #StepToString := 'Side Tape Attachment Left Vaccum Off';
+	    134:
+	      #StepToString := 'Side Tape Attachment Y-Axis Wait Pos';
+	    140:
+	      #StepToString := 'Side Tape Attachment Remain Attach Right Condition';
+	    141:
+	      #StepToString := 'Side Tape Attachment X-Axis Remain Attach Right Position';
+	    142:
+	      #StepToString := 'Side Tape Attachment Y-Axis Remain Attach Right Position';
+	    143:
+	      #StepToString := 'Side Tape Attachment Right Vaccum Off';
+	    144:
+	      #StepToString := 'Side Tape Attachment Y-Axis Wait Pos';
+	    180:
+	      #StepToString := 'Side Tape Attachment X-Axis Wait Position';
+	    190:
+	      #StepToString := 'Job[1] Step End';
+	    201:
+	      #StepToString := 'JOB[2] Condition';
+	    210:
+	      #StepToString := 'Side Tape Attachment X-Axis Right Tape Get Pos';
+	    220:
+	      #StepToString := 'Side Tape Attachment Y-Axis Right Tape Get Pos';
+	    221:
+	      #StepToString := 'Side Tape Attachment-2 Vaccum On';
+	    230:
+	      #StepToString := 'Side Tape Cutter Forward';
+	    231:
+	      #StepToString := 'Side Tape Cutter Backward';
+	    240:
+	      #StepToString := 'Side Tape Clamp Open';
+	    241:
+	      #StepToString := 'Spare';
+	    270:
+	      #StepToString := 'Side Tape Attachment Y-Axis Wait Pos';
+	    280:
+	      #StepToString := 'Side Tape Attachment X-Axis Wait Pos';
+	    290:
+	      #StepToString := 'Job[2] Step End';
+	    301:
+	      #StepToString := 'JOB[3] Condition';
+	    310:
+	      #StepToString := 'Side Tape Attachment X-Axis Left Tape Get Pos';
+	    320:
+	      #StepToString := 'Side Tape Attachment Y-Axis Left Tape Get Pos';
+	    321:
+	      #StepToString := 'Side Tape Attachment-1 Vaccum On';
+	    330:
+	      #StepToString := 'Side Tape Cutter Forward';
+	    331:
+	      #StepToString := 'Side Tape Cutter Backward';
+	    340:
+	      #StepToString := 'Side Tape Clamp Open';
+	    341:
+	      #StepToString := 'Spare';
+	    370:
+	      #StepToString := 'Side Tape Attachment Y-Axis Wait Pos';
+	    380:
+	      #StepToString := 'Side Tape Attachment X-Axis Tape-1 Put Pos';
+	    390:
+	      #StepToString := 'Job[3] Step End';
+	    401:
+	      #StepToString := 'JOB[4] Condition';
+	    410:
+	      #StepToString := 'Side Tape Attachment X-Axis Tape-1 Put Pos';
+	    420:
+	      #StepToString := 'Side tape Attachment Y-Axis Tape-1 Put Pos';
+	    421:
+	      #StepToString := 'Side Tape Attachment Left, Right Forward, Vaccum Off';
+	    422:
+	      #StepToString := 'Spare';
+	    430:
+	      #StepToString := 'Side Tape Attachment Left, Right Backward';
+	    431:
+	      #StepToString := 'Side Tape Attachment Y-Axis Wait Pos';
+	    480:
+	      #StepToString := 'Side Tape Attachment X-Axis Wait Pos';
+	    490:
+	      #StepToString := 'Job[4] Step End';
+	    501:
+	      #StepToString := 'Job[5] Condition';
+	    510:
+	      #StepToString := 'Side Tape Attachment X-Axis Tape-2 Put Pos';
+	    520:
+	      #StepToString := 'Side tape Attachment Y-Axis Tape-2 Put Pos';
+	    521:
+	      #StepToString := 'Side Tape Attachment Right Forward, Vaccum Off';
+	    522:
+	      #StepToString := 'Spare';
+	    530:
+	      #StepToString := 'Side Tape Attachment Right Backward';
+	    531:
+	      #StepToString := 'Side Tape Attachment Y-Axis Wait Pos';
+	    580:
+	      #StepToString := 'Side Tape Attachment X-Axis Wait Pos';
+	    590:
+	      #StepToString := 'Job[5] Step End';
+	    601:
+	      #StepToString := 'Job[6] Condition';
+	    610:
+	      #StepToString := 'Side Tape Attachment X-Axis Tape-3 Put Pos';
+	    620:
+	      #StepToString := 'Side tape Attachment Y-Axis Tape-3 Put Pos';
+	    621:
+	      #StepToString := 'Side Tape Attachment Right Forward, Vaccum Off';
+	    622:
+	      #StepToString := 'Spare';
+	    630:
+	      #StepToString := 'Side Tape Attachment Right Backward';
+	    631:
+	      #StepToString := 'Side Tape Attachment Y-Axis Wait Pos';
+	    680:
+	      #StepToString := 'Side Tape Attachment X-Axis Wait Pos';
+	    690:
+	      #StepToString := 'Job[6] Step End';
+	    701:
+	      #StepToString := 'Job[7] Condition';
+	    710:
+	      #StepToString := 'Side Tape Attachment X-Axis Tape-4 Put Pos';
+	    720:
+	      #StepToString := 'Side tape Attachment Y-Axis Tape-4 Put Pos';
+	    721:
+	      #StepToString := 'Side Tape Attachment Right Forward, Vaccum Off';
+	    722:
+	      #StepToString := 'Spare';
+	    730:
+	      #StepToString := 'Side Tape Attachment Right Backward';
+	    731:
+	      #StepToString := 'Side Tape Attachment Y-Axis Wait Pos';
+	    780:
+	      #StepToString := 'Side Tape Attachment X-Axis Wait Pos';
+	    790:
+	      #StepToString := 'Job[7] Step End';
+	    9001:
+	      #StepToString := 'Immediate Stop';
+	      
+	    ELSE
+	      #StepToString := 'N/A';
+	  END_CASE;
+	  
+	  // Sequence_3_SideTapeFixStage
+	ELSIF #sequenceNumber = 3 THEN
+	  CASE #StepDINT OF
+	    1:
+	      #StepToString := 'Idle';
+	    101:
+	      #StepToString := 'JOB[1] Condition';
+	    110:
+	      #StepToString := 'Side Tape Fix Stage Clamp Open';
+	    111:
+	      #StepToString := 'Side Tape Fix Stage Clamp Close';
+	    120:
+	      #StepToString := 'Side Tape Fix Stage X-Axis JR Get Pos';
+	    130:
+	      #StepToString := 'Side Tape Fix Stage C-Axis Wait Pos [Tape-1]';
+	    131:
+	      #StepToString := 'Side Tape Fix Stage C-Axis Tape-2 Pos';
+	    132:
+	      #StepToString := 'Side Tape Fix Stage C-Axis Tape-3 Pos';
+	    133:
+	      #StepToString := 'Side Tape Fix Stage C-Axis Tape-4 Pos';
+	    140:
+	      #StepToString := 'Side Tape Fix Stage X-Axis Wait Pos';
+	    190:
+	      #StepToString := 'JOB[1] Step End';
+	    201:
+	      #StepToString := 'JOB[2] Condition';
+	    210:
+	      #StepToString := 'Side Tape Fix Stage [Loading Request] => JR PP Right';
+	    220:
+	      #StepToString := 'Side Tape Fix Stage X-Axis JR Get Pos';
+	    230:
+	      #StepToString := 'Side Tape Fix Stage Clamp Close';
+	    231:
+	      #StepToString := 'Side Tape Fix Stage [Unclamp Request] => JR PP Right';
+	    280:
+	      #StepToString := 'Side Tape Fix Stage X-Axis Wait Pos';
+	    290:
+	      #StepToString := 'JOB[2] Step End';
+	    301:
+	      #StepToString := 'JOB[4] Condition';
+	    310:
+	      #StepToString := 'Spare';
+	    320:
+	      #StepToString := 'Side Tape Fix Stage => Call Attachment Tape-1';
+	    390:
+	      #StepToString := 'JOB[3] Step End';
+	    401:
+	      #StepToString := 'JOB[4] Condition';
+	    410:
+	      #StepToString := 'Side Tape Fix Stage X-Axis Wait Pos';
+	    411:
+	      #StepToString := 'Side Tape Fix Stage C-Axis Taping-2 Pos';
+	    412:
+	      #StepToString := 'Side Tape Fix Stage X-Axis Wait Pos';
+	    420:
+	      #StepToString := 'Side Tape Fix Stage => Call Attachment Tape-2';
+	    490:
+	      #StepToString := 'JOB[4] Step End';
+	    501:
+	      #StepToString := 'JOB[5] Condition';
+	    510:
+	      #StepToString := 'Side Tape Fix Stage X-Axis Wait Pos';
+	    511:
+	      #StepToString := 'Side Tape Fix Stage C-Axis Taping-3 Pos';
+	    512:
+	      #StepToString := 'Side Tape Fix Stage X-Axis Wait Pos';
+	    520:
+	      #StepToString := 'Side Tape Fix Stage => Call Attachment Tape-3';
+	    590:
+	      #StepToString := 'JOB[5] Step End';
+	    601:
+	      #StepToString := 'JOB[6] Condition';
+	    610:
+	      #StepToString := 'Side Tape Fix Stage X-Axis Wait Pos';
+	    611:
+	      #StepToString := 'Side Tape Fix Stage C-Axis Taping-4 Pos';
+	    612:
+	      #StepToString := 'Side Tape Fix Stage X-Axis Wait Pos';
+	    620:
+	      #StepToString := 'Side Tape Fix Stage => Call Attachment Tape-4';
+	    690:
+	      #StepToString := 'JOB[6] Step End';
+	    701:
+	      #StepToString := 'JOB[7] Condition';
+	    710:
+	      #StepToString := 'Side Tape Fix Stage X-Axis Put Pos';
+	    720:
+	      #StepToString := 'Side Tape Fix Stage [Unloading Request] => Transfer PP Left';
+	    721:
+	      #StepToString := 'Side Tape Fix Stage [Clamp Request] => Transfer PP Left';
+	    722:
+	      #StepToString := 'Side Tape Fix Stage Clamp Open';
+	    723:
+	      #StepToString := 'Side Tape Fix Stage [Backward Request] => Transfer PP Left';
+	    780:
+	      #StepToString := 'Side Tape Fix Stage X-Axis Wait Pos';
+	    781:
+	      #StepToString := 'Side Tape Fix Stage C-Axis Wait Pos';
+	    782:
+	      #StepToString := 'Side Tape Fix Stage X-Axis Wait Pos';
+	    790:
+	      #StepToString := 'JOB[7] Step End';
+	      
+	    9001:
+	      #StepToString := 'Immediate Stop';
+	      
+	    ELSE
+	      #StepToString := 'N/A';
+	END_CASE;
+	ELSE
+	    #StepToString := 'N/A';
+	END_IF;
+END_FUNCTION
+END_NAMESPACE
+

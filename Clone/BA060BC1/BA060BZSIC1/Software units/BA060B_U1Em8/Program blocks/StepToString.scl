@@ -1,0 +1,114 @@
+﻿NAMESPACE Unit1.Em8
+FUNCTION "StepToString" : String
+{ S7_Optimized_Access := 'TRUE' ; Published := 'FALSE' }
+VERSION : 0.1
+   VAR_INPUT 
+      StepDINT : DInt;   // DINT value of the step
+      sequenceNumber : Int;
+   END_VAR
+
+
+BEGIN
+	// Translates the sequence step number to the step name
+	// This is an example and needs to be adjusted for the real use case
+	
+	IF #sequenceNumber = 1 THEN
+	  CASE #StepDINT OF
+	    1:
+	      #StepToString := 'Idle';
+	    101:
+	      #StepToString := 'JOB[1] Condition';
+	    110:
+	      #StepToString := 'Hipot & Thickness Z-Axis Wait Pos';
+	    111:
+	      #StepToString := 'Servo Press Reference Home Pos';
+	    120:
+	      #StepToString := 'Tab Contactor Open';
+	    121:
+	      #StepToString := 'Tab Contactor Backward';
+	    130:
+	      #StepToString := 'Stage Lift Up';
+	    140:
+	      #StepToString := 'Spare';
+	    150:
+	      #StepToString := 'Stage Lift Down';
+	    170:
+	      #StepToString := 'Spare';
+	    190:
+	      #StepToString := 'JOB[1] Step End';
+	    201:
+	      #StepToString := 'JOB[2] Condition';
+	    210:
+	      #StepToString := 'Hipot & Thickness Loading Request => Transfer PP Left';
+	    220:
+	      #StepToString := 'Spare';
+	    230:
+	      #StepToString := 'Stage Lift Up';
+	    240:
+	      #StepToString := 'Hipot & Thickness Loading Check => Transfer PP Left';
+	    250:
+	      #StepToString := 'Spare';
+	    290:
+	      #StepToString := 'JOB[2] Step End';
+	    301:
+	      #StepToString := 'JOB[3] Condition';
+	    310:
+	      #StepToString := 'Stage Lift Down';
+	    311:
+	      #StepToString := 'Stage JR Detection Check';
+	    320:
+	      #StepToString := 'Spare';
+	    330:
+	      #StepToString := 'Press Start';
+	    331:
+	      #StepToString := 'Press Result';
+	    340:
+	      #StepToString := 'Thickness Z-Axis Thickness Ready Pos, Tab Forward';
+	    341:
+	      #StepToString := 'Thickness Z-Axis Measuring Thickness Pos, Tab Contactor Close';
+	    350:
+	      #StepToString := 'Thickness Start';
+	    351:
+	      #StepToString := 'Thickness Result';
+	    352:
+	      #StepToString := 'Thickness Z-Axis Wait Pos';
+	    360:
+	      #StepToString := 'Hipot Start';
+	    361:
+	      #StepToString := 'Hipot Result';
+	    362:
+	      #StepToString := 'Tab Contactor Open';
+	    363:
+	      #StepToString := 'Tab Contactor Backward';
+	    380:
+	      #StepToString := 'Press Home';
+	    390:
+	      #StepToString := 'JOB[3] Step End';
+	    401:
+	      #StepToString := 'JOB[4] Condition';
+	    410:
+	      #StepToString := 'Spare';
+	    420:
+	      #StepToString := 'Stage Lift Up';
+	    430:
+	      #StepToString := 'Hipot & Thickness Unloading Request => Transfer PP Right';
+	    431:
+	      #StepToString := 'Hipot & Thickness Unloading Check => Transfer PP Right';
+	    480:
+	      #StepToString := 'Stage Lift Down';
+	    481:
+	      #StepToString := 'Spare';
+	    490:
+	      #StepToString := 'JOB[4] Step End';
+	    9001:
+	      #StepToString := 'Immediate Stop';
+	      
+	    ELSE
+	      #StepToString := 'N/A';
+	END_CASE;
+	ELSE
+	    #StepToString := 'N/A';
+	END_IF;
+END_FUNCTION
+END_NAMESPACE
+

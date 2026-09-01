@@ -1,0 +1,402 @@
+﻿NAMESPACE Unit1.Em5
+FUNCTION "StepToString" : String
+{ S7_Optimized_Access := 'TRUE' ; Published := 'FALSE' }
+VERSION : 0.1
+   VAR_INPUT 
+      StepDINT : DInt;   // DINT value of the step
+      sequenceNumber : Int;
+   END_VAR
+
+
+BEGIN
+	// Translates the sequence step number to the step name
+	// This is an example and needs to be adjusted for the real use case
+	
+	// Sequence_1_TransferPnPLeft
+	IF #sequenceNumber = 1 THEN
+	  
+	  CASE #StepDINT OF
+	    1:
+	      #StepToString := 'Idle';
+	    101 :
+	      #StepToString := 'JOB[1] Condition';
+	    110 :
+	      #StepToString := 'Transfer PP Left Clamp Open';
+	    130 :
+	      #StepToString := 'Transfer PP Left Clamp Close';
+	    160 :
+	      #StepToString := 'Transfer PP Left Y-Axis Wait Pos';
+	    170 :
+	      #StepToString := 'Transfer PP Left Z-Axis Wait Pos';
+	    180 :
+	      #StepToString := 'Transfer PP Left X-Axis Wait Pos';
+	    190 :
+	      #StepToString := 'JOB[1] Step End';
+	    201 :
+	      #StepToString := 'JOB[2] Condition';
+	    210 :
+	      #StepToString := 'Transfer PP Left X/Z-Axis Side Tape Pos';
+	    230 :
+	      #StepToString := 'Transfer PP Left Y-Axis Side Tape Pos';
+	    240 :
+	      #StepToString := 'Transfer PP Left Clamp Close';
+	    242 :
+	      #StepToString := 'Transfer PP Left [Unclamp request] => Side Tape Fix Stage ';
+	    280 :
+	      #StepToString := 'Transfer PP Left Y-Axis Wait Pos';
+	    290 :
+	      #StepToString := 'JOB[2] Step End';
+	    301 :
+	      #StepToString := 'JOB[3] Condition';
+	    310 :
+	      #StepToString := 'Transfer PP Left X/Z-Axis Hot Press Left Pos';
+	    330 :
+	      #StepToString := 'Transfer PP Left Y-Axis Hot Press Left Pos';
+	    340 :
+	      #StepToString := 'Transfer PP Left [Lift Up Request] => Hot Press Left';
+	    350 :
+	      #StepToString := 'Transfer PP Left Clamp Open';
+	    380 :
+	      #StepToString := 'Transfer PP Left Y-Axis Wait Pos';
+	    390 :
+	      #StepToString := 'JOB[3] Step End';
+	    401 :
+	      #StepToString := 'JOB[4] Condition';
+	    410 :
+	      #StepToString := 'Transfer PP Left X/Z-Axis Hot Press Left Pos';
+	    430 :
+	      #StepToString := 'Transfer PP Left Y-Axis Hot Press Left Pos';
+	    440 :
+	      #StepToString := 'Transfer PP Left Clamp Close';
+	    480 :
+	      #StepToString := 'Transfer PP Left Y-Axis Wait Pos';
+	    490 :
+	      #StepToString := 'JOB[4] Step End';
+	    501 :
+	      #StepToString := 'JOB[5] Condition';
+	    510 :
+	      #StepToString := 'Transfer PP Left X/Z-Axis Side Tape Pos';
+	    530 :
+	      #StepToString := 'Transfer PP Left Y-Axis Side Tape Pos';
+	    540 :
+	      #StepToString := 'Transfer PP Left Clamp Close';
+	    542 :
+	      #StepToString := 'Transfer PP Left [Unclamp request] => Side Tape Fix Stage ';
+	    580 :
+	      #StepToString := 'Transfer PP Left Y-Axis Wait Pos';
+	    590 :
+	      #StepToString := 'JOB[5] Step End';
+	    601 :
+	      #StepToString := 'JOB[6] Condition';
+	    610 :
+	      #StepToString := 'Transfer PP Left X/Z-Axis Hot Press Right Pos';
+	    630 :
+	      #StepToString := 'Transfer PP Left Y-Axis Hot Press Right Pos';
+	    640 :
+	      #StepToString := 'Transfer PP Left [Lift Up Request] => Hot Press Right';
+	    650 :
+	      #StepToString := 'Transfer PP Left Clamp Open';
+	    680 :
+	      #StepToString := 'Transfer PP Left Y-Axis Wait Pos';
+	    690 :
+	      #StepToString := 'JOB[6] Step End';
+	    701 :
+	      #StepToString := 'JOB[7] Condition';
+	    710 :
+	      #StepToString := 'Transfer PP Left X/Z-Axis Hot Press Right Pos';
+	    730 :
+	      #StepToString := 'Transfer PP Left Y-Axis Hot Press Right Pos';
+	    740 :
+	      #StepToString := 'Transfer PP Left Clamp Close';
+	    780 :
+	      #StepToString := 'Transfer PP Left Y-Axis Wait Pos';
+	    790 :
+	      #StepToString := 'JOB[7] Step End';
+	    901 :
+	      #StepToString := 'JOB[9] Condition';
+	    910 :
+	      #StepToString := 'Transfer PP Left X/Z-Axis Hipot & Thickness Pos';
+	    930 :
+	      #StepToString := 'Transfer PP Left Y-Axis Hipot & Thickness Pos';
+	    940 :
+	      #StepToString := 'Transfer PP Left [Lift Up Request] => Hipot & Thickness';
+	    950 :
+	      #StepToString := 'Transfer PP Left Clamp Open';
+	    980 :
+	      #StepToString := 'Transfer PP Left Y-Axis Wait Pos';
+	    981 :
+	      #StepToString := 'Transfer PP Left X/Z-Axis Wait Pos ';
+	    990 :
+	      #StepToString := 'JOB[9] Step End';
+	    9001:
+	      #StepToString := 'Immediate Stop';
+	      
+	    ELSE
+	      #StepToString := 'N/A';
+	  END_CASE;
+	  
+	  // Sequence_2_TransferPnPRight
+	ELSIF #sequenceNumber = 2 THEN
+	  
+	  CASE #StepDINT OF
+	    1:
+	      #StepToString := 'Idle';
+	    101 :
+	      #StepToString := 'JOB[1] Condition';
+	    110 :
+	      #StepToString := 'Transfer PP Right Clamp Open';
+	    130 :
+	      #StepToString := 'Transfer PP Right Clamp Close';
+	    160 :
+	      #StepToString := 'Transfer PP Right Y-Axis Wait Position';
+	    170 :
+	      #StepToString := 'Transfer PP Right Z-Axis Wait Position';
+	    180 :
+	      #StepToString := 'Transfer PP Right X-Axis Wait Position';
+	    190 :
+	      #StepToString := 'JOB[1] Step End';
+	    201 :
+	      #StepToString := 'JOB[2] Condition';
+	    210 :
+	      #StepToString := 'Transfer PP Right X/Z-Axis Hipot & Thickness Pos';
+	    230 :
+	      #StepToString := 'Transfer PP Right Y-Axis Hipot & Thickness Pos';
+	    240 :
+	      #StepToString := 'Transfer PP Right Clamp Close';
+	    280 :
+	      #StepToString := 'Transfer PP Right Y-Axis Wait Pos';
+	    290 :
+	      #StepToString := 'JOB[2] Step End';
+	    301 :
+	      #StepToString := 'JOB[3] Condition';
+	    310 :
+	      #StepToString := 'Transfer PP Right X/Z-Axis Vision Pos';
+	    330 :
+	      #StepToString := 'Transfer PP Right Y-Axis Vision Pos';
+	    340 :
+	      #StepToString := 'Transfer PP Right [Lift Up Request] => Vision Check';
+	    350 :
+	      #StepToString := 'Transfer PP Right Clamp Open';
+	    380 :
+	      #StepToString := 'Transfer PP Right Y-Axis Wait Pos';
+	    390 :
+	      #StepToString := 'JOB[3] Step End';
+	    401 :
+	      #StepToString := 'JOB[4] Condition';
+	    410 :
+	      #StepToString := 'Transfer PP Right X/Z-Axis Vision Pos';
+	    430 :
+	      #StepToString := 'Transfer PP Right Y-Axis Vision Pos';
+	    440 :
+	      #StepToString := 'Transfer PP Right Clamp Close';
+	    480 :
+	      #StepToString := 'Transfer PP Right Y-Axis Wait Pos';
+	    490 :
+	      #StepToString := 'JOB[4] Step End';
+	    501 :
+	      #StepToString := 'JOB[5] Condition';
+	    510 :
+	      #StepToString := 'Transfer PP Right X/Z-Axis Laser Mark Pos';
+	    530 :
+	      #StepToString := 'Transfer PP Right Y-Axis Laser Mark Pos';
+	    540 :
+	      #StepToString := 'Transfer PP Right [Lift Up Request] => Laser Mark';
+	    550 :
+	      #StepToString := 'Transfer PP Right Clamp Open';
+	    580 :
+	      #StepToString := 'Transfer PP Right Y-Axis Wait Pos';
+	    590 :
+	      #StepToString := 'JOB[5] Step End';
+	    601 :
+	      #StepToString := 'JOB[6] Condition';
+	    610 :
+	      #StepToString := 'Transfer PP Right X/Z-Axis Laser Mark Pos';
+	    630 :
+	      #StepToString := 'Transfer PP Right Y-Axis Laser Mark Pos';
+	    640 :
+	      #StepToString := 'Transfer PP Right Clamp Close';
+	    680 :
+	      #StepToString := 'Transfer PP Right Y-Axis Wait Pos';
+	    690 :
+	      #StepToString := 'JOB[6] Step End';
+	    701 :
+	      #StepToString := 'JOB[7] Condition';
+	    710 :
+	      #StepToString := 'Transfer PP Right X/Z-Axis Laser Mark Pos';
+	    730 :
+	      #StepToString := 'Transfer PP Right Y-Axis Laser Mark Pos';
+	    740 :
+	      #StepToString := 'Transfer PP Right [Lift Up Request] => Laser Mark';
+	    750 :
+	      #StepToString := 'Transfer PP Right Clamp Open';
+	    780 :
+	      #StepToString := 'Transfer PP Right Y-Axis Wait Pos';
+	    790 :
+	      #StepToString := 'JOB[7] Step End';
+	    801 :
+	      #StepToString := 'JOB[8] Condition';
+	    810 :
+	      #StepToString := 'Transfer PP Right X/Z-Axis Laser Mark Pos';
+	    830 :
+	      #StepToString := 'Transfer PP Right Y-Axis Laser Mark Pos';
+	    840 :
+	      #StepToString := 'Transfer PP Right Clamp Close';
+	    880 :
+	      #StepToString := 'Transfer PP Right Y-Axis Wait Pos';
+	    890 :
+	      #StepToString := 'JOB[8] Step End';
+	    901 :
+	      #StepToString := 'JOB[9] Condition';
+	    910 :
+	      #StepToString := 'Transfer PP Right X/Z-Axis Weight Check Pos';
+	    930 :
+	      #StepToString := 'Transfer PP Right Y-Axis Weight Check Pos';
+	    931 :
+	      #StepToString := 'Transfer PP Right Z-Axis Weight Check Pos';
+	    940 :
+	      #StepToString := 'Transfer PP Right [Lift Up Request] => Weight Check';
+	    950 :
+	      #StepToString := 'Transfer PP Right Clamp Open';
+	    980 :
+	      #StepToString := 'Transfer PP Right Y-Axis Wait Pos';
+	    981 :
+	      #StepToString := 'Transfer PP Right X/Z-Axis Wait Pos';
+	    990 :
+	      #StepToString := 'JOB[9] Step End';
+	    9001:
+	      #StepToString := 'Immediate Stop';
+	      
+	    ELSE
+	      #StepToString := 'N/A';
+	  END_CASE;
+	  
+	  // Sequence_10_GaugeRnR
+	ELSIF #sequenceNumber = 10 THEN
+	  
+	  CASE #StepDINT OF
+	    1:
+	      #StepToString := 'Idle';
+	    201 :
+	      #StepToString := 'JOB[2] Condition';
+	    210 :
+	      #StepToString := 'Transfer PP Left X/Z-Axis Side Tape Pos';
+	    230 :
+	      #StepToString := 'Transfer PP Left Y-Axis Side Tape Pos';
+	    240 :
+	      #StepToString := 'Transfer PP Left Clamp Close';
+	    241 :
+	      #StepToString := 'Transfer PP Left [Unclamp request] => Side Tape Fix Stage ';
+	    280 :
+	      #StepToString := 'Transfer PP Left Y-Axis Wait Pos';
+	    290 :
+	      #StepToString := 'JOB[2] Step End';
+	    301 :
+	      #StepToString := 'JOB[3] Condition';
+	    310 :
+	      #StepToString := 'Transfer PP Left X/Z-Axis Hipot & Thickness Pos';
+	    330 :
+	      #StepToString := 'Transfer PP Left Y-Axis Hipot & Thickness Pos';
+	    340 :
+	      #StepToString := 'Transfer PP Left [Lift Up Request] => Hipot & Thickness';
+	    350 :
+	      #StepToString := 'Transfer PP Left Clamp Open';
+	    380 :
+	      #StepToString := 'Transfer PP Left Y-Axis Wait Pos';
+	    381 :
+	      #StepToString := 'Transfer PP Left X/Z-Axis Wait Pos ';
+	    390 :
+	      #StepToString := 'JOB[3] Step End';
+	    401 :
+	      #StepToString := 'JOB[4] Condition';
+	    410 :
+	      #StepToString := 'Transfer PP Left X/Z-Axis Hipot & Thickness Pos';
+	    430 :
+	      #StepToString := 'Transfer PP Left Y-Axis Hipot & Thickness Pos';
+	    440 :
+	      #StepToString := 'Transfer PP Left Clamp Close';
+	    480 :
+	      #StepToString := 'Transfer PP Left Y-Axis Wait Pos';
+	    481 :
+	      #StepToString := 'Transfer PP Left X/Z-Axis Wait Pos ';
+	    490 :
+	      #StepToString := 'JOB[4] Step End';
+	    501 :
+	      #StepToString := 'JOB[5] Condition';
+	    510 :
+	      #StepToString := 'Transfer PP Right X/Z-Axis Hipot & Thickness Pos';
+	    530 :
+	      #StepToString := 'Transfer PP Right Y-Axis Hipot & Thickness Pos';
+	    540 :
+	      #StepToString := 'Transfer PP Right Clamp Close';
+	    580 :
+	      #StepToString := 'Transfer PP Right Y-Axis Wait Pos';
+	    590 :
+	      #StepToString := 'JOB[5] Step End';
+	    601 :
+	      #StepToString := 'JOB[6] Condition';
+	    610 :
+	      #StepToString := 'Transfer PP Right X/Z-Axis Vision Pos';
+	    630 :
+	      #StepToString := 'Transfer PP Right Y-Axis Vision Pos';
+	    650 :
+	      #StepToString := 'Transfer PP Right Clamp Open';
+	    640 :
+	      #StepToString := 'Transfer PP Right [Lift Up Request] => Vision Check';
+	    680 :
+	      #StepToString := 'Transfer PP Right Y-Axis Wait Pos';
+	    690 :
+	      #StepToString := 'JOB[6] Step End';
+	    701 :
+	      #StepToString := 'JOB[7] Condition';
+	    710 :
+	      #StepToString := 'Transfer PP Right X/Z-Axis Vision Pos';
+	    730 :
+	      #StepToString := 'Transfer PP Right Y-Axis Vision Pos';
+	    740 :
+	      #StepToString := 'Transfer PP Right Clamp Close';
+	    780 :
+	      #StepToString := 'Transfer PP Right Y-Axis Wait Pos';
+	    790 :
+	      #StepToString := 'JOB[7] Step End';
+	    801 :
+	      #StepToString := 'JOB[8] Condition';
+	    810 :
+	      #StepToString := 'Transfer PP Right X/Z-Axis Weight Check Pos';
+	    830 :
+	      #StepToString := 'Transfer PP Right Y-Axis Weight Check Pos';
+	    831 :
+	      #StepToString := 'Transfer PP Right Z-Axis Weight Check Pos';
+	    840 :
+	      #StepToString := 'Transfer PP Right [Lift Up Request] => Weight Check';
+	    850 :
+	      #StepToString := 'Transfer PP Right Clamp Open';
+	    880 :
+	      #StepToString := 'Transfer PP Right Y-Axis Wait Pos';
+	    881 :
+	      #StepToString := 'Transfer PP Right X/Z-Axis Wait Pos';
+	    890 :
+	      #StepToString := 'JOB[8] Step End';
+	    901 :
+	      #StepToString := 'JOB[9] Condition';
+	    910 :
+	      #StepToString := 'Transfer PP Right X/Z-Axis Weight Check Pos';
+	    930 :
+	      #StepToString := 'Transfer PP Right Y-Axis Weight Pos';
+	    940 :
+	      #StepToString := 'Transfer PP Right Clamp Close';
+	    980 :
+	      #StepToString := 'Transfer PP Right Y-Axis Wait Pos';
+	    990 :
+	      #StepToString := 'JOB[9] Step End';
+	    9001:
+	      #StepToString := 'Immediate Stop';
+	      
+	    ELSE
+	      #StepToString := 'N/A';
+	END_CASE;
+	ELSE
+	    #StepToString := 'N/A';
+	END_IF;
+END_FUNCTION
+END_NAMESPACE
+

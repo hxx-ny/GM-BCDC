@@ -1,0 +1,68 @@
+﻿FUNCTION "PrameterMove_Legacy" : Void
+{ S7_Optimized_Access := 'TRUE' ; Published := 'FALSE' }
+VERSION : 0.1
+   VAR_TEMP 
+      tempIndex : Int;
+   END_VAR
+
+
+BEGIN
+	REGION PLC → HMI
+	    
+	    // Recipe
+	    // IF "HMI_Interface_Parameter".RecipeButton.Read THEN
+	    //      "RecipeParameter".currentRecipeName := Unit1.EmNodes.unitRecipe.currentRecipeName;
+	    //      "RecipeParameter".currentRecipeID := Unit1.EmNodes.unitRecipe.currentRecipeID;
+	    //     "RecipeParameter".unitRecipe := Unit1.EmNodes.unitRecipe.unitRecipe;
+	       
+	    // END_IF;
+	    
+	    // FAT Parameter
+	(*    "HMI_Interface_Parameter".FATModeInterface.HoursTest.ProcessValue.ProcTimeLeft := Unit1.EmNodes.FATModeInterface.HoursTest.ProcessValue.ProcTimeLeft;
+	    "HMI_Interface_Parameter".FATModeInterface.Capability.ProcessValue.CapabilityCount := Unit1.EmNodes.FATModeInterface.Capability.ProcessValue.CapabilityCount;
+	    "HMI_Interface_Parameter".FATModeInterface.Sampling.ProcessValue.CellCount := Unit1.EmNodes.FATModeInterface.Sampling.ProcessValue.CellCount; *)
+	    
+	    Unit1.EmNodes.FATModeInterface.HoursTest.SetValue.SelectHours_SetValue := "HMI_Interface_Parameter".FATModeInterface.HoursTest.SetValue.SelectHours_SetValue;
+	    Unit1.EmNodes.FATModeInterface.Capability.SetValue.SelectCycle_SetValue := "HMI_Interface_Parameter".FATModeInterface.Capability.SetValue.SelectCycle_SetValue;
+	    Unit1.EmNodes.FATModeInterface.Sampling.SetValue.SelectCount_SetValue := "HMI_Interface_Parameter".FATModeInterface.Sampling.SetValue.SelectCount_SetValue;
+	    
+	(*    "HMI_Interface_Parameter".FATModeInterface.HoursTest.ProcessValue.SelectHours_ProcessValue := Unit1.EmNodes.FATModeInterface.HoursTest.ProcessValue.SelectHours_ProcessValue;
+	    "HMI_Interface_Parameter".FATModeInterface.Capability.ProcessValue.SelectCycle_ProcessValue := Unit1.EmNodes.FATModeInterface.Capability.ProcessValue.SelectCycle_ProcessValue;
+	    "HMI_Interface_Parameter".FATModeInterface.Sampling.ProcessValue.SelectCount_ProcessValue := Unit1.EmNodes.FATModeInterface.Sampling.ProcessValue.SelectCount_ProcessValue; *)
+	END_REGION
+	
+	REGION HMI → PLC
+	    
+	    // Select equipment
+	    // Unit1.EmNodes.unitRecipe.processUnitNo := "HMI_Interface_Parameter".ProcessUnitSelect;
+	    // Unit1.EmNodes.unitRecipe.selectedRecipeTypeID := "RecipeParameter".selectedRecipeTypeID;
+	    // Unit1.EmNodes.unitRecipe.selectedRecipeID := "RecipeParameter".selectedRecipeID;
+	    
+	    // Recipe
+	    //IF "HMI_Interface_Parameter".RecipeButton.Apply THEN
+	(*        // Unit1.EmNodes.unitRecipe.currentRecipeName := "RecipeParameter".currentRecipeName;
+	        // Unit1.EmNodes.unitRecipe.currentRecipeID := "RecipeParameter".currentRecipeID;
+	        //Unit1.EmNodes.unitRecipe.unitRecipe := "RecipeParameter".unitRecipe;
+	        
+	        //이 외 레시피는 Program(SV,PV 비교) 및 UDT 수정 필요.
+	        
+	        // Parameter
+	        //Unit or Em parameter := "HMI_Interface_Parameter".Distance[1]."Process Value" := "HMI_Interface_Parameter".Distance[1]."Set Value";
+	        //...
+	        
+	        
+	        // FAT SV -> PV
+	        
+	        Unit1.EmNodes.FATModeInterface.HoursTest.ProcessValue.SelectHours_ProcessValue := Unit1.EmNodes.FATModeInterface.HoursTest.SetValue.SelectHours_SetValue;
+	        Unit1.EmNodes.FATModeInterface.Capability.ProcessValue.SelectCycle_ProcessValue := Unit1.EmNodes.FATModeInterface.Capability.SetValue.SelectCycle_SetValue;
+	        Unit1.EmNodes.FATModeInterface.Sampling.ProcessValue.SelectCount_ProcessValue := Unit1.EmNodes.FATModeInterface.Sampling.SetValue.SelectCount_SetValue; *)
+	    //END_IF;
+	    
+	    // FAT Parameter
+	(*    Unit1.EmNodes.FATModeSelect.HoursTestMode := "HMI_Interface_Parameter".FATModeSelect.HoursTestMode;
+	    Unit1.EmNodes.FATModeSelect.CapabilityMode := "HMI_Interface_Parameter".FATModeSelect.CapabilityMode;
+	    Unit1.EmNodes.FATModeSelect.SamplingMode := "HMI_Interface_Parameter".FATModeSelect.SamplingMode; *)
+	    
+	END_REGION
+END_FUNCTION
+

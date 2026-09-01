@@ -1,0 +1,91 @@
+﻿NAMESPACE Unit1.Em6
+FUNCTION "StepToString" : String
+{ S7_Optimized_Access := 'TRUE' ; Published := 'FALSE' }
+VERSION : 0.1
+   VAR_INPUT 
+      StepDINT : DInt;   // DINT value of the step
+      sequenceNumber : Int;
+   END_VAR
+
+
+BEGIN
+	// Translates the sequence step number to the step name
+	// This is an example and needs to be adjusted for the real use case
+	
+	IF #sequenceNumber = 1 THEN
+	  CASE #StepDINT OF
+	    1:
+	      #StepToString := 'Idle';
+	    101:
+	      #StepToString := 'JOB[1] Condition';
+	    110:
+	      #StepToString := 'Servo Press Reference Home Pos';
+	    120:
+	      #StepToString := 'Spare';
+	    130:
+	      #StepToString := 'Spare';
+	    140:
+	      #StepToString := 'Spare';
+	    160:
+	      #StepToString := 'Stage Lift Down';
+	    170:
+	      #StepToString := 'Spare';
+	    190:
+	      #StepToString := 'JOB[1] Step End';
+	    201:
+	      #StepToString := 'JOB[2] Condition';
+	    210:
+	      #StepToString := 'Hot Press Left Loading Request => Transfer PP Left';
+	    220:
+	      #StepToString := 'Spare';
+	    230:
+	      #StepToString := 'Stage Lift Up';
+	    240:
+	      #StepToString := 'Hot Press Left Loading Check => Transfer PP Left';
+	    250:
+	      #StepToString := 'Spare';
+	    290:
+	      #StepToString := 'JOB[2] Step End';
+	    301:
+	      #StepToString := 'JOB[3] Condition';
+	    310:
+	      #StepToString := 'Stage Lift Down';
+	    311:
+	      #StepToString := 'Stage JR Detection Check';
+	    320:
+	      #StepToString := 'Spare';
+	    330:
+	      #StepToString := 'Hot Press Start';
+	    331:
+	      #StepToString := 'Hot Press Result';
+	    380:
+	      #StepToString := 'Hot Press Home Return';
+	    390:
+	      #StepToString := 'JOB[3] Step End';
+	    401:
+	      #StepToString := 'JOB[4] Condition';
+	    410:
+	      #StepToString := 'Spare';
+	    420:
+	      #StepToString := 'Stage Lift Up';
+	    430:
+	      #StepToString := 'Hot Press Left Unloading Request => Transfer PP Left';
+	    431:
+	      #StepToString := 'Hot Press Left Unloading Check => Transfer PP Left';
+	    480:
+	      #StepToString := 'Stage Lift Down';
+	    481:
+	      #StepToString := 'Spare';
+	    490:
+	      #StepToString := 'JOB[4] Step End';
+	    9001:
+	      #StepToString := 'Immediate Stop';
+	    ELSE
+	      #StepToString := 'N/A';
+	END_CASE;
+	ELSE
+	    #StepToString := 'N/A';
+	END_IF;
+END_FUNCTION
+END_NAMESPACE
+

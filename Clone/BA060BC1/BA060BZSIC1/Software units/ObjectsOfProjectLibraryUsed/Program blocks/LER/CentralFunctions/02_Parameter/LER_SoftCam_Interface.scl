@@ -1,0 +1,85 @@
+﻿FUNCTION_BLOCK "LER_SoftCam_Interface"
+{ S7_Optimized_Access := 'TRUE' ; Published := 'TRUE' }
+VERSION : 0.1
+   VAR_INPUT 
+      unitName : WString;
+      axis { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : DB_ANY;
+      cmSetPositions : Array[0..15] of "LBC_typeAxis64PosSetPosition";
+      cmdConfigPosAbsolute : "LAxisCtrl_typePosAbsolute";
+   END_VAR
+
+   VAR_IN_OUT 
+      softCam : "LER_typeSoftCamInterface";
+   END_VAR
+
+   VAR 
+      statActualPosition : LReal;
+   END_VAR
+
+   VAR_TEMP 
+      tempRefPosAxis {InstructionName := 'TO_PositioningAxis'; LibVersion := '9.0'} : REF_TO TO_PositioningAxis;   // Temporary reference of the technology object type TO_PositioningAxis
+      tempRefSyncAxis {InstructionName := 'TO_SynchronousAxis'; LibVersion := '9.0'} : REF_TO TO_SynchronousAxis;   // Temporary reference of the technology object type TO_SyncAxis
+      tempLoopCount : Int;
+   END_VAR
+
+
+BEGIN
+	REGION BLOCK INFO HEADER
+	    
+	    
+	    
+	END_REGION
+	
+	REGION DESCRIPTION
+	    
+	    
+	    
+	END_REGION DESCRIPTION
+	
+	REGION Read out actual position
+	    // Check the axis type
+	    #tempRefSyncAxis ?= #axis;
+	    #tempRefPosAxis ?= #axis;
+	    
+	    IF (#tempRefSyncAxis <> NULL) THEN
+	        //Axis type TOSynch. Axis
+	        #statActualPosition := #tempRefSyncAxis^.ActualPosition;
+	    ELSIF (#tempRefPosAxis <> NULL) THEN
+	        //Axis type is TO_PositioningAxis 
+	        #statActualPosition := #tempRefPosAxis^.ActualPosition;
+	    END_IF;
+	END_REGION
+	
+	REGION Call_SoftCam
+	    // Target & Actual Position Mapping
+	    #softCam.TargetPosition := #cmdConfigPosAbsolute.position;
+	    #softCam.ActualPosition := #statActualPosition;
+	    
+	    FOR #tempLoopCount := 0 TO 8 DO
+	        // Set Pos Mapping
+	        #softCam.position[#tempLoopCount].ProcessValue.SetPos := #cmSetPositions[#tempLoopCount].position;
+	        
+	        // Postive PV & Negative PV Mapping
+	        #softCam.position[#tempLoopCount].ProcessValue.Postive := #softCam.position[#tempLoopCount].SetValue.Postive;
+	        #softCam.position[#tempLoopCount].ProcessValue.Negative := #softCam.position[#tempLoopCount].SetValue.Negative;
+	        
+	        // Call SoftCam
+	//        "LER_SoftCam"(postivePosition := #softCam.position[#tempLoopCount].ProcessValue.SetPos + #softCam.position[#tempLoopCount].ProcessValue.Postive,
+	//                      negativePosition := #softCam.position[#tempLoopCount].ProcessValue.SetPos - #softCam.position[#tempLoopCount].ProcessValue.Negative,
+	//                      enable:=_bool_in_,
+	//                      actualPosition := #statActualPosition,
+	//                      namePosition := #cmSetPositions[#tempLoopCount].name,
+	//                      inPos => #softCam.position[#tempLoopCount].ProcessValue.inPos,
+	//                      isBefore => #softCam.position[#tempLoopCount].ProcessValue.isBefore,
+	//                      isAfter => #softCam.position[#tempLoopCount].ProcessValue.isAfter,
+	//                      PosName => #softCam.position[#tempLoopCount].ProcessValue.PosName,
+	//                      configurationSetPositions:=_array_of_lbc_typeaxis64possetposition_in_,
+	//                      range:=_real_in_,
+	//                      moduleInterface=>_ler_typesoftcamrelation_out_,
+	//                      controlNode=>_ler_typesoftcamrelation_out_);
+	    END_FOR;
+	END_REGION
+	
+	
+END_FUNCTION_BLOCK
+
