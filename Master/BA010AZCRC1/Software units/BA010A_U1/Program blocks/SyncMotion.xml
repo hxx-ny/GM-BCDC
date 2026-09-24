@@ -1,0 +1,409 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Document>
+  <Engineering version="V20" />
+  <SW.Blocks.GlobalDB ID="0">
+    <AttributeList>
+      <Access>Published</Access>
+      <Interface><Sections xmlns="http://www.siemens.com/automation/Openness/SW/Interface/v5">
+  <Section Name="Static">
+    <Member Name="MotionToPLC" Datatype="&quot;LER_typeMotionToPLC&quot;">
+      <Sections>
+        <Section Name="None">
+          <Member Name="OutputInterface" Datatype="&quot;LER_typeOutputInterface&quot;">
+            <Sections>
+              <Section Name="None">
+                <Member Name="FeedingRollerMove" Datatype="Bool">
+                  <Comment>
+                    <MultiLanguageText Lang="en-US">Output Cam</MultiLanguageText>
+                  </Comment>
+                </Member>
+                <Member Name="CutConveyorMove" Datatype="Bool">
+                  <Comment>
+                    <MultiLanguageText Lang="en-US">Output Cam</MultiLanguageText>
+                  </Comment>
+                </Member>
+                <Member Name="NGKickerMove" Datatype="Bool">
+                  <Comment>
+                    <MultiLanguageText Lang="en-US">Output Cam</MultiLanguageText>
+                  </Comment>
+                </Member>
+                <Member Name="PassKickerMove" Datatype="Bool">
+                  <Comment>
+                    <MultiLanguageText Lang="en-US">Output Cam</MultiLanguageText>
+                  </Comment>
+                </Member>
+                <Member Name="CutterMove" Datatype="Bool">
+                  <Comment>
+                    <MultiLanguageText Lang="en-US">Output Cam</MultiLanguageText>
+                  </Comment>
+                </Member>
+                <Member Name="AutoBusy" Datatype="Bool">
+                  <Comment>
+                    <MultiLanguageText Lang="en-US">Motion Auto Busy</MultiLanguageText>
+                  </Comment>
+                </Member>
+                <Member Name="AutoStandBy" Datatype="Bool">
+                  <Comment>
+                    <MultiLanguageText Lang="en-US">Motion AutoStandBy(Wait)</MultiLanguageText>
+                  </Comment>
+                </Member>
+              </Section>
+            </Sections>
+          </Member>
+        </Section>
+      </Sections>
+    </Member>
+    <Member Name="PLCToMotion" Datatype="&quot;LER_typePLCToMotion&quot;">
+      <Sections>
+        <Section Name="None">
+          <Member Name="Commands" Datatype="&quot;LER_typeCommands&quot;">
+            <Sections>
+              <Section Name="None">
+                <Member Name="Dancer" Datatype="&quot;LER_typeCommandsDancer&quot;">
+                  <Sections>
+                    <Section Name="None">
+                      <Member Name="Enable" Datatype="Bool">
+                        <Comment>
+                          <MultiLanguageText Lang="en-US">Command는 계속 살릴 필요 없음</MultiLanguageText>
+                        </Comment>
+                      </Member>
+                    </Section>
+                  </Sections>
+                </Member>
+                <Member Name="ReelCutMain" Datatype="&quot;LER_typeCommandsReelCutMain&quot;">
+                  <Sections>
+                    <Section Name="None">
+                      <Member Name="OneCell" Datatype="Bool">
+                        <Comment>
+                          <MultiLanguageText Lang="en-US">원 피딩 명령 (탭정위치 잡기용)</MultiLanguageText>
+                        </Comment>
+                      </Member>
+                      <Member Name="FullStep" Datatype="Bool">
+                        <Comment>
+                          <MultiLanguageText Lang="en-US">전체 1Cycle</MultiLanguageText>
+                        </Comment>
+                      </Member>
+                      <Member Name="Auto" Datatype="Bool">
+                        <Comment>
+                          <MultiLanguageText Lang="en-US">전체 Auto</MultiLanguageText>
+                        </Comment>
+                      </Member>
+                      <Member Name="SemiStep" Datatype="Bool">
+                        <Comment>
+                          <MultiLanguageText Lang="en-US">컨베어 한피치 이동 명령 (리워크 + 잔량배출)</MultiLanguageText>
+                        </Comment>
+                      </Member>
+                    </Section>
+                  </Sections>
+                </Member>
+                <Member Name="MeasureIMain" Datatype="&quot;LER_typeCommandsMeasureMain&quot;">
+                  <Sections>
+                    <Section Name="None">
+                      <Member Name="Enable" Datatype="Bool">
+                        <Comment>
+                          <MultiLanguageText Lang="en-US">상시로 True로 시켜놔야함</MultiLanguageText>
+                        </Comment>
+                      </Member>
+                    </Section>
+                  </Sections>
+                </Member>
+              </Section>
+            </Sections>
+          </Member>
+          <Member Name="Parameter" Datatype="&quot;LER_typeParameter&quot;">
+            <Sections>
+              <Section Name="None">
+                <Member Name="ReelCutMain" Datatype="&quot;LER_typeParameterReelCutMain&quot;">
+                  <Sections>
+                    <Section Name="None">
+                      <Member Name="OneCell" Datatype="&quot;LER_typeParameterReelCutMainOneCell&quot;">
+                        <Sections>
+                          <Section Name="None">
+                            <Member Name="JogSpeed" Datatype="LReal">
+                              <Comment>
+                                <MultiLanguageText Lang="en-US">메뉴얼 동작이라서 조그 스피드로 돌음, 셀 정위치 잡는 용도라서 탭센서 감지 될때까지 구동함</MultiLanguageText>
+                              </Comment>
+                            </Member>
+                          </Section>
+                        </Sections>
+                      </Member>
+                      <Member Name="StepAuto" Datatype="&quot;LER_typeParameterReelCutMainStepAuto&quot;">
+                        <Sections>
+                          <Section Name="None">
+                            <Member Name="CellCount" Datatype="DInt">
+                              <Comment>
+                                <MultiLanguageText Lang="en-US">스택 둘중에 최소값 move</MultiLanguageText>
+                              </Comment>
+                            </Member>
+                            <Member Name="MaxErrorCount" Datatype="DInt">
+                              <Comment>
+                                <MultiLanguageText Lang="en-US">미사용 할거임</MultiLanguageText>
+                              </Comment>
+                            </Member>
+                            <Member Name="KickerDistance" Datatype="LReal">
+                              <Comment>
+                                <MultiLanguageText Lang="en-US">키커 한번 동작거리</MultiLanguageText>
+                              </Comment>
+                            </Member>
+                            <Member Name="StackDelayLimit" Datatype="Time">
+                              <Comment>
+                                <MultiLanguageText Lang="en-US">Stack1StartRequest 또는 Stack2StartRequest 둘중 하나라도 True일때 딜레이 시간 이후에 출발할건지 값</MultiLanguageText>
+                              </Comment>
+                            </Member>
+                            <Member Name="NoCutUse" Datatype="Bool">
+                              <Comment>
+                                <MultiLanguageText Lang="en-US">1= 컷팅 안한다, 0= 컷팅한다</MultiLanguageText>
+                              </Comment>
+                            </Member>
+                            <Member Name="Stack1StartRequest" Datatype="Bool">
+                              <Comment>
+                                <MultiLanguageText Lang="en-US">스택 출발 요청 신호</MultiLanguageText>
+                              </Comment>
+                            </Member>
+                            <Member Name="Stack2StartRequest" Datatype="Bool">
+                              <Comment>
+                                <MultiLanguageText Lang="en-US">스택 출발 요청 신호</MultiLanguageText>
+                              </Comment>
+                            </Member>
+                          </Section>
+                        </Sections>
+                      </Member>
+                      <Member Name="Calculate" Datatype="&quot;LER_typeParameterReelCutMainCalculate&quot;">
+                        <Sections>
+                          <Section Name="None">
+                            <Member Name="CutterDistances" Datatype="LReal">
+                              <Comment>
+                                <MultiLanguageText Lang="en-US">커터 한번 동작 거리</MultiLanguageText>
+                              </Comment>
+                            </Member>
+                            <Member Name="VisionDistances" Datatype="LReal">
+                              <Comment>
+                                <MultiLanguageText Lang="en-US">비전 한번 동작거리</MultiLanguageText>
+                              </Comment>
+                            </Member>
+                            <Member Name="VisionTime" Datatype="LReal">
+                              <Comment>
+                                <MultiLanguageText Lang="en-US">비전 서보 다운후 대기 시간</MultiLanguageText>
+                              </Comment>
+                            </Member>
+                          </Section>
+                        </Sections>
+                      </Member>
+                    </Section>
+                  </Sections>
+                </Member>
+                <Member Name="MeasureIMain" Datatype="&quot;LER_typeParameterMeasureMain&quot;">
+                  <Sections>
+                    <Section Name="None">
+                      <Member Name="Tab" Datatype="Struct">
+                        <Member Name="CutDistances" Datatype="LReal">
+                          <Comment>
+                            <MultiLanguageText Lang="en-US">탭센서 부터 커팅위치 까지 거리값</MultiLanguageText>
+                          </Comment>
+                        </Member>
+                      </Member>
+                      <Member Name="Joint" Datatype="Struct">
+                        <Member Name="JointFilterDistance" Datatype="LReal">
+                          <Comment>
+                            <MultiLanguageText Lang="en-US">이음매 테이프 센서 OnOff 최소 크기값(헌팅 방지용)</MultiLanguageText>
+                          </Comment>
+                        </Member>
+                        <Member Name="JointSensorToCutDistance" Datatype="LReal">
+                          <Comment>
+                            <MultiLanguageText Lang="en-US">이음매 테이프 센서부터 커팅위치 거리값</MultiLanguageText>
+                          </Comment>
+                        </Member>
+                      </Member>
+                      <Member Name="Cell" Datatype="Struct">
+                        <Member Name="VisionUnUse" Datatype="Bool">
+                          <Comment>
+                            <MultiLanguageText Lang="en-US">True = 비전 판정 데이터 안봄 (서보는 동작함)</MultiLanguageText>
+                          </Comment>
+                        </Member>
+                        <Member Name="NGKickerUnUse" Datatype="Bool">
+                          <Comment>
+                            <MultiLanguageText Lang="en-US">True = 무조건 PASS 키커로 침</MultiLanguageText>
+                          </Comment>
+                        </Member>
+                        <Member Name="PassKickerUnUse" Datatype="Bool">
+                          <Comment>
+                            <MultiLanguageText Lang="en-US">True = 무조건 NG 키커로 침</MultiLanguageText>
+                          </Comment>
+                        </Member>
+                        <Member Name="AllNGMode" Datatype="Bool">
+                          <Comment>
+                            <MultiLanguageText Lang="en-US">True = 샘플링 및 케파빌리티 용도</MultiLanguageText>
+                          </Comment>
+                        </Member>
+                        <Member Name="CutToNgKickerDistance" Datatype="LReal">
+                          <Comment>
+                            <MultiLanguageText Lang="en-US">커팅위치 부터 NG 키커까지 거리 값</MultiLanguageText>
+                          </Comment>
+                        </Member>
+                      </Member>
+                      <Member Name="Vision" Datatype="Struct">
+                        <Member Name="VisionSensor" Datatype="Bool">
+                          <Comment>
+                            <MultiLanguageText Lang="en-US">실제 비전 센서</MultiLanguageText>
+                          </Comment>
+                        </Member>
+                        <Member Name="VisionOK" Datatype="Bool">
+                          <Comment>
+                            <MultiLanguageText Lang="en-US">비전 판정</MultiLanguageText>
+                          </Comment>
+                        </Member>
+                        <Member Name="VisionNG" Datatype="Bool">
+                          <Comment>
+                            <MultiLanguageText Lang="en-US">비전 판정</MultiLanguageText>
+                          </Comment>
+                        </Member>
+                        <Member Name="CutToVisionSensorDistance" Datatype="LReal">
+                          <Comment>
+                            <MultiLanguageText Lang="en-US">커팅위치 부터 vision 센서까지 거리 값</MultiLanguageText>
+                          </Comment>
+                        </Member>
+                        <Member Name="VisionTime" Datatype="Time">
+                          <Comment>
+                            <MultiLanguageText Lang="en-US">비전 판정 대기시간 (시간 지나면 NG)</MultiLanguageText>
+                          </Comment>
+                        </Member>
+                      </Member>
+                      <Member Name="NG" Datatype="Struct">
+                        <Member Name="NGSensor" Datatype="Bool">
+                          <Comment>
+                            <MultiLanguageText Lang="en-US">실제 NG 키커 센서</MultiLanguageText>
+                          </Comment>
+                        </Member>
+                      </Member>
+                      <Member Name="OK" Datatype="Struct">
+                        <Member Name="OKSensor" Datatype="Bool">
+                          <Comment>
+                            <MultiLanguageText Lang="en-US">실제 Pass 키커 센서</MultiLanguageText>
+                          </Comment>
+                        </Member>
+                      </Member>
+                    </Section>
+                  </Sections>
+                </Member>
+              </Section>
+            </Sections>
+          </Member>
+        </Section>
+      </Sections>
+    </Member>
+  </Section>
+</Sections></Interface>
+      <MemoryReserve>100</MemoryReserve>
+      <Name>MotionNodes</Name>
+      <Namespace>Unit1</Namespace>
+      <Number>313</Number>
+      <ProgrammingLanguage>DB</ProgrammingLanguage>
+    </AttributeList>
+    <ObjectList>
+      <MultilingualText ID="1" CompositionName="Comment">
+        <ObjectList>
+          <MultilingualTextItem ID="2" CompositionName="Items">
+            <AttributeList>
+              <Culture>de-DE</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="3" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-GB</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="4" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-US</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="5" CompositionName="Items">
+            <AttributeList>
+              <Culture>es-ES</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="6" CompositionName="Items">
+            <AttributeList>
+              <Culture>fr-FR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="7" CompositionName="Items">
+            <AttributeList>
+              <Culture>it-IT</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="8" CompositionName="Items">
+            <AttributeList>
+              <Culture>ko-KR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="9" CompositionName="Items">
+            <AttributeList>
+              <Culture>zh-CN</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+        </ObjectList>
+      </MultilingualText>
+      <MultilingualText ID="A" CompositionName="Title">
+        <ObjectList>
+          <MultilingualTextItem ID="B" CompositionName="Items">
+            <AttributeList>
+              <Culture>de-DE</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="C" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-GB</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="D" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-US</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="E" CompositionName="Items">
+            <AttributeList>
+              <Culture>es-ES</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="F" CompositionName="Items">
+            <AttributeList>
+              <Culture>fr-FR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="10" CompositionName="Items">
+            <AttributeList>
+              <Culture>it-IT</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="11" CompositionName="Items">
+            <AttributeList>
+              <Culture>ko-KR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="12" CompositionName="Items">
+            <AttributeList>
+              <Culture>zh-CN</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+        </ObjectList>
+      </MultilingualText>
+    </ObjectList>
+  </SW.Blocks.GlobalDB>
+</Document>

@@ -1,0 +1,4931 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Document>
+  <Engineering version="V20" />
+  <SW.Blocks.FB ID="0">
+    <AttributeList>
+      <Access>Published</Access>
+      <HeaderAuthor>(department/personInCharge/contact)</HeaderAuthor>
+      <HeaderFamily>(family)</HeaderFamily>
+      <HeaderVersion>0.0.0.0</HeaderVersion>
+      <Interface><Sections xmlns="http://www.siemens.com/automation/Openness/SW/Interface/v5">
+  <Section Name="Input">
+    <Member Name="enable" Datatype="Bool">
+      <Comment>
+        <MultiLanguageText Lang="en-US">TRUE: Enable functionality of FB</MultiLanguageText>
+      </Comment>
+    </Member>
+    <Member Name="enableVelocityInterface" Datatype="Bool">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <Comment>
+        <MultiLanguageText Lang="de-DE">TRUE: Freigabe der Geschwindigkeitssollwerte  Änderungen in der "referenceVelocity" oder den Dynamiken in "motionVector" werden automatisch erkannt</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">TRUE: Enable velocity setpoints  Changes in the "referenceVelocity" or the dynamics in "motionVector" are detected automatically</MultiLanguageText>
+      </Comment>
+    </Member>
+    <Member Name="writeTorqueLimit" Datatype="Bool">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <Comment>
+        <MultiLanguageText Lang="de-DE">TRUE: Aktiviere Drehmomentengrenzen</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">TRUE: Enable torque limits</MultiLanguageText>
+      </Comment>
+    </Member>
+    <Member Name="writeAdditiveTorque" Datatype="Bool">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <Comment>
+        <MultiLanguageText Lang="de-DE">TRUE: Aktiviere Zusatzdrehmoment</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">TRUE: Enable additive torque</MultiLanguageText>
+      </Comment>
+    </Member>
+    <Member Name="positionControlled" Datatype="Bool">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <Comment>
+        <MultiLanguageText Lang="de-DE">TRUE: Starte Geschwindigkeitsbefehl lagegeregelt  FALSE:  Starte Geschwindigkeitsbefehl drehzahlgeregelt</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">TRUE: Enable moveVelocity position controlled  FALSE: Enable moveVelocity speed controlled</MultiLanguageText>
+      </Comment>
+    </Member>
+    <Member Name="referenceVelocity" Datatype="LReal">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <Comment>
+        <MultiLanguageText Lang="de-DE">Bezugsgeschwindigkeit für Eingang "override" = 100%</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">Reference velocity for input "override" = 100%</MultiLanguageText>
+      </Comment>
+    </Member>
+    <Member Name="override" Datatype="LReal">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <Comment>
+        <MultiLanguageText Lang="de-DE">[%] Geschwindigkeits-Override  override*referenceVelocity = setspeed (0-200%)</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">[%] Velocity override  override*referenceVelocity = setspeed (0-200%)</MultiLanguageText>
+      </Comment>
+    </Member>
+  </Section>
+  <Section Name="Output">
+    <Member Name="valid" Datatype="Bool">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <Comment>
+        <MultiLanguageText Lang="en-US">TRUE: Valid set of output values available at the FB</MultiLanguageText>
+      </Comment>
+    </Member>
+    <Member Name="busy" Datatype="Bool">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <Comment>
+        <MultiLanguageText Lang="en-US">TRUE: FB is not finished and new output values can be expected</MultiLanguageText>
+      </Comment>
+    </Member>
+    <Member Name="error" Datatype="Bool">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <Comment>
+        <MultiLanguageText Lang="en-US">TRUE: An error occurred during the execution of the FB</MultiLanguageText>
+      </Comment>
+    </Member>
+    <Member Name="status" Datatype="DWord">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <Comment>
+        <MultiLanguageText Lang="en-US">16#0000 - 16#7FFF: Status of the FB, 16#8000 - 16#FFFF: Error identification</MultiLanguageText>
+      </Comment>
+      <StartValue ConstantName="#STATUS_NO_CALL" />
+    </Member>
+    <Member Name="subfunctionState" Datatype="Word">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <Comment>
+        <MultiLanguageText Lang="de-DE">Fehler-ID der MC-Befehler (weitere Diagnose)</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">ErrorIDs of motion control commands (Further diagnostic)</MultiLanguageText>
+      </Comment>
+    </Member>
+    <Member Name="MCInterfaceActive" Datatype="Bool">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <Comment>
+        <MultiLanguageText Lang="de-DE">TRUE: Ein MC Befehl ist aktic (MoveVelocity oder Stop)</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">TRUE: A MC command is active (MoveVelocity or stop)</MultiLanguageText>
+      </Comment>
+    </Member>
+    <Member Name="additiveTorqueActive" Datatype="Bool">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <Comment>
+        <MultiLanguageText Lang="de-DE">TRUE: Zusatzdrehmoment ist aktiv</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">TRUE: Additive torque is active</MultiLanguageText>
+      </Comment>
+    </Member>
+    <Member Name="torqueLimitActive" Datatype="Bool">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <Comment>
+        <MultiLanguageText Lang="de-DE">TRUE: Drehmomentenbegrenzung ist aktiv</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">TRUE: Torque limitation is active</MultiLanguageText>
+      </Comment>
+    </Member>
+  </Section>
+  <Section Name="InOut">
+    <Member Name="axis" Datatype="DB_ANY">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <Comment>
+        <MultiLanguageText Lang="de-DE">Achsreferenz</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">TO reference of axis</MultiLanguageText>
+      </Comment>
+    </Member>
+    <Member Name="motionVector" Datatype="&quot;LConSMC_typeActualDynamics&quot;">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">Aktiver Bewegungsvektor</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">Active motion vector</MultiLanguageText>
+      </Comment>
+    </Member>
+    <Member Name="torqueValues" Datatype="&quot;LConSMC_typeTorqueValues&quot;">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">Aktive Drehmomentenwerte </MultiLanguageText>
+        <MultiLanguageText Lang="en-US">Active torque values</MultiLanguageText>
+      </Comment>
+    </Member>
+  </Section>
+  <Section Name="Static">
+    <Member Name="statEnableOld" Datatype="Bool">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <Comment>
+        <MultiLanguageText Lang="en-US">Old value of 'enable' input for edge detection</MultiLanguageText>
+      </Comment>
+    </Member>
+    <Member Name="statValid" Datatype="Bool">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <Comment>
+        <MultiLanguageText Lang="en-US">Static value for output 'valid'</MultiLanguageText>
+      </Comment>
+    </Member>
+    <Member Name="statBusy" Datatype="Bool">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <Comment>
+        <MultiLanguageText Lang="en-US">Static value for output 'busy'</MultiLanguageText>
+      </Comment>
+    </Member>
+    <Member Name="statError" Datatype="Bool">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <Comment>
+        <MultiLanguageText Lang="en-US">Static value for output 'error'</MultiLanguageText>
+      </Comment>
+    </Member>
+    <Member Name="statErrorUserCleared" Datatype="Bool">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <Comment>
+        <MultiLanguageText Lang="en-US">Error occurred that can only be solved by user; rising edge at enable input necessary</MultiLanguageText>
+      </Comment>
+    </Member>
+    <Member Name="statErrorAutoCleared" Datatype="Bool">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <Comment>
+        <MultiLanguageText Lang="en-US">Error occurred that can be acknowledged by FB</MultiLanguageText>
+      </Comment>
+    </Member>
+    <Member Name="statAdditiveTorqueActive" Datatype="Bool">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="statDisablingCompleted" Datatype="Bool">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <Comment>
+        <MultiLanguageText Lang="en-US">TRUE: Disabling has been completed</MultiLanguageText>
+      </Comment>
+    </Member>
+    <Member Name="statTorqueLimitActive" Datatype="Bool">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="statMCInterfaceActive" Datatype="Bool">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="statEnableAdditiveTorque" Datatype="Bool">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="statEnableTorqueLimit" Datatype="Bool">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="statExecuteMoveVelocity" Datatype="Bool">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="statExecuteStop" Datatype="Bool">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="statInternalMoveExecute" Datatype="Bool">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="statRefTOValid" Datatype="Bool">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="statFirstStepCycle" Datatype="Bool">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="statDecelerationOld" Datatype="LReal">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="statAccelerationOld" Datatype="LReal">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="statJerkOld" Datatype="LReal">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="statReferenceVelocityOld" Datatype="LReal">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="statAxisInt" Datatype="DB_ANY">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="instStop" Datatype="MC_HALT" Version="9.0">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="instMoveVelocity" Datatype="MC_MOVEVELOCITY" Version="9.0">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="instTorqueAdditive" Datatype="MC_TORQUEADDITIVE" Version="9.0">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="instTorqueRange" Datatype="MC_TORQUERANGE" Version="9.0">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="instRTrigEnableInterface" Datatype="R_TRIG" Version="1.0">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="statSubfunctionState" Datatype="Word">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="statStatus" Datatype="DWord">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <Comment>
+        <MultiLanguageText Lang="en-US">Static value for output 'status'</MultiLanguageText>
+      </Comment>
+      <StartValue ConstantName="#STATUS_NO_CALL" />
+    </Member>
+    <Member Name="statFBState" Datatype="DInt">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <Comment>
+        <MultiLanguageText Lang="en-US">State in the state machine of the FB</MultiLanguageText>
+      </Comment>
+      <StartValue ConstantName="#FB_STATE_NO_PROCESSING" />
+    </Member>
+    <Member Name="statFBStateOld" Datatype="DInt">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+    </Member>
+  </Section>
+  <Section Name="Temp">
+    <Member Name="tempEnable" Datatype="Bool">
+      <Comment>
+        <MultiLanguageText Lang="en-US">Temporary value for input 'enable'</MultiLanguageText>
+      </Comment>
+    </Member>
+    <Member Name="tempRefSpeedAxis" Datatype="REF_TO TO_SpeedAxis" Version="9.0" />
+  </Section>
+  <Section Name="Constant">
+    <Member Name="FB_STATE_NO_PROCESSING" Datatype="DInt">
+      <Comment>
+        <MultiLanguageText Lang="en-US">FB state: No processing</MultiLanguageText>
+      </Comment>
+      <StartValue>0</StartValue>
+    </Member>
+    <Member Name="FB_STATE_ENABLING" Datatype="DInt">
+      <Comment>
+        <MultiLanguageText Lang="en-US">FB state: Enabling</MultiLanguageText>
+      </Comment>
+      <StartValue>10</StartValue>
+    </Member>
+    <Member Name="FB_STATE_PROCESSING" Datatype="DInt">
+      <Comment>
+        <MultiLanguageText Lang="en-US">FB state: Processing</MultiLanguageText>
+      </Comment>
+      <StartValue>50</StartValue>
+    </Member>
+    <Member Name="FB_STATE_ERROR" Datatype="DInt">
+      <Comment>
+        <MultiLanguageText Lang="en-US">FB state: Error</MultiLanguageText>
+      </Comment>
+      <StartValue>60</StartValue>
+    </Member>
+    <Member Name="FB_STATE_DISABLING" Datatype="DInt">
+      <Comment>
+        <MultiLanguageText Lang="en-US">FB state: Disabling</MultiLanguageText>
+      </Comment>
+      <StartValue>90</StartValue>
+    </Member>
+    <Member Name="STATUS_NO_CALL" Datatype="Word">
+      <Comment>
+        <MultiLanguageText Lang="en-US">No job being currently processed</MultiLanguageText>
+      </Comment>
+      <StartValue>16#7000</StartValue>
+    </Member>
+    <Member Name="STATUS_FIRST_CALL" Datatype="Word">
+      <Comment>
+        <MultiLanguageText Lang="en-US">First call after incoming new job (rising edge 'enable')</MultiLanguageText>
+      </Comment>
+      <StartValue>16#7001</StartValue>
+    </Member>
+    <Member Name="STATUS_SUBSEQUENT_CALL" Datatype="Word">
+      <Comment>
+        <MultiLanguageText Lang="en-US">Subsequent call during active processing without further details</MultiLanguageText>
+      </Comment>
+      <StartValue>16#7002</StartValue>
+    </Member>
+  </Section>
+</Sections></Interface>
+      <IsIECCheckEnabled>true</IsIECCheckEnabled>
+      <MemoryReserve>100</MemoryReserve>
+      <Name>LConSMC_EnableInterface</Name>
+      <Namespace />
+      <Number>32032</Number>
+      <ProgrammingLanguage>SCL</ProgrammingLanguage>
+      <SetENOAutomatically>true</SetENOAutomatically>
+    </AttributeList>
+    <ObjectList>
+      <MultilingualText ID="1" CompositionName="Comment">
+        <ObjectList>
+          <MultilingualTextItem ID="2" CompositionName="Items">
+            <AttributeList>
+              <Culture>de-DE</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="3" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-GB</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="4" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-US</Culture>
+              <Text>Template for an FB with Enable / Valid handling based on PLCopen standard "Function Blocks for Motion Control" V2.0</Text>
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="5" CompositionName="Items">
+            <AttributeList>
+              <Culture>es-ES</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="6" CompositionName="Items">
+            <AttributeList>
+              <Culture>fr-FR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="7" CompositionName="Items">
+            <AttributeList>
+              <Culture>it-IT</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="8" CompositionName="Items">
+            <AttributeList>
+              <Culture>ko-KR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="9" CompositionName="Items">
+            <AttributeList>
+              <Culture>zh-CN</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+        </ObjectList>
+      </MultilingualText>
+      <SW.Blocks.CompileUnit ID="A" CompositionName="CompileUnits">
+        <AttributeList>
+          <NetworkSource><StructuredText xmlns="http://www.siemens.com/automation/Openness/SW/NetworkSource/StructuredText/v4">
+  <Token Text="REGION" UId="21" />
+  <Blank UId="22" />
+  <Text UId="23">BLOCK INFO HEADER</Text>
+  <NewLine UId="24" />
+  <Blank Num="2" UId="25" />
+  <LineComment UId="26">
+    <Text UId="27">===============================================================================</Text>
+  </LineComment>
+  <NewLine UId="28" />
+  <Blank Num="2" UId="29" />
+  <LineComment UId="30">
+    <Text UId="31"> SIEMENS AG / (c)Copyright 2024</Text>
+  </LineComment>
+  <NewLine UId="32" />
+  <Blank Num="2" UId="33" />
+  <LineComment UId="34">
+    <Text UId="35">-------------------------------------------------------------------------------</Text>
+  </LineComment>
+  <NewLine UId="36" />
+  <Blank Num="2" UId="37" />
+  <LineComment UId="38">
+    <Text UId="39"> Title:            LConSMC_EnableInterface</Text>
+  </LineComment>
+  <NewLine UId="40" />
+  <Blank Num="2" UId="41" />
+  <LineComment UId="42">
+    <Text UId="43"> Comment/Function: Enable motion and torque interface</Text>
+  </LineComment>
+  <NewLine UId="44" />
+  <Blank Num="2" UId="45" />
+  <LineComment UId="46">
+    <Text UId="47"> Library/Family:   LConSMC</Text>
+  </LineComment>
+  <NewLine UId="48" />
+  <Blank Num="2" UId="49" />
+  <LineComment UId="50">
+    <Text UId="51"> Author:           APC Erlangen</Text>
+  </LineComment>
+  <NewLine UId="52" />
+  <Blank Num="2" UId="53" />
+  <LineComment UId="54">
+    <Text UId="55"> Tested with:      FW 3.0</Text>
+  </LineComment>
+  <NewLine UId="56" />
+  <Blank Num="2" UId="57" />
+  <LineComment UId="58">
+    <Text UId="59"> Engineering:      TIA Portal V18</Text>
+  </LineComment>
+  <NewLine UId="60" />
+  <Blank Num="2" UId="61" />
+  <LineComment UId="62">
+    <Text UId="63"> Restrictions:     -</Text>
+  </LineComment>
+  <NewLine UId="64" />
+  <Blank Num="2" UId="65" />
+  <LineComment UId="66">
+    <Text UId="67"> Requirements:     FW 3.0 with MC V7.0 or higher</Text>
+  </LineComment>
+  <NewLine UId="68" />
+  <Blank Num="2" UId="69" />
+  <LineComment UId="70">
+    <Text UId="71">-------------------------------------------------------------------------------</Text>
+  </LineComment>
+  <NewLine UId="72" />
+  <Blank Num="2" UId="73" />
+  <LineComment UId="74">
+    <Text UId="75"> Change log table:</Text>
+  </LineComment>
+  <NewLine UId="76" />
+  <Blank Num="2" UId="77" />
+  <LineComment UId="78">
+    <Text UId="79"> Version  | Date       | Expert in charge       | Changes applied</Text>
+  </LineComment>
+  <NewLine UId="80" />
+  <Blank Num="2" UId="81" />
+  <LineComment UId="82">
+    <Text UId="83">----------|------------|------------------------|------------------------------</Text>
+  </LineComment>
+  <NewLine UId="84" />
+  <Blank Num="2" UId="85" />
+  <LineComment UId="86">
+    <Text UId="87"> 03.00.00 | 2024-03-13 | APC Erlangen           | Runtime optimizations using TO references with MC V7.0</Text>
+  </LineComment>
+  <NewLine UId="88" />
+  <Blank Num="2" UId="89" />
+  <LineComment UId="90">
+    <Text UId="91">                                                  Redesign of FB according to PLCopen</Text>
+  </LineComment>
+  <NewLine UId="92" />
+  <Blank Num="2" UId="93" />
+  <LineComment UId="94">
+    <Text UId="95">                                                  New output *valid*</Text>
+  </LineComment>
+  <NewLine UId="96" />
+  <Blank Num="2" UId="97" />
+  <LineComment UId="98">
+    <Text UId="99">                                                  Renamed output *errorID* to *status*</Text>
+  </LineComment>
+  <NewLine UId="100" />
+  <Blank Num="2" UId="101" />
+  <LineComment UId="102">
+    <Text UId="103">                                                  Bugfixes: Velocity interface was not triggered correct at first start</Text>
+  </LineComment>
+  <NewLine UId="104" />
+  <Blank Num="2" UId="105" />
+  <LineComment UId="106">
+    <Text UId="107">                                                  Bugfixes: Reset velocity override to 100% if function block is disabled and axis is stopped</Text>
+  </LineComment>
+  <NewLine UId="108" />
+  <Blank Num="2" UId="109" />
+  <LineComment UId="110">
+    <Text UId="111"> 02.00.01 | 2022-05-19 | APC Erlangen           | Bugfix resetting internal variables with rising edge of "enable" (*c_00045*)</Text>
+  </LineComment>
+  <NewLine UId="112" />
+  <Blank Num="2" UId="113" />
+  <LineComment UId="114">
+    <Text UId="115"> 02.00.00 | 2022-03-25 | APC Erlangen           | Renamed input "executeMoveVelocity" to "enableVelocityInterface" (Same behaviour as before)</Text>
+  </LineComment>
+  <NewLine UId="116" />
+  <Blank Num="2" UId="117" />
+  <LineComment UId="118">
+    <Text UId="119"> 01.00.04 | 2021-06-22 | APC Erlangen           | Bugfix setting the override to a value bigger 100% (*c_00037*)</Text>
+  </LineComment>
+  <NewLine UId="120" />
+  <Blank Num="2" UId="121" />
+  <LineComment UId="122">
+    <Text UId="123"> 01.00.03 | 2021-01-27 | APC Erlangen           | Removed warning "Parameter might not be initialized"</Text>
+  </LineComment>
+  <NewLine UId="124" />
+  <Blank Num="2" UId="125" />
+  <LineComment UId="126">
+    <Text UId="127"> 01.00.02 | 2020-08-31 | APC Erlangen           | Bugfix: Parametrizable deceleration possible via new datatype for motionVector (*c_00029*)</Text>
+  </LineComment>
+  <NewLine UId="128" />
+  <Blank Num="2" UId="129" />
+  <LineComment UId="130">
+    <Text UId="131">                                                  Rename: moveVelocityActive -&gt; MCInterfaceActive. MCInterfaceActive is TRUE if MC_MoveVelocity OR MC_Halt ist active! (*c_00026*)</Text>
+  </LineComment>
+  <NewLine UId="132" />
+  <Blank Num="2" UId="133" />
+  <LineComment UId="134">
+    <Text UId="135">                                                  New ErrorMessage/Tag if MC_Halt has an error. (*c_00030*)</Text>
+  </LineComment>
+  <NewLine UId="136" />
+  <Blank Num="2" UId="137" />
+  <LineComment UId="138">
+    <Text UId="139">                                                  Bugfix: Cycledelay between calculated and executed motion profile has been removed(*c_00028*)</Text>
+  </LineComment>
+  <NewLine UId="140" />
+  <Blank Num="2" UId="141" />
+  <LineComment UId="142">
+    <Text UId="143"> 01.00.01 | 2020-01-21 | APC Erlangen           | Bugfix: moveVelocity and stop will be resetted with enable (*c_00022*)</Text>
+  </LineComment>
+  <NewLine UId="144" />
+  <Blank Num="2" UId="145" />
+  <LineComment UId="146">
+    <Text UId="147"> 01.00.00 | 2019-10-23 | APC Erlangen           | Creation</Text>
+  </LineComment>
+  <NewLine UId="148" />
+  <Blank Num="2" UId="149" />
+  <LineComment UId="150">
+    <Text UId="151">===============================================================================</Text>
+  </LineComment>
+  <NewLine UId="152" />
+  <Blank Num="2" UId="153" />
+  <LineComment UId="154">
+    <Text UId="155" />
+  </LineComment>
+  <NewLine UId="156" />
+  <Token Text="END_REGION" UId="157" />
+  <Blank UId="158" />
+  <Text UId="159">BLOCK INFO HEADER</Text>
+  <NewLine Num="2" UId="160" />
+  <Token Text="REGION" UId="161" />
+  <Blank UId="162" />
+  <Text UId="163">DESCRIPTION</Text>
+  <NewLine UId="164" />
+  <Comment Inserted="true" UId="165">
+    <MultiLanguageText Lang="de-DE" />
+    <MultiLanguageText Lang="en-GB" />
+    <MultiLanguageText Lang="en-US">
+This function block can be used to forward/manipulate speed setpoints, torque setpoints and torque limits to the drive.
+All three setpoint channels (Velocity, torque limit and additive torque) can be individually activated and deactivated.
+
+Via the input *override* the velocity setpoint can be scaled: Effective setpoint = referenceVelocity * override/100.0
+
+NOTE
+:    To use the torque precontrol/ limitation functions an additional telegram 750 must be used.
+:    Configuration technology object -&gt; Hardware interface -&gt; Data exchange with the drive -&gt; Additional data
+
+---
+
+</MultiLanguageText>
+    <MultiLanguageText Lang="es-ES" />
+    <MultiLanguageText Lang="fr-FR" />
+    <MultiLanguageText Lang="it-IT" />
+    <MultiLanguageText Lang="ko-KR" />
+    <MultiLanguageText Lang="zh-CN" />
+  </Comment>
+  <NewLine UId="174" />
+  <Token Text="END_REGION" UId="175" />
+  <NewLine Num="2" UId="176" />
+  <Access Scope="LocalVariable" UId="177">
+    <Symbol UId="178">
+      <Component Name="tempEnable" UId="179" />
+    </Symbol>
+  </Access>
+  <Blank UId="180" />
+  <Token Text=":=" UId="181" />
+  <Blank UId="182" />
+  <Access Scope="LocalVariable" UId="183">
+    <Symbol UId="184">
+      <Component Name="enable" UId="185" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="186" />
+  <Blank UId="187" />
+  <LineComment UId="188">
+    <Text UId="189"> Work with temporary value / create process image</Text>
+  </LineComment>
+  <NewLine Num="2" UId="190" />
+  <Token Text="REGION" UId="191" />
+  <Blank UId="192" />
+  <Text UId="193">ENABLING/DISABLING</Text>
+  <NewLine UId="194" />
+  <Blank Num="2" UId="195" />
+  <Token Text="IF" UId="196" />
+  <Blank UId="197" />
+  <Token Text="(" UId="198" />
+  <Access Scope="LocalVariable" UId="199">
+    <Symbol UId="200">
+      <Component Name="tempEnable" UId="201" />
+    </Symbol>
+  </Access>
+  <Blank UId="202" />
+  <Token Text="=" UId="203" />
+  <Blank UId="204" />
+  <Access Scope="LiteralConstant" UId="205">
+    <Constant UId="206">
+      <ConstantValue UId="208">TRUE</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=")" UId="209" />
+  <Blank UId="210" />
+  <Token Text="AND" UId="211" />
+  <Blank UId="212" />
+  <Token Text="(" UId="213" />
+  <Access Scope="LocalVariable" UId="214">
+    <Symbol UId="215">
+      <Component Name="statStatus" UId="216" />
+    </Symbol>
+  </Access>
+  <Blank UId="217" />
+  <Token Text="=" UId="218" />
+  <Blank UId="219" />
+  <Access Scope="LocalConstant" UId="220">
+    <Constant Name="STATUS_NO_CALL" UId="221" />
+  </Access>
+  <Token Text=")" UId="224" />
+  <Blank UId="225" />
+  <Token Text="THEN" UId="226" />
+  <Blank UId="227" />
+  <LineComment UId="228">
+    <Text UId="229"> Enable FB</Text>
+  </LineComment>
+  <NewLine UId="230" />
+  <Blank Num="4" UId="231" />
+  <LineComment UId="232">
+    <Text UId="233"> First call; initialize FB</Text>
+  </LineComment>
+  <NewLine UId="234" />
+  <Blank Num="4" UId="235" />
+  <Access Scope="LocalVariable" UId="236">
+    <Symbol UId="237">
+      <Component Name="statValid" UId="238" />
+    </Symbol>
+  </Access>
+  <Blank UId="239" />
+  <Token Text=":=" UId="240" />
+  <Blank UId="241" />
+  <Access Scope="LiteralConstant" UId="242">
+    <Constant UId="243">
+      <ConstantValue UId="245">TRUE</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="246" />
+  <NewLine UId="247" />
+  <Blank Num="4" UId="248" />
+  <Access Scope="LocalVariable" UId="249">
+    <Symbol UId="250">
+      <Component Name="statBusy" UId="251" />
+    </Symbol>
+  </Access>
+  <Blank UId="252" />
+  <Token Text=":=" UId="253" />
+  <Blank UId="254" />
+  <Access Scope="LiteralConstant" UId="255">
+    <Constant UId="256">
+      <ConstantValue UId="258">TRUE</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="259" />
+  <NewLine UId="260" />
+  <Blank Num="4" UId="261" />
+  <Access Scope="LocalVariable" UId="262">
+    <Symbol UId="263">
+      <Component Name="statError" UId="264" />
+    </Symbol>
+  </Access>
+  <Blank UId="265" />
+  <Token Text=":=" UId="266" />
+  <Blank UId="267" />
+  <Access Scope="LiteralConstant" UId="268">
+    <Constant UId="269">
+      <ConstantValue UId="271">FALSE</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="272" />
+  <NewLine UId="273" />
+  <Blank Num="4" UId="274" />
+  <Access Scope="LocalVariable" UId="275">
+    <Symbol UId="276">
+      <Component Name="statStatus" UId="277" />
+    </Symbol>
+  </Access>
+  <Blank UId="278" />
+  <Token Text=":=" UId="279" />
+  <Blank UId="280" />
+  <Access Scope="LocalConstant" UId="281">
+    <Constant Name="STATUS_FIRST_CALL" UId="282" />
+  </Access>
+  <Token Text=";" UId="285" />
+  <NewLine UId="286" />
+  <Blank Num="4" UId="287" />
+  <Access Scope="LocalVariable" UId="288">
+    <Symbol UId="289">
+      <Component Name="statErrorUserCleared" UId="290" />
+    </Symbol>
+  </Access>
+  <Blank UId="291" />
+  <Token Text=":=" UId="292" />
+  <Blank UId="293" />
+  <Access Scope="LiteralConstant" UId="294">
+    <Constant UId="295">
+      <ConstantValue UId="297">FALSE</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="298" />
+  <NewLine UId="299" />
+  <Blank Num="4" UId="300" />
+  <Access Scope="LocalVariable" UId="301">
+    <Symbol UId="302">
+      <Component Name="statErrorAutoCleared" UId="303" />
+    </Symbol>
+  </Access>
+  <Blank UId="304" />
+  <Token Text=":=" UId="305" />
+  <Blank UId="306" />
+  <Access Scope="LiteralConstant" UId="307">
+    <Constant UId="308">
+      <ConstantValue UId="310">FALSE</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="311" />
+  <NewLine UId="312" />
+  <Blank Num="4" UId="313" />
+  <Access Scope="LocalVariable" UId="314">
+    <Symbol UId="315">
+      <Component Name="statDisablingCompleted" UId="316" />
+    </Symbol>
+  </Access>
+  <Blank UId="317" />
+  <Token Text=":=" UId="318" />
+  <Blank UId="319" />
+  <Access Scope="LiteralConstant" UId="320">
+    <Constant UId="321">
+      <ConstantValue UId="323">FALSE</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="324" />
+  <NewLine UId="325" />
+  <Blank Num="4" UId="326" />
+  <LineComment UId="327">
+    <Text UId="328"> State machine - start functionality</Text>
+  </LineComment>
+  <NewLine UId="329" />
+  <Blank Num="4" UId="330" />
+  <Access Scope="LocalVariable" UId="331">
+    <Symbol UId="332">
+      <Component Name="statFBState" UId="333" />
+    </Symbol>
+  </Access>
+  <Blank UId="334" />
+  <Token Text=":=" UId="335" />
+  <Blank UId="336" />
+  <Access Scope="LocalConstant" UId="337">
+    <Constant Name="FB_STATE_ENABLING" UId="338" />
+  </Access>
+  <Token Text=";" UId="341" />
+  <NewLine UId="342" />
+  <Blank Num="4" UId="343" />
+  <Access Scope="LocalVariable" UId="344">
+    <Symbol UId="345">
+      <Component Name="statFBStateOld" UId="346" />
+    </Symbol>
+  </Access>
+  <Blank UId="347" />
+  <Token Text=":=" UId="348" />
+  <Blank UId="349" />
+  <Access Scope="LocalConstant" UId="350">
+    <Constant Name="FB_STATE_NO_PROCESSING" UId="351" />
+  </Access>
+  <Token Text=";" UId="354" />
+  <NewLine UId="355" />
+  <Blank Num="4" UId="356" />
+  <Access Scope="LocalVariable" UId="357">
+    <Symbol UId="358">
+      <Component Name="statFirstStepCycle" UId="359" />
+    </Symbol>
+  </Access>
+  <Blank UId="360" />
+  <Token Text=":=" UId="361" />
+  <Blank UId="362" />
+  <Access Scope="LiteralConstant" UId="363">
+    <Constant UId="364">
+      <ConstantValue UId="366">TRUE</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="367" />
+  <NewLine UId="368" />
+  <Blank Num="4" UId="369" />
+  <LineComment UId="370">
+    <Text UId="371"> TODO: Initialize functionality: reset of variables, diagnostics, etc.</Text>
+  </LineComment>
+  <NewLine UId="372" />
+  <Blank Num="4" UId="373" />
+  <Access Scope="LocalVariable" UId="374">
+    <Symbol UId="375">
+      <Component Name="statSubfunctionState" UId="376" />
+    </Symbol>
+  </Access>
+  <Blank UId="377" />
+  <Token Text=":=" UId="378" />
+  <Blank UId="379" />
+  <Access Scope="LiteralConstant" UId="380">
+    <Constant UId="381">
+      <ConstantValue UId="383">16#0000</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="384" />
+  <NewLine UId="385" />
+  <Blank Num="4" UId="386" />
+  <Access Scope="LocalVariable" UId="387">
+    <Symbol UId="388">
+      <Component Name="statAdditiveTorqueActive" UId="389" />
+    </Symbol>
+  </Access>
+  <Blank UId="390" />
+  <Token Text=":=" UId="391" />
+  <Blank UId="392" />
+  <Access Scope="LiteralConstant" UId="393">
+    <Constant UId="394">
+      <ConstantValue UId="396">FALSE</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="397" />
+  <NewLine UId="398" />
+  <Blank Num="4" UId="399" />
+  <Access Scope="LocalVariable" UId="400">
+    <Symbol UId="401">
+      <Component Name="statTorqueLimitActive" UId="402" />
+    </Symbol>
+  </Access>
+  <Blank UId="403" />
+  <Token Text=":=" UId="404" />
+  <Blank UId="405" />
+  <Access Scope="LiteralConstant" UId="406">
+    <Constant UId="407">
+      <ConstantValue UId="409">FALSE</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="410" />
+  <NewLine UId="411" />
+  <Blank Num="4" UId="412" />
+  <Access Scope="LocalVariable" UId="413">
+    <Symbol UId="414">
+      <Component Name="statMCInterfaceActive" UId="415" />
+    </Symbol>
+  </Access>
+  <Blank UId="416" />
+  <Token Text=":=" UId="417" />
+  <Blank UId="418" />
+  <Access Scope="LiteralConstant" UId="419">
+    <Constant UId="420">
+      <ConstantValue UId="422">FALSE</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="423" />
+  <NewLine UId="424" />
+  <Blank Num="4" UId="425" />
+  <Access Scope="LocalVariable" UId="426">
+    <Symbol UId="427">
+      <Component Name="statRefTOValid" UId="428" />
+    </Symbol>
+  </Access>
+  <Blank UId="429" />
+  <Token Text=":=" UId="430" />
+  <Blank UId="431" />
+  <Access Scope="LiteralConstant" UId="432">
+    <Constant UId="433">
+      <ConstantValue UId="435">FALSE</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="436" />
+  <NewLine UId="437" />
+  <Blank Num="4" UId="438" />
+  <Access Scope="LocalVariable" UId="439">
+    <Symbol UId="440">
+      <Component Name="statExecuteMoveVelocity" UId="441" />
+    </Symbol>
+  </Access>
+  <Blank UId="442" />
+  <Token Text=":=" UId="443" />
+  <Blank UId="444" />
+  <Access Scope="LiteralConstant" UId="445">
+    <Constant UId="446">
+      <ConstantValue UId="448">False</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="449" />
+  <NewLine UId="450" />
+  <Blank Num="4" UId="451" />
+  <Access Scope="LocalVariable" UId="452">
+    <Symbol UId="453">
+      <Component Name="statEnableAdditiveTorque" UId="454" />
+    </Symbol>
+  </Access>
+  <Blank UId="455" />
+  <Token Text=":=" UId="456" />
+  <Blank UId="457" />
+  <Access Scope="LiteralConstant" UId="458">
+    <Constant UId="459">
+      <ConstantValue UId="461">FALSE</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="462" />
+  <NewLine UId="463" />
+  <Blank Num="4" UId="464" />
+  <Access Scope="LocalVariable" UId="465">
+    <Symbol UId="466">
+      <Component Name="statEnableTorqueLimit" UId="467" />
+    </Symbol>
+  </Access>
+  <Blank UId="468" />
+  <Token Text=":=" UId="469" />
+  <Blank UId="470" />
+  <Access Scope="LiteralConstant" UId="471">
+    <Constant UId="472">
+      <ConstantValue UId="474">FALSE</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="475" />
+  <NewLine UId="476" />
+  <Blank Num="4" UId="477" />
+  <Access Scope="LocalVariable" UId="478">
+    <Symbol UId="479">
+      <Component Name="statExecuteStop" UId="480" />
+    </Symbol>
+  </Access>
+  <Blank UId="481" />
+  <Token Text=":=" UId="482" />
+  <Blank UId="483" />
+  <Access Scope="LiteralConstant" UId="484">
+    <Constant UId="485">
+      <ConstantValue UId="487">FALSE</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="488" />
+  <NewLine UId="489" />
+  <Blank Num="4" UId="490" />
+  <Access Scope="LocalVariable" UId="491">
+    <Symbol UId="492">
+      <Component Name="statReferenceVelocityOld" UId="493" />
+    </Symbol>
+  </Access>
+  <Blank UId="494" />
+  <Token Text=":=" UId="495" />
+  <Blank UId="496" />
+  <Access Scope="LiteralConstant" UId="497">
+    <Constant UId="498">
+      <ConstantValue UId="500">0.0</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="501" />
+  <NewLine UId="502" />
+  <Blank Num="4" UId="503" />
+  <Access Scope="LocalVariable" UId="504">
+    <Symbol UId="505">
+      <Component Name="statAxisInt" UId="506" />
+    </Symbol>
+  </Access>
+  <Blank UId="507" />
+  <Token Text=":=" UId="508" />
+  <Blank UId="509" />
+  <Access Scope="LocalVariable" UId="510">
+    <Symbol UId="511">
+      <Component Name="axis" UId="512" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="513" />
+  <NewLine UId="514" />
+  <Blank Num="4" UId="515" />
+  <LineComment Inserted="true" UId="516">
+    <Text UId="517">c_00045</Text>
+  </LineComment>
+  <NewLine UId="518" />
+  <Blank Num="4" UId="519" />
+  <Access Scope="LocalVariable" UId="520">
+    <Symbol UId="521">
+      <Component Name="statAccelerationOld" UId="522" />
+    </Symbol>
+  </Access>
+  <Blank UId="523" />
+  <Token Text=":=" UId="524" />
+  <Blank UId="525" />
+  <Access Scope="LiteralConstant" UId="526">
+    <Constant UId="527">
+      <ConstantValue UId="529">0.0</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="530" />
+  <NewLine UId="531" />
+  <Blank Num="4" UId="532" />
+  <Access Scope="LocalVariable" UId="533">
+    <Symbol UId="534">
+      <Component Name="statDecelerationOld" UId="535" />
+    </Symbol>
+  </Access>
+  <Blank UId="536" />
+  <Token Text=":=" UId="537" />
+  <Blank UId="538" />
+  <Access Scope="LiteralConstant" UId="539">
+    <Constant UId="540">
+      <ConstantValue UId="542">0.0</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="543" />
+  <NewLine UId="544" />
+  <Blank Num="4" UId="545" />
+  <Access Scope="LocalVariable" UId="546">
+    <Symbol UId="547">
+      <Component Name="statJerkOld" UId="548" />
+    </Symbol>
+  </Access>
+  <Blank UId="549" />
+  <Token Text=":=" UId="550" />
+  <Blank UId="551" />
+  <Access Scope="LiteralConstant" UId="552">
+    <Constant UId="553">
+      <ConstantValue UId="555">0.0</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="556" />
+  <NewLine UId="557" />
+  <Blank Num="4" UId="558" />
+  <LineComment UId="559">
+    <Text UId="560"> TODO: Initialize functionality: call subsidiary FBs with FALSE</Text>
+  </LineComment>
+  <NewLine UId="561" />
+  <Blank Num="4" UId="562" />
+  <NewLine UId="563" />
+  <Blank Num="2" UId="564" />
+  <Token Text="ELSIF" UId="565" />
+  <Blank UId="566" />
+  <Token Text="(" UId="567" />
+  <Access Scope="LocalVariable" UId="568">
+    <Symbol UId="569">
+      <Component Name="tempEnable" UId="570" />
+    </Symbol>
+  </Access>
+  <Blank UId="571" />
+  <Token Text="=" UId="572" />
+  <Blank UId="573" />
+  <Access Scope="LiteralConstant" UId="574">
+    <Constant UId="575">
+      <ConstantValue UId="577">FALSE</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=")" UId="578" />
+  <Blank UId="579" />
+  <Token Text="AND" UId="580" />
+  <Blank UId="581" />
+  <Token Text="(" UId="582" />
+  <Access Scope="LocalVariable" UId="583">
+    <Symbol UId="584">
+      <Component Name="statEnableOld" UId="585" />
+    </Symbol>
+  </Access>
+  <Blank UId="586" />
+  <Token Text="=" UId="587" />
+  <Blank UId="588" />
+  <Access Scope="LiteralConstant" UId="589">
+    <Constant UId="590">
+      <ConstantValue UId="592">TRUE</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=")" UId="593" />
+  <Blank UId="594" />
+  <Token Text="THEN" UId="595" />
+  <Blank UId="596" />
+  <LineComment UId="597">
+    <Text UId="598"> Disable FB </Text>
+  </LineComment>
+  <NewLine UId="599" />
+  <Blank Num="4" UId="600" />
+  <Access Scope="LocalVariable" UId="601">
+    <Symbol UId="602">
+      <Component Name="statFBState" UId="603" />
+    </Symbol>
+  </Access>
+  <Blank UId="604" />
+  <Token Text=":=" UId="605" />
+  <Blank UId="606" />
+  <Access Scope="LocalConstant" UId="607">
+    <Constant Name="FB_STATE_DISABLING" UId="608" />
+  </Access>
+  <Token Text=";" UId="611" />
+  <NewLine UId="612" />
+  <Blank Num="4" UId="613" />
+  <NewLine UId="614" />
+  <Blank Num="2" UId="615" />
+  <Token Text="ELSIF" UId="616" />
+  <Blank UId="617" />
+  <Token Text="(" UId="618" />
+  <Access Scope="LocalVariable" UId="619">
+    <Symbol UId="620">
+      <Component Name="statStatus" UId="621" />
+    </Symbol>
+  </Access>
+  <Blank UId="622" />
+  <Token Text="=" UId="623" />
+  <Blank UId="624" />
+  <Access Scope="LocalConstant" UId="625">
+    <Constant Name="STATUS_FIRST_CALL" UId="626" />
+  </Access>
+  <Token Text=")" UId="629" />
+  <Blank UId="630" />
+  <Token Text="THEN" UId="631" />
+  <Blank UId="632" />
+  <LineComment UId="633">
+    <Text UId="634"> Set status identifier of subsequent call</Text>
+  </LineComment>
+  <NewLine UId="635" />
+  <Blank Num="4" UId="636" />
+  <Access Scope="LocalVariable" UId="637">
+    <Symbol UId="638">
+      <Component Name="statStatus" UId="639" />
+    </Symbol>
+  </Access>
+  <Blank UId="640" />
+  <Token Text=":=" UId="641" />
+  <Blank UId="642" />
+  <Access Scope="LocalConstant" UId="643">
+    <Constant Name="STATUS_SUBSEQUENT_CALL" UId="644" />
+  </Access>
+  <Token Text=";" UId="647" />
+  <NewLine UId="648" />
+  <Blank Num="2" UId="649" />
+  <Token Text="END_IF" UId="650" />
+  <Token Text=";" UId="651" />
+  <NewLine UId="652" />
+  <Blank Num="2" UId="653" />
+  <NewLine UId="654" />
+  <Blank Num="2" UId="655" />
+  <LineComment UId="656">
+    <Text UId="657"> Edge detection 'enable' input</Text>
+  </LineComment>
+  <NewLine UId="658" />
+  <Blank Num="2" UId="659" />
+  <Access Scope="LocalVariable" UId="660">
+    <Symbol UId="661">
+      <Component Name="statEnableOld" UId="662" />
+    </Symbol>
+  </Access>
+  <Blank UId="663" />
+  <Token Text=":=" UId="664" />
+  <Blank UId="665" />
+  <Access Scope="LocalVariable" UId="666">
+    <Symbol UId="667">
+      <Component Name="tempEnable" UId="668" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="669" />
+  <NewLine UId="670" />
+  <Token Text="END_REGION" UId="671" />
+  <Blank UId="672" />
+  <Text UId="673">ENABLING/DISABLING</Text>
+  <NewLine Num="2" UId="674" />
+  <Token Text="IF" UId="675" />
+  <Blank UId="676" />
+  <Token Text="(" UId="677" />
+  <Access Scope="LocalVariable" UId="678">
+    <Symbol UId="679">
+      <Component Name="statStatus" UId="680" />
+    </Symbol>
+  </Access>
+  <Blank UId="681" />
+  <Token Text="=" UId="682" />
+  <Blank UId="683" />
+  <Access Scope="LocalConstant" UId="684">
+    <Constant Name="STATUS_NO_CALL" UId="685" />
+  </Access>
+  <Token Text=")" UId="688" />
+  <Blank UId="689" />
+  <Token Text="THEN" UId="690" />
+  <Blank UId="691" />
+  <LineComment UId="692">
+    <Text UId="693"> Nothing to do -&gt; End here to reduce "system load"</Text>
+  </LineComment>
+  <NewLine UId="694" />
+  <Blank Num="2" UId="695" />
+  <Token Text="RETURN" UId="696" />
+  <Token Text=";" UId="697" />
+  <NewLine UId="698" />
+  <Token Text="END_IF" UId="699" />
+  <Token Text=";" UId="700" />
+  <NewLine Num="2" UId="701" />
+  <Token Text="REGION" UId="702" />
+  <Blank UId="703" />
+  <Text UId="704">STATE MACHINE</Text>
+  <NewLine UId="705" />
+  <Blank Num="2" UId="706" />
+  <NewLine UId="707" />
+  <Blank Num="2" UId="708" />
+  <Access Scope="LocalVariable" UId="709">
+    <Symbol UId="710">
+      <Component Name="tempRefSpeedAxis" UId="711" />
+    </Symbol>
+  </Access>
+  <Blank UId="712" />
+  <Token Text="?=" UId="713" />
+  <Blank UId="714" />
+  <Access Scope="LocalVariable" UId="715">
+    <Symbol UId="716">
+      <Component Name="statAxisInt" UId="717" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="718" />
+  <Blank UId="719" />
+  <LineComment UId="720">
+    <Text UId="721"> Try to assign DBAny to TO_SpeedAxis</Text>
+  </LineComment>
+  <NewLine UId="722" />
+  <Blank Num="2" UId="723" />
+  <Token Text="IF" UId="724" />
+  <Blank UId="725" />
+  <Token Text="(" UId="726" />
+  <Access Scope="LocalVariable" UId="727">
+    <Symbol UId="728">
+      <Component Name="tempRefSpeedAxis" UId="729" />
+    </Symbol>
+  </Access>
+  <Blank UId="730" />
+  <Token Text="=" UId="731" />
+  <Blank UId="732" />
+  <Access Scope="LiteralConstant" UId="733">
+    <Constant UId="734">
+      <ConstantValue UId="736">NULL</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=")" UId="737" />
+  <Blank UId="738" />
+  <Token Text="THEN" UId="739" />
+  <NewLine UId="740" />
+  <Blank Num="4" UId="741" />
+  <LineComment UId="742">
+    <Text UId="743"> Invalid axis/DBAny</Text>
+  </LineComment>
+  <NewLine UId="744" />
+  <Blank Num="4" UId="745" />
+  <Access Scope="LocalVariable" UId="746">
+    <Symbol UId="747">
+      <Component Name="statErrorUserCleared" UId="748" />
+    </Symbol>
+  </Access>
+  <Blank UId="749" />
+  <Token Text=":=" UId="750" />
+  <Blank UId="751" />
+  <Access Scope="LiteralConstant" UId="752">
+    <Constant UId="753">
+      <ConstantValue UId="755">TRUE</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="756" />
+  <NewLine UId="757" />
+  <Blank Num="4" UId="758" />
+  <Access Scope="LocalVariable" UId="759">
+    <Symbol UId="760">
+      <Component Name="statRefTOValid" UId="761" />
+    </Symbol>
+  </Access>
+  <Blank UId="762" />
+  <Token Text=":=" UId="763" />
+  <Blank UId="764" />
+  <Access Scope="LiteralConstant" UId="765">
+    <Constant UId="766">
+      <ConstantValue UId="768">FALSE</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="769" />
+  <NewLine UId="770" />
+  <Blank Num="4" UId="771" />
+  <Access Scope="LocalVariable" UId="772">
+    <Symbol UId="773">
+      <Component Name="statStatus" UId="774" />
+    </Symbol>
+  </Access>
+  <Blank UId="775" />
+  <Token Text=":=" UId="776" />
+  <Blank UId="777" />
+  <Access Scope="GlobalConstant" UId="778">
+    <Constant Name="LCON_ERROR_ENABLE_INTERFACE_INVALID_AXIS" UId="779" />
+  </Access>
+  <Token Text=";" UId="782" />
+  <NewLine UId="783" />
+  <Blank Num="4" UId="784" />
+  <Token Text="IF" UId="785" />
+  <Blank UId="786" />
+  <Token Text="NOT" UId="787" />
+  <Blank UId="788" />
+  <Token Text="(" UId="789" />
+  <Access Scope="LocalVariable" UId="790">
+    <Symbol UId="791">
+      <Component Name="statFBState" UId="792" />
+    </Symbol>
+  </Access>
+  <Blank UId="793" />
+  <Token Text="=" UId="794" />
+  <Blank UId="795" />
+  <Access Scope="LocalConstant" UId="796">
+    <Constant Name="FB_STATE_DISABLING" UId="797" />
+  </Access>
+  <Token Text=")" UId="800" />
+  <Blank UId="801" />
+  <Token Text="THEN" UId="802" />
+  <NewLine UId="803" />
+  <Blank Num="6" UId="804" />
+  <Access Scope="LocalVariable" UId="805">
+    <Symbol UId="806">
+      <Component Name="statFBState" UId="807" />
+    </Symbol>
+  </Access>
+  <Blank UId="808" />
+  <Token Text=":=" UId="809" />
+  <Blank UId="810" />
+  <Access Scope="LocalConstant" UId="811">
+    <Constant Name="FB_STATE_NO_PROCESSING" UId="812" />
+  </Access>
+  <Token Text=";" UId="815" />
+  <NewLine UId="816" />
+  <Blank Num="4" UId="817" />
+  <Token Text="END_IF" UId="818" />
+  <Token Text=";" UId="819" />
+  <NewLine UId="820" />
+  <Blank Num="2" UId="821" />
+  <Token Text="ELSE" UId="822" />
+  <NewLine UId="823" />
+  <Blank Num="4" UId="824" />
+  <Access Scope="LocalVariable" UId="825">
+    <Symbol UId="826">
+      <Component Name="statRefTOValid" UId="827" />
+    </Symbol>
+  </Access>
+  <Blank UId="828" />
+  <Token Text=":=" UId="829" />
+  <Blank UId="830" />
+  <Access Scope="LiteralConstant" UId="831">
+    <Constant UId="832">
+      <ConstantValue UId="834">TRUE</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="835" />
+  <NewLine UId="836" />
+  <Blank Num="2" UId="837" />
+  <Token Text="END_IF" UId="838" />
+  <Token Text=";" UId="839" />
+  <NewLine UId="840" />
+  <Blank Num="2" UId="841" />
+  <NewLine UId="842" />
+  <Blank Num="2" UId="843" />
+  <Token Text="IF" UId="844" />
+  <Blank UId="845" />
+  <Access Scope="LocalVariable" UId="846">
+    <Symbol UId="847">
+      <Component Name="statFBState" UId="848" />
+    </Symbol>
+  </Access>
+  <Blank UId="849" />
+  <Token Text="&lt;&gt;" UId="850" />
+  <Blank UId="851" />
+  <Access Scope="LocalVariable" UId="852">
+    <Symbol UId="853">
+      <Component Name="statFBStateOld" UId="854" />
+    </Symbol>
+  </Access>
+  <Blank UId="855" />
+  <Token Text="THEN" UId="856" />
+  <NewLine UId="857" />
+  <Blank Num="4" UId="858" />
+  <Access Scope="LocalVariable" UId="859">
+    <Symbol UId="860">
+      <Component Name="statFirstStepCycle" UId="861" />
+    </Symbol>
+  </Access>
+  <Blank UId="862" />
+  <Token Text=":=" UId="863" />
+  <Blank UId="864" />
+  <Access Scope="LiteralConstant" UId="865">
+    <Constant UId="866">
+      <ConstantValue UId="868">TRUE</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="869" />
+  <NewLine UId="870" />
+  <Blank Num="2" UId="871" />
+  <Token Text="END_IF" UId="872" />
+  <Token Text=";" UId="873" />
+  <NewLine UId="874" />
+  <Blank Num="2" UId="875" />
+  <NewLine UId="876" />
+  <Blank Num="2" UId="877" />
+  <Token Text="CASE" UId="878" />
+  <Blank UId="879" />
+  <Access Scope="LocalVariable" UId="880">
+    <Symbol UId="881">
+      <Component Name="statFBState" UId="882" />
+    </Symbol>
+  </Access>
+  <Blank UId="883" />
+  <Token Text="OF" UId="884" />
+  <Blank UId="885" />
+  <LineComment UId="886">
+    <Text UId="887"> State machine of FB</Text>
+  </LineComment>
+  <NewLine UId="888" />
+  <Blank Num="4" UId="889" />
+  <Access Scope="LocalConstant" UId="890">
+    <Constant Name="FB_STATE_NO_PROCESSING" UId="891" />
+  </Access>
+  <Token Text=":" UId="894" />
+  <NewLine UId="895" />
+  <Blank Num="6" UId="896" />
+  <Token Text="REGION" UId="897" />
+  <Blank UId="898" />
+  <Text UId="899">No Processing</Text>
+  <NewLine UId="900" />
+  <Blank Num="8" UId="901" />
+  <LineComment UId="902">
+    <Text UId="903"> No processing active (Note: this state must always be present and left empty)</Text>
+  </LineComment>
+  <NewLine UId="904" />
+  <Blank Num="8" UId="905" />
+  <Token Text=";" UId="906" />
+  <NewLine UId="907" />
+  <Blank Num="6" UId="908" />
+  <Token Text="END_REGION" UId="909" />
+  <Blank UId="910" />
+  <Text UId="911">No Processing</Text>
+  <NewLine UId="912" />
+  <Blank Num="6" UId="913" />
+  <NewLine UId="914" />
+  <Blank Num="4" UId="915" />
+  <Access Scope="LocalConstant" UId="916">
+    <Constant Name="FB_STATE_ENABLING" UId="917" />
+  </Access>
+  <Token Text=":" UId="920" />
+  <Blank UId="921" />
+  <LineComment UId="922">
+    <Text UId="923"> Enabling active</Text>
+  </LineComment>
+  <NewLine UId="924" />
+  <Blank Num="6" UId="925" />
+  <Token Text="REGION" UId="926" />
+  <Blank UId="927" />
+  <Text UId="928">enabling</Text>
+  <NewLine UId="929" />
+  <Blank Num="8" UId="930" />
+  <LineComment UId="931">
+    <Text UId="932"> TODO: Use this state for application specific code, e.g. set preconditions of further processing (establish connections, etc.)</Text>
+  </LineComment>
+  <NewLine UId="933" />
+  <Blank Num="8" UId="934" />
+  <LineComment UId="935">
+    <Text UId="936"> Call subsidiary FB or functionality</Text>
+  </LineComment>
+  <NewLine UId="937" />
+  <Blank Num="8" UId="938" />
+  <LineComment UId="939">
+    <Text UId="940"> #instFB(execute := TRUE);</Text>
+  </LineComment>
+  <NewLine UId="941" />
+  <Blank Num="8" UId="942" />
+  <LineComment UId="943">
+    <Text UId="944"> IF (#instFB.done = TRUE) THEN // Subsidiary FB finished successfully</Text>
+  </LineComment>
+  <NewLine UId="945" />
+  <Blank Num="8" UId="946" />
+  <LineComment UId="947">
+    <Text UId="948">   // Continue processing with next state e.g. #statFBState := FB_STATE_PROCESSING;</Text>
+  </LineComment>
+  <NewLine UId="949" />
+  <Blank Num="8" UId="950" />
+  <NewLine UId="951" />
+  <Blank Num="8" UId="952" />
+  <LineComment UId="953">
+    <Text UId="954"> ELSIF (#instFB.error = TRUE) THEN // Error occurred in subsidiary FB</Text>
+  </LineComment>
+  <NewLine UId="955" />
+  <Blank Num="8" UId="956" />
+  <LineComment UId="957">
+    <Text UId="958">   // If the error occurred needs separate handling (e.g. close connection)</Text>
+  </LineComment>
+  <NewLine UId="959" />
+  <Blank Num="8" UId="960" />
+  <LineComment UId="961">
+    <Text UId="962">   // please set the error output only when this error handling completed successfully</Text>
+  </LineComment>
+  <NewLine UId="963" />
+  <Blank Num="8" UId="964" />
+  <LineComment UId="965">
+    <Text UId="966">   #statStatus := #ERR_XYZ; // Set correct status that identifies error clearly</Text>
+  </LineComment>
+  <NewLine UId="967" />
+  <Blank Num="8" UId="968" />
+  <LineComment UId="969">
+    <Text UId="970">   #statErrorAutoCleared OR #statErrorUserCleared // Set error type</Text>
+  </LineComment>
+  <NewLine UId="971" />
+  <Blank Num="8" UId="972" />
+  <LineComment UId="973">
+    <Text UId="974">   // TODO: Error handling</Text>
+  </LineComment>
+  <NewLine UId="975" />
+  <Blank Num="8" UId="976" />
+  <LineComment UId="977">
+    <Text UId="978"> END_IF;</Text>
+  </LineComment>
+  <NewLine UId="979" />
+  <Blank Num="8" UId="980" />
+  <Token Text="IF" UId="981" />
+  <Blank UId="982" />
+  <Access Scope="LocalVariable" UId="983">
+    <Symbol UId="984">
+      <Component Name="statFirstStepCycle" UId="985" />
+    </Symbol>
+  </Access>
+  <Blank UId="986" />
+  <Token Text="THEN" UId="987" />
+  <NewLine UId="988" />
+  <Blank Num="10" UId="989" />
+  <NewLine UId="990" />
+  <Blank Num="10" UId="991" />
+  <Access Scope="LocalVariable" UId="992">
+    <Symbol UId="993">
+      <Component Name="statFirstStepCycle" UId="994" />
+    </Symbol>
+  </Access>
+  <Blank UId="995" />
+  <Token Text=":=" UId="996" />
+  <Blank UId="997" />
+  <Access Scope="LiteralConstant" UId="998">
+    <Constant UId="999">
+      <ConstantValue UId="1001">FALSE</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="1002" />
+  <NewLine UId="1003" />
+  <Blank Num="8" UId="1004" />
+  <Token Text="END_IF" UId="1005" />
+  <Token Text=";" UId="1006" />
+  <NewLine UId="1007" />
+  <Blank Num="8" UId="1008" />
+  <LineComment UId="1009">
+    <Text UId="1010"> Assignment successful --&gt; DBAny is at least a Speed axis</Text>
+  </LineComment>
+  <NewLine UId="1011" />
+  <Blank Num="8" UId="1012" />
+  <LineComment UId="1013">
+    <Text UId="1014"> Reset additive torque command</Text>
+  </LineComment>
+  <NewLine UId="1015" />
+  <Blank Num="8" UId="1016" />
+  <Access Scope="LocalVariable" UId="1017">
+    <Symbol UId="1018">
+      <Component Name="instTorqueAdditive" UId="1019" />
+    </Symbol>
+  </Access>
+  <Access Scope="Call" UId="1020">
+    <Instruction UId="1021">
+      <Token Text="(" UId="1022" />
+      <Parameter Name="Axis" UId="1023">
+        <Blank Num="3" UId="1024" />
+        <Token Text=":=" UId="1025" />
+        <Blank UId="1026" />
+        <Access Scope="LocalVariable" UId="1027">
+          <Symbol UId="1028">
+            <Component Name="tempRefSpeedAxis" UId="1029" />
+            <Token Text="^" UId="1030" />
+          </Symbol>
+        </Access>
+      </Parameter>
+      <Token Text="," UId="1031" />
+      <NewLine UId="1032" />
+      <Blank Num="28" UId="1033" />
+      <Parameter Name="Enable" UId="1034">
+        <Blank UId="1035" />
+        <Token Text=":=" UId="1036" />
+        <Blank UId="1037" />
+        <Access Scope="LiteralConstant" UId="1038">
+          <Constant UId="1039">
+            <ConstantValue UId="1041">FALSE</ConstantValue>
+          </Constant>
+        </Access>
+      </Parameter>
+      <Token Text=")" UId="1042" />
+    </Instruction>
+  </Access>
+  <Token Text=";" UId="1043" />
+  <NewLine UId="1044" />
+  <Blank Num="8" UId="1045" />
+  <LineComment UId="1046">
+    <Text UId="1047"> Reset torque range command    </Text>
+  </LineComment>
+  <NewLine UId="1048" />
+  <Blank Num="8" UId="1049" />
+  <Access Scope="LocalVariable" UId="1050">
+    <Symbol UId="1051">
+      <Component Name="instTorqueRange" UId="1052" />
+    </Symbol>
+  </Access>
+  <Access Scope="Call" UId="1053">
+    <Instruction UId="1054">
+      <Token Text="(" UId="1055" />
+      <Parameter Name="Axis" UId="1056">
+        <Blank Num="3" UId="1057" />
+        <Token Text=":=" UId="1058" />
+        <Blank UId="1059" />
+        <Access Scope="LocalVariable" UId="1060">
+          <Symbol UId="1061">
+            <Component Name="tempRefSpeedAxis" UId="1062" />
+            <Token Text="^" UId="1063" />
+          </Symbol>
+        </Access>
+      </Parameter>
+      <Token Text="," UId="1064" />
+      <NewLine UId="1065" />
+      <Blank Num="25" UId="1066" />
+      <Parameter Name="Enable" UId="1067">
+        <Blank UId="1068" />
+        <Token Text=":=" UId="1069" />
+        <Blank UId="1070" />
+        <Access Scope="LiteralConstant" UId="1071">
+          <Constant UId="1072">
+            <ConstantValue UId="1074">FALSE</ConstantValue>
+          </Constant>
+        </Access>
+      </Parameter>
+      <Token Text=")" UId="1075" />
+    </Instruction>
+  </Access>
+  <Token Text=";" UId="1076" />
+  <NewLine UId="1077" />
+  <Blank Num="8" UId="1078" />
+  <LineComment UId="1079">
+    <Text UId="1080">Reset moving commands (*c_00022*)</Text>
+  </LineComment>
+  <NewLine UId="1081" />
+  <Blank Num="8" UId="1082" />
+  <Access Scope="LocalVariable" UId="1083">
+    <Symbol UId="1084">
+      <Component Name="instStop" UId="1085" />
+    </Symbol>
+  </Access>
+  <Access Scope="Call" UId="1086">
+    <Instruction UId="1087">
+      <Token Text="(" UId="1088" />
+      <Parameter Name="Axis" UId="1089">
+        <Blank Num="4" UId="1090" />
+        <Token Text=":=" UId="1091" />
+        <Blank UId="1092" />
+        <Access Scope="LocalVariable" UId="1093">
+          <Symbol UId="1094">
+            <Component Name="tempRefSpeedAxis" UId="1095" />
+            <Token Text="^" UId="1096" />
+          </Symbol>
+        </Access>
+      </Parameter>
+      <Token Text="," UId="1097" />
+      <NewLine UId="1098" />
+      <Blank Num="18" UId="1099" />
+      <Parameter Name="Execute" UId="1100">
+        <Blank UId="1101" />
+        <Token Text=":=" UId="1102" />
+        <Blank UId="1103" />
+        <Access Scope="LiteralConstant" UId="1104">
+          <Constant UId="1105">
+            <ConstantValue UId="1107">FALSE</ConstantValue>
+          </Constant>
+        </Access>
+      </Parameter>
+      <Token Text=")" UId="1108" />
+    </Instruction>
+  </Access>
+  <Token Text=";" UId="1109" />
+  <NewLine UId="1110" />
+  <Blank Num="8" UId="1111" />
+  <Access Scope="LocalVariable" UId="1112">
+    <Symbol UId="1113">
+      <Component Name="instMoveVelocity" UId="1114" />
+    </Symbol>
+  </Access>
+  <Access Scope="Call" UId="1115">
+    <Instruction UId="1116">
+      <Token Text="(" UId="1117" />
+      <Parameter Name="Axis" UId="1118">
+        <Blank Num="4" UId="1119" />
+        <Token Text=":=" UId="1120" />
+        <Blank UId="1121" />
+        <Access Scope="LocalVariable" UId="1122">
+          <Symbol UId="1123">
+            <Component Name="tempRefSpeedAxis" UId="1124" />
+            <Token Text="^" UId="1125" />
+          </Symbol>
+        </Access>
+      </Parameter>
+      <Token Text="," UId="1126" />
+      <NewLine UId="1127" />
+      <Blank Num="26" UId="1128" />
+      <Parameter Name="Execute" UId="1129">
+        <Blank UId="1130" />
+        <Token Text=":=" UId="1131" />
+        <Blank UId="1132" />
+        <Access Scope="LiteralConstant" UId="1133">
+          <Constant UId="1134">
+            <ConstantValue UId="1136">FALSE</ConstantValue>
+          </Constant>
+        </Access>
+      </Parameter>
+      <Token Text=")" UId="1137" />
+    </Instruction>
+  </Access>
+  <Token Text=";" UId="1138" />
+  <NewLine UId="1139" />
+  <Blank Num="8" UId="1140" />
+  <NewLine UId="1141" />
+  <Blank Num="8" UId="1142" />
+  <Access Scope="LocalVariable" UId="1143">
+    <Symbol UId="1144">
+      <Component Name="statFBState" UId="1145" />
+    </Symbol>
+  </Access>
+  <Blank UId="1146" />
+  <Token Text=":=" UId="1147" />
+  <Blank UId="1148" />
+  <Access Scope="LocalConstant" UId="1149">
+    <Constant Name="FB_STATE_PROCESSING" UId="1150" />
+  </Access>
+  <Token Text=";" UId="1153" />
+  <NewLine UId="1154" />
+  <Blank Num="8" UId="1155" />
+  <LineComment UId="1156">
+    <Text UId="1157"> TODO: Set #statErrorAutoCleared := FALSE if autocleared is acknowledged</Text>
+  </LineComment>
+  <NewLine UId="1158" />
+  <Blank Num="8" UId="1159" />
+  <NewLine UId="1160" />
+  <Blank Num="6" UId="1161" />
+  <Token Text="END_REGION" UId="1162" />
+  <Blank UId="1163" />
+  <Text UId="1164">enabling</Text>
+  <NewLine UId="1165" />
+  <Blank Num="6" UId="1166" />
+  <NewLine UId="1167" />
+  <Blank Num="4" UId="1168" />
+  <Access Scope="LocalConstant" UId="1169">
+    <Constant Name="FB_STATE_PROCESSING" UId="1170" />
+  </Access>
+  <Token Text=":" UId="1173" />
+  <Blank UId="1174" />
+  <LineComment UId="1175">
+    <Text UId="1176"> Processing active</Text>
+  </LineComment>
+  <NewLine UId="1177" />
+  <Blank Num="6" UId="1178" />
+  <Token Text="REGION" UId="1179" />
+  <Blank UId="1180" />
+  <Text UId="1181">Processing</Text>
+  <NewLine UId="1182" />
+  <Blank Num="8" UId="1183" />
+  <Token Text="IF" UId="1184" />
+  <Blank UId="1185" />
+  <Access Scope="LocalVariable" UId="1186">
+    <Symbol UId="1187">
+      <Component Name="statFirstStepCycle" UId="1188" />
+    </Symbol>
+  </Access>
+  <Blank UId="1189" />
+  <Token Text="THEN" UId="1190" />
+  <NewLine UId="1191" />
+  <Blank Num="10" UId="1192" />
+  <NewLine UId="1193" />
+  <Blank Num="10" UId="1194" />
+  <Access Scope="LocalVariable" UId="1195">
+    <Symbol UId="1196">
+      <Component Name="statFirstStepCycle" UId="1197" />
+    </Symbol>
+  </Access>
+  <Blank UId="1198" />
+  <Token Text=":=" UId="1199" />
+  <Blank UId="1200" />
+  <Access Scope="LiteralConstant" UId="1201">
+    <Constant UId="1202">
+      <ConstantValue UId="1204">FALSE</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="1205" />
+  <NewLine UId="1206" />
+  <Blank Num="8" UId="1207" />
+  <Token Text="END_IF" UId="1208" />
+  <Token Text=";" UId="1209" />
+  <NewLine UId="1210" />
+  <Blank Num="8" UId="1211" />
+  <LineComment UId="1212">
+    <Text UId="1213">Enable/Disable TorqueCommands   </Text>
+  </LineComment>
+  <NewLine UId="1214" />
+  <Blank Num="8" UId="1215" />
+  <Access Scope="LocalVariable" UId="1216">
+    <Symbol UId="1217">
+      <Component Name="statEnableAdditiveTorque" UId="1218" />
+    </Symbol>
+  </Access>
+  <Blank UId="1219" />
+  <Token Text=":=" UId="1220" />
+  <Blank UId="1221" />
+  <Access Scope="LocalVariable" UId="1222">
+    <Symbol UId="1223">
+      <Component Name="writeAdditiveTorque" UId="1224" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="1225" />
+  <NewLine UId="1226" />
+  <Blank Num="8" UId="1227" />
+  <Access Scope="LocalVariable" UId="1228">
+    <Symbol UId="1229">
+      <Component Name="statEnableTorqueLimit" UId="1230" />
+    </Symbol>
+  </Access>
+  <Blank UId="1231" />
+  <Token Text=":=" UId="1232" />
+  <Blank UId="1233" />
+  <Access Scope="LocalVariable" UId="1234">
+    <Symbol UId="1235">
+      <Component Name="writeTorqueLimit" UId="1236" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="1237" />
+  <NewLine UId="1238" />
+  <Blank Num="8" UId="1239" />
+  <Access Scope="LocalVariable" UId="1240">
+    <Symbol UId="1241">
+      <Component Name="instRTrigEnableInterface" UId="1242" />
+    </Symbol>
+  </Access>
+  <Access Scope="Call" UId="1243">
+    <Instruction UId="1244">
+      <Token Text="(" UId="1245" />
+      <Parameter Name="CLK" UId="1246">
+        <Blank UId="1247" />
+        <Token Text=":=" UId="1248" />
+        <Blank UId="1249" />
+        <Access Scope="LocalVariable" UId="1250">
+          <Symbol UId="1251">
+            <Component Name="enableVelocityInterface" UId="1252" />
+          </Symbol>
+        </Access>
+      </Parameter>
+      <Token Text=")" UId="1253" />
+    </Instruction>
+  </Access>
+  <Token Text=";" UId="1254" />
+  <NewLine UId="1255" />
+  <Blank Num="8" UId="1256" />
+  <LineComment UId="1257">
+    <Text UId="1258">If overrideVelocity OR the dynamics will change, a new MoveVelocity Execute has to be set in same cycle</Text>
+  </LineComment>
+  <NewLine UId="1259" />
+  <Blank Num="8" UId="1260" />
+  <Token Text="IF" UId="1261" />
+  <Blank UId="1262" />
+  <Token Text="(" UId="1263" />
+  <Access Scope="LocalVariable" UId="1264">
+    <Symbol UId="1265">
+      <Component Name="enableVelocityInterface" UId="1266" />
+    </Symbol>
+  </Access>
+  <Blank UId="1267" />
+  <Token Text="AND" UId="1268" />
+  <NewLine UId="1269" />
+  <Blank Num="10" UId="1270" />
+  <Token Text="(" UId="1271" />
+  <Access Scope="LocalVariable" UId="1272">
+    <Symbol UId="1273">
+      <Component Name="statReferenceVelocityOld" UId="1274" />
+    </Symbol>
+  </Access>
+  <Blank UId="1275" />
+  <Token Text="&lt;&gt;" UId="1276" />
+  <Blank UId="1277" />
+  <Access Scope="LocalVariable" UId="1278">
+    <Symbol UId="1279">
+      <Component Name="referenceVelocity" UId="1280" />
+    </Symbol>
+  </Access>
+  <NewLine UId="1281" />
+  <Blank Num="10" UId="1282" />
+  <Token Text="OR" UId="1283" />
+  <Blank UId="1284" />
+  <Access Scope="LocalVariable" UId="1285">
+    <Symbol UId="1286">
+      <Component Name="statAccelerationOld" UId="1287" />
+    </Symbol>
+  </Access>
+  <Blank UId="1288" />
+  <Token Text="&lt;&gt;" UId="1289" />
+  <Blank UId="1290" />
+  <Access Scope="LocalVariable" UId="1291">
+    <Symbol UId="1292">
+      <Component Name="motionVector" UId="1293" />
+      <Token Text="." UId="1294" />
+      <Component Name="a" UId="1295" />
+    </Symbol>
+  </Access>
+  <NewLine UId="1296" />
+  <Blank Num="10" UId="1297" />
+  <Token Text="OR" UId="1298" />
+  <Blank UId="1299" />
+  <Access Scope="LocalVariable" UId="1300">
+    <Symbol UId="1301">
+      <Component Name="statJerkOld" UId="1302" />
+    </Symbol>
+  </Access>
+  <Blank UId="1303" />
+  <Token Text="&lt;&gt;" UId="1304" />
+  <Blank UId="1305" />
+  <Access Scope="LocalVariable" UId="1306">
+    <Symbol UId="1307">
+      <Component Name="motionVector" UId="1308" />
+      <Token Text="." UId="1309" />
+      <Component Name="j" UId="1310" />
+    </Symbol>
+  </Access>
+  <NewLine UId="1311" />
+  <Blank Num="10" UId="1312" />
+  <Token Text="OR" UId="1313" />
+  <Blank UId="1314" />
+  <Access Scope="LocalVariable" UId="1315">
+    <Symbol UId="1316">
+      <Component Name="statDecelerationOld" UId="1317" />
+    </Symbol>
+  </Access>
+  <Blank UId="1318" />
+  <Token Text="&lt;&gt;" UId="1319" />
+  <Blank UId="1320" />
+  <Access Scope="LocalVariable" UId="1321">
+    <Symbol UId="1322">
+      <Component Name="motionVector" UId="1323" />
+      <Token Text="." UId="1324" />
+      <Component Name="d" UId="1325" />
+    </Symbol>
+  </Access>
+  <Token Text=")" UId="1326" />
+  <Token Text=")" UId="1327" />
+  <NewLine UId="1328" />
+  <Blank Num="10" UId="1329" />
+  <Token Text="OR" UId="1330" />
+  <Blank UId="1331" />
+  <Access Scope="LocalVariable" UId="1332">
+    <Symbol UId="1333">
+      <Component Name="instRTrigEnableInterface" UId="1334" />
+      <Token Text="." UId="1335" />
+      <Component Name="Q" UId="1336" />
+    </Symbol>
+  </Access>
+  <NewLine UId="1337" />
+  <Blank Num="8" UId="1338" />
+  <Token Text="THEN" UId="1339" />
+  <LineComment Inserted="true" UId="1340">
+    <Text UId="1341">c_00029</Text>
+  </LineComment>
+  <NewLine UId="1342" />
+  <Blank Num="10" UId="1343" />
+  <Access Scope="LocalVariable" UId="1344">
+    <Symbol UId="1345">
+      <Component Name="statExecuteMoveVelocity" UId="1346" />
+    </Symbol>
+  </Access>
+  <Blank UId="1347" />
+  <Token Text=":=" UId="1348" />
+  <Blank UId="1349" />
+  <Access Scope="LiteralConstant" UId="1350">
+    <Constant UId="1351">
+      <ConstantValue UId="1353">TRUE</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="1354" />
+  <NewLine UId="1355" />
+  <Blank Num="8" UId="1356" />
+  <Token Text="END_IF" UId="1357" />
+  <Token Text=";" UId="1358" />
+  <NewLine UId="1359" />
+  <Blank Num="8" UId="1360" />
+  <Access Scope="LocalVariable" UId="1361">
+    <Symbol UId="1362">
+      <Component Name="statReferenceVelocityOld" UId="1363" />
+    </Symbol>
+  </Access>
+  <Blank UId="1364" />
+  <Token Text=":=" UId="1365" />
+  <Blank UId="1366" />
+  <Access Scope="LocalVariable" UId="1367">
+    <Symbol UId="1368">
+      <Component Name="referenceVelocity" UId="1369" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="1370" />
+  <NewLine UId="1371" />
+  <Blank Num="8" UId="1372" />
+  <Access Scope="LocalVariable" UId="1373">
+    <Symbol UId="1374">
+      <Component Name="statAccelerationOld" UId="1375" />
+    </Symbol>
+  </Access>
+  <Blank UId="1376" />
+  <Token Text=":=" UId="1377" />
+  <Blank UId="1378" />
+  <Access Scope="LocalVariable" UId="1379">
+    <Symbol UId="1380">
+      <Component Name="motionVector" UId="1381" />
+      <Token Text="." UId="1382" />
+      <Component Name="a" UId="1383" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="1384" />
+  <NewLine UId="1385" />
+  <Blank Num="8" UId="1386" />
+  <Access Scope="LocalVariable" UId="1387">
+    <Symbol UId="1388">
+      <Component Name="statDecelerationOld" UId="1389" />
+    </Symbol>
+  </Access>
+  <Blank UId="1390" />
+  <Token Text=":=" UId="1391" />
+  <Blank UId="1392" />
+  <Access Scope="LocalVariable" UId="1393">
+    <Symbol UId="1394">
+      <Component Name="motionVector" UId="1395" />
+      <Token Text="." UId="1396" />
+      <Component Name="d" UId="1397" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="1398" />
+  <NewLine UId="1399" />
+  <Blank Num="8" UId="1400" />
+  <Access Scope="LocalVariable" UId="1401">
+    <Symbol UId="1402">
+      <Component Name="statJerkOld" UId="1403" />
+    </Symbol>
+  </Access>
+  <Blank UId="1404" />
+  <Token Text=":=" UId="1405" />
+  <Blank UId="1406" />
+  <Access Scope="LocalVariable" UId="1407">
+    <Symbol UId="1408">
+      <Component Name="motionVector" UId="1409" />
+      <Token Text="." UId="1410" />
+      <Component Name="j" UId="1411" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="1412" />
+  <NewLine UId="1413" />
+  <Blank Num="8" UId="1414" />
+  <NewLine UId="1415" />
+  <Blank Num="8" UId="1416" />
+  <Access Scope="LocalVariable" UId="1417">
+    <Symbol UId="1418">
+      <Component Name="tempRefSpeedAxis" UId="1419" />
+      <Token Text="^" UId="1420" />
+      <Token Text="." UId="1421" />
+      <Component Name="Override" UId="1422" />
+      <Token Text="." UId="1423" />
+      <Component Name="Velocity" UId="1424" />
+    </Symbol>
+  </Access>
+  <Blank UId="1425" />
+  <Token Text=":=" UId="1426" />
+  <Blank UId="1427" />
+  <Access Scope="Call" UId="1428">
+    <Instruction Name="LIMIT" UId="1429">
+      <Token Text="(" UId="1430" />
+      <Parameter Name="MN" UId="1431">
+        <Blank UId="1432" />
+        <Token Text=":=" UId="1433" />
+        <Blank UId="1434" />
+        <Access Scope="LiteralConstant" UId="1435">
+          <Constant UId="1436">
+            <ConstantValue UId="1438">0.0</ConstantValue>
+          </Constant>
+        </Access>
+      </Parameter>
+      <Token Text="," UId="1439" />
+      <Blank UId="1440" />
+      <Parameter Name="IN" UId="1441">
+        <Blank UId="1442" />
+        <Token Text=":=" UId="1443" />
+        <Blank UId="1444" />
+        <Access Scope="LocalVariable" UId="1445">
+          <Symbol UId="1446">
+            <Component Name="override" UId="1447" />
+          </Symbol>
+        </Access>
+      </Parameter>
+      <Token Text="," UId="1448" />
+      <Blank UId="1449" />
+      <Parameter Name="MX" UId="1450">
+        <Blank UId="1451" />
+        <Token Text=":=" UId="1452" />
+        <Blank UId="1453" />
+        <Access Scope="LiteralConstant" UId="1454">
+          <Constant UId="1455">
+            <ConstantValue UId="1457">200.0</ConstantValue>
+          </Constant>
+        </Access>
+      </Parameter>
+      <Token Text=")" UId="1459" />
+    </Instruction>
+  </Access>
+  <Token Text=";" UId="1460" />
+  <LineComment Inserted="true" UId="1461">
+    <Text UId="1462">c_00037</Text>
+  </LineComment>
+  <NewLine UId="1463" />
+  <Blank Num="8" UId="1464" />
+  <NewLine UId="1465" />
+  <Blank Num="6" UId="1466" />
+  <Token Text="END_REGION" UId="1467" />
+  <Blank UId="1468" />
+  <Text UId="1469">Processing</Text>
+  <NewLine UId="1470" />
+  <Blank Num="6" UId="1471" />
+  <NewLine UId="1472" />
+  <Blank Num="4" UId="1473" />
+  <Access Scope="LocalConstant" UId="1474">
+    <Constant Name="FB_STATE_ERROR" UId="1475" />
+  </Access>
+  <Token Text=":" UId="1478" />
+  <Blank Num="2" UId="1479" />
+  <LineComment UId="1480">
+    <Text UId="1481"> Error state</Text>
+  </LineComment>
+  <NewLine UId="1482" />
+  <Blank Num="6" UId="1483" />
+  <Token Text="REGION" UId="1484" />
+  <Blank UId="1485" />
+  <Text UId="1486">Error</Text>
+  <NewLine UId="1487" />
+  <Blank Num="8" UId="1488" />
+  <Token Text="IF" UId="1489" />
+  <Blank UId="1490" />
+  <Access Scope="LocalVariable" UId="1491">
+    <Symbol UId="1492">
+      <Component Name="statFirstStepCycle" UId="1493" />
+    </Symbol>
+  </Access>
+  <Blank UId="1494" />
+  <Token Text="THEN" UId="1495" />
+  <NewLine UId="1496" />
+  <Blank Num="10" UId="1497" />
+  <LineComment UId="1498">
+    <Text UId="1499"> Disable MoveVelocity</Text>
+  </LineComment>
+  <NewLine UId="1500" />
+  <Blank Num="10" UId="1501" />
+  <Access Scope="LocalVariable" UId="1502">
+    <Symbol UId="1503">
+      <Component Name="statExecuteMoveVelocity" UId="1504" />
+    </Symbol>
+  </Access>
+  <Blank UId="1505" />
+  <Token Text=":=" UId="1506" />
+  <Blank UId="1507" />
+  <Access Scope="LiteralConstant" UId="1508">
+    <Constant UId="1509">
+      <ConstantValue UId="1511">FALSE</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="1512" />
+  <NewLine UId="1513" />
+  <Blank Num="10" UId="1514" />
+  <LineComment UId="1515">
+    <Text UId="1516">Stop axis if enabled and speed setpoint is active</Text>
+  </LineComment>
+  <NewLine UId="1517" />
+  <Blank Num="10" UId="1518" />
+  <Token Text="IF" UId="1519" />
+  <Blank UId="1520" />
+  <Access Scope="LocalVariable" UId="1521">
+    <Symbol UId="1522">
+      <Component Name="statRefTOValid" UId="1523" />
+    </Symbol>
+  </Access>
+  <Blank UId="1524" />
+  <Token Text="THEN" UId="1525" />
+  <NewLine UId="1526" />
+  <Blank Num="12" UId="1527" />
+  <Access Scope="LocalVariable" UId="1528">
+    <Symbol UId="1529">
+      <Component Name="statExecuteStop" UId="1530" />
+    </Symbol>
+  </Access>
+  <Blank UId="1531" />
+  <Token Text=":=" UId="1532" />
+  <Blank UId="1533" />
+  <Access Scope="LocalVariable" UId="1534">
+    <Symbol UId="1535">
+      <Component Name="tempRefSpeedAxis" UId="1536" />
+      <Token Text="^" UId="1537" />
+      <Token Text="." UId="1538" />
+      <Component Name="StatusWord" UId="1539" />
+      <Token Text="." UId="1540" />
+      <Token Text="%X0" UId="1541" />
+    </Symbol>
+  </Access>
+  <Blank UId="1542" />
+  <Token Text="AND" UId="1543" />
+  <Blank UId="1544" />
+  <Token Text="(" UId="1545" />
+  <Access Scope="LocalVariable" UId="1546">
+    <Symbol UId="1547">
+      <Component Name="instMoveVelocity" UId="1548" />
+      <Token Text="." UId="1549" />
+      <Component Name="Busy" UId="1550" />
+    </Symbol>
+  </Access>
+  <Token Text=")" UId="1551" />
+  <Token Text=";" UId="1552" />
+  <NewLine UId="1553" />
+  <Blank Num="10" UId="1554" />
+  <Token Text="ELSE" UId="1555" />
+  <NewLine UId="1556" />
+  <Blank Num="12" UId="1557" />
+  <Access Scope="LocalVariable" UId="1558">
+    <Symbol UId="1559">
+      <Component Name="statExecuteStop" UId="1560" />
+    </Symbol>
+  </Access>
+  <Blank UId="1561" />
+  <Token Text=":=" UId="1562" />
+  <Blank UId="1563" />
+  <Access Scope="LiteralConstant" UId="1564">
+    <Constant UId="1565">
+      <ConstantValue UId="1567">FALSE</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="1568" />
+  <NewLine UId="1569" />
+  <Blank Num="10" UId="1570" />
+  <Token Text="END_IF" UId="1571" />
+  <Token Text=";" UId="1572" />
+  <NewLine UId="1573" />
+  <Blank Num="10" UId="1574" />
+  <LineComment UId="1575">
+    <Text UId="1576"> Disable additive torque/ torque limits</Text>
+  </LineComment>
+  <NewLine UId="1577" />
+  <Blank Num="10" UId="1578" />
+  <Access Scope="LocalVariable" UId="1579">
+    <Symbol UId="1580">
+      <Component Name="statEnableAdditiveTorque" UId="1581" />
+    </Symbol>
+  </Access>
+  <Blank UId="1582" />
+  <Token Text=":=" UId="1583" />
+  <Blank UId="1584" />
+  <Access Scope="LiteralConstant" UId="1585">
+    <Constant UId="1586">
+      <ConstantValue UId="1588">FALSE</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="1589" />
+  <NewLine UId="1590" />
+  <Blank Num="10" UId="1591" />
+  <NewLine UId="1592" />
+  <Blank Num="10" UId="1593" />
+  <Access Scope="LocalVariable" UId="1594">
+    <Symbol UId="1595">
+      <Component Name="statFirstStepCycle" UId="1596" />
+    </Symbol>
+  </Access>
+  <Blank UId="1597" />
+  <Token Text=":=" UId="1598" />
+  <Blank UId="1599" />
+  <Access Scope="LiteralConstant" UId="1600">
+    <Constant UId="1601">
+      <ConstantValue UId="1603">FALSE</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="1604" />
+  <NewLine UId="1605" />
+  <Blank Num="8" UId="1606" />
+  <Token Text="END_IF" UId="1607" />
+  <Token Text=";" UId="1608" />
+  <NewLine UId="1609" />
+  <Blank Num="8" UId="1610" />
+  <NewLine UId="1611" />
+  <Blank Num="8" UId="1612" />
+  <Token Text="IF" UId="1613" />
+  <Blank UId="1614" />
+  <Token Text="(" UId="1615" />
+  <Access Scope="LocalVariable" UId="1616">
+    <Symbol UId="1617">
+      <Component Name="statExecuteStop" UId="1618" />
+    </Symbol>
+  </Access>
+  <NewLine UId="1619" />
+  <Blank Num="10" UId="1620" />
+  <Token Text="AND" UId="1621" />
+  <Blank UId="1622" />
+  <Token Text="(" UId="1623" />
+  <Access Scope="LocalVariable" UId="1624">
+    <Symbol UId="1625">
+      <Component Name="instStop" UId="1626" />
+      <Token Text="." UId="1627" />
+      <Component Name="Done" UId="1628" />
+    </Symbol>
+  </Access>
+  <Blank UId="1629" />
+  <Token Text="OR" UId="1630" />
+  <Blank UId="1631" />
+  <Access Scope="LocalVariable" UId="1632">
+    <Symbol UId="1633">
+      <Component Name="instStop" UId="1634" />
+      <Token Text="." UId="1635" />
+      <Component Name="Error" UId="1636" />
+    </Symbol>
+  </Access>
+  <Blank UId="1637" />
+  <Token Text="OR" UId="1638" />
+  <Blank UId="1639" />
+  <Access Scope="LocalVariable" UId="1640">
+    <Symbol UId="1641">
+      <Component Name="instStop" UId="1642" />
+      <Token Text="." UId="1643" />
+      <Component Name="CommandAborted" UId="1644" />
+    </Symbol>
+  </Access>
+  <Token Text=")" UId="1645" />
+  <Token Text=")" UId="1646" />
+  <NewLine UId="1647" />
+  <Blank Num="10" UId="1648" />
+  <Token Text="OR" UId="1649" />
+  <Blank UId="1650" />
+  <Token Text="NOT" UId="1651" />
+  <Blank UId="1652" />
+  <Access Scope="LocalVariable" UId="1653">
+    <Symbol UId="1654">
+      <Component Name="statExecuteStop" UId="1655" />
+    </Symbol>
+  </Access>
+  <NewLine UId="1656" />
+  <Blank Num="8" UId="1657" />
+  <Token Text="THEN" UId="1658" />
+  <NewLine UId="1659" />
+  <Blank Num="10" UId="1660" />
+  <Access Scope="LocalVariable" UId="1661">
+    <Symbol UId="1662">
+      <Component Name="tempRefSpeedAxis" UId="1663" />
+      <Token Text="^" UId="1664" />
+      <Token Text="." UId="1665" />
+      <Component Name="Override" UId="1666" />
+      <Token Text="." UId="1667" />
+      <Component Name="Velocity" UId="1668" />
+    </Symbol>
+  </Access>
+  <Blank UId="1669" />
+  <Token Text=":=" UId="1670" />
+  <Blank UId="1671" />
+  <Access Scope="LiteralConstant" UId="1672">
+    <Constant UId="1673">
+      <ConstantValue UId="1675">100.0</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="1676" />
+  <NewLine UId="1677" />
+  <Blank Num="10" UId="1678" />
+  <Access Scope="LocalVariable" UId="1679">
+    <Symbol UId="1680">
+      <Component Name="statEnableTorqueLimit" UId="1681" />
+    </Symbol>
+  </Access>
+  <Blank UId="1682" />
+  <Token Text=":=" UId="1683" />
+  <Blank UId="1684" />
+  <Access Scope="LiteralConstant" UId="1685">
+    <Constant UId="1686">
+      <ConstantValue UId="1688">FALSE</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="1689" />
+  <NewLine UId="1690" />
+  <Blank Num="10" UId="1691" />
+  <Access Scope="LocalVariable" UId="1692">
+    <Symbol UId="1693">
+      <Component Name="statBusy" UId="1694" />
+    </Symbol>
+  </Access>
+  <Blank UId="1695" />
+  <Token Text=":=" UId="1696" />
+  <Blank UId="1697" />
+  <Access Scope="LiteralConstant" UId="1698">
+    <Constant UId="1699">
+      <ConstantValue UId="1701">FALSE</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="1702" />
+  <NewLine UId="1703" />
+  <Blank Num="10" UId="1704" />
+  <Access Scope="LocalVariable" UId="1705">
+    <Symbol UId="1706">
+      <Component Name="statFBState" UId="1707" />
+    </Symbol>
+  </Access>
+  <Blank UId="1708" />
+  <Token Text=":=" UId="1709" />
+  <Blank UId="1710" />
+  <Access Scope="LocalConstant" UId="1711">
+    <Constant Name="FB_STATE_NO_PROCESSING" UId="1712" />
+  </Access>
+  <Token Text=";" UId="1715" />
+  <NewLine UId="1716" />
+  <Blank Num="8" UId="1717" />
+  <Token Text="END_IF" UId="1718" />
+  <Token Text=";" UId="1719" />
+  <NewLine UId="1720" />
+  <Blank Num="6" UId="1721" />
+  <Token Text="END_REGION" UId="1722" />
+  <NewLine UId="1723" />
+  <Blank Num="6" UId="1724" />
+  <NewLine UId="1725" />
+  <Blank Num="4" UId="1726" />
+  <Access Scope="LocalConstant" UId="1727">
+    <Constant Name="FB_STATE_DISABLING" UId="1728" />
+  </Access>
+  <Token Text=":" UId="1731" />
+  <Blank UId="1732" />
+  <LineComment UId="1733">
+    <Text UId="1734"> Disabling active</Text>
+  </LineComment>
+  <NewLine UId="1735" />
+  <Blank Num="6" UId="1736" />
+  <Token Text="REGION" UId="1737" />
+  <Blank UId="1738" />
+  <Text UId="1739">Disabling</Text>
+  <NewLine UId="1740" />
+  <Blank Num="8" UId="1741" />
+  <Token Text="IF" UId="1742" />
+  <Blank UId="1743" />
+  <Access Scope="LocalVariable" UId="1744">
+    <Symbol UId="1745">
+      <Component Name="statFirstStepCycle" UId="1746" />
+    </Symbol>
+  </Access>
+  <Blank UId="1747" />
+  <Token Text="THEN" UId="1748" />
+  <NewLine UId="1749" />
+  <Blank Num="10" UId="1750" />
+  <LineComment UId="1751">
+    <Text UId="1752"> Disable MoveVelocity</Text>
+  </LineComment>
+  <NewLine UId="1753" />
+  <Blank Num="10" UId="1754" />
+  <Access Scope="LocalVariable" UId="1755">
+    <Symbol UId="1756">
+      <Component Name="statExecuteMoveVelocity" UId="1757" />
+    </Symbol>
+  </Access>
+  <Blank UId="1758" />
+  <Token Text=":=" UId="1759" />
+  <Blank UId="1760" />
+  <Access Scope="LiteralConstant" UId="1761">
+    <Constant UId="1762">
+      <ConstantValue UId="1764">FALSE</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="1765" />
+  <NewLine UId="1766" />
+  <Blank Num="10" UId="1767" />
+  <LineComment UId="1768">
+    <Text UId="1769">Stop axis if enabled and speed setpoint is active</Text>
+  </LineComment>
+  <NewLine UId="1770" />
+  <Blank Num="10" UId="1771" />
+  <Token Text="IF" UId="1772" />
+  <Blank UId="1773" />
+  <Access Scope="LocalVariable" UId="1774">
+    <Symbol UId="1775">
+      <Component Name="statRefTOValid" UId="1776" />
+    </Symbol>
+  </Access>
+  <Blank UId="1777" />
+  <Token Text="THEN" UId="1778" />
+  <NewLine UId="1779" />
+  <Blank Num="12" UId="1780" />
+  <Access Scope="LocalVariable" UId="1781">
+    <Symbol UId="1782">
+      <Component Name="statExecuteStop" UId="1783" />
+    </Symbol>
+  </Access>
+  <Blank UId="1784" />
+  <Token Text=":=" UId="1785" />
+  <Blank UId="1786" />
+  <Access Scope="LocalVariable" UId="1787">
+    <Symbol UId="1788">
+      <Component Name="tempRefSpeedAxis" UId="1789" />
+      <Token Text="^" UId="1790" />
+      <Token Text="." UId="1791" />
+      <Component Name="StatusWord" UId="1792" />
+      <Token Text="." UId="1793" />
+      <Token Text="%X0" UId="1794" />
+    </Symbol>
+  </Access>
+  <Blank UId="1795" />
+  <Token Text="AND" UId="1796" />
+  <Blank UId="1797" />
+  <Token Text="(" UId="1798" />
+  <Access Scope="LocalVariable" UId="1799">
+    <Symbol UId="1800">
+      <Component Name="instMoveVelocity" UId="1801" />
+      <Token Text="." UId="1802" />
+      <Component Name="Busy" UId="1803" />
+    </Symbol>
+  </Access>
+  <Token Text=")" UId="1804" />
+  <Token Text=";" UId="1805" />
+  <NewLine UId="1806" />
+  <Blank Num="12" UId="1807" />
+  <NewLine UId="1808" />
+  <Blank Num="10" UId="1809" />
+  <Token Text="ELSE" UId="1810" />
+  <NewLine UId="1811" />
+  <Blank Num="12" UId="1812" />
+  <Access Scope="LocalVariable" UId="1813">
+    <Symbol UId="1814">
+      <Component Name="statExecuteStop" UId="1815" />
+    </Symbol>
+  </Access>
+  <Blank UId="1816" />
+  <Token Text=":=" UId="1817" />
+  <Blank UId="1818" />
+  <Access Scope="LiteralConstant" UId="1819">
+    <Constant UId="1820">
+      <ConstantValue UId="1822">FALSE</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="1823" />
+  <NewLine UId="1824" />
+  <Blank Num="10" UId="1825" />
+  <Token Text="END_IF" UId="1826" />
+  <Token Text=";" UId="1827" />
+  <NewLine UId="1828" />
+  <Blank Num="10" UId="1829" />
+  <LineComment UId="1830">
+    <Text UId="1831"> Disable additive torque/ torque limits</Text>
+  </LineComment>
+  <NewLine UId="1832" />
+  <Blank Num="10" UId="1833" />
+  <Access Scope="LocalVariable" UId="1834">
+    <Symbol UId="1835">
+      <Component Name="statEnableAdditiveTorque" UId="1836" />
+    </Symbol>
+  </Access>
+  <Blank UId="1837" />
+  <Token Text=":=" UId="1838" />
+  <Blank UId="1839" />
+  <Access Scope="LiteralConstant" UId="1840">
+    <Constant UId="1841">
+      <ConstantValue UId="1843">FALSE</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="1844" />
+  <NewLine UId="1845" />
+  <Blank Num="10" UId="1846" />
+  <NewLine UId="1847" />
+  <Blank Num="10" UId="1848" />
+  <Access Scope="LocalVariable" UId="1849">
+    <Symbol UId="1850">
+      <Component Name="statFirstStepCycle" UId="1851" />
+    </Symbol>
+  </Access>
+  <Blank UId="1852" />
+  <Token Text=":=" UId="1853" />
+  <Blank UId="1854" />
+  <Access Scope="LiteralConstant" UId="1855">
+    <Constant UId="1856">
+      <ConstantValue UId="1858">FALSE</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="1859" />
+  <NewLine UId="1860" />
+  <Blank Num="8" UId="1861" />
+  <Token Text="END_IF" UId="1862" />
+  <Token Text=";" UId="1863" />
+  <NewLine UId="1864" />
+  <Blank Num="8" UId="1865" />
+  <NewLine UId="1866" />
+  <Blank Num="8" UId="1867" />
+  <LineComment UId="1868">
+    <Text UId="1869"> When disabling is complete the bit #statDisablingCompleted must be set</Text>
+  </LineComment>
+  <NewLine UId="1870" />
+  <Blank Num="8" UId="1871" />
+  <Token Text="IF" UId="1872" />
+  <Blank UId="1873" />
+  <Token Text="(" UId="1874" />
+  <Access Scope="LocalVariable" UId="1875">
+    <Symbol UId="1876">
+      <Component Name="statExecuteStop" UId="1877" />
+    </Symbol>
+  </Access>
+  <NewLine UId="1878" />
+  <Blank Num="10" UId="1879" />
+  <Token Text="AND" UId="1880" />
+  <Blank UId="1881" />
+  <Token Text="(" UId="1882" />
+  <Access Scope="LocalVariable" UId="1883">
+    <Symbol UId="1884">
+      <Component Name="instStop" UId="1885" />
+      <Token Text="." UId="1886" />
+      <Component Name="Done" UId="1887" />
+    </Symbol>
+  </Access>
+  <Blank UId="1888" />
+  <Token Text="OR" UId="1889" />
+  <Blank UId="1890" />
+  <Access Scope="LocalVariable" UId="1891">
+    <Symbol UId="1892">
+      <Component Name="instStop" UId="1893" />
+      <Token Text="." UId="1894" />
+      <Component Name="Error" UId="1895" />
+    </Symbol>
+  </Access>
+  <Blank UId="1896" />
+  <Token Text="OR" UId="1897" />
+  <Blank UId="1898" />
+  <Access Scope="LocalVariable" UId="1899">
+    <Symbol UId="1900">
+      <Component Name="instStop" UId="1901" />
+      <Token Text="." UId="1902" />
+      <Component Name="CommandAborted" UId="1903" />
+    </Symbol>
+  </Access>
+  <Token Text=")" UId="1904" />
+  <Token Text=")" UId="1905" />
+  <NewLine UId="1906" />
+  <Blank Num="10" UId="1907" />
+  <Token Text="OR" UId="1908" />
+  <Blank UId="1909" />
+  <Token Text="NOT" UId="1910" />
+  <Blank UId="1911" />
+  <Access Scope="LocalVariable" UId="1912">
+    <Symbol UId="1913">
+      <Component Name="statExecuteStop" UId="1914" />
+    </Symbol>
+  </Access>
+  <NewLine UId="1915" />
+  <Blank Num="8" UId="1916" />
+  <Token Text="THEN" UId="1917" />
+  <NewLine UId="1918" />
+  <Blank Num="10" UId="1919" />
+  <Token Text="IF" UId="1920" />
+  <Blank UId="1921" />
+  <Access Scope="LocalVariable" UId="1922">
+    <Symbol UId="1923">
+      <Component Name="statRefTOValid" UId="1924" />
+    </Symbol>
+  </Access>
+  <Blank UId="1925" />
+  <Token Text="THEN" UId="1926" />
+  <NewLine UId="1927" />
+  <Blank Num="12" UId="1928" />
+  <Access Scope="LocalVariable" UId="1929">
+    <Symbol UId="1930">
+      <Component Name="tempRefSpeedAxis" UId="1931" />
+      <Token Text="^" UId="1932" />
+      <Token Text="." UId="1933" />
+      <Component Name="Override" UId="1934" />
+      <Token Text="." UId="1935" />
+      <Component Name="Velocity" UId="1936" />
+    </Symbol>
+  </Access>
+  <Blank UId="1937" />
+  <Token Text=":=" UId="1938" />
+  <Blank UId="1939" />
+  <Access Scope="LiteralConstant" UId="1940">
+    <Constant UId="1941">
+      <ConstantValue UId="1943">100.0</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="1944" />
+  <NewLine UId="1945" />
+  <Blank Num="10" UId="1946" />
+  <Token Text="END_IF" UId="1947" />
+  <Token Text=";" UId="1948" />
+  <NewLine UId="1949" />
+  <Blank Num="10" UId="1950" />
+  <Access Scope="LocalVariable" UId="1951">
+    <Symbol UId="1952">
+      <Component Name="statExecuteStop" UId="1953" />
+    </Symbol>
+  </Access>
+  <Blank UId="1954" />
+  <Token Text=":=" UId="1955" />
+  <Blank UId="1956" />
+  <Access Scope="LiteralConstant" UId="1957">
+    <Constant UId="1958">
+      <ConstantValue UId="1960">FALSE</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="1961" />
+  <NewLine UId="1962" />
+  <Blank Num="10" UId="1963" />
+  <Access Scope="LocalVariable" UId="1964">
+    <Symbol UId="1965">
+      <Component Name="statEnableTorqueLimit" UId="1966" />
+    </Symbol>
+  </Access>
+  <Blank UId="1967" />
+  <Token Text=":=" UId="1968" />
+  <Blank UId="1969" />
+  <Access Scope="LiteralConstant" UId="1970">
+    <Constant UId="1971">
+      <ConstantValue UId="1973">FALSE</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="1974" />
+  <NewLine UId="1975" />
+  <Blank Num="10" UId="1976" />
+  <Access Scope="LocalVariable" UId="1977">
+    <Symbol UId="1978">
+      <Component Name="statDisablingCompleted" UId="1979" />
+    </Symbol>
+  </Access>
+  <Blank UId="1980" />
+  <Token Text=":=" UId="1981" />
+  <Blank UId="1982" />
+  <Access Scope="LiteralConstant" UId="1983">
+    <Constant UId="1984">
+      <ConstantValue UId="1986">TRUE</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="1987" />
+  <NewLine UId="1988" />
+  <Blank Num="8" UId="1989" />
+  <Token Text="END_IF" UId="1990" />
+  <Token Text=";" UId="1991" />
+  <NewLine UId="1992" />
+  <Blank Num="6" UId="1993" />
+  <Token Text="END_REGION" UId="1994" />
+  <Blank UId="1995" />
+  <Text UId="1996">Disabling</Text>
+  <NewLine UId="1997" />
+  <Blank Num="6" UId="1998" />
+  <NewLine UId="1999" />
+  <Blank Num="4" UId="2000" />
+  <Token Text="ELSE" UId="2001" />
+  <Blank UId="2002" />
+  <LineComment UId="2003">
+    <Text UId="2004"> Undefined state in state machine reached</Text>
+  </LineComment>
+  <NewLine UId="2005" />
+  <Blank Num="6" UId="2006" />
+  <Token Text="REGION" UId="2007" />
+  <Blank UId="2008" />
+  <Text UId="2009">Undefined state</Text>
+  <NewLine UId="2010" />
+  <Blank Num="8" UId="2011" />
+  <Access Scope="LocalVariable" UId="2012">
+    <Symbol UId="2013">
+      <Component Name="statStatus" UId="2014" />
+    </Symbol>
+  </Access>
+  <Blank UId="2015" />
+  <Token Text=":=" UId="2016" />
+  <Blank UId="2017" />
+  <Access Scope="GlobalConstant" UId="2018">
+    <Constant Name="LCON_ERROR_ENABLE_INTERFACE_INVALID_STATE" UId="2019" />
+  </Access>
+  <Token Text=";" UId="2022" />
+  <NewLine UId="2023" />
+  <Blank Num="8" UId="2024" />
+  <Access Scope="LocalVariable" UId="2025">
+    <Symbol UId="2026">
+      <Component Name="statErrorUserCleared" UId="2027" />
+    </Symbol>
+  </Access>
+  <Blank UId="2028" />
+  <Token Text=":=" UId="2029" />
+  <Blank UId="2030" />
+  <Access Scope="LiteralConstant" UId="2031">
+    <Constant UId="2032">
+      <ConstantValue UId="2034">TRUE</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="2035" />
+  <NewLine UId="2036" />
+  <Blank Num="6" UId="2037" />
+  <Token Text="END_REGION" UId="2038" />
+  <Blank UId="2039" />
+  <Text UId="2040">Undefined state</Text>
+  <NewLine UId="2041" />
+  <Blank Num="2" UId="2042" />
+  <Token Text="END_CASE" UId="2043" />
+  <Token Text=";" UId="2044" />
+  <NewLine UId="2045" />
+  <Blank Num="2" UId="2046" />
+  <Access Scope="LocalVariable" UId="2047">
+    <Symbol UId="2048">
+      <Component Name="statFBStateOld" UId="2049" />
+    </Symbol>
+  </Access>
+  <Blank UId="2050" />
+  <Token Text=":=" UId="2051" />
+  <Blank UId="2052" />
+  <Access Scope="LocalVariable" UId="2053">
+    <Symbol UId="2054">
+      <Component Name="statFBState" UId="2055" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="2056" />
+  <NewLine UId="2057" />
+  <Token Text="END_REGION" UId="2058" />
+  <Blank UId="2059" />
+  <Text UId="2060">STATE MACHINE</Text>
+  <NewLine Num="2" UId="2061" />
+  <Token Text="REGION" UId="2062" />
+  <Blank UId="2063" />
+  <Text UId="2064">MC COMMANDS</Text>
+  <NewLine UId="2065" />
+  <Blank Num="2" UId="2066" />
+  <Token Text="IF" UId="2067" />
+  <Blank UId="2068" />
+  <Token Text="(" UId="2069" />
+  <Access Scope="LocalVariable" UId="2070">
+    <Symbol UId="2071">
+      <Component Name="statRefTOValid" UId="2072" />
+    </Symbol>
+  </Access>
+  <Token Text=")" UId="2073" />
+  <Blank UId="2074" />
+  <Token Text="THEN" UId="2075" />
+  <NewLine UId="2076" />
+  <Blank Num="4" UId="2077" />
+  <Access Scope="LocalVariable" UId="2078">
+    <Symbol UId="2079">
+      <Component Name="instStop" UId="2080" />
+    </Symbol>
+  </Access>
+  <Access Scope="Call" UId="2081">
+    <Instruction UId="2082">
+      <Token Text="(" UId="2083" />
+      <Parameter Name="Axis" UId="2084">
+        <Blank Num="14" UId="2085" />
+        <Token Text=":=" UId="2086" />
+        <Blank UId="2087" />
+        <Access Scope="LocalVariable" UId="2088">
+          <Symbol UId="2089">
+            <Component Name="tempRefSpeedAxis" UId="2090" />
+            <Token Text="^" UId="2091" />
+          </Symbol>
+        </Access>
+      </Parameter>
+      <Token Text="," UId="2092" />
+      <NewLine UId="2093" />
+      <Blank Num="14" UId="2094" />
+      <Parameter Name="Execute" UId="2095">
+        <Blank Num="11" UId="2096" />
+        <Token Text=":=" UId="2097" />
+        <Blank UId="2098" />
+        <Access Scope="LocalVariable" UId="2099">
+          <Symbol UId="2100">
+            <Component Name="statExecuteStop" UId="2101" />
+          </Symbol>
+        </Access>
+      </Parameter>
+      <Token Text="," UId="2102" />
+      <NewLine UId="2103" />
+      <Blank Num="14" UId="2104" />
+      <Parameter Name="AbortAcceleration" UId="2105">
+        <Blank UId="2106" />
+        <Token Text=":=" UId="2107" />
+        <Blank UId="2108" />
+        <Access Scope="LiteralConstant" UId="2109">
+          <Constant UId="2110">
+            <ConstantValue UId="2112">TRUE</ConstantValue>
+          </Constant>
+        </Access>
+      </Parameter>
+      <Token Text="," UId="2113" />
+      <NewLine UId="2114" />
+      <Blank Num="14" UId="2115" />
+      <Parameter Name="Deceleration" UId="2116">
+        <Blank Num="6" UId="2117" />
+        <Token Text=":=" UId="2118" />
+        <Blank UId="2119" />
+        <Access Scope="LocalVariable" UId="2120">
+          <Symbol UId="2121">
+            <Component Name="motionVector" UId="2122" />
+            <Token Text="." UId="2123" />
+            <Component Name="d" UId="2124" />
+          </Symbol>
+        </Access>
+      </Parameter>
+      <Token Text="," UId="2125" />
+      <LineComment Inserted="true" UId="2126">
+        <Text UId="2127">c_00029</Text>
+      </LineComment>
+      <NewLine UId="2128" />
+      <Blank Num="14" UId="2129" />
+      <Parameter Name="Jerk" UId="2130">
+        <Blank Num="14" UId="2131" />
+        <Token Text=":=" UId="2132" />
+        <Blank UId="2133" />
+        <Access Scope="LocalVariable" UId="2134">
+          <Symbol UId="2135">
+            <Component Name="motionVector" UId="2136" />
+            <Token Text="." UId="2137" />
+            <Component Name="j" UId="2138" />
+          </Symbol>
+        </Access>
+      </Parameter>
+      <Token Text=")" UId="2139" />
+    </Instruction>
+  </Access>
+  <Token Text=";" UId="2140" />
+  <NewLine UId="2141" />
+  <Blank Num="4" UId="2142" />
+  <NewLine UId="2143" />
+  <Blank Num="4" UId="2144" />
+  <Access Scope="LocalVariable" UId="2145">
+    <Symbol UId="2146">
+      <Component Name="instMoveVelocity" UId="2147" />
+    </Symbol>
+  </Access>
+  <Access Scope="Call" UId="2148">
+    <Instruction UId="2149">
+      <Token Text="(" UId="2150" />
+      <Parameter Name="Axis" UId="2151">
+        <Blank Num="15" UId="2152" />
+        <Token Text=":=" UId="2153" />
+        <Blank UId="2154" />
+        <Access Scope="LocalVariable" UId="2155">
+          <Symbol UId="2156">
+            <Component Name="tempRefSpeedAxis" UId="2157" />
+            <Token Text="^" UId="2158" />
+          </Symbol>
+        </Access>
+      </Parameter>
+      <Token Text="," UId="2159" />
+      <NewLine UId="2160" />
+      <Blank Num="22" UId="2161" />
+      <Parameter Name="Execute" UId="2162">
+        <Blank Num="12" UId="2163" />
+        <Token Text=":=" UId="2164" />
+        <Blank UId="2165" />
+        <Access Scope="LocalVariable" UId="2166">
+          <Symbol UId="2167">
+            <Component Name="statExecuteMoveVelocity" UId="2168" />
+          </Symbol>
+        </Access>
+        <Blank UId="2169" />
+        <Token Text="AND" UId="2170" />
+        <Blank UId="2171" />
+        <Token Text="NOT" UId="2172" />
+        <Blank UId="2173" />
+        <Access Scope="LocalVariable" UId="2174">
+          <Symbol UId="2175">
+            <Component Name="instStop" UId="2176" />
+            <Token Text="." UId="2177" />
+            <Component Name="Busy" UId="2178" />
+          </Symbol>
+        </Access>
+        <Blank UId="2179" />
+        <Token Text="AND" UId="2180" />
+        <Blank UId="2181" />
+        <Access Scope="LocalVariable" UId="2182">
+          <Symbol UId="2183">
+            <Component Name="tempRefSpeedAxis" UId="2184" />
+            <Token Text="^" UId="2185" />
+            <Token Text="." UId="2186" />
+            <Component Name="StatusWord" UId="2187" />
+            <Token Text="." UId="2188" />
+            <Token Text="%X0" UId="2189" />
+          </Symbol>
+        </Access>
+      </Parameter>
+      <Token Text="," UId="2190" />
+      <LineComment UId="2191">
+        <Text UId="2192">set only one time</Text>
+      </LineComment>
+      <NewLine UId="2193" />
+      <Blank Num="22" UId="2194" />
+      <Parameter Name="Velocity" UId="2195">
+        <Blank Num="11" UId="2196" />
+        <Token Text=":=" UId="2197" />
+        <Blank UId="2198" />
+        <Access Scope="LocalVariable" UId="2199">
+          <Symbol UId="2200">
+            <Component Name="referenceVelocity" UId="2201" />
+          </Symbol>
+        </Access>
+      </Parameter>
+      <Token Text="," UId="2202" />
+      <NewLine UId="2203" />
+      <Blank Num="22" UId="2204" />
+      <Parameter Name="Acceleration" UId="2205">
+        <Blank Num="7" UId="2206" />
+        <Token Text=":=" UId="2207" />
+        <Blank UId="2208" />
+        <Access Scope="LocalVariable" UId="2209">
+          <Symbol UId="2210">
+            <Component Name="motionVector" UId="2211" />
+            <Token Text="." UId="2212" />
+            <Component Name="a" UId="2213" />
+          </Symbol>
+        </Access>
+      </Parameter>
+      <Token Text="," UId="2214" />
+      <NewLine UId="2215" />
+      <Blank Num="22" UId="2216" />
+      <Parameter Name="Deceleration" UId="2217">
+        <Blank Num="7" UId="2218" />
+        <Token Text=":=" UId="2219" />
+        <Blank UId="2220" />
+        <Access Scope="LocalVariable" UId="2221">
+          <Symbol UId="2222">
+            <Component Name="motionVector" UId="2223" />
+            <Token Text="." UId="2224" />
+            <Component Name="d" UId="2225" />
+          </Symbol>
+        </Access>
+      </Parameter>
+      <Token Text="," UId="2226" />
+      <LineComment Inserted="true" UId="2227">
+        <Text UId="2228">c_00029</Text>
+      </LineComment>
+      <NewLine UId="2229" />
+      <Blank Num="22" UId="2230" />
+      <Parameter Name="Jerk" UId="2231">
+        <Blank Num="15" UId="2232" />
+        <Token Text=":=" UId="2233" />
+        <Blank UId="2234" />
+        <Access Scope="LocalVariable" UId="2235">
+          <Symbol UId="2236">
+            <Component Name="motionVector" UId="2237" />
+            <Token Text="." UId="2238" />
+            <Component Name="j" UId="2239" />
+          </Symbol>
+        </Access>
+      </Parameter>
+      <Token Text="," UId="2240" />
+      <NewLine UId="2241" />
+      <Blank Num="22" UId="2242" />
+      <Parameter Name="PositionControlled" UId="2243">
+        <Blank UId="2244" />
+        <Token Text=":=" UId="2245" />
+        <Blank UId="2246" />
+        <Access Scope="LocalVariable" UId="2247">
+          <Symbol UId="2248">
+            <Component Name="positionControlled" UId="2249" />
+          </Symbol>
+        </Access>
+      </Parameter>
+      <Token Text=")" UId="2250" />
+    </Instruction>
+  </Access>
+  <Token Text=";" UId="2251" />
+  <NewLine UId="2252" />
+  <Blank Num="4" UId="2253" />
+  <Access Scope="LocalVariable" UId="2254">
+    <Symbol UId="2255">
+      <Component Name="statInternalMoveExecute" UId="2256" />
+    </Symbol>
+  </Access>
+  <Blank UId="2257" />
+  <Token Text=":=" UId="2258" />
+  <Blank UId="2259" />
+  <Access Scope="LocalVariable" UId="2260">
+    <Symbol UId="2261">
+      <Component Name="instMoveVelocity" UId="2262" />
+      <Token Text="." UId="2263" />
+      <Component Name="Execute" UId="2264" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="2265" />
+  <NewLine UId="2266" />
+  <Blank Num="4" UId="2267" />
+  <Access Scope="LocalVariable" UId="2268">
+    <Symbol UId="2269">
+      <Component Name="statExecuteMoveVelocity" UId="2270" />
+    </Symbol>
+  </Access>
+  <Blank UId="2271" />
+  <Token Text=":=" UId="2272" />
+  <Blank UId="2273" />
+  <Access Scope="LiteralConstant" UId="2274">
+    <Constant UId="2275">
+      <ConstantValue UId="2277">FALSE</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="2278" />
+  <NewLine UId="2279" />
+  <Blank Num="4" UId="2280" />
+  <NewLine UId="2281" />
+  <Blank Num="4" UId="2282" />
+  <Access Scope="LocalVariable" UId="2283">
+    <Symbol UId="2284">
+      <Component Name="instTorqueAdditive" UId="2285" />
+    </Symbol>
+  </Access>
+  <Access Scope="Call" UId="2286">
+    <Instruction UId="2287">
+      <Token Text="(" UId="2288" />
+      <Parameter Name="Axis" UId="2289">
+        <Blank Num="3" UId="2290" />
+        <Token Text=":=" UId="2291" />
+        <Blank UId="2292" />
+        <Access Scope="LocalVariable" UId="2293">
+          <Symbol UId="2294">
+            <Component Name="tempRefSpeedAxis" UId="2295" />
+            <Token Text="^" UId="2296" />
+          </Symbol>
+        </Access>
+      </Parameter>
+      <Token Text="," UId="2297" />
+      <NewLine UId="2298" />
+      <Blank Num="24" UId="2299" />
+      <Parameter Name="Enable" UId="2300">
+        <Blank UId="2301" />
+        <Token Text=":=" UId="2302" />
+        <Blank UId="2303" />
+        <Access Scope="LocalVariable" UId="2304">
+          <Symbol UId="2305">
+            <Component Name="statEnableAdditiveTorque" UId="2306" />
+          </Symbol>
+        </Access>
+        <Blank UId="2307" />
+        <Token Text="AND" UId="2308" />
+        <Blank UId="2309" />
+        <Access Scope="LocalVariable" UId="2310">
+          <Symbol UId="2311">
+            <Component Name="tempRefSpeedAxis" UId="2312" />
+            <Token Text="^" UId="2313" />
+            <Token Text="." UId="2314" />
+            <Component Name="StatusWord" UId="2315" />
+            <Token Text="." UId="2316" />
+            <Token Text="%X0" UId="2317" />
+          </Symbol>
+        </Access>
+      </Parameter>
+      <Token Text="," UId="2318" />
+      <NewLine UId="2319" />
+      <Blank Num="24" UId="2320" />
+      <Parameter Name="Value" UId="2321">
+        <Blank Num="2" UId="2322" />
+        <Token Text=":=" UId="2323" />
+        <Blank UId="2324" />
+        <Access Scope="LocalVariable" UId="2325">
+          <Symbol UId="2326">
+            <Component Name="torqueValues" UId="2327" />
+            <Token Text="." UId="2328" />
+            <Component Name="additiveTorque" UId="2329" />
+          </Symbol>
+        </Access>
+      </Parameter>
+      <Token Text=")" UId="2330" />
+    </Instruction>
+  </Access>
+  <Token Text=";" UId="2331" />
+  <NewLine UId="2332" />
+  <Blank Num="4" UId="2333" />
+  <NewLine UId="2334" />
+  <Blank Num="4" UId="2335" />
+  <Access Scope="LocalVariable" UId="2336">
+    <Symbol UId="2337">
+      <Component Name="instTorqueRange" UId="2338" />
+    </Symbol>
+  </Access>
+  <Access Scope="Call" UId="2339">
+    <Instruction UId="2340">
+      <Token Text="(" UId="2341" />
+      <Parameter Name="Axis" UId="2342">
+        <Blank Num="7" UId="2343" />
+        <Token Text=":=" UId="2344" />
+        <Blank UId="2345" />
+        <Access Scope="LocalVariable" UId="2346">
+          <Symbol UId="2347">
+            <Component Name="tempRefSpeedAxis" UId="2348" />
+            <Token Text="^" UId="2349" />
+          </Symbol>
+        </Access>
+      </Parameter>
+      <Token Text="," UId="2350" />
+      <NewLine UId="2351" />
+      <Blank Num="21" UId="2352" />
+      <Parameter Name="Enable" UId="2353">
+        <Blank Num="5" UId="2354" />
+        <Token Text=":=" UId="2355" />
+        <Blank UId="2356" />
+        <Access Scope="LocalVariable" UId="2357">
+          <Symbol UId="2358">
+            <Component Name="statEnableTorqueLimit" UId="2359" />
+          </Symbol>
+        </Access>
+        <Blank UId="2360" />
+        <Token Text="AND" UId="2361" />
+        <Blank UId="2362" />
+        <Access Scope="LocalVariable" UId="2363">
+          <Symbol UId="2364">
+            <Component Name="tempRefSpeedAxis" UId="2365" />
+            <Token Text="^" UId="2366" />
+            <Token Text="." UId="2367" />
+            <Component Name="StatusWord" UId="2368" />
+            <Token Text="." UId="2369" />
+            <Token Text="%X0" UId="2370" />
+          </Symbol>
+        </Access>
+      </Parameter>
+      <Token Text="," UId="2371" />
+      <NewLine UId="2372" />
+      <Blank Num="21" UId="2373" />
+      <Parameter Name="UpperLimit" UId="2374">
+        <Blank UId="2375" />
+        <Token Text=":=" UId="2376" />
+        <Blank UId="2377" />
+        <Access Scope="LocalVariable" UId="2378">
+          <Symbol UId="2379">
+            <Component Name="torqueValues" UId="2380" />
+            <Token Text="." UId="2381" />
+            <Component Name="upperTorqueLimit" UId="2382" />
+          </Symbol>
+        </Access>
+      </Parameter>
+      <Token Text="," UId="2383" />
+      <NewLine UId="2384" />
+      <Blank Num="21" UId="2385" />
+      <Parameter Name="LowerLimit" UId="2386">
+        <Blank UId="2387" />
+        <Token Text=":=" UId="2388" />
+        <Blank UId="2389" />
+        <Access Scope="LocalVariable" UId="2390">
+          <Symbol UId="2391">
+            <Component Name="torqueValues" UId="2392" />
+            <Token Text="." UId="2393" />
+            <Component Name="lowerTorqueLimit" UId="2394" />
+          </Symbol>
+        </Access>
+      </Parameter>
+      <Token Text=")" UId="2395" />
+    </Instruction>
+  </Access>
+  <Token Text=";" UId="2396" />
+  <NewLine UId="2397" />
+  <Blank Num="4" UId="2398" />
+  <NewLine UId="2399" />
+  <Blank Num="4" UId="2400" />
+  <Access Scope="LocalVariable" UId="2401">
+    <Symbol UId="2402">
+      <Component Name="statMCInterfaceActive" UId="2403" />
+    </Symbol>
+  </Access>
+  <Blank UId="2404" />
+  <Token Text=":=" UId="2405" />
+  <Blank UId="2406" />
+  <Access Scope="LocalVariable" UId="2407">
+    <Symbol UId="2408">
+      <Component Name="instMoveVelocity" UId="2409" />
+      <Token Text="." UId="2410" />
+      <Component Name="Busy" UId="2411" />
+    </Symbol>
+  </Access>
+  <Blank UId="2412" />
+  <Token Text="OR" UId="2413" />
+  <Blank UId="2414" />
+  <Access Scope="LocalVariable" UId="2415">
+    <Symbol UId="2416">
+      <Component Name="instStop" UId="2417" />
+      <Token Text="." UId="2418" />
+      <Component Name="Busy" UId="2419" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="2420" />
+  <NewLine UId="2421" />
+  <Blank Num="4" UId="2422" />
+  <Access Scope="LocalVariable" UId="2423">
+    <Symbol UId="2424">
+      <Component Name="statAdditiveTorqueActive" UId="2425" />
+    </Symbol>
+  </Access>
+  <Blank UId="2426" />
+  <Token Text=":=" UId="2427" />
+  <Blank UId="2428" />
+  <Access Scope="LocalVariable" UId="2429">
+    <Symbol UId="2430">
+      <Component Name="instTorqueAdditive" UId="2431" />
+      <Token Text="." UId="2432" />
+      <Component Name="Busy" UId="2433" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="2434" />
+  <NewLine UId="2435" />
+  <Blank Num="4" UId="2436" />
+  <Access Scope="LocalVariable" UId="2437">
+    <Symbol UId="2438">
+      <Component Name="statTorqueLimitActive" UId="2439" />
+    </Symbol>
+  </Access>
+  <Blank UId="2440" />
+  <Token Text=":=" UId="2441" />
+  <Blank UId="2442" />
+  <Access Scope="LocalVariable" UId="2443">
+    <Symbol UId="2444">
+      <Component Name="instTorqueRange" UId="2445" />
+      <Token Text="." UId="2446" />
+      <Component Name="Busy" UId="2447" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="2448" />
+  <NewLine UId="2449" />
+  <Blank Num="4" UId="2450" />
+  <NewLine UId="2451" />
+  <Blank Num="4" UId="2452" />
+  <LineComment UId="2453">
+    <Text UId="2454"> Error detection of MC commands</Text>
+  </LineComment>
+  <NewLine UId="2455" />
+  <Blank Num="4" UId="2456" />
+  <Token Text="IF" UId="2457" />
+  <Blank UId="2458" />
+  <Access Scope="LocalVariable" UId="2459">
+    <Symbol UId="2460">
+      <Component Name="instMoveVelocity" UId="2461" />
+      <Token Text="." UId="2462" />
+      <Component Name="Error" UId="2463" />
+    </Symbol>
+  </Access>
+  <Blank UId="2464" />
+  <Token Text="THEN" UId="2465" />
+  <NewLine UId="2466" />
+  <Blank Num="6" UId="2467" />
+  <Access Scope="LocalVariable" UId="2468">
+    <Symbol UId="2469">
+      <Component Name="statFBState" UId="2470" />
+    </Symbol>
+  </Access>
+  <Blank UId="2471" />
+  <Token Text=":=" UId="2472" />
+  <Blank UId="2473" />
+  <Access Scope="LocalConstant" UId="2474">
+    <Constant Name="FB_STATE_ERROR" UId="2475" />
+  </Access>
+  <Token Text=";" UId="2478" />
+  <NewLine UId="2479" />
+  <Blank Num="6" UId="2480" />
+  <Access Scope="LocalVariable" UId="2481">
+    <Symbol UId="2482">
+      <Component Name="statStatus" UId="2483" />
+    </Symbol>
+  </Access>
+  <Blank UId="2484" />
+  <Token Text=":=" UId="2485" />
+  <Blank UId="2486" />
+  <Access Scope="GlobalConstant" UId="2487">
+    <Constant Name="LCON_ERROR_ENABLE_INTERFACE_MOVE_VELOCITY" UId="2488" />
+  </Access>
+  <Token Text=";" UId="2491" />
+  <NewLine UId="2492" />
+  <Blank Num="6" UId="2493" />
+  <Access Scope="LocalVariable" UId="2494">
+    <Symbol UId="2495">
+      <Component Name="statSubfunctionState" UId="2496" />
+    </Symbol>
+  </Access>
+  <Blank UId="2497" />
+  <Token Text=":=" UId="2498" />
+  <Blank UId="2499" />
+  <Access Scope="LocalVariable" UId="2500">
+    <Symbol UId="2501">
+      <Component Name="instMoveVelocity" UId="2502" />
+      <Token Text="." UId="2503" />
+      <Component Name="ErrorId" UId="2504" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="2505" />
+  <NewLine UId="2506" />
+  <Blank Num="6" UId="2507" />
+  <Access Scope="LocalVariable" UId="2508">
+    <Symbol UId="2509">
+      <Component Name="statErrorUserCleared" UId="2510" />
+    </Symbol>
+  </Access>
+  <Blank UId="2511" />
+  <Token Text=":=" UId="2512" />
+  <Blank UId="2513" />
+  <Access Scope="LiteralConstant" UId="2514">
+    <Constant UId="2515">
+      <ConstantValue UId="2517">TRUE</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="2518" />
+  <NewLine UId="2519" />
+  <Blank Num="4" UId="2520" />
+  <Token Text="ELSIF" UId="2521" />
+  <Blank UId="2522" />
+  <Access Scope="LocalVariable" UId="2523">
+    <Symbol UId="2524">
+      <Component Name="instMoveVelocity" UId="2525" />
+      <Token Text="." UId="2526" />
+      <Component Name="CommandAborted" UId="2527" />
+    </Symbol>
+  </Access>
+  <NewLine UId="2528" />
+  <Blank Num="6" UId="2529" />
+  <Token Text="AND" UId="2530" />
+  <Blank UId="2531" />
+  <Token Text="NOT" UId="2532" />
+  <Blank UId="2533" />
+  <Access Scope="LocalVariable" UId="2534">
+    <Symbol UId="2535">
+      <Component Name="instMoveVelocity" UId="2536" />
+      <Token Text="." UId="2537" />
+      <Component Name="Execute" UId="2538" />
+    </Symbol>
+  </Access>
+  <NewLine UId="2539" />
+  <Blank Num="6" UId="2540" />
+  <Token Text="AND" UId="2541" />
+  <Blank UId="2542" />
+  <Token Text="NOT" UId="2543" />
+  <Blank UId="2544" />
+  <Access Scope="LocalVariable" UId="2545">
+    <Symbol UId="2546">
+      <Component Name="instStop" UId="2547" />
+      <Token Text="." UId="2548" />
+      <Component Name="Execute" UId="2549" />
+    </Symbol>
+  </Access>
+  <NewLine UId="2550" />
+  <Blank Num="4" UId="2551" />
+  <Token Text="THEN" UId="2552" />
+  <NewLine UId="2553" />
+  <Blank Num="6" UId="2554" />
+  <LineComment UId="2555">
+    <Text UId="2556"> Move command has been aborted external</Text>
+  </LineComment>
+  <NewLine UId="2557" />
+  <Blank Num="6" UId="2558" />
+  <Access Scope="LocalVariable" UId="2559">
+    <Symbol UId="2560">
+      <Component Name="statFBState" UId="2561" />
+    </Symbol>
+  </Access>
+  <Blank UId="2562" />
+  <Token Text=":=" UId="2563" />
+  <Blank UId="2564" />
+  <Access Scope="LocalConstant" UId="2565">
+    <Constant Name="FB_STATE_ERROR" UId="2566" />
+  </Access>
+  <Token Text=";" UId="2569" />
+  <NewLine UId="2570" />
+  <Blank Num="6" UId="2571" />
+  <Access Scope="LocalVariable" UId="2572">
+    <Symbol UId="2573">
+      <Component Name="statStatus" UId="2574" />
+    </Symbol>
+  </Access>
+  <Blank UId="2575" />
+  <Token Text=":=" UId="2576" />
+  <Blank UId="2577" />
+  <Access Scope="GlobalConstant" UId="2578">
+    <Constant Name="LCON_ERROR_ENABLE_INTERFACE_MOVE_ABORTED" UId="2579" />
+  </Access>
+  <Token Text=";" UId="2582" />
+  <NewLine UId="2583" />
+  <Blank Num="6" UId="2584" />
+  <Access Scope="LocalVariable" UId="2585">
+    <Symbol UId="2586">
+      <Component Name="statErrorUserCleared" UId="2587" />
+    </Symbol>
+  </Access>
+  <Blank UId="2588" />
+  <Token Text=":=" UId="2589" />
+  <Blank UId="2590" />
+  <Access Scope="LiteralConstant" UId="2591">
+    <Constant UId="2592">
+      <ConstantValue UId="2594">TRUE</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="2595" />
+  <NewLine UId="2596" />
+  <Blank Num="4" UId="2597" />
+  <Token Text="ELSIF" UId="2598" />
+  <Blank UId="2599" />
+  <Access Scope="LocalVariable" UId="2600">
+    <Symbol UId="2601">
+      <Component Name="instStop" UId="2602" />
+      <Token Text="." UId="2603" />
+      <Component Name="Error" UId="2604" />
+    </Symbol>
+  </Access>
+  <Blank UId="2605" />
+  <Token Text="THEN" UId="2606" />
+  <NewLine UId="2607" />
+  <Blank Num="6" UId="2608" />
+  <Access Scope="LocalVariable" UId="2609">
+    <Symbol UId="2610">
+      <Component Name="statErrorUserCleared" UId="2611" />
+    </Symbol>
+  </Access>
+  <Blank UId="2612" />
+  <Token Text=":=" UId="2613" />
+  <Blank UId="2614" />
+  <Access Scope="LiteralConstant" UId="2615">
+    <Constant UId="2616">
+      <ConstantValue UId="2618">TRUE</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="2619" />
+  <NewLine UId="2620" />
+  <Blank Num="6" UId="2621" />
+  <Access Scope="LocalVariable" UId="2622">
+    <Symbol UId="2623">
+      <Component Name="statStatus" UId="2624" />
+    </Symbol>
+  </Access>
+  <Blank UId="2625" />
+  <Token Text=":=" UId="2626" />
+  <Blank UId="2627" />
+  <Access Scope="GlobalConstant" UId="2628">
+    <Constant Name="LCON_ERROR_ENABLE_INTERFACE_MOVE_VELOCITY" UId="2629" />
+  </Access>
+  <Token Text=";" UId="2632" />
+  <NewLine UId="2633" />
+  <Blank Num="6" UId="2634" />
+  <Access Scope="LocalVariable" UId="2635">
+    <Symbol UId="2636">
+      <Component Name="statSubfunctionState" UId="2637" />
+    </Symbol>
+  </Access>
+  <Blank UId="2638" />
+  <Token Text=":=" UId="2639" />
+  <Blank UId="2640" />
+  <Access Scope="LocalVariable" UId="2641">
+    <Symbol UId="2642">
+      <Component Name="instStop" UId="2643" />
+      <Token Text="." UId="2644" />
+      <Component Name="ErrorId" UId="2645" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="2646" />
+  <NewLine UId="2647" />
+  <Blank Num="4" UId="2648" />
+  <Token Text="ELSIF" UId="2649" />
+  <Blank UId="2650" />
+  <Access Scope="LocalVariable" UId="2651">
+    <Symbol UId="2652">
+      <Component Name="instTorqueAdditive" UId="2653" />
+      <Token Text="." UId="2654" />
+      <Component Name="Error" UId="2655" />
+    </Symbol>
+  </Access>
+  <Blank UId="2656" />
+  <Token Text="THEN" UId="2657" />
+  <NewLine UId="2658" />
+  <Blank Num="6" UId="2659" />
+  <Access Scope="LocalVariable" UId="2660">
+    <Symbol UId="2661">
+      <Component Name="statErrorUserCleared" UId="2662" />
+    </Symbol>
+  </Access>
+  <Blank UId="2663" />
+  <Token Text=":=" UId="2664" />
+  <Blank UId="2665" />
+  <Access Scope="LiteralConstant" UId="2666">
+    <Constant UId="2667">
+      <ConstantValue UId="2669">TRUE</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="2670" />
+  <NewLine UId="2671" />
+  <Blank Num="6" UId="2672" />
+  <Access Scope="LocalVariable" UId="2673">
+    <Symbol UId="2674">
+      <Component Name="statFBState" UId="2675" />
+    </Symbol>
+  </Access>
+  <Blank UId="2676" />
+  <Token Text=":=" UId="2677" />
+  <Blank UId="2678" />
+  <Access Scope="LocalConstant" UId="2679">
+    <Constant Name="FB_STATE_ERROR" UId="2680" />
+  </Access>
+  <Token Text=";" UId="2683" />
+  <NewLine UId="2684" />
+  <Blank Num="6" UId="2685" />
+  <Access Scope="LocalVariable" UId="2686">
+    <Symbol UId="2687">
+      <Component Name="statStatus" UId="2688" />
+    </Symbol>
+  </Access>
+  <Blank UId="2689" />
+  <Token Text=":=" UId="2690" />
+  <Blank UId="2691" />
+  <Access Scope="GlobalConstant" UId="2692">
+    <Constant Name="LCON_ERROR_ENABLE_INTERFACE_ADDITIVE_TORQUE" UId="2693" />
+  </Access>
+  <Token Text=";" UId="2696" />
+  <NewLine UId="2697" />
+  <Blank Num="6" UId="2698" />
+  <Access Scope="LocalVariable" UId="2699">
+    <Symbol UId="2700">
+      <Component Name="statSubfunctionState" UId="2701" />
+    </Symbol>
+  </Access>
+  <Blank UId="2702" />
+  <Token Text=":=" UId="2703" />
+  <Blank UId="2704" />
+  <Access Scope="LocalVariable" UId="2705">
+    <Symbol UId="2706">
+      <Component Name="instTorqueAdditive" UId="2707" />
+      <Token Text="." UId="2708" />
+      <Component Name="ErrorId" UId="2709" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="2710" />
+  <NewLine UId="2711" />
+  <Blank Num="4" UId="2712" />
+  <Token Text="ELSIF" UId="2713" />
+  <Blank UId="2714" />
+  <Access Scope="LocalVariable" UId="2715">
+    <Symbol UId="2716">
+      <Component Name="instTorqueRange" UId="2717" />
+      <Token Text="." UId="2718" />
+      <Component Name="Error" UId="2719" />
+    </Symbol>
+  </Access>
+  <Blank UId="2720" />
+  <Token Text="THEN" UId="2721" />
+  <NewLine UId="2722" />
+  <Blank Num="6" UId="2723" />
+  <Access Scope="LocalVariable" UId="2724">
+    <Symbol UId="2725">
+      <Component Name="statErrorUserCleared" UId="2726" />
+    </Symbol>
+  </Access>
+  <Blank UId="2727" />
+  <Token Text=":=" UId="2728" />
+  <Blank UId="2729" />
+  <Access Scope="LiteralConstant" UId="2730">
+    <Constant UId="2731">
+      <ConstantValue UId="2733">TRUE</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="2734" />
+  <NewLine UId="2735" />
+  <Blank Num="6" UId="2736" />
+  <Access Scope="LocalVariable" UId="2737">
+    <Symbol UId="2738">
+      <Component Name="statFBState" UId="2739" />
+    </Symbol>
+  </Access>
+  <Blank UId="2740" />
+  <Token Text=":=" UId="2741" />
+  <Blank UId="2742" />
+  <Access Scope="LocalConstant" UId="2743">
+    <Constant Name="FB_STATE_ERROR" UId="2744" />
+  </Access>
+  <Token Text=";" UId="2747" />
+  <NewLine UId="2748" />
+  <Blank Num="6" UId="2749" />
+  <Access Scope="LocalVariable" UId="2750">
+    <Symbol UId="2751">
+      <Component Name="statStatus" UId="2752" />
+    </Symbol>
+  </Access>
+  <Blank UId="2753" />
+  <Token Text=":=" UId="2754" />
+  <Blank UId="2755" />
+  <Access Scope="GlobalConstant" UId="2756">
+    <Constant Name="LCON_ERROR_ENABLE_INTERFACE_TORQUE_RANGE" UId="2757" />
+  </Access>
+  <Token Text=";" UId="2760" />
+  <NewLine UId="2761" />
+  <Blank Num="6" UId="2762" />
+  <Access Scope="LocalVariable" UId="2763">
+    <Symbol UId="2764">
+      <Component Name="statSubfunctionState" UId="2765" />
+    </Symbol>
+  </Access>
+  <Blank UId="2766" />
+  <Token Text=":=" UId="2767" />
+  <Blank UId="2768" />
+  <Access Scope="LocalVariable" UId="2769">
+    <Symbol UId="2770">
+      <Component Name="instTorqueRange" UId="2771" />
+      <Token Text="." UId="2772" />
+      <Component Name="ErrorId" UId="2773" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="2774" />
+  <NewLine UId="2775" />
+  <Blank Num="4" UId="2776" />
+  <Token Text="END_IF" UId="2777" />
+  <Token Text=";" UId="2778" />
+  <NewLine UId="2779" />
+  <Blank Num="4" UId="2780" />
+  <NewLine UId="2781" />
+  <Blank Num="4" UId="2782" />
+  <LineComment Inserted="true" UId="2783">
+    <Text UId="2784">c_00028</Text>
+  </LineComment>
+  <Blank UId="2785" />
+  <LineComment UId="2786">
+    <Text UId="2787">execute has to be set to false in SAME cycle. But after error status check.</Text>
+  </LineComment>
+  <NewLine UId="2788" />
+  <Blank Num="4" UId="2789" />
+  <LineComment UId="2790">
+    <Text UId="2791">If this execute would not be set to zero in same cycle and if there are two executes following after two cycles,</Text>
+  </LineComment>
+  <NewLine UId="2792" />
+  <Blank Num="4" UId="2793" />
+  <LineComment UId="2794">
+    <Text UId="2795">the second execute would be not considerd.</Text>
+  </LineComment>
+  <NewLine UId="2796" />
+  <Blank Num="4" UId="2797" />
+  <Access Scope="LocalVariable" UId="2798">
+    <Symbol UId="2799">
+      <Component Name="statExecuteMoveVelocity" UId="2800" />
+    </Symbol>
+  </Access>
+  <Blank UId="2801" />
+  <Token Text=":=" UId="2802" />
+  <Blank UId="2803" />
+  <Access Scope="LiteralConstant" UId="2804">
+    <Constant UId="2805">
+      <ConstantValue UId="2807">FALSE</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="2808" />
+  <NewLine UId="2809" />
+  <Blank Num="4" UId="2810" />
+  <Access Scope="LocalVariable" UId="2811">
+    <Symbol UId="2812">
+      <Component Name="instMoveVelocity" UId="2813" />
+    </Symbol>
+  </Access>
+  <Access Scope="Call" UId="2814">
+    <Instruction UId="2815">
+      <Token Text="(" UId="2816" />
+      <Parameter Name="Axis" UId="2817">
+        <Blank Num="4" UId="2818" />
+        <Token Text=":=" UId="2819" />
+        <Blank UId="2820" />
+        <Access Scope="LocalVariable" UId="2821">
+          <Symbol UId="2822">
+            <Component Name="tempRefSpeedAxis" UId="2823" />
+            <Token Text="^" UId="2824" />
+          </Symbol>
+        </Access>
+      </Parameter>
+      <Token Text="," UId="2825" />
+      <NewLine UId="2826" />
+      <Blank Num="22" UId="2827" />
+      <Parameter Name="Execute" UId="2828">
+        <Blank UId="2829" />
+        <Token Text=":=" UId="2830" />
+        <Blank UId="2831" />
+        <Access Scope="LiteralConstant" UId="2832">
+          <Constant UId="2833">
+            <ConstantValue UId="2835">FALSE</ConstantValue>
+          </Constant>
+        </Access>
+      </Parameter>
+      <Token Text=")" UId="2836" />
+    </Instruction>
+  </Access>
+  <Token Text=";" UId="2837" />
+  <NewLine UId="2838" />
+  <Blank Num="4" UId="2839" />
+  <NewLine UId="2840" />
+  <Blank Num="2" UId="2841" />
+  <Token Text="ELSE" UId="2842" />
+  <NewLine UId="2843" />
+  <Blank Num="4" UId="2844" />
+  <Access Scope="LocalVariable" UId="2845">
+    <Symbol UId="2846">
+      <Component Name="statMCInterfaceActive" UId="2847" />
+    </Symbol>
+  </Access>
+  <Blank UId="2848" />
+  <Token Text=":=" UId="2849" />
+  <Blank UId="2850" />
+  <Access Scope="LiteralConstant" UId="2851">
+    <Constant UId="2852">
+      <ConstantValue UId="2854">FALSE</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="2855" />
+  <NewLine UId="2856" />
+  <Blank Num="4" UId="2857" />
+  <Access Scope="LocalVariable" UId="2858">
+    <Symbol UId="2859">
+      <Component Name="statAdditiveTorqueActive" UId="2860" />
+    </Symbol>
+  </Access>
+  <Blank UId="2861" />
+  <Token Text=":=" UId="2862" />
+  <Blank UId="2863" />
+  <Access Scope="LiteralConstant" UId="2864">
+    <Constant UId="2865">
+      <ConstantValue UId="2867">FALSE</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="2868" />
+  <NewLine UId="2869" />
+  <Blank Num="4" UId="2870" />
+  <Access Scope="LocalVariable" UId="2871">
+    <Symbol UId="2872">
+      <Component Name="statTorqueLimitActive" UId="2873" />
+    </Symbol>
+  </Access>
+  <Blank UId="2874" />
+  <Token Text=":=" UId="2875" />
+  <Blank UId="2876" />
+  <Access Scope="LiteralConstant" UId="2877">
+    <Constant UId="2878">
+      <ConstantValue UId="2880">FALSE</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="2881" />
+  <NewLine UId="2882" />
+  <Blank Num="2" UId="2883" />
+  <Token Text="END_IF" UId="2884" />
+  <Token Text=";" UId="2885" />
+  <NewLine UId="2886" />
+  <Token Text="END_REGION" UId="2887" />
+  <NewLine Num="2" UId="2888" />
+  <Token Text="REGION" UId="2889" />
+  <Blank UId="2890" />
+  <Text UId="2891">OUTPUTS</Text>
+  <NewLine UId="2892" />
+  <Blank Num="2" UId="2893" />
+  <LineComment UId="2894">
+    <Text UId="2895"> Write outputs</Text>
+  </LineComment>
+  <NewLine UId="2896" />
+  <Blank Num="2" UId="2897" />
+  <Token Text="IF" UId="2898" />
+  <Blank UId="2899" />
+  <Token Text="(" UId="2900" />
+  <Access Scope="LocalVariable" UId="2901">
+    <Symbol UId="2902">
+      <Component Name="statDisablingCompleted" UId="2903" />
+    </Symbol>
+  </Access>
+  <Blank UId="2904" />
+  <Token Text="=" UId="2905" />
+  <Blank UId="2906" />
+  <Access Scope="LiteralConstant" UId="2907">
+    <Constant UId="2908">
+      <ConstantValue UId="2910">TRUE</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=")" UId="2911" />
+  <Blank UId="2912" />
+  <Token Text="THEN" UId="2913" />
+  <NewLine UId="2914" />
+  <Blank Num="4" UId="2915" />
+  <Token Text="REGION" UId="2916" />
+  <Blank UId="2917" />
+  <Text UId="2918">Disabling</Text>
+  <NewLine UId="2919" />
+  <Blank Num="6" UId="2920" />
+  <LineComment UId="2921">
+    <Text UId="2922"> Reset outputs if disabling completed</Text>
+  </LineComment>
+  <NewLine UId="2923" />
+  <Blank Num="6" UId="2924" />
+  <Access Scope="LocalVariable" UId="2925">
+    <Symbol UId="2926">
+      <Component Name="statValid" UId="2927" />
+    </Symbol>
+  </Access>
+  <Blank UId="2928" />
+  <Token Text=":=" UId="2929" />
+  <Blank UId="2930" />
+  <Access Scope="LiteralConstant" UId="2931">
+    <Constant UId="2932">
+      <ConstantValue UId="2934">FALSE</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="2935" />
+  <NewLine UId="2936" />
+  <Blank Num="6" UId="2937" />
+  <Access Scope="LocalVariable" UId="2938">
+    <Symbol UId="2939">
+      <Component Name="statBusy" UId="2940" />
+    </Symbol>
+  </Access>
+  <Blank UId="2941" />
+  <Token Text=":=" UId="2942" />
+  <Blank UId="2943" />
+  <Access Scope="LiteralConstant" UId="2944">
+    <Constant UId="2945">
+      <ConstantValue UId="2947">FALSE</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="2948" />
+  <NewLine UId="2949" />
+  <Blank Num="6" UId="2950" />
+  <Access Scope="LocalVariable" UId="2951">
+    <Symbol UId="2952">
+      <Component Name="statError" UId="2953" />
+    </Symbol>
+  </Access>
+  <Blank UId="2954" />
+  <Token Text=":=" UId="2955" />
+  <Blank UId="2956" />
+  <Access Scope="LiteralConstant" UId="2957">
+    <Constant UId="2958">
+      <ConstantValue UId="2960">FALSE</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="2961" />
+  <NewLine UId="2962" />
+  <Blank Num="6" UId="2963" />
+  <Access Scope="LocalVariable" UId="2964">
+    <Symbol UId="2965">
+      <Component Name="statErrorUserCleared" UId="2966" />
+    </Symbol>
+  </Access>
+  <Blank UId="2967" />
+  <Token Text=":=" UId="2968" />
+  <Blank UId="2969" />
+  <Access Scope="LiteralConstant" UId="2970">
+    <Constant UId="2971">
+      <ConstantValue UId="2973">FALSE</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="2974" />
+  <NewLine UId="2975" />
+  <Blank Num="6" UId="2976" />
+  <Access Scope="LocalVariable" UId="2977">
+    <Symbol UId="2978">
+      <Component Name="statErrorAutoCleared" UId="2979" />
+    </Symbol>
+  </Access>
+  <Blank UId="2980" />
+  <Token Text=":=" UId="2981" />
+  <Blank UId="2982" />
+  <Access Scope="LiteralConstant" UId="2983">
+    <Constant UId="2984">
+      <ConstantValue UId="2986">FALSE</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="2987" />
+  <NewLine UId="2988" />
+  <Blank Num="6" UId="2989" />
+  <Access Scope="LocalVariable" UId="2990">
+    <Symbol UId="2991">
+      <Component Name="statStatus" UId="2992" />
+    </Symbol>
+  </Access>
+  <Blank UId="2993" />
+  <Token Text=":=" UId="2994" />
+  <Blank UId="2995" />
+  <Access Scope="LocalConstant" UId="2996">
+    <Constant Name="STATUS_NO_CALL" UId="2997" />
+  </Access>
+  <Token Text=";" UId="3000" />
+  <NewLine UId="3001" />
+  <Blank Num="6" UId="3002" />
+  <LineComment UId="3003">
+    <Text UId="3004"> TODO: Reset application specific outputs</Text>
+  </LineComment>
+  <NewLine UId="3005" />
+  <Blank Num="6" UId="3006" />
+  <Access Scope="LocalVariable" UId="3007">
+    <Symbol UId="3008">
+      <Component Name="statSubfunctionState" UId="3009" />
+    </Symbol>
+  </Access>
+  <Blank UId="3010" />
+  <Token Text=":=" UId="3011" />
+  <Blank UId="3012" />
+  <Access Scope="LiteralConstant" UId="3013">
+    <Constant UId="3014">
+      <ConstantValue UId="3016">16#0000</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="3017" />
+  <NewLine UId="3018" />
+  <Blank Num="4" UId="3019" />
+  <Token Text="END_REGION" UId="3020" />
+  <Blank UId="3021" />
+  <Text UId="3022">Disabling</Text>
+  <NewLine UId="3023" />
+  <Blank Num="4" UId="3024" />
+  <NewLine UId="3025" />
+  <Blank Num="2" UId="3026" />
+  <Token Text="ELSIF" UId="3027" />
+  <Blank UId="3028" />
+  <Token Text="(" UId="3029" />
+  <Access Scope="LocalVariable" UId="3030">
+    <Symbol UId="3031">
+      <Component Name="statErrorUserCleared" UId="3032" />
+    </Symbol>
+  </Access>
+  <Blank UId="3033" />
+  <Token Text="=" UId="3034" />
+  <Blank UId="3035" />
+  <Access Scope="LiteralConstant" UId="3036">
+    <Constant UId="3037">
+      <ConstantValue UId="3039">TRUE</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=")" UId="3040" />
+  <Blank UId="3041" />
+  <Token Text="AND" UId="3042" />
+  <Blank UId="3043" />
+  <Token Text="(" UId="3044" />
+  <Access Scope="LocalVariable" UId="3045">
+    <Symbol UId="3046">
+      <Component Name="statError" UId="3047" />
+    </Symbol>
+  </Access>
+  <Blank UId="3048" />
+  <Token Text="=" UId="3049" />
+  <Blank UId="3050" />
+  <Access Scope="LiteralConstant" UId="3051">
+    <Constant UId="3052">
+      <ConstantValue UId="3054">FALSE</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=")" UId="3055" />
+  <Blank UId="3056" />
+  <Token Text="THEN" UId="3057" />
+  <NewLine UId="3058" />
+  <Blank Num="4" UId="3059" />
+  <Token Text="REGION" UId="3060" />
+  <Blank UId="3061" />
+  <Text UId="3062">Error user cleared</Text>
+  <NewLine UId="3063" />
+  <Blank Num="6" UId="3064" />
+  <LineComment UId="3065">
+    <Text UId="3066"> Error can only be cleared by user; rising edge at enable input is needed to continue </Text>
+  </LineComment>
+  <NewLine UId="3067" />
+  <Blank Num="6" UId="3068" />
+  <Access Scope="LocalVariable" UId="3069">
+    <Symbol UId="3070">
+      <Component Name="statValid" UId="3071" />
+    </Symbol>
+  </Access>
+  <Blank UId="3072" />
+  <Token Text=":=" UId="3073" />
+  <Blank UId="3074" />
+  <Access Scope="LiteralConstant" UId="3075">
+    <Constant UId="3076">
+      <ConstantValue UId="3078">FALSE</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="3079" />
+  <NewLine UId="3080" />
+  <Blank Num="6" UId="3081" />
+  <Access Scope="LocalVariable" UId="3082">
+    <Symbol UId="3083">
+      <Component Name="statError" UId="3084" />
+    </Symbol>
+  </Access>
+  <Blank UId="3085" />
+  <Token Text=":=" UId="3086" />
+  <Blank UId="3087" />
+  <Access Scope="LiteralConstant" UId="3088">
+    <Constant UId="3089">
+      <ConstantValue UId="3091">TRUE</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="3092" />
+  <NewLine UId="3093" />
+  <Blank Num="6" UId="3094" />
+  <LineComment UId="3095">
+    <Text UId="3096"> execution aborted --&gt; set state no processing</Text>
+  </LineComment>
+  <NewLine UId="3097" />
+  <Blank Num="6" UId="3098" />
+  <Token Text="IF" UId="3099" />
+  <Blank UId="3100" />
+  <Token Text="NOT" UId="3101" />
+  <Blank UId="3102" />
+  <Token Text="(" UId="3103" />
+  <Access Scope="LocalVariable" UId="3104">
+    <Symbol UId="3105">
+      <Component Name="statFBState" UId="3106" />
+    </Symbol>
+  </Access>
+  <Blank UId="3107" />
+  <Token Text="=" UId="3108" />
+  <Blank UId="3109" />
+  <Access Scope="LocalConstant" UId="3110">
+    <Constant Name="FB_STATE_ERROR" UId="3111" />
+  </Access>
+  <Token Text=")" UId="3114" />
+  <Blank UId="3115" />
+  <Token Text="THEN" UId="3116" />
+  <NewLine UId="3117" />
+  <Blank Num="8" UId="3118" />
+  <Access Scope="LocalVariable" UId="3119">
+    <Symbol UId="3120">
+      <Component Name="statFBState" UId="3121" />
+    </Symbol>
+  </Access>
+  <Blank UId="3122" />
+  <Token Text=":=" UId="3123" />
+  <Blank UId="3124" />
+  <Access Scope="LocalConstant" UId="3125">
+    <Constant Name="FB_STATE_NO_PROCESSING" UId="3126" />
+  </Access>
+  <Token Text=";" UId="3129" />
+  <NewLine UId="3130" />
+  <Blank Num="8" UId="3131" />
+  <Access Scope="LocalVariable" UId="3132">
+    <Symbol UId="3133">
+      <Component Name="statBusy" UId="3134" />
+    </Symbol>
+  </Access>
+  <Blank UId="3135" />
+  <Token Text=":=" UId="3136" />
+  <Blank UId="3137" />
+  <Access Scope="LiteralConstant" UId="3138">
+    <Constant UId="3139">
+      <ConstantValue UId="3141">FALSE</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="3142" />
+  <NewLine UId="3143" />
+  <Blank Num="6" UId="3144" />
+  <Token Text="END_IF" UId="3145" />
+  <Token Text=";" UId="3146" />
+  <NewLine UId="3147" />
+  <Blank Num="4" UId="3148" />
+  <Token Text="END_REGION" UId="3149" />
+  <Blank UId="3150" />
+  <Text UId="3151">Error user cleared</Text>
+  <NewLine UId="3152" />
+  <Blank Num="4" UId="3153" />
+  <NewLine UId="3154" />
+  <Blank Num="2" UId="3155" />
+  <Token Text="ELSIF" UId="3156" />
+  <Blank UId="3157" />
+  <Token Text="(" UId="3158" />
+  <Access Scope="LocalVariable" UId="3159">
+    <Symbol UId="3160">
+      <Component Name="statErrorAutoCleared" UId="3161" />
+    </Symbol>
+  </Access>
+  <Blank UId="3162" />
+  <Token Text="=" UId="3163" />
+  <Blank UId="3164" />
+  <Access Scope="LiteralConstant" UId="3165">
+    <Constant UId="3166">
+      <ConstantValue UId="3168">TRUE</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=")" UId="3169" />
+  <Blank UId="3170" />
+  <Token Text="AND" UId="3171" />
+  <Blank UId="3172" />
+  <Token Text="(" UId="3173" />
+  <Access Scope="LocalVariable" UId="3174">
+    <Symbol UId="3175">
+      <Component Name="statError" UId="3176" />
+    </Symbol>
+  </Access>
+  <Blank UId="3177" />
+  <Token Text="=" UId="3178" />
+  <Blank UId="3179" />
+  <Access Scope="LiteralConstant" UId="3180">
+    <Constant UId="3181">
+      <ConstantValue UId="3183">FALSE</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=")" UId="3184" />
+  <Blank UId="3185" />
+  <Token Text="THEN" UId="3186" />
+  <NewLine UId="3187" />
+  <Blank Num="4" UId="3188" />
+  <Token Text="REGION" UId="3189" />
+  <Blank UId="3190" />
+  <Text UId="3191">Error auto cleared</Text>
+  <NewLine UId="3192" />
+  <Blank Num="6" UId="3193" />
+  <LineComment UId="3194">
+    <Text UId="3195"> Error can be reset by FB automatically  </Text>
+  </LineComment>
+  <NewLine UId="3196" />
+  <Blank Num="6" UId="3197" />
+  <Access Scope="LocalVariable" UId="3198">
+    <Symbol UId="3199">
+      <Component Name="statValid" UId="3200" />
+    </Symbol>
+  </Access>
+  <Blank UId="3201" />
+  <Token Text=":=" UId="3202" />
+  <Blank UId="3203" />
+  <Access Scope="LiteralConstant" UId="3204">
+    <Constant UId="3205">
+      <ConstantValue UId="3207">FALSE</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="3208" />
+  <NewLine UId="3209" />
+  <Blank Num="6" UId="3210" />
+  <Access Scope="LocalVariable" UId="3211">
+    <Symbol UId="3212">
+      <Component Name="statBusy" UId="3213" />
+    </Symbol>
+  </Access>
+  <Blank UId="3214" />
+  <Token Text=":=" UId="3215" />
+  <Blank UId="3216" />
+  <Access Scope="LiteralConstant" UId="3217">
+    <Constant UId="3218">
+      <ConstantValue UId="3220">TRUE</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="3221" />
+  <NewLine UId="3222" />
+  <Blank Num="6" UId="3223" />
+  <Access Scope="LocalVariable" UId="3224">
+    <Symbol UId="3225">
+      <Component Name="statError" UId="3226" />
+    </Symbol>
+  </Access>
+  <Blank UId="3227" />
+  <Token Text=":=" UId="3228" />
+  <Blank UId="3229" />
+  <Access Scope="LiteralConstant" UId="3230">
+    <Constant UId="3231">
+      <ConstantValue UId="3233">TRUE</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="3234" />
+  <NewLine UId="3235" />
+  <Blank Num="6" UId="3236" />
+  <LineComment UId="3237">
+    <Text UId="3238"> TODO: Handling of autocleared error</Text>
+  </LineComment>
+  <NewLine UId="3239" />
+  <Blank Num="6" UId="3240" />
+  <NewLine UId="3241" />
+  <Blank Num="4" UId="3242" />
+  <Token Text="END_REGION" UId="3243" />
+  <Blank UId="3244" />
+  <Text UId="3245">Error auto cleared</Text>
+  <NewLine UId="3246" />
+  <Blank Num="4" UId="3247" />
+  <NewLine UId="3248" />
+  <Blank Num="2" UId="3249" />
+  <Token Text="ELSIF" UId="3250" />
+  <Blank UId="3251" />
+  <Token Text="(" UId="3252" />
+  <Access Scope="LocalVariable" UId="3253">
+    <Symbol UId="3254">
+      <Component Name="statErrorAutoCleared" UId="3255" />
+    </Symbol>
+  </Access>
+  <Blank UId="3256" />
+  <Token Text="=" UId="3257" />
+  <Blank UId="3258" />
+  <Access Scope="LiteralConstant" UId="3259">
+    <Constant UId="3260">
+      <ConstantValue UId="3262">FALSE</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=")" UId="3263" />
+  <Blank UId="3264" />
+  <Token Text="AND" UId="3265" />
+  <Blank UId="3266" />
+  <Token Text="(" UId="3267" />
+  <Access Scope="LocalVariable" UId="3268">
+    <Symbol UId="3269">
+      <Component Name="statErrorUserCleared" UId="3270" />
+    </Symbol>
+  </Access>
+  <Blank UId="3271" />
+  <Token Text="=" UId="3272" />
+  <Blank UId="3273" />
+  <Access Scope="LiteralConstant" UId="3274">
+    <Constant UId="3275">
+      <ConstantValue UId="3277">FALSE</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=")" UId="3278" />
+  <Blank UId="3279" />
+  <Token Text="AND" UId="3280" />
+  <Blank UId="3281" />
+  <Token Text="(" UId="3282" />
+  <Access Scope="LocalVariable" UId="3283">
+    <Symbol UId="3284">
+      <Component Name="statError" UId="3285" />
+    </Symbol>
+  </Access>
+  <Blank UId="3286" />
+  <Token Text="=" UId="3287" />
+  <Blank UId="3288" />
+  <Access Scope="LiteralConstant" UId="3289">
+    <Constant UId="3290">
+      <ConstantValue UId="3292">TRUE</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=")" UId="3293" />
+  <Blank UId="3294" />
+  <Token Text="THEN" UId="3295" />
+  <NewLine UId="3296" />
+  <Blank Num="4" UId="3297" />
+  <Token Text="REGION" UId="3298" />
+  <Blank UId="3299" />
+  <Text UId="3300">After user/auto cleared</Text>
+  <NewLine UId="3301" />
+  <Blank Num="6" UId="3302" />
+  <LineComment UId="3303">
+    <Text UId="3304"> If autocleared error is acknowledged</Text>
+  </LineComment>
+  <NewLine UId="3305" />
+  <Blank Num="6" UId="3306" />
+  <Access Scope="LocalVariable" UId="3307">
+    <Symbol UId="3308">
+      <Component Name="statValid" UId="3309" />
+    </Symbol>
+  </Access>
+  <Blank UId="3310" />
+  <Token Text=":=" UId="3311" />
+  <Blank UId="3312" />
+  <Access Scope="LiteralConstant" UId="3313">
+    <Constant UId="3314">
+      <ConstantValue UId="3316">TRUE</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="3317" />
+  <NewLine UId="3318" />
+  <Blank Num="6" UId="3319" />
+  <Access Scope="LocalVariable" UId="3320">
+    <Symbol UId="3321">
+      <Component Name="statBusy" UId="3322" />
+    </Symbol>
+  </Access>
+  <Blank UId="3323" />
+  <Token Text=":=" UId="3324" />
+  <Blank UId="3325" />
+  <Access Scope="LiteralConstant" UId="3326">
+    <Constant UId="3327">
+      <ConstantValue UId="3329">TRUE</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="3330" />
+  <NewLine UId="3331" />
+  <Blank Num="6" UId="3332" />
+  <Access Scope="LocalVariable" UId="3333">
+    <Symbol UId="3334">
+      <Component Name="statError" UId="3335" />
+    </Symbol>
+  </Access>
+  <Blank UId="3336" />
+  <Token Text=":=" UId="3337" />
+  <Blank UId="3338" />
+  <Access Scope="LiteralConstant" UId="3339">
+    <Constant UId="3340">
+      <ConstantValue UId="3342">FALSE</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="3343" />
+  <NewLine UId="3344" />
+  <Blank Num="6" UId="3345" />
+  <LineComment UId="3346">
+    <Text UId="3347"> TODO: remove this line if more detailed status information is used instead of "#STATUS_SUBSEQUENT_CALL"</Text>
+  </LineComment>
+  <NewLine UId="3348" />
+  <Blank Num="6" UId="3349" />
+  <Access Scope="LocalVariable" UId="3350">
+    <Symbol UId="3351">
+      <Component Name="statStatus" UId="3352" />
+    </Symbol>
+  </Access>
+  <Blank UId="3353" />
+  <Token Text=":=" UId="3354" />
+  <Blank UId="3355" />
+  <Access Scope="LocalConstant" UId="3356">
+    <Constant Name="STATUS_SUBSEQUENT_CALL" UId="3357" />
+  </Access>
+  <Token Text=";" UId="3360" />
+  <NewLine UId="3361" />
+  <Blank Num="4" UId="3362" />
+  <Token Text="END_REGION" UId="3363" />
+  <Blank UId="3364" />
+  <Text UId="3365">After user/auto cleared</Text>
+  <NewLine UId="3366" />
+  <Blank Num="2" UId="3367" />
+  <Token Text="END_IF" UId="3368" />
+  <Token Text=";" UId="3369" />
+  <NewLine UId="3370" />
+  <Blank Num="2" UId="3371" />
+  <NewLine UId="3372" />
+  <Blank Num="2" UId="3373" />
+  <Token Text="REGION" UId="3374" />
+  <Blank UId="3375" />
+  <Text UId="3376">Write static values to outputs</Text>
+  <NewLine UId="3377" />
+  <Blank Num="4" UId="3378" />
+  <LineComment UId="3379">
+    <Text UId="3380"> Write static values to outputs</Text>
+  </LineComment>
+  <NewLine UId="3381" />
+  <Blank Num="4" UId="3382" />
+  <Access Scope="LocalVariable" UId="3383">
+    <Symbol UId="3384">
+      <Component Name="valid" UId="3385" />
+    </Symbol>
+  </Access>
+  <Blank UId="3386" />
+  <Token Text=":=" UId="3387" />
+  <Blank UId="3388" />
+  <Access Scope="LocalVariable" UId="3389">
+    <Symbol UId="3390">
+      <Component Name="statValid" UId="3391" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="3392" />
+  <NewLine UId="3393" />
+  <Blank Num="4" UId="3394" />
+  <Access Scope="LocalVariable" UId="3395">
+    <Symbol UId="3396">
+      <Component Name="busy" UId="3397" />
+    </Symbol>
+  </Access>
+  <Blank UId="3398" />
+  <Token Text=":=" UId="3399" />
+  <Blank UId="3400" />
+  <Access Scope="LocalVariable" UId="3401">
+    <Symbol UId="3402">
+      <Component Name="statBusy" UId="3403" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="3404" />
+  <NewLine UId="3405" />
+  <Blank Num="4" UId="3406" />
+  <Access Scope="LocalVariable" UId="3407">
+    <Symbol UId="3408">
+      <Component Name="error" UId="3409" />
+    </Symbol>
+  </Access>
+  <Blank UId="3410" />
+  <Token Text=":=" UId="3411" />
+  <Blank UId="3412" />
+  <Access Scope="LocalVariable" UId="3413">
+    <Symbol UId="3414">
+      <Component Name="statError" UId="3415" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="3416" />
+  <NewLine UId="3417" />
+  <Blank Num="4" UId="3418" />
+  <Access Scope="LocalVariable" UId="3419">
+    <Symbol UId="3420">
+      <Component Name="status" UId="3421" />
+    </Symbol>
+  </Access>
+  <Blank UId="3422" />
+  <Token Text=":=" UId="3423" />
+  <Blank UId="3424" />
+  <Access Scope="LocalVariable" UId="3425">
+    <Symbol UId="3426">
+      <Component Name="statStatus" UId="3427" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="3428" />
+  <NewLine UId="3429" />
+  <Blank Num="4" UId="3430" />
+  <LineComment UId="3431">
+    <Text UId="3432"> if ENO mechanism is not used / not wanted replace the following line by --&gt; ENO := TRUE;</Text>
+  </LineComment>
+  <NewLine UId="3433" />
+  <Blank Num="4" UId="3434" />
+  <Access Scope="PredefinedVariable" UId="3435">
+    <PredefinedVariable Name="ENO" UId="3436" />
+  </Access>
+  <Blank UId="3437" />
+  <Token Text=":=" UId="3438" />
+  <Blank UId="3439" />
+  <Token Text="NOT" UId="3440" />
+  <Blank UId="3441" />
+  <Access Scope="LocalVariable" UId="3442">
+    <Symbol UId="3443">
+      <Component Name="statError" UId="3444" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="3445" />
+  <NewLine UId="3446" />
+  <Blank Num="4" UId="3447" />
+  <LineComment UId="3448">
+    <Text UId="3449"> TODO: Write application specific static values to outputs</Text>
+  </LineComment>
+  <NewLine UId="3450" />
+  <Blank Num="4" UId="3451" />
+  <Access Scope="LocalVariable" UId="3452">
+    <Symbol UId="3453">
+      <Component Name="subfunctionState" UId="3454" />
+    </Symbol>
+  </Access>
+  <Blank UId="3455" />
+  <Token Text=":=" UId="3456" />
+  <Blank UId="3457" />
+  <Access Scope="LocalVariable" UId="3458">
+    <Symbol UId="3459">
+      <Component Name="statSubfunctionState" UId="3460" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="3461" />
+  <NewLine UId="3462" />
+  <Blank Num="4" UId="3463" />
+  <Access Scope="LocalVariable" UId="3464">
+    <Symbol UId="3465">
+      <Component Name="MCInterfaceActive" UId="3466" />
+    </Symbol>
+  </Access>
+  <Blank UId="3467" />
+  <Token Text=":=" UId="3468" />
+  <Blank UId="3469" />
+  <Access Scope="LocalVariable" UId="3470">
+    <Symbol UId="3471">
+      <Component Name="statMCInterfaceActive" UId="3472" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="3473" />
+  <NewLine UId="3474" />
+  <Blank Num="4" UId="3475" />
+  <Access Scope="LocalVariable" UId="3476">
+    <Symbol UId="3477">
+      <Component Name="additiveTorqueActive" UId="3478" />
+    </Symbol>
+  </Access>
+  <Blank UId="3479" />
+  <Token Text=":=" UId="3480" />
+  <Blank UId="3481" />
+  <Access Scope="LocalVariable" UId="3482">
+    <Symbol UId="3483">
+      <Component Name="statAdditiveTorqueActive" UId="3484" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="3485" />
+  <NewLine UId="3486" />
+  <Blank Num="4" UId="3487" />
+  <Access Scope="LocalVariable" UId="3488">
+    <Symbol UId="3489">
+      <Component Name="torqueLimitActive" UId="3490" />
+    </Symbol>
+  </Access>
+  <Blank UId="3491" />
+  <Token Text=":=" UId="3492" />
+  <Blank UId="3493" />
+  <Access Scope="LocalVariable" UId="3494">
+    <Symbol UId="3495">
+      <Component Name="statTorqueLimitActive" UId="3496" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="3497" />
+  <NewLine UId="3498" />
+  <Blank Num="2" UId="3499" />
+  <Token Text="END_REGION" UId="3500" />
+  <Blank UId="3501" />
+  <Text UId="3502">Write static values to outputs</Text>
+  <NewLine UId="3503" />
+  <Token Text="END_REGION" UId="3504" />
+  <Blank UId="3505" />
+  <Text UId="3506">OUTPUTS</Text>
+  <NewLine UId="3507" />
+</StructuredText></NetworkSource>
+          <ProgrammingLanguage>SCL</ProgrammingLanguage>
+        </AttributeList>
+        <ObjectList>
+          <MultilingualText ID="B" CompositionName="Comment">
+            <ObjectList>
+              <MultilingualTextItem ID="C" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="D" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-GB</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="E" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="F" CompositionName="Items">
+                <AttributeList>
+                  <Culture>es-ES</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="10" CompositionName="Items">
+                <AttributeList>
+                  <Culture>fr-FR</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="11" CompositionName="Items">
+                <AttributeList>
+                  <Culture>it-IT</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="12" CompositionName="Items">
+                <AttributeList>
+                  <Culture>ko-KR</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="13" CompositionName="Items">
+                <AttributeList>
+                  <Culture>zh-CN</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+          <MultilingualText ID="14" CompositionName="Title">
+            <ObjectList>
+              <MultilingualTextItem ID="15" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="16" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-GB</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="17" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="18" CompositionName="Items">
+                <AttributeList>
+                  <Culture>es-ES</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="19" CompositionName="Items">
+                <AttributeList>
+                  <Culture>fr-FR</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="1A" CompositionName="Items">
+                <AttributeList>
+                  <Culture>it-IT</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="1B" CompositionName="Items">
+                <AttributeList>
+                  <Culture>ko-KR</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="1C" CompositionName="Items">
+                <AttributeList>
+                  <Culture>zh-CN</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+        </ObjectList>
+      </SW.Blocks.CompileUnit>
+      <MultilingualText ID="1D" CompositionName="Title">
+        <ObjectList>
+          <MultilingualTextItem ID="1E" CompositionName="Items">
+            <AttributeList>
+              <Culture>de-DE</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="1F" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-GB</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="20" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-US</Culture>
+              <Text>Enable Template</Text>
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="21" CompositionName="Items">
+            <AttributeList>
+              <Culture>es-ES</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="22" CompositionName="Items">
+            <AttributeList>
+              <Culture>fr-FR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="23" CompositionName="Items">
+            <AttributeList>
+              <Culture>it-IT</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="24" CompositionName="Items">
+            <AttributeList>
+              <Culture>ko-KR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="25" CompositionName="Items">
+            <AttributeList>
+              <Culture>zh-CN</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+        </ObjectList>
+      </MultilingualText>
+    </ObjectList>
+  </SW.Blocks.FB>
+</Document>

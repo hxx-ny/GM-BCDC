@@ -1,0 +1,1303 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Document>
+  <Engineering version="V20" />
+  <SW.Blocks.FB ID="0">
+    <AttributeList>
+      <Access>Published</Access>
+      <Interface><Sections xmlns="http://www.siemens.com/automation/Openness/SW/Interface/v5">
+  <Section Name="Input">
+    <Member Name="enable" Datatype="Bool">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <StartValue>TRUE</StartValue>
+    </Member>
+    <Member Name="updateConfig" Datatype="Bool">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="sampleMode" Datatype="UInt">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <StartValue ConstantName="&quot;LCON_TIMEPERIOD_MODE&quot;" />
+    </Member>
+    <Member Name="inputSignal" Datatype="LReal">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="subsetLength" Datatype="UInt">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <StartValue ConstantName="&quot;LCON_STATEVAL_MAX_BUFFERLENGTH&quot;" />
+    </Member>
+    <Member Name="samplingFactor" Datatype="UInt">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <StartValue ConstantName="#INIT_MULT_OF_SAMPLINGRATE" />
+    </Member>
+    <Member Name="setTimePeriod" Datatype="Time">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <StartValue ConstantName="#INIT_TIMEPERIOD" />
+    </Member>
+    <Member Name="cycleTime" Datatype="UDInt">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <Comment>
+        <MultiLanguageText Lang="de-DE">Cycle time in ns</MultiLanguageText>
+      </Comment>
+    </Member>
+  </Section>
+  <Section Name="Output">
+    <Member Name="error" Datatype="Bool">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="errorID" Datatype="DWord">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <StartValue>16#0000_0000</StartValue>
+    </Member>
+    <Member Name="samplingTime" Datatype="LReal">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <StartValue>1.0</StartValue>
+    </Member>
+    <Member Name="timePeriod" Datatype="LReal">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <StartValue>10.0</StartValue>
+    </Member>
+    <Member Name="shiftedInputSignal" Datatype="LReal">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="movingAverage" Datatype="LReal">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+    </Member>
+  </Section>
+  <Section Name="InOut" />
+  <Section Name="Static">
+    <Member Name="statUpdateConfigOld" Datatype="Bool">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="statEnableOld" Datatype="Bool">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="statError" Datatype="Bool">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="statSum" Datatype="LReal">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="statSignalBufferSum" Datatype="Array[1..&quot;LCON_STATEVAL_MAX_BUFFERLENGTH&quot;] of LReal">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="statSamplingFactor" Datatype="UInt">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="statSubsetLength" Datatype="UInt">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="instfbUpdateConfig" Datatype="&quot;LConSMC_UpdateConfigOfStatisticCalc&quot;">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="instfbSumCalc" Datatype="&quot;LConSMC_SumCalc&quot;">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="statEnableRisingEdge" Datatype="Bool">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="statCurrentSubLen" Datatype="UInt">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+    </Member>
+  </Section>
+  <Section Name="Temp" />
+  <Section Name="Constant">
+    <Member Name="FB_ID" Datatype="DWord">
+      <StartValue>16#0426_0000</StartValue>
+    </Member>
+    <Member Name="INIT_TIMEPERIOD" Datatype="Time">
+      <StartValue>T#10MS</StartValue>
+    </Member>
+    <Member Name="INIT_MULT_OF_SAMPLINGRATE" Datatype="UInt">
+      <StartValue>1</StartValue>
+    </Member>
+  </Section>
+</Sections></Interface>
+      <IsIECCheckEnabled>true</IsIECCheckEnabled>
+      <MemoryReserve>100</MemoryReserve>
+      <Name>LConSMC_MovAverage</Name>
+      <Namespace />
+      <Number>32043</Number>
+      <ProgrammingLanguage>SCL</ProgrammingLanguage>
+      <SetENOAutomatically>true</SetENOAutomatically>
+    </AttributeList>
+    <ObjectList>
+      <MultilingualText ID="1" CompositionName="Comment">
+        <ObjectList>
+          <MultilingualTextItem ID="2" CompositionName="Items">
+            <AttributeList>
+              <Culture>de-DE</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="3" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-GB</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="4" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-US</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="5" CompositionName="Items">
+            <AttributeList>
+              <Culture>es-ES</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="6" CompositionName="Items">
+            <AttributeList>
+              <Culture>fr-FR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="7" CompositionName="Items">
+            <AttributeList>
+              <Culture>it-IT</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="8" CompositionName="Items">
+            <AttributeList>
+              <Culture>ko-KR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="9" CompositionName="Items">
+            <AttributeList>
+              <Culture>zh-CN</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+        </ObjectList>
+      </MultilingualText>
+      <SW.Blocks.CompileUnit ID="A" CompositionName="CompileUnits">
+        <AttributeList>
+          <NetworkSource><StructuredText xmlns="http://www.siemens.com/automation/Openness/SW/NetworkSource/StructuredText/v4">
+  <LineComment UId="21">
+    <Text UId="22">===========================================================================================================</Text>
+  </LineComment>
+  <NewLine UId="23" />
+  <LineComment UId="24">
+    <Text UId="25"> SIEMENS AG</Text>
+  </LineComment>
+  <NewLine UId="26" />
+  <LineComment UId="27">
+    <Text UId="28"> (c)Copyright 2019  All Rights Reserved</Text>
+  </LineComment>
+  <NewLine UId="29" />
+  <LineComment UId="30">
+    <Text UId="31">-----------------------------------------------------------------------------------------------------------</Text>
+  </LineComment>
+  <NewLine UId="32" />
+  <LineComment UId="33">
+    <Text UId="34">  file name:      LDrvOpt_MovAverage (Motion Control Application Cycle)</Text>
+  </LineComment>
+  <NewLine UId="35" />
+  <LineComment UId="36">
+    <Text UId="37">  library:        LDrvOpt</Text>
+  </LineComment>
+  <NewLine UId="38" />
+  <LineComment UId="39">
+    <Text UId="40">  system:         SIMATIC TIA PORTAL V15</Text>
+  </LineComment>
+  <NewLine UId="41" />
+  <LineComment UId="42">
+    <Text UId="43">  version:        V1.0.0   </Text>
+  </LineComment>
+  <NewLine UId="44" />
+  <LineComment UId="45">
+    <Text UId="46">  restrictions:   Must be called in PreIpo</Text>
+  </LineComment>
+  <NewLine UId="47" />
+  <LineComment UId="48">
+    <Text UId="49">  requirements:   /</Text>
+  </LineComment>
+  <NewLine UId="50" />
+  <LineComment UId="51">
+    <Text UId="52">  functionality:  This function block calculates the moving average for any input signal by an user defined </Text>
+  </LineComment>
+  <NewLine UId="53" />
+  <LineComment UId="54">
+    <Text UId="55">                  subset n. It also delivers the centered input signal for the moving average.</Text>
+  </LineComment>
+  <NewLine UId="56" />
+  <LineComment UId="57">
+    <Text UId="58">                  Any changes of the subset length during calculation causes no peak. It may be used to smooth</Text>
+  </LineComment>
+  <NewLine UId="59" />
+  <LineComment UId="60">
+    <Text UId="61">                  loop control signals.    </Text>
+  </LineComment>
+  <NewLine UId="62" />
+  <LineComment UId="63">
+    <Text UId="64">        </Text>
+  </LineComment>
+  <NewLine UId="65" />
+  <LineComment UId="66">
+    <Text UId="67">                  The implemented algorithm calculates as shown in the following formula:            </Text>
+  </LineComment>
+  <NewLine UId="68" />
+  <LineComment UId="69">
+    <Text UId="70">                  µ_(n)     =     (1 / n) * SUM[i = k-n...k] x_i</Text>
+  </LineComment>
+  <NewLine UId="71" />
+  <LineComment UId="72">
+    <Text UId="73">------------------------------------------------------------------------------------------------------------</Text>
+  </LineComment>
+  <NewLine UId="74" />
+  <LineComment UId="75">
+    <Text UId="76">  change log table:</Text>
+  </LineComment>
+  <NewLine UId="77" />
+  <LineComment UId="78">
+    <Text UId="79">  version     date            experts in charge           changes applied</Text>
+  </LineComment>
+  <NewLine UId="80" />
+  <LineComment UId="81">
+    <Text UId="82">  01.00.00    15.03.19        APC Erlangen                create</Text>
+  </LineComment>
+  <NewLine UId="83" />
+  <LineComment UId="84">
+    <Text UId="85">============================================================================================================</Text>
+  </LineComment>
+  <NewLine Num="2" UId="86" />
+  <LineComment UId="87">
+    <Text UId="88">----------------------------------------------------------------------</Text>
+  </LineComment>
+  <NewLine UId="89" />
+  <LineComment UId="90">
+    <Text UId="91">RESET SETTINGS AND ERRORS AFTER RISING EDGE OF ENABLE</Text>
+  </LineComment>
+  <NewLine UId="92" />
+  <LineComment UId="93">
+    <Text UId="94">----------------------------------------------------------------------</Text>
+  </LineComment>
+  <NewLine UId="95" />
+  <Token Text="IF" UId="96" />
+  <Blank UId="97" />
+  <Token Text="(" UId="98" />
+  <Access Scope="LocalVariable" UId="99">
+    <Symbol UId="100">
+      <Component Name="enable" UId="101" />
+    </Symbol>
+  </Access>
+  <Blank UId="102" />
+  <Token Text="AND" UId="103" />
+  <Blank UId="104" />
+  <Token Text="NOT" UId="105" />
+  <Blank UId="106" />
+  <Access Scope="LocalVariable" UId="107">
+    <Symbol UId="108">
+      <Component Name="statEnableOld" UId="109" />
+    </Symbol>
+  </Access>
+  <Token Text=")" UId="110" />
+  <Blank UId="111" />
+  <Token Text="THEN" UId="112" />
+  <NewLine UId="113" />
+  <Blank Num="4" UId="114" />
+  <LineComment UId="115">
+    <Text UId="116"> start calculation in default mode after Reset und clear errors</Text>
+  </LineComment>
+  <NewLine UId="117" />
+  <Blank Num="4" UId="118" />
+  <Access Scope="LocalVariable" UId="119">
+    <Symbol UId="120">
+      <Component Name="statEnableOld" UId="121" />
+    </Symbol>
+  </Access>
+  <Blank UId="122" />
+  <Token Text=":=" UId="123" />
+  <Blank UId="124" />
+  <Access Scope="LocalVariable" UId="125">
+    <Symbol UId="126">
+      <Component Name="enable" UId="127" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="128" />
+  <NewLine UId="129" />
+  <Blank Num="4" UId="130" />
+  <Access Scope="LocalVariable" UId="131">
+    <Symbol UId="132">
+      <Component Name="statEnableRisingEdge" UId="133" />
+    </Symbol>
+  </Access>
+  <Blank UId="134" />
+  <Token Text=":=" UId="135" />
+  <Blank UId="136" />
+  <Access Scope="LiteralConstant" UId="137">
+    <Constant UId="138">
+      <ConstantValue UId="140">TRUE</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="141" />
+  <NewLine UId="142" />
+  <Token Text="ELSE" UId="143" />
+  <NewLine UId="144" />
+  <Blank Num="4" UId="145" />
+  <Access Scope="LocalVariable" UId="146">
+    <Symbol UId="147">
+      <Component Name="statEnableRisingEdge" UId="148" />
+    </Symbol>
+  </Access>
+  <Blank UId="149" />
+  <Token Text=":=" UId="150" />
+  <Blank UId="151" />
+  <Access Scope="LiteralConstant" UId="152">
+    <Constant UId="153">
+      <ConstantValue UId="155">FALSE</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="156" />
+  <NewLine UId="157" />
+  <Token Text="END_IF" UId="158" />
+  <Token Text=";" UId="159" />
+  <NewLine Num="2" UId="160" />
+  <Token Text="IF" UId="161" />
+  <Blank UId="162" />
+  <Token Text="(" UId="163" />
+  <Token Text="NOT" UId="164" />
+  <Blank UId="165" />
+  <Access Scope="LocalVariable" UId="166">
+    <Symbol UId="167">
+      <Component Name="enable" UId="168" />
+    </Symbol>
+  </Access>
+  <Token Text=")" UId="169" />
+  <Blank UId="170" />
+  <Token Text="THEN" UId="171" />
+  <NewLine UId="172" />
+  <Blank Num="4" UId="173" />
+  <Access Scope="LocalVariable" UId="174">
+    <Symbol UId="175">
+      <Component Name="statEnableOld" UId="176" />
+    </Symbol>
+  </Access>
+  <Blank UId="177" />
+  <Token Text=":=" UId="178" />
+  <Blank UId="179" />
+  <Access Scope="LocalVariable" UId="180">
+    <Symbol UId="181">
+      <Component Name="enable" UId="182" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="183" />
+  <NewLine UId="184" />
+  <Blank Num="4" UId="185" />
+  <NewLine UId="186" />
+  <Blank Num="4" UId="187" />
+  <LineComment UId="188">
+    <Text UId="189">Reset outputs</Text>
+  </LineComment>
+  <NewLine UId="190" />
+  <Blank Num="4" UId="191" />
+  <Access Scope="LocalVariable" UId="192">
+    <Symbol UId="193">
+      <Component Name="statError" UId="194" />
+    </Symbol>
+  </Access>
+  <Blank UId="195" />
+  <Token Text=":=" UId="196" />
+  <Blank UId="197" />
+  <Access Scope="LiteralConstant" UId="198">
+    <Constant UId="199">
+      <ConstantValue UId="201">FALSE</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="202" />
+  <NewLine UId="203" />
+  <Blank Num="4" UId="204" />
+  <Access Scope="LocalVariable" UId="205">
+    <Symbol UId="206">
+      <Component Name="error" UId="207" />
+    </Symbol>
+  </Access>
+  <Blank UId="208" />
+  <Token Text=":=" UId="209" />
+  <Blank UId="210" />
+  <Access Scope="LiteralConstant" UId="211">
+    <Constant UId="212">
+      <ConstantValue UId="214">FALSE</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="215" />
+  <NewLine UId="216" />
+  <Blank Num="4" UId="217" />
+  <Access Scope="LocalVariable" UId="218">
+    <Symbol UId="219">
+      <Component Name="errorID" UId="220" />
+    </Symbol>
+  </Access>
+  <Blank UId="221" />
+  <Token Text=":=" UId="222" />
+  <Blank UId="223" />
+  <Access Scope="LiteralConstant" UId="224">
+    <Constant UId="225">
+      <ConstantValue UId="227">16#0000_0000</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="228" />
+  <NewLine UId="229" />
+  <Blank Num="4" UId="230" />
+  <Access Scope="LocalVariable" UId="231">
+    <Symbol UId="232">
+      <Component Name="samplingTime" UId="233" />
+    </Symbol>
+  </Access>
+  <Blank UId="234" />
+  <Token Text=":=" UId="235" />
+  <Blank UId="236" />
+  <Access Scope="LiteralConstant" UId="237">
+    <Constant UId="238">
+      <ConstantValue UId="240">0.0</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="241" />
+  <NewLine UId="242" />
+  <Blank Num="4" UId="243" />
+  <Access Scope="LocalVariable" UId="244">
+    <Symbol UId="245">
+      <Component Name="timePeriod" UId="246" />
+    </Symbol>
+  </Access>
+  <Blank UId="247" />
+  <Token Text=":=" UId="248" />
+  <Blank UId="249" />
+  <Access Scope="LiteralConstant" UId="250">
+    <Constant UId="251">
+      <ConstantValue UId="253">0.0</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="254" />
+  <NewLine UId="255" />
+  <Blank Num="4" UId="256" />
+  <Access Scope="LocalVariable" UId="257">
+    <Symbol UId="258">
+      <Component Name="shiftedInputSignal" UId="259" />
+    </Symbol>
+  </Access>
+  <Blank UId="260" />
+  <Token Text=":=" UId="261" />
+  <Blank UId="262" />
+  <Access Scope="LiteralConstant" UId="263">
+    <Constant UId="264">
+      <ConstantValue UId="266">0.0</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="267" />
+  <NewLine UId="268" />
+  <Blank Num="4" UId="269" />
+  <Access Scope="LocalVariable" UId="270">
+    <Symbol UId="271">
+      <Component Name="movingAverage" UId="272" />
+    </Symbol>
+  </Access>
+  <Blank UId="273" />
+  <Token Text=":=" UId="274" />
+  <Blank UId="275" />
+  <Access Scope="LiteralConstant" UId="276">
+    <Constant UId="277">
+      <ConstantValue UId="279">0.0</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="280" />
+  <NewLine UId="281" />
+  <Token Text="END_IF" UId="282" />
+  <Token Text=";" UId="283" />
+  <NewLine Num="2" UId="284" />
+  <LineComment UId="285">
+    <Text UId="286">----------------------------------------------------------------------</Text>
+  </LineComment>
+  <NewLine UId="287" />
+  <LineComment UId="288">
+    <Text UId="289">UPDATE CONFIGURATION FOR AVERAGING</Text>
+  </LineComment>
+  <NewLine UId="290" />
+  <LineComment UId="291">
+    <Text UId="292">----------------------------------------------------------------------</Text>
+  </LineComment>
+  <NewLine UId="293" />
+  <LineComment UId="294">
+    <Text UId="295"> Detect rising edge of UpdateConfig</Text>
+  </LineComment>
+  <NewLine UId="296" />
+  <Token Text="IF" UId="297" />
+  <Blank UId="298" />
+  <Token Text="(" UId="299" />
+  <Token Text="(" UId="300" />
+  <Access Scope="LocalVariable" UId="301">
+    <Symbol UId="302">
+      <Component Name="updateConfig" UId="303" />
+    </Symbol>
+  </Access>
+  <Blank UId="304" />
+  <Token Text="AND" UId="305" />
+  <Blank UId="306" />
+  <Token Text="NOT" UId="307" />
+  <Blank UId="308" />
+  <Access Scope="LocalVariable" UId="309">
+    <Symbol UId="310">
+      <Component Name="statUpdateConfigOld" UId="311" />
+    </Symbol>
+  </Access>
+  <Token Text=")" UId="312" />
+  <Blank UId="313" />
+  <Token Text="OR" UId="314" />
+  <Blank UId="315" />
+  <Access Scope="LocalVariable" UId="316">
+    <Symbol UId="317">
+      <Component Name="statEnableRisingEdge" UId="318" />
+    </Symbol>
+  </Access>
+  <Token Text=")" UId="319" />
+  <Blank UId="320" />
+  <Token Text="THEN" UId="321" />
+  <NewLine UId="322" />
+  <Blank Num="4" UId="323" />
+  <NewLine UId="324" />
+  <Blank Num="4" UId="325" />
+  <Access Scope="Call" UId="326">
+    <CallInfo UId="327" BlockType="FB" Name="LConSMC_UpdateConfigOfStatisticCalc">
+      <Instance Scope="LocalVariable" UId="328">
+        <Component Name="instfbUpdateConfig" UId="329" />
+      </Instance>
+      <Token Text="(" UId="330" />
+      <NewLine UId="331" />
+      <Blank Num="24" UId="332" />
+      <Parameter Name="fb_ID" UId="333">
+        <Blank UId="334" />
+        <Token Text=":=" UId="335" />
+        <Blank UId="336" />
+        <Access Scope="LocalConstant" UId="337">
+          <Constant Name="FB_ID" UId="338" />
+        </Access>
+      </Parameter>
+      <Token Text="," UId="341" />
+      <NewLine UId="342" />
+      <Blank Num="24" UId="343" />
+      <Parameter Name="cascadeCalculation" UId="344">
+        <Blank UId="345" />
+        <Token Text=":=" UId="346" />
+        <Blank UId="347" />
+        <Access Scope="LiteralConstant" UId="348">
+          <Constant UId="349">
+            <ConstantValue UId="351">FALSE</ConstantValue>
+          </Constant>
+        </Access>
+      </Parameter>
+      <Token Text="," UId="352" />
+      <NewLine UId="353" />
+      <Blank Num="24" UId="354" />
+      <Parameter Name="sampleMode" UId="355">
+        <Blank UId="356" />
+        <Token Text=":=" UId="357" />
+        <Blank UId="358" />
+        <Access Scope="LocalVariable" UId="359">
+          <Symbol UId="360">
+            <Component Name="sampleMode" UId="361" />
+          </Symbol>
+        </Access>
+      </Parameter>
+      <Token Text="," UId="362" />
+      <NewLine UId="363" />
+      <Blank Num="24" UId="364" />
+      <Parameter Name="maxBufferLengthMain" UId="365">
+        <Blank UId="366" />
+        <Token Text=":=" UId="367" />
+        <Blank UId="368" />
+        <Access Scope="GlobalConstant" UId="369">
+          <Constant Name="LCON_STATEVAL_MAX_BUFFERLENGTH" UId="370" />
+        </Access>
+      </Parameter>
+      <Token Text="," UId="373" />
+      <NewLine UId="374" />
+      <Blank Num="24" UId="375" />
+      <Parameter Name="inSubsetLengthMain" UId="376">
+        <Blank UId="377" />
+        <Token Text=":=" UId="378" />
+        <Blank UId="379" />
+        <Access Scope="LocalVariable" UId="380">
+          <Symbol UId="381">
+            <Component Name="subsetLength" UId="382" />
+          </Symbol>
+        </Access>
+      </Parameter>
+      <Token Text="," UId="383" />
+      <NewLine UId="384" />
+      <Blank Num="24" UId="385" />
+      <Parameter Name="setTimePeriod" UId="386">
+        <Blank UId="387" />
+        <Token Text=":=" UId="388" />
+        <Blank UId="389" />
+        <Access Scope="LocalVariable" UId="390">
+          <Symbol UId="391">
+            <Component Name="setTimePeriod" UId="392" />
+          </Symbol>
+        </Access>
+      </Parameter>
+      <Token Text="," UId="393" />
+      <NewLine UId="394" />
+      <Blank Num="24" UId="395" />
+      <Parameter Name="inSamplingFactor" UId="396">
+        <Blank UId="397" />
+        <Token Text=":=" UId="398" />
+        <Blank UId="399" />
+        <Access Scope="LocalVariable" UId="400">
+          <Symbol UId="401">
+            <Component Name="samplingFactor" UId="402" />
+          </Symbol>
+        </Access>
+      </Parameter>
+      <Token Text="," UId="403" />
+      <NewLine UId="404" />
+      <Blank Num="24" UId="405" />
+      <Parameter Name="cycleTime" UId="406">
+        <Blank UId="407" />
+        <Token Text=":=" UId="408" />
+        <Blank UId="409" />
+        <Access Scope="LocalVariable" UId="410">
+          <Symbol UId="411">
+            <Component Name="cycleTime" UId="412" />
+          </Symbol>
+        </Access>
+      </Parameter>
+      <Token Text="," UId="413" />
+      <NewLine UId="414" />
+      <Blank Num="24" UId="415" />
+      <Parameter Name="error" UId="416">
+        <Blank UId="417" />
+        <Token Text="=&gt;" UId="418" />
+        <Blank UId="419" />
+        <Access Scope="LocalVariable" UId="420">
+          <Symbol UId="421">
+            <Component Name="statError" UId="422" />
+          </Symbol>
+        </Access>
+      </Parameter>
+      <Token Text="," UId="423" />
+      <NewLine UId="424" />
+      <Blank Num="24" UId="425" />
+      <Parameter Name="errorID" UId="426">
+        <Blank UId="427" />
+        <Token Text="=&gt;" UId="428" />
+        <Blank UId="429" />
+        <Access Scope="LocalVariable" UId="430">
+          <Symbol UId="431">
+            <Component Name="errorID" UId="432" />
+          </Symbol>
+        </Access>
+      </Parameter>
+      <Token Text="," UId="433" />
+      <NewLine UId="434" />
+      <Blank Num="24" UId="435" />
+      <Parameter Name="outSamplingFactorMain" UId="436">
+        <Blank UId="437" />
+        <Token Text="=&gt;" UId="438" />
+        <Blank UId="439" />
+        <Access Scope="LocalVariable" UId="440">
+          <Symbol UId="441">
+            <Component Name="statSamplingFactor" UId="442" />
+          </Symbol>
+        </Access>
+      </Parameter>
+      <Token Text="," UId="443" />
+      <NewLine UId="444" />
+      <Blank Num="24" UId="445" />
+      <Parameter Name="outSubsetLengthMain" UId="446">
+        <Blank UId="447" />
+        <Token Text="=&gt;" UId="448" />
+        <Blank UId="449" />
+        <Access Scope="LocalVariable" UId="450">
+          <Symbol UId="451">
+            <Component Name="statSubsetLength" UId="452" />
+          </Symbol>
+        </Access>
+      </Parameter>
+      <Token Text="," UId="453" />
+      <NewLine UId="454" />
+      <Blank Num="24" UId="455" />
+      <Parameter Name="samplingTime" UId="456">
+        <Blank UId="457" />
+        <Token Text="=&gt;" UId="458" />
+        <Blank UId="459" />
+        <Access Scope="LocalVariable" UId="460">
+          <Symbol UId="461">
+            <Component Name="samplingTime" UId="462" />
+          </Symbol>
+        </Access>
+      </Parameter>
+      <Token Text="," UId="463" />
+      <NewLine UId="464" />
+      <Blank Num="24" UId="465" />
+      <Parameter Name="timePeriod" UId="466">
+        <Blank UId="467" />
+        <Token Text="=&gt;" UId="468" />
+        <Blank UId="469" />
+        <Access Scope="LocalVariable" UId="470">
+          <Symbol UId="471">
+            <Component Name="timePeriod" UId="472" />
+          </Symbol>
+        </Access>
+      </Parameter>
+      <NewLine UId="473" />
+      <Blank Num="4" UId="474" />
+      <Token Text=")" UId="479" />
+    </CallInfo>
+  </Access>
+  <Token Text=";" UId="480" />
+  <NewLine UId="481" />
+  <Blank Num="4" UId="482" />
+  <NewLine UId="483" />
+  <Blank Num="4" UId="484" />
+  <Access Scope="LocalVariable" UId="485">
+    <Symbol UId="486">
+      <Component Name="statUpdateConfigOld" UId="487" />
+    </Symbol>
+  </Access>
+  <Blank UId="488" />
+  <Token Text=":=" UId="489" />
+  <Blank UId="490" />
+  <Access Scope="LocalVariable" UId="491">
+    <Symbol UId="492">
+      <Component Name="updateConfig" UId="493" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="494" />
+  <NewLine UId="495" />
+  <Blank Num="4" UId="496" />
+  <NewLine UId="497" />
+  <Token Text="END_IF" UId="498" />
+  <Token Text=";" UId="499" />
+  <NewLine Num="2" UId="500" />
+  <Token Text="IF" UId="501" />
+  <Blank UId="502" />
+  <Token Text="(" UId="503" />
+  <Token Text="NOT" UId="504" />
+  <Blank UId="505" />
+  <Access Scope="LocalVariable" UId="506">
+    <Symbol UId="507">
+      <Component Name="updateConfig" UId="508" />
+    </Symbol>
+  </Access>
+  <Token Text=")" UId="509" />
+  <Blank UId="510" />
+  <Token Text="THEN" UId="511" />
+  <NewLine UId="512" />
+  <Blank Num="4" UId="513" />
+  <Access Scope="LocalVariable" UId="514">
+    <Symbol UId="515">
+      <Component Name="statUpdateConfigOld" UId="516" />
+    </Symbol>
+  </Access>
+  <Blank UId="517" />
+  <Token Text=":=" UId="518" />
+  <Blank UId="519" />
+  <Access Scope="LocalVariable" UId="520">
+    <Symbol UId="521">
+      <Component Name="updateConfig" UId="522" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="523" />
+  <NewLine UId="524" />
+  <Token Text="END_IF" UId="525" />
+  <Token Text=";" UId="526" />
+  <NewLine Num="2" UId="527" />
+  <LineComment UId="528">
+    <Text UId="529">----------------------------------------------------------------------</Text>
+  </LineComment>
+  <NewLine UId="530" />
+  <LineComment UId="531">
+    <Text UId="532">DETERMINE MOVING AVERAGE</Text>
+  </LineComment>
+  <NewLine UId="533" />
+  <LineComment UId="534">
+    <Text UId="535">----------------------------------------------------------------------</Text>
+  </LineComment>
+  <NewLine UId="536" />
+  <LineComment UId="537">
+    <Text UId="538"> If an error is queued the calculation will be stopped to prevent CPU stopp</Text>
+  </LineComment>
+  <NewLine UId="539" />
+  <Token Text="IF" UId="540" />
+  <Blank UId="541" />
+  <Token Text="(" UId="542" />
+  <Token Text="NOT" UId="543" />
+  <Blank UId="544" />
+  <Access Scope="LocalVariable" UId="545">
+    <Symbol UId="546">
+      <Component Name="statError" UId="547" />
+    </Symbol>
+  </Access>
+  <Blank UId="548" />
+  <Token Text="AND" UId="549" />
+  <Blank UId="550" />
+  <Access Scope="LocalVariable" UId="551">
+    <Symbol UId="552">
+      <Component Name="enable" UId="553" />
+    </Symbol>
+  </Access>
+  <Token Text=")" UId="554" />
+  <Blank UId="555" />
+  <Token Text="THEN" UId="556" />
+  <NewLine UId="557" />
+  <Blank Num="4" UId="558" />
+  <NewLine UId="559" />
+  <Blank Num="4" UId="560" />
+  <LineComment UId="561">
+    <Text UId="562"> Calculate Average (a wrong configuration doesn't stopp the calculation)</Text>
+  </LineComment>
+  <NewLine UId="563" />
+  <Blank Num="4" UId="564" />
+  <Access Scope="Call" UId="565">
+    <CallInfo UId="566" BlockType="FB" Name="LConSMC_SumCalc">
+      <Instance Scope="LocalVariable" UId="567">
+        <Component Name="instfbSumCalc" UId="568" />
+      </Instance>
+      <Token Text="(" UId="569" />
+      <NewLine UId="570" />
+      <Blank Num="19" UId="571" />
+      <Parameter Name="enable" UId="572">
+        <Blank UId="573" />
+        <Token Text=":=" UId="574" />
+        <Blank UId="575" />
+        <Access Scope="LocalVariable" UId="576">
+          <Symbol UId="577">
+            <Component Name="enable" UId="578" />
+          </Symbol>
+        </Access>
+      </Parameter>
+      <Token Text="," UId="579" />
+      <NewLine UId="580" />
+      <Blank Num="19" UId="581" />
+      <Parameter Name="inputSignal" UId="582">
+        <Blank UId="583" />
+        <Token Text=":=" UId="584" />
+        <Blank UId="585" />
+        <Access Scope="LocalVariable" UId="586">
+          <Symbol UId="587">
+            <Component Name="inputSignal" UId="588" />
+          </Symbol>
+        </Access>
+      </Parameter>
+      <Token Text="," UId="589" />
+      <NewLine UId="590" />
+      <Blank Num="19" UId="591" />
+      <Parameter Name="inSubsetLength" UId="592">
+        <Blank UId="593" />
+        <Token Text=":=" UId="594" />
+        <Blank UId="595" />
+        <Access Scope="LocalVariable" UId="596">
+          <Symbol UId="597">
+            <Component Name="statSubsetLength" UId="598" />
+          </Symbol>
+        </Access>
+      </Parameter>
+      <Token Text="," UId="599" />
+      <NewLine UId="600" />
+      <Blank Num="19" UId="601" />
+      <Parameter Name="inRateOfSumCalc" UId="602">
+        <Blank UId="603" />
+        <Token Text=":=" UId="604" />
+        <Blank UId="605" />
+        <Access Scope="LocalVariable" UId="606">
+          <Symbol UId="607">
+            <Component Name="statSamplingFactor" UId="608" />
+          </Symbol>
+        </Access>
+      </Parameter>
+      <Token Text="," UId="609" />
+      <NewLine UId="610" />
+      <Blank Num="19" UId="611" />
+      <Parameter Name="signalBuffer" UId="612">
+        <Blank UId="613" />
+        <Token Text=":=" UId="614" />
+        <Blank UId="615" />
+        <Access Scope="LocalVariable" UId="616">
+          <Symbol UId="617">
+            <Component Name="statSignalBufferSum" UId="618" />
+          </Symbol>
+        </Access>
+      </Parameter>
+      <Token Text="," UId="619" />
+      <NewLine UId="620" />
+      <Blank Num="19" UId="621" />
+      <Parameter Name="sum" UId="622">
+        <Blank UId="623" />
+        <Token Text="=&gt;" UId="624" />
+        <Blank UId="625" />
+        <Access Scope="LocalVariable" UId="626">
+          <Symbol UId="627">
+            <Component Name="statSum" UId="628" />
+          </Symbol>
+        </Access>
+      </Parameter>
+      <Token Text="," UId="629" />
+      <NewLine UId="630" />
+      <Blank Num="19" UId="631" />
+      <Parameter Name="shiftedInputSignal" UId="632">
+        <Blank UId="633" />
+        <Token Text="=&gt;" UId="634" />
+        <Blank UId="635" />
+        <Access Scope="LocalVariable" UId="636">
+          <Symbol UId="637">
+            <Component Name="shiftedInputSignal" UId="638" />
+          </Symbol>
+        </Access>
+      </Parameter>
+      <Token Text="," UId="639" />
+      <NewLine UId="640" />
+      <Blank Num="19" UId="641" />
+      <Parameter Name="outSubsetLength" UId="642">
+        <Blank UId="643" />
+        <Token Text="=&gt;" UId="644" />
+        <Blank UId="645" />
+        <Access Scope="LocalVariable" UId="646">
+          <Symbol UId="647">
+            <Component Name="statCurrentSubLen" UId="648" />
+          </Symbol>
+        </Access>
+      </Parameter>
+      <NewLine UId="649" />
+      <Blank Num="4" UId="650" />
+      <Token Text=")" UId="652" />
+    </CallInfo>
+  </Access>
+  <Token Text=";" UId="653" />
+  <NewLine UId="654" />
+  <Blank Num="4" UId="655" />
+  <NewLine UId="656" />
+  <Blank Num="4" UId="657" />
+  <LineComment UId="658">
+    <Text UId="659"> Calculate moving average of sum</Text>
+  </LineComment>
+  <NewLine UId="660" />
+  <Blank Num="4" UId="661" />
+  <Access Scope="LocalVariable" UId="662">
+    <Symbol UId="663">
+      <Component Name="movingAverage" UId="664" />
+    </Symbol>
+  </Access>
+  <Blank UId="665" />
+  <Token Text=":=" UId="666" />
+  <Blank UId="667" />
+  <Token Text="(" UId="668" />
+  <Access Scope="LiteralConstant" UId="669">
+    <Constant UId="670">
+      <ConstantValue UId="672">1.0</ConstantValue>
+    </Constant>
+  </Access>
+  <Blank UId="673" />
+  <Token Text="/" UId="674" />
+  <Blank UId="675" />
+  <Access Scope="LocalVariable" UId="676">
+    <Symbol UId="677">
+      <Component Name="statCurrentSubLen" UId="678" />
+    </Symbol>
+  </Access>
+  <Token Text=")" UId="679" />
+  <Blank UId="680" />
+  <Token Text="*" UId="681" />
+  <Blank UId="682" />
+  <Access Scope="LocalVariable" UId="683">
+    <Symbol UId="684">
+      <Component Name="statSum" UId="685" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="686" />
+  <NewLine UId="687" />
+  <Blank Num="4" UId="688" />
+  <NewLine UId="689" />
+  <Blank Num="4" UId="690" />
+  <LineComment UId="691">
+    <Text UId="692"> determine the current time periode of the subset</Text>
+  </LineComment>
+  <NewLine UId="693" />
+  <Blank Num="4" UId="694" />
+  <LineComment UId="695">
+    <Text UId="696">#timePeriod := #samplingTime * #statCurrentSubLen;    //actual time period during init</Text>
+  </LineComment>
+  <NewLine UId="697" />
+  <Token Text="END_IF" UId="698" />
+  <Token Text=";" UId="699" />
+  <NewLine UId="700" />
+  <Access Scope="LocalVariable" UId="701">
+    <Symbol UId="702">
+      <Component Name="error" UId="703" />
+    </Symbol>
+  </Access>
+  <Blank UId="704" />
+  <Token Text=":=" UId="705" />
+  <Blank UId="706" />
+  <Access Scope="LocalVariable" UId="707">
+    <Symbol UId="708">
+      <Component Name="statError" UId="709" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="710" />
+</StructuredText></NetworkSource>
+          <ProgrammingLanguage>SCL</ProgrammingLanguage>
+        </AttributeList>
+        <ObjectList>
+          <MultilingualText ID="B" CompositionName="Comment">
+            <ObjectList>
+              <MultilingualTextItem ID="C" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="D" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-GB</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="E" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="F" CompositionName="Items">
+                <AttributeList>
+                  <Culture>es-ES</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="10" CompositionName="Items">
+                <AttributeList>
+                  <Culture>fr-FR</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="11" CompositionName="Items">
+                <AttributeList>
+                  <Culture>it-IT</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="12" CompositionName="Items">
+                <AttributeList>
+                  <Culture>ko-KR</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="13" CompositionName="Items">
+                <AttributeList>
+                  <Culture>zh-CN</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+          <MultilingualText ID="14" CompositionName="Title">
+            <ObjectList>
+              <MultilingualTextItem ID="15" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="16" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-GB</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="17" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="18" CompositionName="Items">
+                <AttributeList>
+                  <Culture>es-ES</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="19" CompositionName="Items">
+                <AttributeList>
+                  <Culture>fr-FR</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="1A" CompositionName="Items">
+                <AttributeList>
+                  <Culture>it-IT</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="1B" CompositionName="Items">
+                <AttributeList>
+                  <Culture>ko-KR</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="1C" CompositionName="Items">
+                <AttributeList>
+                  <Culture>zh-CN</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+        </ObjectList>
+      </SW.Blocks.CompileUnit>
+      <MultilingualText ID="1D" CompositionName="Title">
+        <ObjectList>
+          <MultilingualTextItem ID="1E" CompositionName="Items">
+            <AttributeList>
+              <Culture>de-DE</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="1F" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-GB</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="20" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-US</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="21" CompositionName="Items">
+            <AttributeList>
+              <Culture>es-ES</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="22" CompositionName="Items">
+            <AttributeList>
+              <Culture>fr-FR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="23" CompositionName="Items">
+            <AttributeList>
+              <Culture>it-IT</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="24" CompositionName="Items">
+            <AttributeList>
+              <Culture>ko-KR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="25" CompositionName="Items">
+            <AttributeList>
+              <Culture>zh-CN</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+        </ObjectList>
+      </MultilingualText>
+    </ObjectList>
+  </SW.Blocks.FB>
+</Document>

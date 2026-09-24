@@ -1,0 +1,158 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Document>
+  <Engineering version="V20" />
+  <SW.Types.PlcStruct ID="0">
+    <AttributeList>
+      <Access>Published</Access>
+      <Interface><Sections xmlns="http://www.siemens.com/automation/Openness/SW/Interface/v5">
+  <Section Name="None">
+    <Member Name="enable" Datatype="Bool">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">TRUE: Starte Funktionsbaustein</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">TRUE: Start function block</MultiLanguageText>
+      </Comment>
+    </Member>
+    <Member Name="adaptionMode" Datatype="Bool">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">TRUE: Verwende Durchmesserverhältnis zur Adaption (dAct/dMax)  FALSE: Verwende Trägheitsmomentverhältnis zur Adaption (JAct/JMax)</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">TRUE: User diameter ratio for adaption (dAct/dMax)  FALSE: User inertia ratio for adaption  (JAct/JMax)</MultiLanguageText>
+      </Comment>
+    </Member>
+    <Member Name="externalMode" Datatype="Bool">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">TRUE: Adaptionswert wird nur berechnet aber nicht an den Antrieb gesendet (input "HWAddress" not needed)  FALSE: Adaptionswert wird berechnet und an den Antrieb gesendet (Eingang "HWAddress" wird benötigt)</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">TRUE: Calculation of adaption value but value will not be written to telegram (input "HWAddress" not needed)  FALSE: Adaption value will be calculated and written to the telegram (input "HWAddress" necessary)</MultiLanguageText>
+      </Comment>
+    </Member>
+    <Member Name="diameter" Datatype="LReal">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">[m]/[inch] Aktueller Durchmesser</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">[m]/[inch] Current diameter</MultiLanguageText>
+      </Comment>
+    </Member>
+    <Member Name="HWAddress" Datatype="HW_SUBMODULE">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">HW-Adresse des Telegramms über das der Adaptionswert an den Antrieb gesendet wird (nur wenn externalMode = FALSE)</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">HW-Address of telegram extension which is used to send adaption value to the drive (Only needed if externalMode = FALSE)</MultiLanguageText>
+      </Comment>
+    </Member>
+    <Member Name="offset" Datatype="DInt">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">Byte offset innerhalb des Telegramms für Kp-Adaptionswert (Wenn "externalMode" = FALSE).  Wenn "offset" = 0 wird der Wert an den Anfang des Telegramms geschrieben</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">Byte offset with the telegram to write the Kp-Adaption value (if externalMode = FALSE).  If "offset" = 0, the value will be written at the begining of the telegram</MultiLanguageText>
+      </Comment>
+      <StartValue>6</StartValue>
+    </Member>
+  </Section>
+</Sections></Interface>
+      <Name>LConSMC_typeKpAdaptionInput</Name>
+      <Namespace />
+    </AttributeList>
+    <ObjectList>
+      <MultilingualText ID="1" CompositionName="Comment">
+        <ObjectList>
+          <MultilingualTextItem ID="2" CompositionName="Items">
+            <AttributeList>
+              <Culture>de-DE</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="3" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-GB</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="4" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-US</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="5" CompositionName="Items">
+            <AttributeList>
+              <Culture>es-ES</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="6" CompositionName="Items">
+            <AttributeList>
+              <Culture>fr-FR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="7" CompositionName="Items">
+            <AttributeList>
+              <Culture>it-IT</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="8" CompositionName="Items">
+            <AttributeList>
+              <Culture>ko-KR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="9" CompositionName="Items">
+            <AttributeList>
+              <Culture>zh-CN</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+        </ObjectList>
+      </MultilingualText>
+      <MultilingualText ID="A" CompositionName="Title">
+        <ObjectList>
+          <MultilingualTextItem ID="B" CompositionName="Items">
+            <AttributeList>
+              <Culture>de-DE</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="C" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-GB</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="D" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-US</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="E" CompositionName="Items">
+            <AttributeList>
+              <Culture>es-ES</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="F" CompositionName="Items">
+            <AttributeList>
+              <Culture>fr-FR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="10" CompositionName="Items">
+            <AttributeList>
+              <Culture>it-IT</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="11" CompositionName="Items">
+            <AttributeList>
+              <Culture>ko-KR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="12" CompositionName="Items">
+            <AttributeList>
+              <Culture>zh-CN</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+        </ObjectList>
+      </MultilingualText>
+    </ObjectList>
+  </SW.Types.PlcStruct>
+</Document>

@@ -1,0 +1,216 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Document>
+  <Engineering version="V20" />
+  <SW.Types.PlcStruct ID="0">
+    <AttributeList>
+      <Access>Published</Access>
+      <Interface><Sections xmlns="http://www.siemens.com/automation/Openness/SW/Interface/v5">
+  <Section Name="None">
+    <Member Name="enable" Datatype="Bool">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">TRUE: Freigabe des Bausteins. Mit steigender Flanke erfolgt Parametervalidierung und  Kommunikation mit dem Antrieb  FALSE: Baustein ausschalten</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">TRUE: Enable function block. WIth rising edge a validation of parameter is done and communication with drive is started  FALSE: Disable the function block</MultiLanguageText>
+      </Comment>
+      <StartValue>FALSE</StartValue>
+    </Member>
+    <Member Name="speedMatch" Datatype="Bool">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">TRUE: Freigabe der Bahngeschwindigkeitssolwert ("lineAxisMotionVector"). Der Antrieb synchronisiert auf die Bahngeschwindigkeit auf mit Hilfe der Synchronisationsdynamiken. Ist der Antrieb synchron so wird der Ausgang "inSync" = TRUE.  FALSE: Der Antrieb verzögert bis zum Stillstand mit Hilfe der Stoppdynamiken</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">True: Enable web velocity setpoint ("lineAxisMotionVector"). The drive will synchronize up to web velocity using syncronization dynamics. If the velocity is reached the output "inSync" will become TRUE.  FALSE: Drive will decelerate to standstill using stop dynamics</MultiLanguageText>
+      </Comment>
+    </Member>
+    <Member Name="CntrlEnable" Datatype="Bool">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">TRUE: Freigabe der Bahnzugregelung (Freigabe Drehmomentengrenzen/ Tänzersollwert etc.)</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">TRUE: Enable web tension control (enable torque limits, dancer position setpoint etc.)</MultiLanguageText>
+      </Comment>
+      <StartValue>FALSE</StartValue>
+    </Member>
+    <Member Name="jogPos" Datatype="Bool">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">TRUE: Antrieb wird in positive Richtung vertippt (siehe config.dynamics.jogDynamics)</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">TRUE: Drive is jogged in positive direction (see config.dynamics.jogDynamics)</MultiLanguageText>
+      </Comment>
+      <StartValue>FALSE</StartValue>
+    </Member>
+    <Member Name="jogNeg" Datatype="Bool">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">TRUE: Antrieb wird in negative Richtung vertippt (siehe config.dynamics.jogDynamics)</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">TRUE: Drive is jogged in negative direction (see config.dynamics.jogDynamics)</MultiLanguageText>
+      </Comment>
+      <StartValue>FALSE</StartValue>
+    </Member>
+    <Member Name="lineAxisMotionVector" Datatype="&quot;LConSMC_typeMotionVector&quot;">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">Sollwert der Bahn (Position/Geschwindigkeit/Beschleunigung)</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">Setpoint of the web (position/velocity/acceleration)</MultiLanguageText>
+      </Comment>
+    </Member>
+    <Member Name="additionalVelocity" Datatype="LReal">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">[m/min] / [ft/min] Zusätzliche Bahngeschwindigkeit (immer aktiv)</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">[m/min] / [ft/min] Additional web velocity (always enabled)</MultiLanguageText>
+      </Comment>
+      <StartValue>0.0</StartValue>
+    </Member>
+    <Member Name="draw" Datatype="LReal">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">Draw Faktor für den Regelungsmodus 4 (DRAW_CONTROL). Sollwert = Bahnsollwert * draw</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">Draw factor for control mode 4 (DRAW CONTROL). Velocity setpoint = webVelocity * draw</MultiLanguageText>
+      </Comment>
+      <StartValue>1.0</StartValue>
+    </Member>
+    <Member Name="typeOfDrive" Datatype="Int">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">Definition der Bahnzugrichtung  0: Bahnzug vor der Rolle wird geregelt (Pull)  1: Bahnzug nach der Rolle wird geregelt (Push)</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">Definition of web tension direction  0: Web tension bevor the roll is controlled (Pull)  1: Web tension after the roll is controlled (Push)</MultiLanguageText>
+      </Comment>
+      <StartValue>0</StartValue>
+    </Member>
+    <Member Name="controlMode" Datatype="Int">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">Regelungsmodus  0:Tänzerlageregelung via Drehzahladaption  1: Zugmessdose via Drehzahladaption  2: Zugmessdose via Drehmomentenadaption  3: Indirekte Zugregelung  4: Geschwindigkeitsrelation (Draw)</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">Tension control mode  0: Dancer via speed setpoint adaption  1: Load cell via speed setpoint adaption  2: Load cell via torque limits  3: Indirect tension control  4: Speed setpoint relation (Draw)  5: Indirect tension control vis speed setpoint adaption</MultiLanguageText>
+      </Comment>
+      <StartValue>0</StartValue>
+    </Member>
+    <Member Name="CntrlSetpoint" Datatype="LReal">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">Zugsollwert [N]/[Lbf] / Lagesollwert Tänzer [%]</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">Tension setpoint [N]/[Lbf] / Dancer position setpoint [%]</MultiLanguageText>
+      </Comment>
+      <StartValue>0.0</StartValue>
+    </Member>
+    <Member Name="CntrlActual" Datatype="LReal">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">Istzug[N]/[Lbf] / Lageistwert Tänzer [%]</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">Tension actual value [N]/[Lbf] / Dancer actual position [%]</MultiLanguageText>
+      </Comment>
+      <StartValue>0.0</StartValue>
+    </Member>
+    <Member Name="tCycle" Datatype="Real">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">[ms] Zykluszeit in der der Baustein aufgerufen wird</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">[ms] Cycle time the function block is called</MultiLanguageText>
+      </Comment>
+      <StartValue>0.0</StartValue>
+    </Member>
+    <Member Name="axis" Datatype="DB_ANY">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">Bahnzugachse</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">Sectional drive axis</MultiLanguageText>
+      </Comment>
+    </Member>
+  </Section>
+</Sections></Interface>
+      <Name>LConSMC_typeSectionalDriveInput</Name>
+      <Namespace />
+    </AttributeList>
+    <ObjectList>
+      <MultilingualText ID="1" CompositionName="Comment">
+        <ObjectList>
+          <MultilingualTextItem ID="2" CompositionName="Items">
+            <AttributeList>
+              <Culture>de-DE</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="3" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-GB</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="4" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-US</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="5" CompositionName="Items">
+            <AttributeList>
+              <Culture>es-ES</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="6" CompositionName="Items">
+            <AttributeList>
+              <Culture>fr-FR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="7" CompositionName="Items">
+            <AttributeList>
+              <Culture>it-IT</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="8" CompositionName="Items">
+            <AttributeList>
+              <Culture>ko-KR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="9" CompositionName="Items">
+            <AttributeList>
+              <Culture>zh-CN</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+        </ObjectList>
+      </MultilingualText>
+      <MultilingualText ID="A" CompositionName="Title">
+        <ObjectList>
+          <MultilingualTextItem ID="B" CompositionName="Items">
+            <AttributeList>
+              <Culture>de-DE</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="C" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-GB</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="D" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-US</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="E" CompositionName="Items">
+            <AttributeList>
+              <Culture>es-ES</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="F" CompositionName="Items">
+            <AttributeList>
+              <Culture>fr-FR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="10" CompositionName="Items">
+            <AttributeList>
+              <Culture>it-IT</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="11" CompositionName="Items">
+            <AttributeList>
+              <Culture>ko-KR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="12" CompositionName="Items">
+            <AttributeList>
+              <Culture>zh-CN</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+        </ObjectList>
+      </MultilingualText>
+    </ObjectList>
+  </SW.Types.PlcStruct>
+</Document>

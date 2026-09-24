@@ -1,0 +1,238 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Document>
+  <Engineering version="V20" />
+  <SW.Types.PlcStruct ID="0">
+    <AttributeList>
+      <Access>Published</Access>
+      <Interface><Sections xmlns="http://www.siemens.com/automation/Openness/SW/Interface/v5">
+  <Section Name="None">
+    <Member Name="pathDynamics" Datatype="&quot;LKinCtrl_typePathDynamics&quot;">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">path dynamics for this command</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">path dynamics for this command</MultiLanguageText>
+        <MultiLanguageText Lang="fr-FR">path dynamics for this command</MultiLanguageText>
+        <MultiLanguageText Lang="zh-CN">path dynamics for this command</MultiLanguageText>
+      </Comment>
+    </Member>
+    <Member Name="orientationDynamics" Datatype="&quot;LKinCtrl_typePathDynamics&quot;">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">orientation dynamics for this command</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">orientation dynamics for this command</MultiLanguageText>
+        <MultiLanguageText Lang="fr-FR">orientation dynamics for this command</MultiLanguageText>
+        <MultiLanguageText Lang="zh-CN">orientation dynamics for this command</MultiLanguageText>
+      </Comment>
+    </Member>
+    <Member Name="orientationDirection" Datatype="DInt">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">1: positive direction; 2: negative direction; 3: shortest distance</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">1: positive direction; 2: negative direction; 3: shortest distance</MultiLanguageText>
+        <MultiLanguageText Lang="fr-FR">1: positive direction; 2: negative direction; 3: shortest distance</MultiLanguageText>
+        <MultiLanguageText Lang="zh-CN">1: positive direction; 2: negative direction; 3: shortest distance</MultiLanguageText>
+      </Comment>
+      <StartValue>3</StartValue>
+    </Member>
+    <Member Name="bufferMode" Datatype="DInt">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">1: standstill between commands, 2: blending with lower speed; 5: blending with higher speed</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">1: standstill between commands, 2: blending with lower speed; 5: blending with higher speed</MultiLanguageText>
+        <MultiLanguageText Lang="fr-FR">1: standstill between commands, 2: blending with lower speed; 5: blending with higher speed</MultiLanguageText>
+        <MultiLanguageText Lang="zh-CN">1: standstill between commands, 2: blending with lower speed; 5: blending with higher speed</MultiLanguageText>
+      </Comment>
+      <StartValue>1</StartValue>
+    </Member>
+    <Member Name="transitionParameters" Datatype="Array[1..5] of LReal">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">blending distance parameters</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">blending distance parameters</MultiLanguageText>
+        <MultiLanguageText Lang="fr-FR">blending distance parameters</MultiLanguageText>
+        <MultiLanguageText Lang="zh-CN">blending distance parameters</MultiLanguageText>
+      </Comment>
+      <Subelement Path="1">
+        <StartValue>-1.0</StartValue>
+      </Subelement>
+    </Member>
+    <Member Name="dynamicAdaption" Datatype="DInt">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">&lt;0.0: default TO setting used; 0: no dynamic adaption; 1: with variable limits; 2: with constant limits</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">&lt;0.0: default TO setting used; 0: no dynamic adaption; 1: with variable limits; 2: with constant limits</MultiLanguageText>
+        <MultiLanguageText Lang="fr-FR">&lt;0.0: default TO setting used; 0: no dynamic adaption; 1: with variable limits; 2: with constant limits</MultiLanguageText>
+        <MultiLanguageText Lang="zh-CN">&lt;0.0: default TO setting used; 0: no dynamic adaption; 1: with variable limits; 2: with constant limits</MultiLanguageText>
+      </Comment>
+      <StartValue>-1</StartValue>
+    </Member>
+    <Member Name="toolNumber" Datatype="DInt">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">Tool number for SetTool command (LKINCTRL_MC_SETTOOL)</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">Tool number for SetTool command (LKINCTRL_MC_SETTOOL)</MultiLanguageText>
+        <MultiLanguageText Lang="fr-FR">Tool number for SetTool command (LKINCTRL_MC_SETTOOL)</MultiLanguageText>
+        <MultiLanguageText Lang="zh-CN">Tool number for SetTool command (LKINCTRL_MC_SETTOOL)</MultiLanguageText>
+      </Comment>
+    </Member>
+    <Member Name="moveDirectParameters" Datatype="&quot;LKinCtrl_typeMoveDirectParameter&quot;">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">parameters for MoveDirect command definition</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">parameters for MoveDirect command definition</MultiLanguageText>
+        <MultiLanguageText Lang="fr-FR">parameters for MoveDirect command definition</MultiLanguageText>
+        <MultiLanguageText Lang="zh-CN">parameters for MoveDirect command definition</MultiLanguageText>
+      </Comment>
+    </Member>
+    <Member Name="offsetParameters" Datatype="&quot;LKinCtrl_typeToolParameters&quot;">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">parameters for offset selection and configuration</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">parameters for offset selection and configuration</MultiLanguageText>
+        <MultiLanguageText Lang="fr-FR">parameters for offset selection and configuration</MultiLanguageText>
+        <MultiLanguageText Lang="zh-CN">parameters for offset selection and configuration</MultiLanguageText>
+      </Comment>
+    </Member>
+    <Member Name="conveyorParameters" Datatype="&quot;LKinCtrl_typeConveyorParameter&quot;">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">parameters for conveyor selection and configuration</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">parameters for conveyor selection and configuration</MultiLanguageText>
+        <MultiLanguageText Lang="fr-FR">parameters for conveyor selection and configuration</MultiLanguageText>
+        <MultiLanguageText Lang="zh-CN">parameters for conveyor selection and configuration</MultiLanguageText>
+      </Comment>
+      <Sections>
+        <Section Name="None">
+          <Member Name="conveyorParaNo" Datatype="DInt">
+            <StartValue>0</StartValue>
+          </Member>
+        </Section>
+      </Sections>
+    </Member>
+    <Member Name="circleParameters" Datatype="&quot;LKinCtrl_typeCircleParameters&quot;">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">parameters for circle command definition</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">parameters for circle command definition</MultiLanguageText>
+        <MultiLanguageText Lang="fr-FR">parameters for circle command definition</MultiLanguageText>
+        <MultiLanguageText Lang="zh-CN">parameters for circle command definition</MultiLanguageText>
+      </Comment>
+    </Member>
+    <Member Name="zoneParameters" Datatype="&quot;LKinCtrl_typeZoneParameters&quot;">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">parameters for zone commands</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">parameters for zone commands</MultiLanguageText>
+        <MultiLanguageText Lang="fr-FR">parameters for zone commands</MultiLanguageText>
+        <MultiLanguageText Lang="zh-CN">parameters for zone commands</MultiLanguageText>
+      </Comment>
+    </Member>
+    <Member Name="pickAndPlaceParameters" Datatype="&quot;LKinCtrl_typeMovePickAndPlaceParameters&quot;">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">parameters for pick and place command</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">parameters for pick and place command</MultiLanguageText>
+        <MultiLanguageText Lang="fr-FR">parameters for pick and place command</MultiLanguageText>
+        <MultiLanguageText Lang="zh-CN">parameters for pick and place command</MultiLanguageText>
+      </Comment>
+    </Member>
+  </Section>
+</Sections></Interface>
+      <Name>LKinCtrl_typePointParameter</Name>
+      <Namespace />
+    </AttributeList>
+    <ObjectList>
+      <MultilingualText ID="1" CompositionName="Comment">
+        <ObjectList>
+          <MultilingualTextItem ID="2" CompositionName="Items">
+            <AttributeList>
+              <Culture>de-DE</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="3" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-GB</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="4" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-US</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="5" CompositionName="Items">
+            <AttributeList>
+              <Culture>es-ES</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="6" CompositionName="Items">
+            <AttributeList>
+              <Culture>fr-FR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="7" CompositionName="Items">
+            <AttributeList>
+              <Culture>it-IT</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="8" CompositionName="Items">
+            <AttributeList>
+              <Culture>ko-KR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="9" CompositionName="Items">
+            <AttributeList>
+              <Culture>zh-CN</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+        </ObjectList>
+      </MultilingualText>
+      <MultilingualText ID="A" CompositionName="Title">
+        <ObjectList>
+          <MultilingualTextItem ID="B" CompositionName="Items">
+            <AttributeList>
+              <Culture>de-DE</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="C" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-GB</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="D" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-US</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="E" CompositionName="Items">
+            <AttributeList>
+              <Culture>es-ES</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="F" CompositionName="Items">
+            <AttributeList>
+              <Culture>fr-FR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="10" CompositionName="Items">
+            <AttributeList>
+              <Culture>it-IT</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="11" CompositionName="Items">
+            <AttributeList>
+              <Culture>ko-KR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="12" CompositionName="Items">
+            <AttributeList>
+              <Culture>zh-CN</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+        </ObjectList>
+      </MultilingualText>
+    </ObjectList>
+  </SW.Types.PlcStruct>
+</Document>

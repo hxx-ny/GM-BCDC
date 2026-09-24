@@ -1,0 +1,499 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Document>
+  <Engineering version="V20" />
+  <SW.Types.PlcStruct ID="0">
+    <AttributeList>
+      <Access>Published</Access>
+      <Interface><Sections xmlns="http://www.siemens.com/automation/Openness/SW/Interface/v5">
+  <Section Name="None">
+    <Member Name="groupPower" Datatype="Struct">
+      <Member Name="busy" Datatype="Bool">
+        <AttributeList>
+          <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+        </AttributeList>
+        <Comment>
+          <MultiLanguageText Lang="de-DE">TRUE: FB is not finished and new output values can be expected</MultiLanguageText>
+          <MultiLanguageText Lang="en-US">TRUE: FB is not finished and new output values can be expected</MultiLanguageText>
+          <MultiLanguageText Lang="fr-FR">TRUE: FB is not finished and new output values can be expected</MultiLanguageText>
+          <MultiLanguageText Lang="zh-CN">TRUE: FB is not finished and new output values can be expected</MultiLanguageText>
+        </Comment>
+      </Member>
+      <Member Name="error" Datatype="Bool">
+        <AttributeList>
+          <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+        </AttributeList>
+        <Comment>
+          <MultiLanguageText Lang="de-DE">TRUE: An error occurred during the execution of the FB</MultiLanguageText>
+          <MultiLanguageText Lang="en-US">TRUE: An error occurred during the execution of the FB</MultiLanguageText>
+          <MultiLanguageText Lang="fr-FR">TRUE: An error occurred during the execution of the FB</MultiLanguageText>
+          <MultiLanguageText Lang="zh-CN">TRUE: An error occurred during the execution of the FB</MultiLanguageText>
+        </Comment>
+      </Member>
+      <Member Name="axesEnabled" Datatype="Bool">
+        <AttributeList>
+          <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+        </AttributeList>
+        <Comment>
+          <MultiLanguageText Lang="de-DE">TRUE: all axes of axesGroup enabled; FALSE: all axes of axesGroup disabled</MultiLanguageText>
+          <MultiLanguageText Lang="en-US">TRUE: all axes of axesGroup enabled; FALSE: all axes of axesGroup disabled</MultiLanguageText>
+          <MultiLanguageText Lang="fr-FR">TRUE: all axes of axesGroup enabled; FALSE: all axes of axesGroup disabled</MultiLanguageText>
+          <MultiLanguageText Lang="zh-CN">TRUE: all axes of axesGroup enabled; FALSE: all axes of axesGroup disabled</MultiLanguageText>
+        </Comment>
+        <StartValue>FALSE</StartValue>
+      </Member>
+      <Member Name="diagnostics" Datatype="&quot;LKinCtrl_typeAuxFCDiagnostics&quot;">
+        <AttributeList>
+          <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+        </AttributeList>
+        <Comment>
+          <MultiLanguageText Lang="de-DE">Diagnostics information of FB (optional)</MultiLanguageText>
+          <MultiLanguageText Lang="en-US">Diagnostics information of FB (optional)</MultiLanguageText>
+          <MultiLanguageText Lang="fr-FR">Diagnostics information of FB (optional)</MultiLanguageText>
+          <MultiLanguageText Lang="zh-CN">Diagnostics information of FB (optional)</MultiLanguageText>
+        </Comment>
+        <Sections>
+          <Section Name="None">
+            <Member Name="status" Datatype="Word">
+              <StartValue>0</StartValue>
+            </Member>
+          </Section>
+        </Sections>
+      </Member>
+    </Member>
+    <Member Name="groupHome" Datatype="Struct">
+      <Member Name="done" Datatype="Bool">
+        <AttributeList>
+          <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+        </AttributeList>
+        <Comment>
+          <MultiLanguageText Lang="de-DE">axesGroup successfully referenced</MultiLanguageText>
+          <MultiLanguageText Lang="en-US">axesGroup successfully referenced</MultiLanguageText>
+          <MultiLanguageText Lang="fr-FR">axesGroup successfully referenced</MultiLanguageText>
+          <MultiLanguageText Lang="zh-CN">axesGroup successfully referenced</MultiLanguageText>
+        </Comment>
+      </Member>
+      <Member Name="busy" Datatype="Bool">
+        <AttributeList>
+          <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+        </AttributeList>
+        <Comment>
+          <MultiLanguageText Lang="de-DE">FB is not finished and new output values can be expected</MultiLanguageText>
+          <MultiLanguageText Lang="en-US">FB is not finished and new output values can be expected</MultiLanguageText>
+          <MultiLanguageText Lang="fr-FR">FB is not finished and new output values can be expected</MultiLanguageText>
+          <MultiLanguageText Lang="zh-CN">FB is not finished and new output values can be expected</MultiLanguageText>
+        </Comment>
+      </Member>
+      <Member Name="active" Datatype="Bool">
+        <AttributeList>
+          <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+        </AttributeList>
+        <Comment>
+          <MultiLanguageText Lang="de-DE">FB in control of axesGroup / kinematic in motion</MultiLanguageText>
+          <MultiLanguageText Lang="en-US">FB in control of axesGroup / kinematic in motion</MultiLanguageText>
+          <MultiLanguageText Lang="fr-FR">FB in control of axesGroup / kinematic in motion</MultiLanguageText>
+          <MultiLanguageText Lang="zh-CN">FB in control of axesGroup / kinematic in motion</MultiLanguageText>
+        </Comment>
+      </Member>
+      <Member Name="commandAborted" Datatype="Bool">
+        <AttributeList>
+          <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+        </AttributeList>
+        <Comment>
+          <MultiLanguageText Lang="de-DE">command is aborted by another command</MultiLanguageText>
+          <MultiLanguageText Lang="en-US">command is aborted by another command</MultiLanguageText>
+          <MultiLanguageText Lang="fr-FR">command is aborted by another command</MultiLanguageText>
+          <MultiLanguageText Lang="zh-CN">command is aborted by another command</MultiLanguageText>
+        </Comment>
+      </Member>
+      <Member Name="error" Datatype="Bool">
+        <AttributeList>
+          <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+        </AttributeList>
+        <Comment>
+          <MultiLanguageText Lang="de-DE">an error occurred during the execution of the FB</MultiLanguageText>
+          <MultiLanguageText Lang="en-US">an error occurred during the execution of the FB</MultiLanguageText>
+          <MultiLanguageText Lang="fr-FR">an error occurred during the execution of the FB</MultiLanguageText>
+          <MultiLanguageText Lang="zh-CN">an error occurred during the execution of the FB</MultiLanguageText>
+        </Comment>
+      </Member>
+      <Member Name="diagnostics" Datatype="&quot;LKinCtrl_typeAuxFCDiagnostics&quot;">
+        <AttributeList>
+          <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+        </AttributeList>
+        <Comment>
+          <MultiLanguageText Lang="de-DE">diagnostics information of FB (optional)</MultiLanguageText>
+          <MultiLanguageText Lang="en-US">diagnostics information of FB (optional)</MultiLanguageText>
+          <MultiLanguageText Lang="fr-FR">diagnostics information of FB (optional)</MultiLanguageText>
+          <MultiLanguageText Lang="zh-CN">diagnostics information of FB (optional)</MultiLanguageText>
+        </Comment>
+      </Member>
+    </Member>
+    <Member Name="groupReset" Datatype="Struct">
+      <Member Name="done" Datatype="Bool">
+        <AttributeList>
+          <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+        </AttributeList>
+        <Comment>
+          <MultiLanguageText Lang="de-DE">axesGroup successfully referenced</MultiLanguageText>
+          <MultiLanguageText Lang="en-US">axesGroup successfully referenced</MultiLanguageText>
+          <MultiLanguageText Lang="fr-FR">axesGroup successfully referenced</MultiLanguageText>
+          <MultiLanguageText Lang="zh-CN">axesGroup successfully referenced</MultiLanguageText>
+        </Comment>
+      </Member>
+      <Member Name="busy" Datatype="Bool">
+        <AttributeList>
+          <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+        </AttributeList>
+        <Comment>
+          <MultiLanguageText Lang="de-DE">FB is not finished and new output values can be expected</MultiLanguageText>
+          <MultiLanguageText Lang="en-US">FB is not finished and new output values can be expected</MultiLanguageText>
+          <MultiLanguageText Lang="fr-FR">FB is not finished and new output values can be expected</MultiLanguageText>
+          <MultiLanguageText Lang="zh-CN">FB is not finished and new output values can be expected</MultiLanguageText>
+        </Comment>
+      </Member>
+      <Member Name="active" Datatype="Bool">
+        <AttributeList>
+          <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+        </AttributeList>
+        <Comment>
+          <MultiLanguageText Lang="de-DE">FB in control of axesGroup / kinematic in motion</MultiLanguageText>
+          <MultiLanguageText Lang="en-US">FB in control of axesGroup / kinematic in motion</MultiLanguageText>
+          <MultiLanguageText Lang="fr-FR">FB in control of axesGroup / kinematic in motion</MultiLanguageText>
+          <MultiLanguageText Lang="zh-CN">FB in control of axesGroup / kinematic in motion</MultiLanguageText>
+        </Comment>
+      </Member>
+      <Member Name="commandAborted" Datatype="Bool">
+        <AttributeList>
+          <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+        </AttributeList>
+        <Comment>
+          <MultiLanguageText Lang="de-DE">command is aborted by another command</MultiLanguageText>
+          <MultiLanguageText Lang="en-US">command is aborted by another command</MultiLanguageText>
+          <MultiLanguageText Lang="fr-FR">command is aborted by another command</MultiLanguageText>
+          <MultiLanguageText Lang="zh-CN">command is aborted by another command</MultiLanguageText>
+        </Comment>
+      </Member>
+      <Member Name="error" Datatype="Bool">
+        <AttributeList>
+          <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+        </AttributeList>
+        <Comment>
+          <MultiLanguageText Lang="de-DE">an error occurred during the execution of the FB</MultiLanguageText>
+          <MultiLanguageText Lang="en-US">an error occurred during the execution of the FB</MultiLanguageText>
+          <MultiLanguageText Lang="fr-FR">an error occurred during the execution of the FB</MultiLanguageText>
+          <MultiLanguageText Lang="zh-CN">an error occurred during the execution of the FB</MultiLanguageText>
+        </Comment>
+      </Member>
+      <Member Name="diagnostics" Datatype="&quot;LKinCtrl_typeAuxFCDiagnostics&quot;">
+        <AttributeList>
+          <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+        </AttributeList>
+        <Comment>
+          <MultiLanguageText Lang="de-DE">diagnostics information of FB (optional)</MultiLanguageText>
+          <MultiLanguageText Lang="en-US">diagnostics information of FB (optional)</MultiLanguageText>
+          <MultiLanguageText Lang="fr-FR">diagnostics information of FB (optional)</MultiLanguageText>
+          <MultiLanguageText Lang="zh-CN">diagnostics information of FB (optional)</MultiLanguageText>
+        </Comment>
+      </Member>
+    </Member>
+    <Member Name="movePath" Datatype="Struct">
+      <Member Name="done" Datatype="Bool">
+        <AttributeList>
+          <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+          <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+          <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+        </AttributeList>
+      </Member>
+      <Member Name="busy" Datatype="Bool">
+        <AttributeList>
+          <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+        </AttributeList>
+        <Comment>
+          <MultiLanguageText Lang="de-DE">TRUE: FB is not finished and new output values can be expected</MultiLanguageText>
+          <MultiLanguageText Lang="en-US">TRUE: FB is not finished and new output values can be expected</MultiLanguageText>
+          <MultiLanguageText Lang="fr-FR">TRUE: FB is not finished and new output values can be expected</MultiLanguageText>
+          <MultiLanguageText Lang="zh-CN">TRUE: FB is not finished and new output values can be expected</MultiLanguageText>
+        </Comment>
+      </Member>
+      <Member Name="active" Datatype="Bool">
+        <AttributeList>
+          <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+        </AttributeList>
+        <Comment>
+          <MultiLanguageText Lang="de-DE">FB in control of axesGroup / kinematic in motion</MultiLanguageText>
+          <MultiLanguageText Lang="en-US">FB in control of axesGroup / kinematic in motion</MultiLanguageText>
+          <MultiLanguageText Lang="fr-FR">FB in control of axesGroup / kinematic in motion</MultiLanguageText>
+          <MultiLanguageText Lang="zh-CN">FB in control of axesGroup / kinematic in motion</MultiLanguageText>
+        </Comment>
+      </Member>
+      <Member Name="commandAborted" Datatype="Bool">
+        <AttributeList>
+          <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+          <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+          <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+        </AttributeList>
+      </Member>
+      <Member Name="error" Datatype="Bool">
+        <AttributeList>
+          <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+          <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+          <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+        </AttributeList>
+      </Member>
+      <Member Name="status" Datatype="Word">
+        <AttributeList>
+          <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+        </AttributeList>
+        <Comment>
+          <MultiLanguageText Lang="de-DE">status of the FB</MultiLanguageText>
+          <MultiLanguageText Lang="en-US">status of the FB</MultiLanguageText>
+          <MultiLanguageText Lang="fr-FR">status of the FB</MultiLanguageText>
+          <MultiLanguageText Lang="zh-CN">status of the FB</MultiLanguageText>
+        </Comment>
+        <StartValue>0</StartValue>
+      </Member>
+      <Member Name="diagnostics" Datatype="&quot;LKinCtrl_typeMovePathDiagnostics&quot;">
+        <AttributeList>
+          <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+        </AttributeList>
+        <Comment>
+          <MultiLanguageText Lang="de-DE">diagnostics information of FB</MultiLanguageText>
+          <MultiLanguageText Lang="en-US">diagnostics information of FB</MultiLanguageText>
+          <MultiLanguageText Lang="fr-FR">diagnostics information of FB</MultiLanguageText>
+          <MultiLanguageText Lang="zh-CN">diagnostics information of FB</MultiLanguageText>
+        </Comment>
+      </Member>
+      <Member Name="activePathData" Datatype="String[&quot;LKINCTRL_LENGTH_OF_PATHDATA_NAME&quot;]">
+        <AttributeList>
+          <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+        </AttributeList>
+        <Comment>
+          <MultiLanguageText Lang="de-DE">name of actual PathData</MultiLanguageText>
+          <MultiLanguageText Lang="en-US">name of actual PathData</MultiLanguageText>
+          <MultiLanguageText Lang="fr-FR">name of actual PathData</MultiLanguageText>
+          <MultiLanguageText Lang="zh-CN">name of actual PathData</MultiLanguageText>
+        </Comment>
+      </Member>
+      <Member Name="activeCmdNo" Datatype="DInt">
+        <AttributeList>
+          <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+          <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+          <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+        </AttributeList>
+      </Member>
+      <Member Name="remainingDistanceActCmd" Datatype="LReal">
+        <AttributeList>
+          <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+          <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+          <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+        </AttributeList>
+      </Member>
+      <Member Name="readyForNextPath" Datatype="Bool">
+        <AttributeList>
+          <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+          <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+          <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+        </AttributeList>
+      </Member>
+      <Member Name="activeUserFrames" Datatype="Array[&quot;LKINCTRL_CS_NO_OF_FIRST_USER_FRAME&quot;..&quot;LKINCTRL_CS_NO_OF_LAST_USER_FRAME&quot;] of &quot;LKinCtrl_typeFrame&quot;">
+        <AttributeList>
+          <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+        </AttributeList>
+        <Comment>
+          <MultiLanguageText Lang="de-DE">Currently acitve user frames</MultiLanguageText>
+          <MultiLanguageText Lang="en-US">Currently acitve user frames</MultiLanguageText>
+          <MultiLanguageText Lang="fr-FR">Currently acitve user frames</MultiLanguageText>
+          <MultiLanguageText Lang="zh-CN">Currently acitve user frames</MultiLanguageText>
+        </Comment>
+      </Member>
+      <Member Name="selectedPath" Datatype="DInt">
+        <AttributeList>
+          <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+          <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+          <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+        </AttributeList>
+      </Member>
+    </Member>
+    <Member Name="hmiLogic" Datatype="Struct">
+      <Member Name="editor" Datatype="Struct">
+        <Member Name="busy" Datatype="Bool">
+          <Comment>
+            <MultiLanguageText Lang="de-DE">TRUE: FB is not finished and new output values can be expected</MultiLanguageText>
+            <MultiLanguageText Lang="en-US">TRUE: FB is not finished and new output values can be expected</MultiLanguageText>
+            <MultiLanguageText Lang="fr-FR">TRUE: FB is not finished and new output values can be expected</MultiLanguageText>
+            <MultiLanguageText Lang="zh-CN">TRUE: FB is not finished and new output values can be expected</MultiLanguageText>
+          </Comment>
+        </Member>
+        <Member Name="valid" Datatype="Bool">
+          <Comment>
+            <MultiLanguageText Lang="en-US">TRUE: FB outputs are valid</MultiLanguageText>
+          </Comment>
+        </Member>
+        <Member Name="status" Datatype="Word">
+          <Comment>
+            <MultiLanguageText Lang="de-DE">16#0000 - 16#7FFF: Status of the FB, 16#8000 - 16#FFFF: Error identification</MultiLanguageText>
+            <MultiLanguageText Lang="en-US">16#0000 - 16#7FFF: Status of the FB, 16#8000 - 16#FFFF: Error identification</MultiLanguageText>
+            <MultiLanguageText Lang="fr-FR">16#0000 - 16#7FFF: Status of the FB, 16#8000 - 16#FFFF: Error identification</MultiLanguageText>
+            <MultiLanguageText Lang="zh-CN">16#0000 - 16#7FFF: Status of the FB, 16#8000 - 16#FFFF: Error identification</MultiLanguageText>
+          </Comment>
+          <StartValue>0</StartValue>
+        </Member>
+        <Member Name="enableInfeed" Datatype="Bool">
+          <Comment>
+            <MultiLanguageText Lang="en-US">TRUE: Enable infeed, FALSE: Disable infeed.</MultiLanguageText>
+          </Comment>
+        </Member>
+        <Member Name="enableAxesCoupling" Datatype="Bool">
+          <Comment>
+            <MultiLanguageText Lang="en-US">TRUE: Enable axes coupling of kinematics axes, FALSE: Disable axes coupling. Defined in settings.</MultiLanguageText>
+          </Comment>
+        </Member>
+        <Member Name="acknowledgeInfeed" Datatype="Bool">
+          <Comment>
+            <MultiLanguageText Lang="en-US">Rising edge: Acknowledge infeed.</MultiLanguageText>
+          </Comment>
+        </Member>
+        <Member Name="selectedPathNumber" Datatype="DInt">
+          <Comment>
+            <MultiLanguageText Lang="en-US">Currently selected path number in editor.</MultiLanguageText>
+          </Comment>
+        </Member>
+      </Member>
+      <Member Name="diagnostics" Datatype="Struct">
+        <Member Name="busy" Datatype="Bool">
+          <Comment>
+            <MultiLanguageText Lang="de-DE">TRUE: FB is not finished and new output values can be expected</MultiLanguageText>
+            <MultiLanguageText Lang="en-US">TRUE: FB is not finished and new output values can be expected</MultiLanguageText>
+            <MultiLanguageText Lang="fr-FR">TRUE: FB is not finished and new output values can be expected</MultiLanguageText>
+            <MultiLanguageText Lang="zh-CN">TRUE: FB is not finished and new output values can be expected</MultiLanguageText>
+          </Comment>
+        </Member>
+        <Member Name="valid" Datatype="Bool">
+          <Comment>
+            <MultiLanguageText Lang="en-US">TRUE: FB outputs are valid</MultiLanguageText>
+          </Comment>
+        </Member>
+        <Member Name="status" Datatype="Word">
+          <Comment>
+            <MultiLanguageText Lang="de-DE">16#0000 - 16#7FFF: Status of the FB, 16#8000 - 16#FFFF: Error identification</MultiLanguageText>
+            <MultiLanguageText Lang="en-US">16#0000 - 16#7FFF: Status of the FB, 16#8000 - 16#FFFF: Error identification</MultiLanguageText>
+            <MultiLanguageText Lang="fr-FR">16#0000 - 16#7FFF: Status of the FB, 16#8000 - 16#FFFF: Error identification</MultiLanguageText>
+            <MultiLanguageText Lang="zh-CN">16#0000 - 16#7FFF: Status of the FB, 16#8000 - 16#FFFF: Error identification</MultiLanguageText>
+          </Comment>
+          <StartValue>0</StartValue>
+        </Member>
+      </Member>
+    </Member>
+  </Section>
+</Sections></Interface>
+      <Name>LGM_LKinCtrl_ControlNodeMonitoring</Name>
+      <Namespace />
+    </AttributeList>
+    <ObjectList>
+      <MultilingualText ID="1" CompositionName="Comment">
+        <ObjectList>
+          <MultilingualTextItem ID="2" CompositionName="Items">
+            <AttributeList>
+              <Culture>de-DE</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="3" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-GB</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="4" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-US</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="5" CompositionName="Items">
+            <AttributeList>
+              <Culture>es-ES</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="6" CompositionName="Items">
+            <AttributeList>
+              <Culture>fr-FR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="7" CompositionName="Items">
+            <AttributeList>
+              <Culture>it-IT</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="8" CompositionName="Items">
+            <AttributeList>
+              <Culture>ko-KR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="9" CompositionName="Items">
+            <AttributeList>
+              <Culture>zh-CN</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+        </ObjectList>
+      </MultilingualText>
+      <MultilingualText ID="A" CompositionName="Title">
+        <ObjectList>
+          <MultilingualTextItem ID="B" CompositionName="Items">
+            <AttributeList>
+              <Culture>de-DE</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="C" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-GB</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="D" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-US</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="E" CompositionName="Items">
+            <AttributeList>
+              <Culture>es-ES</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="F" CompositionName="Items">
+            <AttributeList>
+              <Culture>fr-FR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="10" CompositionName="Items">
+            <AttributeList>
+              <Culture>it-IT</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="11" CompositionName="Items">
+            <AttributeList>
+              <Culture>ko-KR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="12" CompositionName="Items">
+            <AttributeList>
+              <Culture>zh-CN</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+        </ObjectList>
+      </MultilingualText>
+    </ObjectList>
+  </SW.Types.PlcStruct>
+</Document>

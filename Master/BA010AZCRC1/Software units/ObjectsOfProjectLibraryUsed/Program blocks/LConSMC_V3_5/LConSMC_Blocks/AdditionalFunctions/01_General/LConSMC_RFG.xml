@@ -1,0 +1,3575 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Document>
+  <Engineering version="V20" />
+  <SW.Blocks.FB ID="0">
+    <AttributeList>
+      <Access>Published</Access>
+      <Interface><Sections xmlns="http://www.siemens.com/automation/Openness/SW/Interface/v5">
+  <Section Name="Input">
+    <Member Name="x" Datatype="LReal">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <Comment>
+        <MultiLanguageText Lang="de-DE">Eingangswert</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">Input value</MultiLanguageText>
+      </Comment>
+      <StartValue>0.0</StartValue>
+    </Member>
+    <Member Name="nominalValue" Datatype="LReal">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <Comment>
+        <MultiLanguageText Lang="de-DE">Normierungswert auf den sich die Hochlaufzeiten beziehen</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">Reference value for ramping times</MultiLanguageText>
+      </Comment>
+      <StartValue>1.0</StartValue>
+    </Member>
+    <Member Name="upperLimit" Datatype="LReal">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <Comment>
+        <MultiLanguageText Lang="de-DE">Oberer Begrenzung des Ausgangswertes</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">Upper limit for output value</MultiLanguageText>
+      </Comment>
+      <StartValue>0.0</StartValue>
+    </Member>
+    <Member Name="lowerLimit" Datatype="LReal">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <Comment>
+        <MultiLanguageText Lang="de-DE">Untere Begrenzung des Ausgangswertes</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">Lower limit for output value</MultiLanguageText>
+      </Comment>
+      <StartValue>0.0</StartValue>
+    </Member>
+    <Member Name="setValue" Datatype="LReal">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <Comment>
+        <MultiLanguageText Lang="de-DE">Setzwert (wenn "set" = TRUE, wird Ausgang "y" auf diesen Wert gesetzt)</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">Set value (if "set" = TRUE, output "y" is set to this value)</MultiLanguageText>
+      </Comment>
+      <StartValue>0.0</StartValue>
+    </Member>
+    <Member Name="rampupTime" Datatype="LReal">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <Comment>
+        <MultiLanguageText Lang="de-DE">[ms] Hochlaufzeit (muss mind. so groß sein wie die Zykluszeit)</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">[ms] Ramp up time (at least the cycle time)</MultiLanguageText>
+      </Comment>
+      <StartValue>0.0</StartValue>
+    </Member>
+    <Member Name="rampdownTime" Datatype="LReal">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <Comment>
+        <MultiLanguageText Lang="de-DE">[ms] Rücklaufzeit (muss mind. so groß sein wie die Zykluszeit)</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">[ms] Ramp down time (at least the cycle time)</MultiLanguageText>
+      </Comment>
+      <StartValue>0.0</StartValue>
+    </Member>
+    <Member Name="rampTimeMode" Datatype="Int">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <Comment>
+        <MultiLanguageText Lang="de-DE">Auswahl der Rampenzeit  0: Hochlaufzeit wenn sich der Zielwert von Null entfernt  1: Hochlaufzeit wenn der Zielwert größer als Startwert ist</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">Select ramping time mode  0: Ramp up time if target value moves away from zero  1: Ramp up time if target value is bigger than start value</MultiLanguageText>
+      </Comment>
+      <StartValue ConstantName="#DIFF_TO_ZERO" />
+    </Member>
+    <Member Name="set" Datatype="Bool">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <Comment>
+        <MultiLanguageText Lang="de-DE">TRUE: Setze den Ausgang auf den Wert am Eingang "setValue"</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">TRUE: Set output to the value of the input "setValue"</MultiLanguageText>
+      </Comment>
+      <StartValue>FALSE</StartValue>
+    </Member>
+    <Member Name="followup" Datatype="Bool">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <Comment>
+        <MultiLanguageText Lang="de-DE">TRUE: Ausgang y integrierend auf Sollwert x nachführen</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">TRUE: Integrate output y to setpoint x</MultiLanguageText>
+      </Comment>
+      <StartValue>FALSE</StartValue>
+    </Member>
+    <Member Name="increase" Datatype="Bool">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <Comment>
+        <MultiLanguageText Lang="de-DE">TRUE: Erhöhe Ausgangswert y bis zum oberen Grenzwert mit parametrierter Hochlaufzeit</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">TRUE: Increase output y until upper limit is reached</MultiLanguageText>
+      </Comment>
+      <StartValue>FALSE</StartValue>
+    </Member>
+    <Member Name="decrease" Datatype="Bool">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <Comment>
+        <MultiLanguageText Lang="de-DE">TRUE: Verringere Ausgangswert y bis zum unteren Grenzwert mit parametrierter Rücklaufzeit</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">TRUE: Decrease output y until lower limit is reached with ramp down time</MultiLanguageText>
+      </Comment>
+      <StartValue>FALSE</StartValue>
+    </Member>
+    <Member Name="tCycle" Datatype="Real">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <Comment>
+        <MultiLanguageText Lang="de-DE">[ms] Zykluszeit in der der Baustein aufgerufen wird</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">[ms] Cycle time the FB is called</MultiLanguageText>
+      </Comment>
+    </Member>
+  </Section>
+  <Section Name="Output">
+    <Member Name="error" Datatype="Bool">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <Comment>
+        <MultiLanguageText Lang="de-DE">TRUE: Es ist ein Fehler aufgetreten</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">TRUE:   An error has occurred, refer to error identification</MultiLanguageText>
+      </Comment>
+    </Member>
+    <Member Name="errorID" Datatype="DWord">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <Comment>
+        <MultiLanguageText Lang="de-DE">Detaillierte Fehlerbeschreibung</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">Error identification, refer to error messages</MultiLanguageText>
+      </Comment>
+      <StartValue>16#0000_0000</StartValue>
+    </Member>
+    <Member Name="y" Datatype="LReal">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <Comment>
+        <MultiLanguageText Lang="de-DE">[-] Ausgangswert</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">Ramped output value (Same unit as input value "x)</MultiLanguageText>
+      </Comment>
+    </Member>
+    <Member Name="ya" Datatype="LReal">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <Comment>
+        <MultiLanguageText Lang="de-DE">[-/cycle] Änderungsrate des Ausgangs</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">[Input unit from "x" / tCycle] Changing rate of output "y"</MultiLanguageText>
+      </Comment>
+      <StartValue>0.0</StartValue>
+    </Member>
+    <Member Name="SetpointReached" Datatype="Bool">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <Comment>
+        <MultiLanguageText Lang="de-DE">TRUE: Der Sollwert wurde erreicht</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">TRUE: Output value is Input Value</MultiLanguageText>
+      </Comment>
+      <StartValue>FALSE</StartValue>
+    </Member>
+    <Member Name="upperLimitReached" Datatype="Bool">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <Comment>
+        <MultiLanguageText Lang="de-DE">TRUE: Der Ausgang hat den oberen Grenzwert erreicht</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">TRUE: upper limit reached</MultiLanguageText>
+      </Comment>
+      <StartValue>FALSE</StartValue>
+    </Member>
+    <Member Name="lowerLimitReached" Datatype="Bool">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <Comment>
+        <MultiLanguageText Lang="de-DE">TRUE: Der Ausgang hat den unteren Grenzwert erreicht</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">TRUE: lower limit reached</MultiLanguageText>
+      </Comment>
+      <StartValue>FALSE</StartValue>
+    </Member>
+  </Section>
+  <Section Name="InOut" />
+  <Section Name="Static">
+    <Member Name="statTUs" Datatype="LReal">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="statTDs" Datatype="LReal">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="statYkm1" Datatype="LReal">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="statLLs" Datatype="LReal">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="statXs" Datatype="LReal">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="stat1" Datatype="LReal">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="statError" Datatype="Bool">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <StartValue>FALSE</StartValue>
+    </Member>
+    <Member Name="statY" Datatype="LReal">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <StartValue>0.0</StartValue>
+    </Member>
+  </Section>
+  <Section Name="Temp" />
+  <Section Name="Constant">
+    <Member Name="MAX_RAMP_TIME_MS" Datatype="Real">
+      <StartValue>1000000.0</StartValue>
+    </Member>
+    <Member Name="NO_ERROR" Datatype="DWord">
+      <StartValue>16#0000_0000</StartValue>
+    </Member>
+    <Member Name="DIFF_TO_ZERO" Datatype="Int">
+      <StartValue>0</StartValue>
+    </Member>
+    <Member Name="DIFF_OF_CHANGE" Datatype="Int">
+      <StartValue>1</StartValue>
+    </Member>
+  </Section>
+</Sections></Interface>
+      <IsIECCheckEnabled>true</IsIECCheckEnabled>
+      <MemoryReserve>100</MemoryReserve>
+      <Name>LConSMC_RFG</Name>
+      <Namespace />
+      <Number>32010</Number>
+      <ProgrammingLanguage>SCL</ProgrammingLanguage>
+      <SetENOAutomatically>true</SetENOAutomatically>
+    </AttributeList>
+    <ObjectList>
+      <MultilingualText ID="1" CompositionName="Comment">
+        <ObjectList>
+          <MultilingualTextItem ID="2" CompositionName="Items">
+            <AttributeList>
+              <Culture>de-DE</Culture>
+              <Text>Hochlaufgeber mit Motorpotentiometer und anschließender Betriebsführung – ohne Verrundung.
+Der Funktionsbaustein muss in einem zyklischen Interrupt aufgerufen werden. (z.B. OB30)  Funktionsbaustein-ID: 1106</Text>
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="3" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-GB</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="4" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-US</Culture>
+              <Text>RFG with MOP and follow-up operation – without rounding. The function block must be called in a cyclic interrupt, e.g. OB30.  Function block ID: 1106</Text>
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="5" CompositionName="Items">
+            <AttributeList>
+              <Culture>es-ES</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="6" CompositionName="Items">
+            <AttributeList>
+              <Culture>fr-FR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="7" CompositionName="Items">
+            <AttributeList>
+              <Culture>it-IT</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="8" CompositionName="Items">
+            <AttributeList>
+              <Culture>ko-KR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="9" CompositionName="Items">
+            <AttributeList>
+              <Culture>zh-CN</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+        </ObjectList>
+      </MultilingualText>
+      <SW.Blocks.CompileUnit ID="A" CompositionName="CompileUnits">
+        <AttributeList>
+          <NetworkSource><StructuredText xmlns="http://www.siemens.com/automation/Openness/SW/NetworkSource/StructuredText/v4">
+  <Token Text="REGION" UId="21" />
+  <Blank UId="22" />
+  <Text UId="23">BLOCK INFO HEADER</Text>
+  <NewLine UId="24" />
+  <Blank Num="2" UId="25" />
+  <LineComment UId="26">
+    <Text UId="27">===============================================================================</Text>
+  </LineComment>
+  <NewLine UId="28" />
+  <Blank Num="2" UId="29" />
+  <LineComment UId="30">
+    <Text UId="31"> SIEMENS AG / (c)Copyright 2023</Text>
+  </LineComment>
+  <NewLine UId="32" />
+  <Blank Num="2" UId="33" />
+  <LineComment UId="34">
+    <Text UId="35">-------------------------------------------------------------------------------</Text>
+  </LineComment>
+  <NewLine UId="36" />
+  <Blank Num="2" UId="37" />
+  <LineComment UId="38">
+    <Text UId="39"> Title:            LConSMC_RFG</Text>
+  </LineComment>
+  <NewLine UId="40" />
+  <Blank Num="2" UId="41" />
+  <LineComment UId="42">
+    <Text UId="43"> Comment/Function: Ramp function generator</Text>
+  </LineComment>
+  <NewLine UId="44" />
+  <Blank Num="2" UId="45" />
+  <LineComment UId="46">
+    <Text UId="47"> Library/Family:   LConSMC</Text>
+  </LineComment>
+  <NewLine UId="48" />
+  <Blank Num="2" UId="49" />
+  <LineComment UId="50">
+    <Text UId="51"> Author:           APC Erlangen</Text>
+  </LineComment>
+  <NewLine UId="52" />
+  <Blank Num="2" UId="53" />
+  <LineComment UId="54">
+    <Text UId="55"> Tested with:      FW 2.8</Text>
+  </LineComment>
+  <NewLine UId="56" />
+  <Blank Num="2" UId="57" />
+  <LineComment UId="58">
+    <Text UId="59"> Engineering:      TIA Portal V16</Text>
+  </LineComment>
+  <NewLine UId="60" />
+  <Blank Num="2" UId="61" />
+  <LineComment UId="62">
+    <Text UId="63"> Restrictions:     Needs to be called in a cyclic OB (e.g. OB3x, OB6x)</Text>
+  </LineComment>
+  <NewLine UId="64" />
+  <Blank Num="2" UId="65" />
+  <LineComment UId="66">
+    <Text UId="67"> Requirements:     -</Text>
+  </LineComment>
+  <NewLine UId="68" />
+  <Blank Num="2" UId="69" />
+  <LineComment UId="70">
+    <Text UId="71">-------------------------------------------------------------------------------</Text>
+  </LineComment>
+  <NewLine UId="72" />
+  <Blank Num="2" UId="73" />
+  <LineComment UId="74">
+    <Text UId="75"> Change log table:</Text>
+  </LineComment>
+  <NewLine UId="76" />
+  <Blank Num="2" UId="77" />
+  <LineComment UId="78">
+    <Text UId="79"> Version  | Date       | Expert in charge       | Changes applied</Text>
+  </LineComment>
+  <NewLine UId="80" />
+  <Blank Num="2" UId="81" />
+  <LineComment UId="82">
+    <Text UId="83">----------|------------|------------------------|------------------------------</Text>
+  </LineComment>
+  <NewLine UId="84" />
+  <Blank Num="2" UId="85" />
+  <LineComment UId="86">
+    <Text UId="87"> 01.04.01 | 2023-10-12 | APC Erlangen           | Updated output parameter description</Text>
+  </LineComment>
+  <NewLine UId="88" />
+  <Blank Num="2" UId="89" />
+  <LineComment UId="90">
+    <Text UId="91"> 01.04.00 | 2018-08-23 | APC Erlangen           | Bugfix for mode increase&amp;decrease if x = upper/lower limit (*c_00012*)</Text>
+  </LineComment>
+  <NewLine UId="92" />
+  <Blank Num="2" UId="93" />
+  <LineComment UId="94">
+    <Text UId="95"> 01.03.00 | 2017-05-15 | APC Erlangen           | Additional input "rampTimeMode" to define the use of rampup and rampdown Time</Text>
+  </LineComment>
+  <NewLine UId="96" />
+  <Blank Num="2" UId="97" />
+  <LineComment UId="98">
+    <Text UId="99"> 01.02.00 | 2016-11-17 | APC Erlangen           | adapted to styleguide; warning "variable might not be initialized" removed</Text>
+  </LineComment>
+  <NewLine UId="100" />
+  <Blank Num="2" UId="101" />
+  <LineComment UId="102">
+    <Text UId="103"> 01.01.00 | 2013-11-21 | APC Erlangen           | Bugfix respect of ramp while change of limit value</Text>
+  </LineComment>
+  <NewLine UId="104" />
+  <Blank Num="2" UId="105" />
+  <LineComment UId="106">
+    <Text UId="107"> 01.00.00 | 2012-07-12 | APC Erlangen           | Creation</Text>
+  </LineComment>
+  <NewLine UId="108" />
+  <Blank Num="2" UId="109" />
+  <LineComment UId="110">
+    <Text UId="111">===============================================================================</Text>
+  </LineComment>
+  <NewLine UId="112" />
+  <Token Text="END_REGION" UId="113" />
+  <Blank UId="114" />
+  <Text UId="115">BLOCK INFO HEADER</Text>
+  <NewLine Num="2" UId="116" />
+  <Token Text="REGION" UId="117" />
+  <Blank UId="118" />
+  <Text UId="119">DESCRIPTION</Text>
+  <NewLine UId="120" />
+  <Comment Inserted="true" UId="121">
+    <MultiLanguageText Lang="de-DE" />
+    <MultiLanguageText Lang="en-GB" />
+    <MultiLanguageText Lang="en-US">
+The function block includes an integrator with two integration time constants that can be set independently of one another. Output *y* changes according to the following algorithm:
+
+$ y_n  = y_{n-1}  + ya_n $
+
+The acceleration value $ ya $ are separately calculated for the up ramp and down ramp. Dependent on the input parameter *rampTimeMode*, the *rampUpTime* and *rampDownTime* will be used differently:
+
+* rampTimeMode = DIFF_TO_ZERO:  
+An up ramp is when the output value y moves away from zero. A down ramp is when the output value y approaches zero. By this the used ramp time will be switched if the output y crosses zero.
+
+* rampTimeMode = DIFF_OF_CHANGE:  
+An up ramp is when the target value is bigger than the output value y. A down ramp is when the target value is smaller than the output value y.
+By this there is no change between rampUpTime and rampDownTime when the output value y moves through zero.  
+  
+For the acceleration value during ramping-up the following applies:
+
+$ ya = \frac{CycleTime}{rampUpTime}\ \cdot nominalValue $ (For y &gt; 0)  
+
+$ ya = -\frac{CycleTime}{rampUpTime}\ \cdot nominalValue $ (For y &lt; 0)  
+
+For the acceleration value when ramping-down the following applies:
+
+$ ya = -\frac{CycleTime}{rampDownTime}\ \cdot nominalValue $ (For y &gt; 0)  
+
+$ ya = -\frac{CycleTime}{rampDownTime}\ \cdot nominalValue $ (For y &lt; 0)  
+
+*CycleTime* is the sampling time in which the function block is processed.The changeover between ramp-up time and ramp-down time is realized
+when the direction changes or at the zero crossover of the transfer function.
+Depending on the logical states of control inputs set, followup, increase and decrease, the operating mode is specified by the control logic.
+The output quantity can be limited using inputs upperLimit and lowerLimit.
+When the set limits are reached, through y, binary outputs upperLimitReached or lowerLimitReached are set to TRUE.
+Binary output setpointReached goes TRUE, if y=x.
+</MultiLanguageText>
+    <MultiLanguageText Lang="es-ES" />
+    <MultiLanguageText Lang="fr-FR" />
+    <MultiLanguageText Lang="it-IT" />
+    <MultiLanguageText Lang="ko-KR" />
+    <MultiLanguageText Lang="zh-CN" />
+  </Comment>
+  <NewLine UId="130" />
+  <Comment Inserted="true" UId="131">
+    <MultiLanguageText Lang="de-DE" />
+    <MultiLanguageText Lang="en-GB" />
+    <MultiLanguageText Lang="en-US">
+#### Ramp-up time and ramp-down times
+
+The ramp-up time *rampupTime* is the time in which the absolute value of the output quantity increases by *nominalValue*.
+The ramp-down *rampdownTime* is the time in which the absolute value of the output quantity decreases by nominalValue.
+The ramp-up time and ramp-down time can be selected to be different.
+The lower $ \frac{T_A}{rampupTime}\ $ or $ \frac{T_A}{rampDownTime}\ $, the lower the amplitude change at $y$ from one sampling instant to the next.
+</MultiLanguageText>
+    <MultiLanguageText Lang="es-ES" />
+    <MultiLanguageText Lang="fr-FR" />
+    <MultiLanguageText Lang="it-IT" />
+    <MultiLanguageText Lang="ko-KR" />
+    <MultiLanguageText Lang="zh-CN" />
+  </Comment>
+  <NewLine UId="140" />
+  <Comment Inserted="true" UId="141">
+    <MultiLanguageText Lang="de-DE" />
+    <MultiLanguageText Lang="en-GB" />
+    <MultiLanguageText Lang="en-US">
+#### Priority of the control inputs
+
+For the control inputs, the following sequence of priority applies:  
+*set* before *followup* before *increase* and *decrease*
+
++---------+----------------+---------------------------------------------------------------------+
+|Priority |Control input   |Description                                                          |
++=========+================+=====================================================================+
+|1        |set =1          |Setting value setValue is loaded into the integrator, non-integrating|
++---------+----------------+---------------------------------------------------------------------+
+|2        |followUp=1      |Output y integrating to setpoint X, tracking                         |
++---------+----------------+---------------------------------------------------------------------+
+|3        |increase=1      |Output y integrating torques upperLimit, tracking                    |
++---------+----------------+---------------------------------------------------------------------+
+|4        |decrease=1      |Output y integrating torques lowerLimit, tracking                    |
++---------+----------------+---------------------------------------------------------------------+
+
+</MultiLanguageText>
+    <MultiLanguageText Lang="es-ES" />
+    <MultiLanguageText Lang="fr-FR" />
+    <MultiLanguageText Lang="it-IT" />
+    <MultiLanguageText Lang="ko-KR" />
+    <MultiLanguageText Lang="zh-CN" />
+  </Comment>
+  <NewLine UId="150" />
+  <Comment Inserted="true" UId="151">
+    <MultiLanguageText Lang="de-DE" />
+    <MultiLanguageText Lang="en-GB" />
+    <MultiLanguageText Lang="en-US">
+#### Operating modes and control of the ramp-function generator
+
+The combination of commands at the control inputs and the possible operating modes can be taken from the truth tables.
+Standard ramp-function generator operation involves lowerLimit ≤ 0 ≤ upperLimit and lowerLimit &lt; y_n &lt; upperLimit.
+However, other settings are also possible that are explained in the following.
+For the setting with lowerLimit ≥ upperLimit, the following applies: Limit upperLimit is dominant with respect to limit lowerLimit.
+If output y reaches one of the set limits lowerLimit or upperLimit, during the control sequence, the integrator value is held.
+Output value y is then kept constant until the integrator value leaves the limit due to a change of the input quantities.
+If the integrator is at the limit and the limit value is changed the integrator behaves differently depending on the direction in which the limit value was changed.
+If the absolute value of a limit value is increased, and if the control logic specifies that the ramp-function generator should run in the same direction,
+then the integrator integrates from the previously defined value according to the selected ramp-up time until the output again reaches the limit value.
+If the absolute value of a limit value is reduced, the integrator integrates from the previously held value – according to the selected ramp-down time – until
+the output again reaches the limit value.
+The integrator operates internally with an increased accuracy so that even for small setpoint-actual value differences it still integrates.
+However, it should be carefully noted that the sampling time is sufficiently low referred to the ramp-up or ramp-down time. rampupTime and rampdownTime are internally limited: 
+rampupTime ≥ cycleTime, rampdownTime ≥ cycleTime
+
+
+{.pagewidth}
++---------+---------+---------+---------+----------------------------------+------------- +--------------------------+----------------------------------------+
+|set      |follow up|inc.     |dec.     | ya_n                             | y_n          |mode                      |Comment                                 
++=========+=========+=========+=========+==================================+==============+==========================+========================================+
+|0        |0        |0        |0        |0                                 |$y_{n+1}$     |Stop                      |Y is constant                           
++---------+---------+---------+---------+----------------------------------+------------- +--------------------------+----------------------------------------+
+|1        |1        |1        |1        |Step                              |$setValue_n$  |Sets output to setValue   |setValue is any value, fixed or variable setValue is any value, fixed or variable
++---------+---------+---------+---------+----------------------------------+------------- +--------------------------+----------------------------------------+
+|0        |1        |1        |1        |cycleTime/rampupTime              |$y_{n+1}+ya_n$|Normal operation          |rampupTime for:
+|         |         |         |         |cycleTime/rampdownTime            |              |$y \rightarrow x$         |x&gt;y &amp; y &gt;= 0
+|         |         |         |         |                                  |              |                          |x&lt;y &amp; y &lt;= 0
+|         |         |         |         |                                  |              |                          |rampdownTime for:
+|         |         |         |         |                                  |              |                          |x&gt;y &amp; y &lt;= 0
+|         |         |         |         |                                  |              |                          |x&lt;y &amp; y &gt;= 0
++---------+---------+---------+---------+----------------------------------+------------- +--------------------------+----------------------------------------+
+|0        |0        |1        |0        |cycleTime/rampupTime              |$y_{n+1}+ya_n$|Approach the upper limit  |rampupTime, rampdownTime as before, dependent on the starting (initial) position
+|         |         |         |         |cycleTime/rampdownTime            |              |value                     |
+|         |         |         |         |                                  |              |$y \rightarrow upperLimit$|
++---------+---------+---------+---------+----------------------------------+------------- +--------------------------+----------------------------------------+
+|0        |0        |0        |0        |cycleTime/rampdownTime            |$y_{n+1}+ya_n$|Approach the lower limit  |rampupTime, rampdownTime as before, dependent on the starting (initial) position
+|         |         |         |         |cycleTime/rampupTime              |              |value                     |
+|         |         |         |         |                                  |              |$y \rightarrow lowerLimit$|
+
+#### Timing Diagram - Potentiometer 
+
+![RFG Motor potentiometer](RFG_DiagramMotorPoti.png)
+
+#### Timing Diagram - Normal Operation
+
+![RFG Normal operation](RFG_DiagramNormalOperation.png)
+
+</MultiLanguageText>
+    <MultiLanguageText Lang="es-ES" />
+    <MultiLanguageText Lang="fr-FR" />
+    <MultiLanguageText Lang="it-IT" />
+    <MultiLanguageText Lang="ko-KR" />
+    <MultiLanguageText Lang="zh-CN" />
+  </Comment>
+  <NewLine UId="160" />
+  <Token Text="END_REGION" UId="161" />
+  <Blank UId="162" />
+  <Text UId="163">DESCRIPTION</Text>
+  <NewLine Num="2" UId="164" />
+  <Token Text="IF" UId="165" />
+  <Blank UId="166" />
+  <Access Scope="LocalVariable" UId="167">
+    <Symbol UId="168">
+      <Component Name="tCycle" UId="169" />
+    </Symbol>
+  </Access>
+  <Blank UId="170" />
+  <Token Text="=" UId="171" />
+  <Blank UId="172" />
+  <Access Scope="LiteralConstant" UId="173">
+    <Constant UId="174">
+      <ConstantValue UId="176">0.0</ConstantValue>
+    </Constant>
+  </Access>
+  <Blank UId="177" />
+  <Token Text="THEN" UId="178" />
+  <NewLine UId="179" />
+  <Blank Num="4" UId="180" />
+  <Access Scope="LocalVariable" UId="181">
+    <Symbol UId="182">
+      <Component Name="statError" UId="183" />
+    </Symbol>
+  </Access>
+  <Blank UId="184" />
+  <Token Text=":=" UId="185" />
+  <Blank UId="186" />
+  <Access Scope="LiteralConstant" UId="187">
+    <Constant UId="188">
+      <ConstantValue UId="190">TRUE</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="191" />
+  <NewLine UId="192" />
+  <Blank Num="4" UId="193" />
+  <Access Scope="LocalVariable" UId="194">
+    <Symbol UId="195">
+      <Component Name="errorID" UId="196" />
+    </Symbol>
+  </Access>
+  <Blank UId="197" />
+  <Token Text=":=" UId="198" />
+  <Blank UId="199" />
+  <Access Scope="GlobalConstant" UId="200">
+    <Constant Name="LCON_ERROR_RFG_INVALID_CYCLE_TIME" UId="201" />
+  </Access>
+  <Token Text=";" UId="204" />
+  <Blank Num="14" UId="205" />
+  <LineComment UId="206">
+    <Text UId="207"> FB NOT running IN cyclic task</Text>
+  </LineComment>
+  <NewLine UId="208" />
+  <Token Text="ELSIF" UId="209" />
+  <Blank UId="210" />
+  <Access Scope="LocalVariable" UId="211">
+    <Symbol UId="212">
+      <Component Name="rampTimeMode" UId="213" />
+    </Symbol>
+  </Access>
+  <Blank UId="214" />
+  <Token Text="&lt;" UId="215" />
+  <Blank UId="216" />
+  <Access Scope="LiteralConstant" UId="217">
+    <Constant UId="218">
+      <ConstantValue UId="220">0</ConstantValue>
+    </Constant>
+  </Access>
+  <Blank UId="221" />
+  <Token Text="OR" UId="222" />
+  <Blank UId="223" />
+  <Access Scope="LocalVariable" UId="224">
+    <Symbol UId="225">
+      <Component Name="rampTimeMode" UId="226" />
+    </Symbol>
+  </Access>
+  <Blank UId="227" />
+  <Token Text="&gt;" UId="228" />
+  <Blank UId="229" />
+  <Access Scope="LiteralConstant" UId="230">
+    <Constant UId="231">
+      <ConstantValue UId="233">1</ConstantValue>
+    </Constant>
+  </Access>
+  <Blank UId="234" />
+  <Token Text="THEN" UId="235" />
+  <NewLine UId="236" />
+  <Blank Num="4" UId="237" />
+  <Access Scope="LocalVariable" UId="238">
+    <Symbol UId="239">
+      <Component Name="statError" UId="240" />
+    </Symbol>
+  </Access>
+  <Blank UId="241" />
+  <Token Text=":=" UId="242" />
+  <Blank UId="243" />
+  <Access Scope="LiteralConstant" UId="244">
+    <Constant UId="245">
+      <ConstantValue UId="247">TRUE</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="248" />
+  <NewLine UId="249" />
+  <Blank Num="4" UId="250" />
+  <Access Scope="LocalVariable" UId="251">
+    <Symbol UId="252">
+      <Component Name="errorID" UId="253" />
+    </Symbol>
+  </Access>
+  <Blank UId="254" />
+  <Token Text=":=" UId="255" />
+  <Blank UId="256" />
+  <Access Scope="GlobalConstant" UId="257">
+    <Constant Name="LCON_ERROR_RFG_INVALID_CONFIGURATION" UId="258" />
+  </Access>
+  <Token Text=";" UId="261" />
+  <NewLine UId="262" />
+  <Token Text="ELSE" UId="263" />
+  <NewLine UId="264" />
+  <Blank Num="4" UId="265" />
+  <Access Scope="LocalVariable" UId="266">
+    <Symbol UId="267">
+      <Component Name="statError" UId="268" />
+    </Symbol>
+  </Access>
+  <Blank UId="269" />
+  <Token Text=":=" UId="270" />
+  <Blank UId="271" />
+  <Access Scope="LiteralConstant" UId="272">
+    <Constant UId="273">
+      <ConstantValue UId="275">FALSE</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="276" />
+  <NewLine UId="277" />
+  <Blank Num="4" UId="278" />
+  <Access Scope="LocalVariable" UId="279">
+    <Symbol UId="280">
+      <Component Name="errorID" UId="281" />
+    </Symbol>
+  </Access>
+  <Blank UId="282" />
+  <Token Text=":=" UId="283" />
+  <Blank UId="284" />
+  <Access Scope="LocalConstant" UId="285">
+    <Constant Name="NO_ERROR" UId="286" />
+  </Access>
+  <Token Text=";" UId="289" />
+  <NewLine UId="290" />
+  <Token Text="END_IF" UId="291" />
+  <Token Text=";" UId="292" />
+  <NewLine Num="2" UId="293" />
+  <Token Text="IF" UId="294" />
+  <Blank UId="295" />
+  <Token Text="(" UId="296" />
+  <Token Text="NOT" UId="297" />
+  <Blank UId="298" />
+  <Access Scope="LocalVariable" UId="299">
+    <Symbol UId="300">
+      <Component Name="statError" UId="301" />
+    </Symbol>
+  </Access>
+  <Token Text=")" UId="302" />
+  <Blank UId="303" />
+  <Token Text="THEN" UId="304" />
+  <NewLine UId="305" />
+  <Blank Num="4" UId="306" />
+  <Access Scope="LocalVariable" UId="307">
+    <Symbol UId="308">
+      <Component Name="statTUs" UId="309" />
+    </Symbol>
+  </Access>
+  <Blank UId="310" />
+  <Token Text=":=" UId="311" />
+  <Blank UId="312" />
+  <Access Scope="Call" UId="313">
+    <Instruction Name="LIMIT" UId="314">
+      <Token Text="(" UId="315" />
+      <Parameter Name="MN" UId="316">
+        <Blank UId="317" />
+        <Token Text=":=" UId="318" />
+        <Blank UId="319" />
+        <Access Scope="LocalVariable" UId="320">
+          <Symbol UId="321">
+            <Component Name="tCycle" UId="322" />
+          </Symbol>
+        </Access>
+      </Parameter>
+      <Token Text="," UId="323" />
+      <NewLine UId="324" />
+      <Blank Num="22" UId="325" />
+      <Parameter Name="IN" UId="326">
+        <Blank UId="327" />
+        <Token Text=":=" UId="328" />
+        <Blank UId="329" />
+        <Access Scope="LocalVariable" UId="330">
+          <Symbol UId="331">
+            <Component Name="rampupTime" UId="332" />
+          </Symbol>
+        </Access>
+      </Parameter>
+      <Token Text="," UId="333" />
+      <NewLine UId="334" />
+      <Blank Num="22" UId="335" />
+      <Parameter Name="MX" UId="336">
+        <Blank UId="337" />
+        <Token Text=":=" UId="338" />
+        <Blank UId="339" />
+        <Access Scope="LocalConstant" UId="340">
+          <Constant Name="MAX_RAMP_TIME_MS" UId="341" />
+        </Access>
+      </Parameter>
+      <Token Text=")" UId="345" />
+    </Instruction>
+  </Access>
+  <Token Text=";" UId="346" />
+  <NewLine UId="347" />
+  <Blank Num="4" UId="348" />
+  <Access Scope="LocalVariable" UId="349">
+    <Symbol UId="350">
+      <Component Name="statTDs" UId="351" />
+    </Symbol>
+  </Access>
+  <Blank UId="352" />
+  <Token Text=":=" UId="353" />
+  <Blank UId="354" />
+  <Access Scope="Call" UId="355">
+    <Instruction Name="LIMIT" UId="356">
+      <Token Text="(" UId="357" />
+      <Parameter Name="MN" UId="358">
+        <Blank UId="359" />
+        <Token Text=":=" UId="360" />
+        <Blank UId="361" />
+        <Access Scope="LocalVariable" UId="362">
+          <Symbol UId="363">
+            <Component Name="tCycle" UId="364" />
+          </Symbol>
+        </Access>
+      </Parameter>
+      <Token Text="," UId="365" />
+      <NewLine UId="366" />
+      <Blank Num="22" UId="367" />
+      <Parameter Name="IN" UId="368">
+        <Blank UId="369" />
+        <Token Text=":=" UId="370" />
+        <Blank UId="371" />
+        <Access Scope="LocalVariable" UId="372">
+          <Symbol UId="373">
+            <Component Name="rampdownTime" UId="374" />
+          </Symbol>
+        </Access>
+      </Parameter>
+      <Token Text="," UId="375" />
+      <NewLine UId="376" />
+      <Blank Num="22" UId="377" />
+      <Parameter Name="MX" UId="378">
+        <Blank UId="379" />
+        <Token Text=":=" UId="380" />
+        <Blank UId="381" />
+        <Access Scope="LocalConstant" UId="382">
+          <Constant Name="MAX_RAMP_TIME_MS" UId="383" />
+        </Access>
+      </Parameter>
+      <Token Text=")" UId="387" />
+    </Instruction>
+  </Access>
+  <Token Text=";" UId="388" />
+  <NewLine UId="389" />
+  <Blank Num="4" UId="390" />
+  <Access Scope="LocalVariable" UId="391">
+    <Symbol UId="392">
+      <Component Name="statLLs" UId="393" />
+    </Symbol>
+  </Access>
+  <Blank UId="394" />
+  <Token Text=":=" UId="395" />
+  <Blank UId="396" />
+  <Access Scope="Call" UId="397">
+    <Instruction Name="MIN" UId="398">
+      <Token Text="(" UId="399" />
+      <Parameter Name="IN1" UId="400">
+        <Blank UId="401" />
+        <Token Text=":=" UId="402" />
+        <Blank UId="403" />
+        <Access Scope="LocalVariable" UId="404">
+          <Symbol UId="405">
+            <Component Name="lowerLimit" UId="406" />
+          </Symbol>
+        </Access>
+      </Parameter>
+      <Token Text="," UId="407" />
+      <Blank UId="408" />
+      <Parameter Name="IN2" UId="409">
+        <Blank UId="410" />
+        <Token Text=":=" UId="411" />
+        <Blank UId="412" />
+        <Access Scope="LocalVariable" UId="413">
+          <Symbol UId="414">
+            <Component Name="upperLimit" UId="415" />
+          </Symbol>
+        </Access>
+      </Parameter>
+      <Token Text=")" UId="417" />
+    </Instruction>
+  </Access>
+  <Token Text=";" UId="418" />
+  <NewLine UId="419" />
+  <Blank Num="4" UId="420" />
+  <NewLine UId="421" />
+  <Blank Num="4" UId="422" />
+  <Access Scope="LocalVariable" UId="423">
+    <Symbol UId="424">
+      <Component Name="SetpointReached" UId="425" />
+    </Symbol>
+  </Access>
+  <Blank UId="426" />
+  <Token Text=":=" UId="427" />
+  <Blank UId="428" />
+  <Access Scope="LiteralConstant" UId="429">
+    <Constant UId="430">
+      <ConstantValue UId="432">FALSE</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="433" />
+  <Blank Num="37" UId="434" />
+  <LineComment UId="435">
+    <Text UId="436"> reset EQUAL-flag</Text>
+  </LineComment>
+  <NewLine UId="437" />
+  <Blank Num="4" UId="438" />
+  <Access Scope="LocalVariable" UId="439">
+    <Symbol UId="440">
+      <Component Name="statYkm1" UId="441" />
+    </Symbol>
+  </Access>
+  <Blank UId="442" />
+  <Token Text=":=" UId="443" />
+  <Blank UId="444" />
+  <Access Scope="LocalVariable" UId="445">
+    <Symbol UId="446">
+      <Component Name="statY" UId="447" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="448" />
+  <Blank Num="40" UId="449" />
+  <LineComment UId="450">
+    <Text UId="451"> evaluate the acceleration value Ya for incrementing Y after the command part.</Text>
+  </LineComment>
+  <NewLine UId="452" />
+  <Blank Num="4" UId="453" />
+  <Access Scope="LocalVariable" UId="454">
+    <Symbol UId="455">
+      <Component Name="ya" UId="456" />
+    </Symbol>
+  </Access>
+  <Blank UId="457" />
+  <Token Text=":=" UId="458" />
+  <Blank UId="459" />
+  <Access Scope="LiteralConstant" UId="460">
+    <Constant UId="461">
+      <ConstantValue UId="463">0.0</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="464" />
+  <NewLine UId="465" />
+  <Blank Num="4" UId="466" />
+  <NewLine UId="467" />
+  <Blank Num="4" UId="468" />
+  <Token Text="IF" UId="469" />
+  <Blank UId="470" />
+  <Token Text="(" UId="471" />
+  <Access Scope="LocalVariable" UId="472">
+    <Symbol UId="473">
+      <Component Name="set" UId="474" />
+    </Symbol>
+  </Access>
+  <Token Text=")" UId="475" />
+  <Blank UId="476" />
+  <Token Text="THEN" UId="477" />
+  <Blank Num="48" UId="478" />
+  <LineComment UId="479">
+    <Text UId="480"> Check for active SET-command: if active, set Ya and Y. (set has highest priority)        </Text>
+  </LineComment>
+  <NewLine UId="481" />
+  <Blank Num="8" UId="482" />
+  <Access Scope="LocalVariable" UId="483">
+    <Symbol UId="484">
+      <Component Name="ya" UId="485" />
+    </Symbol>
+  </Access>
+  <Blank UId="486" />
+  <Token Text=":=" UId="487" />
+  <Blank UId="488" />
+  <Access Scope="Call" UId="489">
+    <Instruction Name="LIMIT" UId="490">
+      <Token Text="(" UId="491" />
+      <Parameter Name="MN" UId="492">
+        <Blank UId="493" />
+        <Token Text=":=" UId="494" />
+        <Blank UId="495" />
+        <Access Scope="LocalVariable" UId="496">
+          <Symbol UId="497">
+            <Component Name="lowerLimit" UId="498" />
+          </Symbol>
+        </Access>
+      </Parameter>
+      <Token Text="," UId="499" />
+      <Blank Num="27" UId="500" />
+      <LineComment UId="501">
+        <Text UId="502"> ya takes nature of step command </Text>
+      </LineComment>
+      <NewLine UId="503" />
+      <Blank Num="21" UId="504" />
+      <Parameter Name="IN" UId="505">
+        <Blank UId="506" />
+        <Token Text=":=" UId="507" />
+        <Blank UId="508" />
+        <Access Scope="LocalVariable" UId="509">
+          <Symbol UId="510">
+            <Component Name="setValue" UId="511" />
+          </Symbol>
+        </Access>
+      </Parameter>
+      <Token Text="," UId="512" />
+      <NewLine UId="513" />
+      <Blank Num="21" UId="514" />
+      <Parameter Name="MX" UId="515">
+        <Blank UId="516" />
+        <Token Text=":=" UId="517" />
+        <Blank UId="518" />
+        <Access Scope="LocalVariable" UId="519">
+          <Symbol UId="520">
+            <Component Name="upperLimit" UId="521" />
+          </Symbol>
+        </Access>
+      </Parameter>
+      <Token Text=")" UId="523" />
+    </Instruction>
+  </Access>
+  <Blank UId="524" />
+  <Token Text="-" UId="525" />
+  <Blank UId="526" />
+  <Access Scope="LocalVariable" UId="527">
+    <Symbol UId="528">
+      <Component Name="statYkm1" UId="529" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="530" />
+  <NewLine UId="531" />
+  <Blank Num="8" UId="532" />
+  <NewLine UId="533" />
+  <Blank Num="4" UId="534" />
+  <Token Text="ELSIF" UId="535" />
+  <Blank UId="536" />
+  <Token Text="(" UId="537" />
+  <Access Scope="LocalVariable" UId="538">
+    <Symbol UId="539">
+      <Component Name="followup" UId="540" />
+    </Symbol>
+  </Access>
+  <Token Text=")" UId="541" />
+  <Blank UId="542" />
+  <Token Text="THEN" UId="543" />
+  <Blank Num="42" UId="544" />
+  <LineComment UId="545">
+    <Text UId="546"> Check for active FOLLOW-command:follow has 2nd priority</Text>
+  </LineComment>
+  <NewLine UId="547" />
+  <Blank Num="8" UId="548" />
+  <Access Scope="LocalVariable" UId="549">
+    <Symbol UId="550">
+      <Component Name="statXs" UId="551" />
+    </Symbol>
+  </Access>
+  <Blank UId="552" />
+  <Token Text=":=" UId="553" />
+  <Blank UId="554" />
+  <Access Scope="Call" UId="555">
+    <Instruction Name="LIMIT" UId="556">
+      <Token Text="(" UId="557" />
+      <Parameter Name="MN" UId="558">
+        <Blank UId="559" />
+        <Token Text=":=" UId="560" />
+        <Blank UId="561" />
+        <Access Scope="LocalVariable" UId="562">
+          <Symbol UId="563">
+            <Component Name="lowerLimit" UId="564" />
+          </Symbol>
+        </Access>
+      </Parameter>
+      <Token Text="," UId="565" />
+      <NewLine UId="566" />
+      <Blank Num="25" UId="567" />
+      <Parameter Name="IN" UId="568">
+        <Blank UId="569" />
+        <Token Text=":=" UId="570" />
+        <Blank UId="571" />
+        <Access Scope="LocalVariable" UId="572">
+          <Symbol UId="573">
+            <Component Name="x" UId="574" />
+          </Symbol>
+        </Access>
+      </Parameter>
+      <Token Text="," UId="575" />
+      <NewLine UId="576" />
+      <Blank Num="25" UId="577" />
+      <Parameter Name="MX" UId="578">
+        <Blank UId="579" />
+        <Token Text=":=" UId="580" />
+        <Blank UId="581" />
+        <Access Scope="LocalVariable" UId="582">
+          <Symbol UId="583">
+            <Component Name="upperLimit" UId="584" />
+          </Symbol>
+        </Access>
+      </Parameter>
+      <Token Text=")" UId="586" />
+    </Instruction>
+  </Access>
+  <Token Text=";" UId="587" />
+  <NewLine UId="588" />
+  <Blank Num="8" UId="589" />
+  <NewLine UId="590" />
+  <Blank Num="8" UId="591" />
+  <Token Text="IF" UId="592" />
+  <Blank UId="593" />
+  <Token Text="(" UId="594" />
+  <Access Scope="LocalVariable" UId="595">
+    <Symbol UId="596">
+      <Component Name="statXs" UId="597" />
+    </Symbol>
+  </Access>
+  <Blank UId="598" />
+  <Token Text="=" UId="599" />
+  <Blank UId="600" />
+  <Access Scope="LocalVariable" UId="601">
+    <Symbol UId="602">
+      <Component Name="statY" UId="603" />
+    </Symbol>
+  </Access>
+  <Token Text=")" UId="604" />
+  <Blank UId="605" />
+  <Token Text="THEN" UId="606" />
+  <NewLine UId="607" />
+  <Blank Num="12" UId="608" />
+  <Access Scope="LocalVariable" UId="609">
+    <Symbol UId="610">
+      <Component Name="ya" UId="611" />
+    </Symbol>
+  </Access>
+  <Blank UId="612" />
+  <Token Text=":=" UId="613" />
+  <Blank UId="614" />
+  <Access Scope="LiteralConstant" UId="615">
+    <Constant UId="616">
+      <ConstantValue UId="618">0.0</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="619" />
+  <NewLine UId="620" />
+  <Blank Num="8" UId="621" />
+  <Token Text="ELSE" UId="622" />
+  <NewLine UId="623" />
+  <Blank Num="12" UId="624" />
+  <Access Scope="LocalVariable" UId="625">
+    <Symbol UId="626">
+      <Component Name="stat1" UId="627" />
+    </Symbol>
+  </Access>
+  <Blank UId="628" />
+  <Token Text=":=" UId="629" />
+  <Blank UId="630" />
+  <Access Scope="LocalVariable" UId="631">
+    <Symbol UId="632">
+      <Component Name="tCycle" UId="633" />
+    </Symbol>
+  </Access>
+  <Blank UId="634" />
+  <Token Text="*" UId="635" />
+  <Blank UId="636" />
+  <Access Scope="LocalVariable" UId="637">
+    <Symbol UId="638">
+      <Component Name="nominalValue" UId="639" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="640" />
+  <NewLine UId="641" />
+  <Blank Num="12" UId="642" />
+  <Token Text="IF" UId="643" />
+  <Blank UId="644" />
+  <Token Text="(" UId="645" />
+  <Access Scope="LocalVariable" UId="646">
+    <Symbol UId="647">
+      <Component Name="statXs" UId="648" />
+    </Symbol>
+  </Access>
+  <Blank UId="649" />
+  <Token Text="&gt;" UId="650" />
+  <Blank UId="651" />
+  <Access Scope="LocalVariable" UId="652">
+    <Symbol UId="653">
+      <Component Name="statY" UId="654" />
+    </Symbol>
+  </Access>
+  <Token Text=")" UId="655" />
+  <Blank UId="656" />
+  <Token Text="THEN" UId="657" />
+  <NewLine UId="658" />
+  <Blank Num="16" UId="659" />
+  <Token Text="CASE" UId="660" />
+  <Blank UId="661" />
+  <Access Scope="LocalVariable" UId="662">
+    <Symbol UId="663">
+      <Component Name="rampTimeMode" UId="664" />
+    </Symbol>
+  </Access>
+  <Blank UId="665" />
+  <Token Text="OF" UId="666" />
+  <NewLine UId="667" />
+  <Blank Num="20" UId="668" />
+  <Access Scope="LocalConstant" UId="669">
+    <Constant Name="DIFF_TO_ZERO" UId="670" />
+  </Access>
+  <Token Text=":" UId="673" />
+  <NewLine UId="674" />
+  <Blank Num="24" UId="675" />
+  <Token Text="IF" UId="676" />
+  <Blank UId="677" />
+  <Token Text="(" UId="678" />
+  <Access Scope="LocalVariable" UId="679">
+    <Symbol UId="680">
+      <Component Name="statY" UId="681" />
+    </Symbol>
+  </Access>
+  <Blank UId="682" />
+  <Token Text="&gt;=" UId="683" />
+  <Blank UId="684" />
+  <Access Scope="LiteralConstant" UId="685">
+    <Constant UId="686">
+      <ConstantValue UId="688">0.0</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=")" UId="689" />
+  <Blank UId="690" />
+  <Token Text="THEN" UId="691" />
+  <Blank Num="55" UId="692" />
+  <LineComment UId="693">
+    <Text UId="694"> Direction of rotation positive</Text>
+  </LineComment>
+  <NewLine UId="695" />
+  <Blank Num="28" UId="696" />
+  <Access Scope="LocalVariable" UId="697">
+    <Symbol UId="698">
+      <Component Name="ya" UId="699" />
+    </Symbol>
+  </Access>
+  <Blank UId="700" />
+  <Token Text=":=" UId="701" />
+  <Blank UId="702" />
+  <Access Scope="Call" UId="703">
+    <Instruction Name="MIN" UId="704">
+      <Token Text="(" UId="705" />
+      <Parameter Name="IN1" UId="706">
+        <Blank UId="707" />
+        <Token Text=":=" UId="708" />
+        <Blank UId="709" />
+        <Token Text="(" UId="710" />
+        <Access Scope="LocalVariable" UId="711">
+          <Symbol UId="712">
+            <Component Name="stat1" UId="713" />
+          </Symbol>
+        </Access>
+        <Blank UId="714" />
+        <Token Text="/" UId="715" />
+        <Blank UId="716" />
+        <Access Scope="LocalVariable" UId="717">
+          <Symbol UId="718">
+            <Component Name="statTUs" UId="719" />
+          </Symbol>
+        </Access>
+        <Token Text=")" UId="720" />
+      </Parameter>
+      <Token Text="," UId="721" />
+      <Blank UId="722" />
+      <Parameter Name="IN2" UId="723">
+        <Blank UId="724" />
+        <Token Text=":=" UId="725" />
+        <Blank UId="726" />
+        <Token Text="(" UId="727" />
+        <Access Scope="LocalVariable" UId="728">
+          <Symbol UId="729">
+            <Component Name="statXs" UId="730" />
+          </Symbol>
+        </Access>
+        <Blank UId="731" />
+        <Token Text="-" UId="732" />
+        <Blank UId="733" />
+        <Access Scope="LocalVariable" UId="734">
+          <Symbol UId="735">
+            <Component Name="statY" UId="736" />
+          </Symbol>
+        </Access>
+        <Token Text=")" UId="737" />
+      </Parameter>
+      <Token Text=")" UId="739" />
+    </Instruction>
+  </Access>
+  <Token Text=";" UId="740" />
+  <Blank Num="16" UId="741" />
+  <LineComment UId="742">
+    <Text UId="743">UP with pos. increment:   0 --- Y ---&gt; TARGET=Xs</Text>
+  </LineComment>
+  <NewLine UId="744" />
+  <Blank Num="24" UId="745" />
+  <Token Text="ELSE" UId="746" />
+  <Blank Num="68" UId="747" />
+  <LineComment UId="748">
+    <Text UId="749">for Y &lt; 0.0 direction of rotation opposite,</Text>
+  </LineComment>
+  <NewLine UId="750" />
+  <Blank Num="28" UId="751" />
+  <Access Scope="LocalVariable" UId="752">
+    <Symbol UId="753">
+      <Component Name="ya" UId="754" />
+    </Symbol>
+  </Access>
+  <Blank UId="755" />
+  <Token Text=":=" UId="756" />
+  <Blank UId="757" />
+  <Access Scope="Call" UId="758">
+    <Instruction Name="MIN" UId="759">
+      <Token Text="(" UId="760" />
+      <Parameter Name="IN1" UId="761">
+        <Blank UId="762" />
+        <Token Text=":=" UId="763" />
+        <Blank UId="764" />
+        <Token Text="(" UId="765" />
+        <Access Scope="LocalVariable" UId="766">
+          <Symbol UId="767">
+            <Component Name="stat1" UId="768" />
+          </Symbol>
+        </Access>
+        <Blank UId="769" />
+        <Token Text="/" UId="770" />
+        <Blank UId="771" />
+        <Access Scope="LocalVariable" UId="772">
+          <Symbol UId="773">
+            <Component Name="statTDs" UId="774" />
+          </Symbol>
+        </Access>
+        <Token Text=")" UId="775" />
+      </Parameter>
+      <Token Text="," UId="776" />
+      <Blank UId="777" />
+      <Parameter Name="IN2" UId="778">
+        <Blank UId="779" />
+        <Token Text=":=" UId="780" />
+        <Blank UId="781" />
+        <Token Text="(" UId="782" />
+        <Access Scope="LocalVariable" UId="783">
+          <Symbol UId="784">
+            <Component Name="statXs" UId="785" />
+          </Symbol>
+        </Access>
+        <Blank UId="786" />
+        <Token Text="-" UId="787" />
+        <Blank UId="788" />
+        <Access Scope="LocalVariable" UId="789">
+          <Symbol UId="790">
+            <Component Name="statY" UId="791" />
+          </Symbol>
+        </Access>
+        <Token Text=")" UId="792" />
+      </Parameter>
+      <Token Text=")" UId="794" />
+    </Instruction>
+  </Access>
+  <Token Text=";" UId="795" />
+  <Blank Num="15" UId="796" />
+  <LineComment UId="797">
+    <Text UId="798">change in direction,hence ramp down from negative value and thenramp up to positive Xs: Y ---&gt; TARGET --- 0</Text>
+  </LineComment>
+  <NewLine UId="799" />
+  <Blank Num="24" UId="800" />
+  <Token Text="END_IF" UId="801" />
+  <Token Text=";" UId="802" />
+  <NewLine UId="803" />
+  <Blank Num="20" UId="804" />
+  <Access Scope="LocalConstant" UId="805">
+    <Constant Name="DIFF_OF_CHANGE" UId="806" />
+  </Access>
+  <Token Text=":" UId="809" />
+  <NewLine UId="810" />
+  <Blank Num="24" UId="811" />
+  <Access Scope="LocalVariable" UId="812">
+    <Symbol UId="813">
+      <Component Name="ya" UId="814" />
+    </Symbol>
+  </Access>
+  <Blank UId="815" />
+  <Token Text=":=" UId="816" />
+  <Blank UId="817" />
+  <Access Scope="Call" UId="818">
+    <Instruction Name="MIN" UId="819">
+      <Token Text="(" UId="820" />
+      <Parameter Name="IN1" UId="821">
+        <Blank UId="822" />
+        <Token Text=":=" UId="823" />
+        <Blank UId="824" />
+        <Token Text="(" UId="825" />
+        <Access Scope="LocalVariable" UId="826">
+          <Symbol UId="827">
+            <Component Name="stat1" UId="828" />
+          </Symbol>
+        </Access>
+        <Blank UId="829" />
+        <Token Text="/" UId="830" />
+        <Blank UId="831" />
+        <Access Scope="LocalVariable" UId="832">
+          <Symbol UId="833">
+            <Component Name="statTUs" UId="834" />
+          </Symbol>
+        </Access>
+        <Token Text=")" UId="835" />
+      </Parameter>
+      <Token Text="," UId="836" />
+      <Blank UId="837" />
+      <Parameter Name="IN2" UId="838">
+        <Blank UId="839" />
+        <Token Text=":=" UId="840" />
+        <Blank UId="841" />
+        <Token Text="(" UId="842" />
+        <Access Scope="LocalVariable" UId="843">
+          <Symbol UId="844">
+            <Component Name="statXs" UId="845" />
+          </Symbol>
+        </Access>
+        <Blank UId="846" />
+        <Token Text="-" UId="847" />
+        <Blank UId="848" />
+        <Access Scope="LocalVariable" UId="849">
+          <Symbol UId="850">
+            <Component Name="statY" UId="851" />
+          </Symbol>
+        </Access>
+        <Token Text=")" UId="852" />
+      </Parameter>
+      <Token Text=")" UId="854" />
+    </Instruction>
+  </Access>
+  <Token Text=";" UId="855" />
+  <Blank Num="12" UId="856" />
+  <LineComment UId="857">
+    <Text UId="858"> target &gt; start --&gt; always use ramp up time</Text>
+  </LineComment>
+  <NewLine UId="859" />
+  <Blank Num="20" UId="860" />
+  <Token Text="ELSE" UId="861" />
+  <NewLine UId="862" />
+  <Blank Num="24" UId="863" />
+  <Token Text=";" UId="864" />
+  <Blank Num="73" UId="865" />
+  <LineComment UId="866">
+    <Text UId="867"> Invalid case</Text>
+  </LineComment>
+  <NewLine UId="868" />
+  <Blank Num="16" UId="869" />
+  <Token Text="END_CASE" UId="870" />
+  <Token Text=";" UId="871" />
+  <NewLine UId="872" />
+  <Blank Num="12" UId="873" />
+  <Token Text="ELSE" UId="874" />
+  <Blank Num="62" UId="875" />
+  <LineComment UId="876">
+    <Text UId="877">for Xs &lt; Y</Text>
+  </LineComment>
+  <NewLine UId="878" />
+  <Blank Num="16" UId="879" />
+  <Token Text="CASE" UId="880" />
+  <Blank UId="881" />
+  <Access Scope="LocalVariable" UId="882">
+    <Symbol UId="883">
+      <Component Name="rampTimeMode" UId="884" />
+    </Symbol>
+  </Access>
+  <Blank UId="885" />
+  <Token Text="OF" UId="886" />
+  <NewLine UId="887" />
+  <Blank Num="20" UId="888" />
+  <Access Scope="LocalConstant" UId="889">
+    <Constant Name="DIFF_TO_ZERO" UId="890" />
+  </Access>
+  <Token Text=":" UId="893" />
+  <NewLine UId="894" />
+  <Blank Num="24" UId="895" />
+  <Token Text="IF" UId="896" />
+  <Blank UId="897" />
+  <Token Text="(" UId="898" />
+  <Access Scope="LocalVariable" UId="899">
+    <Symbol UId="900">
+      <Component Name="statY" UId="901" />
+    </Symbol>
+  </Access>
+  <Blank UId="902" />
+  <Token Text="&gt;" UId="903" />
+  <Blank UId="904" />
+  <Access Scope="LiteralConstant" UId="905">
+    <Constant UId="906">
+      <ConstantValue UId="908">0.0</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=")" UId="909" />
+  <Blank UId="910" />
+  <Token Text="THEN" UId="911" />
+  <Blank Num="52" UId="912" />
+  <LineComment UId="913">
+    <Text UId="914"> direction of rotation positive      </Text>
+  </LineComment>
+  <NewLine UId="915" />
+  <Blank Num="28" UId="916" />
+  <Access Scope="LocalVariable" UId="917">
+    <Symbol UId="918">
+      <Component Name="ya" UId="919" />
+    </Symbol>
+  </Access>
+  <Blank UId="920" />
+  <Token Text=":=" UId="921" />
+  <Blank UId="922" />
+  <Token Text="-" UId="923" />
+  <Blank UId="924" />
+  <Access Scope="Call" UId="925">
+    <Instruction Name="MIN" UId="926">
+      <Token Text="(" UId="927" />
+      <Parameter Name="IN1" UId="928">
+        <Blank UId="929" />
+        <Token Text=":=" UId="930" />
+        <Blank UId="931" />
+        <Token Text="(" UId="932" />
+        <Access Scope="LocalVariable" UId="933">
+          <Symbol UId="934">
+            <Component Name="stat1" UId="935" />
+          </Symbol>
+        </Access>
+        <Blank UId="936" />
+        <Token Text="/" UId="937" />
+        <Blank UId="938" />
+        <Access Scope="LocalVariable" UId="939">
+          <Symbol UId="940">
+            <Component Name="statTDs" UId="941" />
+          </Symbol>
+        </Access>
+        <Token Text=")" UId="942" />
+      </Parameter>
+      <Token Text="," UId="943" />
+      <Blank UId="944" />
+      <Parameter Name="IN2" UId="945">
+        <Blank UId="946" />
+        <Token Text=":=" UId="947" />
+        <Blank UId="948" />
+        <Token Text="(" UId="949" />
+        <Access Scope="LocalVariable" UId="950">
+          <Symbol UId="951">
+            <Component Name="statY" UId="952" />
+          </Symbol>
+        </Access>
+        <Blank UId="953" />
+        <Token Text="-" UId="954" />
+        <Blank UId="955" />
+        <Access Scope="LocalVariable" UId="956">
+          <Symbol UId="957">
+            <Component Name="statXs" UId="958" />
+          </Symbol>
+        </Access>
+        <Token Text=")" UId="959" />
+      </Parameter>
+      <Token Text=")" UId="961" />
+    </Instruction>
+  </Access>
+  <Token Text=";" UId="962" />
+  <Blank Num="10" UId="963" />
+  <LineComment UId="964">
+    <Text UId="965"> DOWN with neg. increment: 0 --- TARGET &lt;--- Y</Text>
+  </LineComment>
+  <NewLine UId="966" />
+  <Blank Num="24" UId="967" />
+  <Token Text="ELSE" UId="968" />
+  <Blank Num="66" UId="969" />
+  <LineComment UId="970">
+    <Text UId="971"> Y &lt;= 0  direction o rotation opposite    </Text>
+  </LineComment>
+  <NewLine UId="972" />
+  <Blank Num="28" UId="973" />
+  <Access Scope="LocalVariable" UId="974">
+    <Symbol UId="975">
+      <Component Name="ya" UId="976" />
+    </Symbol>
+  </Access>
+  <Blank UId="977" />
+  <Token Text=":=" UId="978" />
+  <Blank UId="979" />
+  <Token Text="-" UId="980" />
+  <Blank UId="981" />
+  <Access Scope="Call" UId="982">
+    <Instruction Name="MIN" UId="983">
+      <Token Text="(" UId="984" />
+      <Parameter Name="IN1" UId="985">
+        <Blank UId="986" />
+        <Token Text=":=" UId="987" />
+        <Blank UId="988" />
+        <Token Text="(" UId="989" />
+        <Access Scope="LocalVariable" UId="990">
+          <Symbol UId="991">
+            <Component Name="stat1" UId="992" />
+          </Symbol>
+        </Access>
+        <Blank UId="993" />
+        <Token Text="/" UId="994" />
+        <Blank UId="995" />
+        <Access Scope="LocalVariable" UId="996">
+          <Symbol UId="997">
+            <Component Name="statTUs" UId="998" />
+          </Symbol>
+        </Access>
+        <Token Text=")" UId="999" />
+      </Parameter>
+      <Token Text="," UId="1000" />
+      <Blank UId="1001" />
+      <Parameter Name="IN2" UId="1002">
+        <Blank UId="1003" />
+        <Token Text=":=" UId="1004" />
+        <Blank UId="1005" />
+        <Token Text="(" UId="1006" />
+        <Access Scope="LocalVariable" UId="1007">
+          <Symbol UId="1008">
+            <Component Name="statY" UId="1009" />
+          </Symbol>
+        </Access>
+        <Blank UId="1010" />
+        <Token Text="-" UId="1011" />
+        <Blank UId="1012" />
+        <Access Scope="LocalVariable" UId="1013">
+          <Symbol UId="1014">
+            <Component Name="statXs" UId="1015" />
+          </Symbol>
+        </Access>
+        <Token Text=")" UId="1016" />
+      </Parameter>
+      <Token Text=")" UId="1018" />
+    </Instruction>
+  </Access>
+  <Token Text=";" UId="1019" />
+  <Blank Num="10" UId="1020" />
+  <LineComment UId="1021">
+    <Text UId="1022"> UP with neg. increment:   TARGET &lt;--- Y --- 0(Ramp up in negative direction) </Text>
+  </LineComment>
+  <NewLine UId="1023" />
+  <Blank Num="24" UId="1024" />
+  <Token Text="END_IF" UId="1025" />
+  <Token Text=";" UId="1026" />
+  <NewLine UId="1027" />
+  <Blank Num="20" UId="1028" />
+  <Access Scope="LocalConstant" UId="1029">
+    <Constant Name="DIFF_OF_CHANGE" UId="1030" />
+  </Access>
+  <Token Text=":" UId="1033" />
+  <NewLine UId="1034" />
+  <Blank Num="24" UId="1035" />
+  <Access Scope="LocalVariable" UId="1036">
+    <Symbol UId="1037">
+      <Component Name="ya" UId="1038" />
+    </Symbol>
+  </Access>
+  <Blank UId="1039" />
+  <Token Text=":=" UId="1040" />
+  <Blank UId="1041" />
+  <Token Text="-" UId="1042" />
+  <Blank UId="1043" />
+  <Access Scope="Call" UId="1044">
+    <Instruction Name="MIN" UId="1045">
+      <Token Text="(" UId="1046" />
+      <Parameter Name="IN1" UId="1047">
+        <Blank UId="1048" />
+        <Token Text=":=" UId="1049" />
+        <Blank UId="1050" />
+        <Token Text="(" UId="1051" />
+        <Access Scope="LocalVariable" UId="1052">
+          <Symbol UId="1053">
+            <Component Name="stat1" UId="1054" />
+          </Symbol>
+        </Access>
+        <Blank UId="1055" />
+        <Token Text="/" UId="1056" />
+        <Blank UId="1057" />
+        <Access Scope="LocalVariable" UId="1058">
+          <Symbol UId="1059">
+            <Component Name="statTDs" UId="1060" />
+          </Symbol>
+        </Access>
+        <Token Text=")" UId="1061" />
+      </Parameter>
+      <Token Text="," UId="1062" />
+      <Blank UId="1063" />
+      <Parameter Name="IN2" UId="1064">
+        <Blank UId="1065" />
+        <Token Text=":=" UId="1066" />
+        <Blank UId="1067" />
+        <Token Text="(" UId="1068" />
+        <Access Scope="LocalVariable" UId="1069">
+          <Symbol UId="1070">
+            <Component Name="statY" UId="1071" />
+          </Symbol>
+        </Access>
+        <Blank UId="1072" />
+        <Token Text="-" UId="1073" />
+        <Blank UId="1074" />
+        <Access Scope="LocalVariable" UId="1075">
+          <Symbol UId="1076">
+            <Component Name="statXs" UId="1077" />
+          </Symbol>
+        </Access>
+        <Token Text=")" UId="1078" />
+      </Parameter>
+      <Token Text=")" UId="1080" />
+    </Instruction>
+  </Access>
+  <Token Text=";" UId="1081" />
+  <Blank Num="8" UId="1082" />
+  <LineComment UId="1083">
+    <Text UId="1084"> target &lt; start --&gt; always use ramp down time</Text>
+  </LineComment>
+  <NewLine UId="1085" />
+  <Blank Num="20" UId="1086" />
+  <Token Text="ELSE" UId="1087" />
+  <NewLine UId="1088" />
+  <Blank Num="24" UId="1089" />
+  <Token Text=";" UId="1090" />
+  <NewLine UId="1091" />
+  <Blank Num="16" UId="1092" />
+  <Token Text="END_CASE" UId="1093" />
+  <Token Text=";" UId="1094" />
+  <NewLine UId="1095" />
+  <Blank Num="12" UId="1096" />
+  <Token Text="END_IF" UId="1097" />
+  <Token Text=";" UId="1098" />
+  <NewLine UId="1099" />
+  <Blank Num="8" UId="1100" />
+  <Token Text="END_IF" UId="1101" />
+  <Token Text=";" UId="1102" />
+  <NewLine UId="1103" />
+  <Blank Num="8" UId="1104" />
+  <NewLine UId="1105" />
+  <Blank Num="4" UId="1106" />
+  <Token Text="ELSIF" UId="1107" />
+  <Blank UId="1108" />
+  <Token Text="(" UId="1109" />
+  <Access Scope="LocalVariable" UId="1110">
+    <Symbol UId="1111">
+      <Component Name="increase" UId="1112" />
+    </Symbol>
+  </Access>
+  <Token Text=")" UId="1113" />
+  <Blank UId="1114" />
+  <Token Text="AND" UId="1115" />
+  <Blank UId="1116" />
+  <Token Text="(" UId="1117" />
+  <Token Text="NOT" UId="1118" />
+  <Blank UId="1119" />
+  <Access Scope="LocalVariable" UId="1120">
+    <Symbol UId="1121">
+      <Component Name="decrease" UId="1122" />
+    </Symbol>
+  </Access>
+  <Token Text=")" UId="1123" />
+  <Blank UId="1124" />
+  <Token Text="THEN" UId="1125" />
+  <Blank Num="32" UId="1126" />
+  <LineComment UId="1127">
+    <Text UId="1128"> Check for active UP-command "cu" // As "cu" targets at the dominant lu, there's no need to check ll  // cu, cd are 3rd priority</Text>
+  </LineComment>
+  <NewLine UId="1129" />
+  <Blank Num="8" UId="1130" />
+  <Token Text="IF" UId="1131" />
+  <Blank UId="1132" />
+  <Token Text="(" UId="1133" />
+  <Access Scope="LocalVariable" UId="1134">
+    <Symbol UId="1135">
+      <Component Name="upperLimit" UId="1136" />
+    </Symbol>
+  </Access>
+  <Blank UId="1137" />
+  <Token Text="=" UId="1138" />
+  <Blank UId="1139" />
+  <Access Scope="LocalVariable" UId="1140">
+    <Symbol UId="1141">
+      <Component Name="statY" UId="1142" />
+    </Symbol>
+  </Access>
+  <Token Text=")" UId="1143" />
+  <Blank UId="1144" />
+  <Token Text="THEN" UId="1145" />
+  <Blank Num="46" UId="1146" />
+  <LineComment UId="1147">
+    <Text UId="1148"> TARGET is an online preprocessed value with respect to lu being // dominant to ll, and the command (cf, cu, cd) currently in use.    </Text>
+  </LineComment>
+  <NewLine UId="1149" />
+  <Blank Num="12" UId="1150" />
+  <Access Scope="LocalVariable" UId="1151">
+    <Symbol UId="1152">
+      <Component Name="ya" UId="1153" />
+    </Symbol>
+  </Access>
+  <Blank UId="1154" />
+  <Token Text=":=" UId="1155" />
+  <Blank UId="1156" />
+  <Access Scope="LiteralConstant" UId="1157">
+    <Constant UId="1158">
+      <ConstantValue UId="1160">0.0</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="1161" />
+  <NewLine UId="1162" />
+  <Blank Num="8" UId="1163" />
+  <Token Text="ELSE" UId="1164" />
+  <NewLine UId="1165" />
+  <Blank Num="12" UId="1166" />
+  <Access Scope="LocalVariable" UId="1167">
+    <Symbol UId="1168">
+      <Component Name="stat1" UId="1169" />
+    </Symbol>
+  </Access>
+  <Blank UId="1170" />
+  <Token Text=":=" UId="1171" />
+  <Blank UId="1172" />
+  <Access Scope="LocalVariable" UId="1173">
+    <Symbol UId="1174">
+      <Component Name="tCycle" UId="1175" />
+    </Symbol>
+  </Access>
+  <Blank UId="1176" />
+  <Token Text="*" UId="1177" />
+  <Blank UId="1178" />
+  <Access Scope="LocalVariable" UId="1179">
+    <Symbol UId="1180">
+      <Component Name="nominalValue" UId="1181" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="1182" />
+  <NewLine UId="1183" />
+  <Blank Num="12" UId="1184" />
+  <Token Text="IF" UId="1185" />
+  <Blank UId="1186" />
+  <Token Text="(" UId="1187" />
+  <Access Scope="LocalVariable" UId="1188">
+    <Symbol UId="1189">
+      <Component Name="upperLimit" UId="1190" />
+    </Symbol>
+  </Access>
+  <Blank UId="1191" />
+  <Token Text="&gt;" UId="1192" />
+  <Blank UId="1193" />
+  <Access Scope="LocalVariable" UId="1194">
+    <Symbol UId="1195">
+      <Component Name="statY" UId="1196" />
+    </Symbol>
+  </Access>
+  <Token Text=")" UId="1197" />
+  <Blank UId="1198" />
+  <Token Text="THEN" UId="1199" />
+  <NewLine UId="1200" />
+  <Blank Num="16" UId="1201" />
+  <Token Text="CASE" UId="1202" />
+  <Blank UId="1203" />
+  <Access Scope="LocalVariable" UId="1204">
+    <Symbol UId="1205">
+      <Component Name="rampTimeMode" UId="1206" />
+    </Symbol>
+  </Access>
+  <Blank UId="1207" />
+  <Token Text="OF" UId="1208" />
+  <NewLine UId="1209" />
+  <Blank Num="20" UId="1210" />
+  <Access Scope="LocalConstant" UId="1211">
+    <Constant Name="DIFF_TO_ZERO" UId="1212" />
+  </Access>
+  <Token Text=":" UId="1215" />
+  <NewLine UId="1216" />
+  <Blank Num="24" UId="1217" />
+  <Token Text="IF" UId="1218" />
+  <Blank UId="1219" />
+  <Token Text="(" UId="1220" />
+  <Access Scope="LocalVariable" UId="1221">
+    <Symbol UId="1222">
+      <Component Name="statY" UId="1223" />
+    </Symbol>
+  </Access>
+  <Blank UId="1224" />
+  <Token Text="&gt;=" UId="1225" />
+  <Blank UId="1226" />
+  <Access Scope="LiteralConstant" UId="1227">
+    <Constant UId="1228">
+      <ConstantValue UId="1230">0.0</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=")" UId="1231" />
+  <Blank UId="1232" />
+  <Token Text="THEN" UId="1233" />
+  <Blank Num="48" UId="1234" />
+  <LineComment UId="1235">
+    <Text UId="1236">direction OF rotation positive       </Text>
+  </LineComment>
+  <NewLine UId="1237" />
+  <Blank Num="28" UId="1238" />
+  <Access Scope="LocalVariable" UId="1239">
+    <Symbol UId="1240">
+      <Component Name="ya" UId="1241" />
+    </Symbol>
+  </Access>
+  <Blank UId="1242" />
+  <Token Text=":=" UId="1243" />
+  <Blank UId="1244" />
+  <Access Scope="Call" UId="1245">
+    <Instruction Name="MIN" UId="1246">
+      <Token Text="(" UId="1247" />
+      <Parameter Name="IN1" UId="1248">
+        <Blank UId="1249" />
+        <Token Text=":=" UId="1250" />
+        <Blank UId="1251" />
+        <Token Text="(" UId="1252" />
+        <Access Scope="LocalVariable" UId="1253">
+          <Symbol UId="1254">
+            <Component Name="stat1" UId="1255" />
+          </Symbol>
+        </Access>
+        <Blank UId="1256" />
+        <Token Text="/" UId="1257" />
+        <Blank UId="1258" />
+        <Access Scope="LocalVariable" UId="1259">
+          <Symbol UId="1260">
+            <Component Name="statTUs" UId="1261" />
+          </Symbol>
+        </Access>
+        <Token Text=")" UId="1262" />
+      </Parameter>
+      <Token Text="," UId="1263" />
+      <Blank UId="1264" />
+      <Parameter Name="IN2" UId="1265">
+        <Blank UId="1266" />
+        <Token Text=":=" UId="1267" />
+        <Blank UId="1268" />
+        <Token Text="(" UId="1269" />
+        <Access Scope="LocalVariable" UId="1270">
+          <Symbol UId="1271">
+            <Component Name="upperLimit" UId="1272" />
+          </Symbol>
+        </Access>
+        <Blank UId="1273" />
+        <Token Text="-" UId="1274" />
+        <Blank UId="1275" />
+        <Access Scope="LocalVariable" UId="1276">
+          <Symbol UId="1277">
+            <Component Name="statY" UId="1278" />
+          </Symbol>
+        </Access>
+        <Token Text=")" UId="1279" />
+      </Parameter>
+      <Token Text=")" UId="1281" />
+    </Instruction>
+  </Access>
+  <Token Text=";" UId="1282" />
+  <Blank Num="4" UId="1283" />
+  <LineComment UId="1284">
+    <Text UId="1285"> UP with pos. increment:   0 --- Y ---&gt; TARGET        </Text>
+  </LineComment>
+  <NewLine UId="1286" />
+  <Blank Num="24" UId="1287" />
+  <Token Text="ELSE" UId="1288" />
+  <Blank Num="63" UId="1289" />
+  <LineComment UId="1290">
+    <Text UId="1291"> Y &lt; 0 direction of rotation opposite         </Text>
+  </LineComment>
+  <NewLine UId="1292" />
+  <Blank Num="28" UId="1293" />
+  <Access Scope="LocalVariable" UId="1294">
+    <Symbol UId="1295">
+      <Component Name="ya" UId="1296" />
+    </Symbol>
+  </Access>
+  <Blank UId="1297" />
+  <Token Text=":=" UId="1298" />
+  <Blank UId="1299" />
+  <Access Scope="Call" UId="1300">
+    <Instruction Name="MIN" UId="1301">
+      <Token Text="(" UId="1302" />
+      <Parameter Name="IN1" UId="1303">
+        <Blank UId="1304" />
+        <Token Text=":=" UId="1305" />
+        <Blank UId="1306" />
+        <Token Text="(" UId="1307" />
+        <Access Scope="LocalVariable" UId="1308">
+          <Symbol UId="1309">
+            <Component Name="stat1" UId="1310" />
+          </Symbol>
+        </Access>
+        <Blank UId="1311" />
+        <Token Text="/" UId="1312" />
+        <Blank UId="1313" />
+        <Access Scope="LocalVariable" UId="1314">
+          <Symbol UId="1315">
+            <Component Name="statTDs" UId="1316" />
+          </Symbol>
+        </Access>
+        <Token Text=")" UId="1317" />
+      </Parameter>
+      <Token Text="," UId="1318" />
+      <Blank UId="1319" />
+      <Parameter Name="IN2" UId="1320">
+        <Blank UId="1321" />
+        <Token Text=":=" UId="1322" />
+        <Blank UId="1323" />
+        <Token Text="(" UId="1324" />
+        <Access Scope="LocalVariable" UId="1325">
+          <Symbol UId="1326">
+            <Component Name="upperLimit" UId="1327" />
+          </Symbol>
+        </Access>
+        <Blank UId="1328" />
+        <Token Text="-" UId="1329" />
+        <Blank UId="1330" />
+        <Access Scope="LocalVariable" UId="1331">
+          <Symbol UId="1332">
+            <Component Name="statY" UId="1333" />
+          </Symbol>
+        </Access>
+        <Token Text=")" UId="1334" />
+      </Parameter>
+      <Token Text=")" UId="1336" />
+    </Instruction>
+  </Access>
+  <Token Text=";" UId="1337" />
+  <Blank Num="4" UId="1338" />
+  <LineComment UId="1339">
+    <Text UId="1340">DOWN with pos. increment: Y ---&gt; TARGET --- 0   Target can also</Text>
+  </LineComment>
+  <NewLine UId="1341" />
+  <Blank Num="24" UId="1342" />
+  <Token Text="END_IF" UId="1343" />
+  <Token Text=";" UId="1344" />
+  <NewLine UId="1345" />
+  <Blank Num="20" UId="1346" />
+  <Access Scope="LocalConstant" UId="1347">
+    <Constant Name="DIFF_OF_CHANGE" UId="1348" />
+  </Access>
+  <Token Text=":" UId="1351" />
+  <NewLine UId="1352" />
+  <Blank Num="24" UId="1353" />
+  <Access Scope="LocalVariable" UId="1354">
+    <Symbol UId="1355">
+      <Component Name="ya" UId="1356" />
+    </Symbol>
+  </Access>
+  <Blank UId="1357" />
+  <Token Text=":=" UId="1358" />
+  <Blank UId="1359" />
+  <Access Scope="Call" UId="1360">
+    <Instruction Name="MIN" UId="1361">
+      <Token Text="(" UId="1362" />
+      <Parameter Name="IN1" UId="1363">
+        <Blank UId="1364" />
+        <Token Text=":=" UId="1365" />
+        <Blank UId="1366" />
+        <Token Text="(" UId="1367" />
+        <Access Scope="LocalVariable" UId="1368">
+          <Symbol UId="1369">
+            <Component Name="stat1" UId="1370" />
+          </Symbol>
+        </Access>
+        <Blank UId="1371" />
+        <Token Text="/" UId="1372" />
+        <Blank UId="1373" />
+        <Access Scope="LocalVariable" UId="1374">
+          <Symbol UId="1375">
+            <Component Name="statTUs" UId="1376" />
+          </Symbol>
+        </Access>
+        <Token Text=")" UId="1377" />
+      </Parameter>
+      <Token Text="," UId="1378" />
+      <Blank UId="1379" />
+      <Parameter Name="IN2" UId="1380">
+        <Blank UId="1381" />
+        <Token Text=":=" UId="1382" />
+        <Blank UId="1383" />
+        <Token Text="(" UId="1384" />
+        <Access Scope="LocalVariable" UId="1385">
+          <Symbol UId="1386">
+            <Component Name="upperLimit" UId="1387" />
+          </Symbol>
+        </Access>
+        <Blank UId="1388" />
+        <Token Text="-" UId="1389" />
+        <Blank UId="1390" />
+        <Access Scope="LocalVariable" UId="1391">
+          <Symbol UId="1392">
+            <Component Name="statY" UId="1393" />
+          </Symbol>
+        </Access>
+        <Token Text=")" UId="1394" />
+      </Parameter>
+      <Token Text=")" UId="1396" />
+    </Instruction>
+  </Access>
+  <Token Text=";" UId="1397" />
+  <NewLine UId="1398" />
+  <Blank Num="20" UId="1399" />
+  <Token Text="ELSE" UId="1400" />
+  <NewLine UId="1401" />
+  <Blank Num="24" UId="1402" />
+  <Token Text=";" UId="1403" />
+  <NewLine UId="1404" />
+  <Blank Num="16" UId="1405" />
+  <Token Text="END_CASE" UId="1406" />
+  <Token Text=";" UId="1407" />
+  <NewLine UId="1408" />
+  <Blank Num="12" UId="1409" />
+  <Token Text="ELSE" UId="1410" />
+  <Blank Num="67" UId="1411" />
+  <LineComment UId="1412">
+    <Text UId="1413"> TARGET &lt; Y  //here Target= upperlimit</Text>
+  </LineComment>
+  <NewLine UId="1414" />
+  <Blank Num="16" UId="1415" />
+  <Token Text="CASE" UId="1416" />
+  <Blank UId="1417" />
+  <Access Scope="LocalVariable" UId="1418">
+    <Symbol UId="1419">
+      <Component Name="rampTimeMode" UId="1420" />
+    </Symbol>
+  </Access>
+  <Blank UId="1421" />
+  <Token Text="OF" UId="1422" />
+  <NewLine UId="1423" />
+  <Blank Num="20" UId="1424" />
+  <Access Scope="LocalConstant" UId="1425">
+    <Constant Name="DIFF_TO_ZERO" UId="1426" />
+  </Access>
+  <Token Text=":" UId="1429" />
+  <NewLine UId="1430" />
+  <Blank Num="24" UId="1431" />
+  <Token Text="IF" UId="1432" />
+  <Blank UId="1433" />
+  <Token Text="(" UId="1434" />
+  <Access Scope="LocalVariable" UId="1435">
+    <Symbol UId="1436">
+      <Component Name="statY" UId="1437" />
+    </Symbol>
+  </Access>
+  <Blank UId="1438" />
+  <Token Text="&gt;" UId="1439" />
+  <Blank UId="1440" />
+  <Access Scope="LiteralConstant" UId="1441">
+    <Constant UId="1442">
+      <ConstantValue UId="1444">0.0</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=")" UId="1445" />
+  <Blank UId="1446" />
+  <Token Text="THEN" UId="1447" />
+  <Blank Num="51" UId="1448" />
+  <LineComment UId="1449">
+    <Text UId="1450">direction OF rotation positive   </Text>
+  </LineComment>
+  <NewLine UId="1451" />
+  <Blank Num="28" UId="1452" />
+  <Access Scope="LocalVariable" UId="1453">
+    <Symbol UId="1454">
+      <Component Name="ya" UId="1455" />
+    </Symbol>
+  </Access>
+  <Blank UId="1456" />
+  <Token Text=":=" UId="1457" />
+  <Blank UId="1458" />
+  <Token Text="-" UId="1459" />
+  <Blank UId="1460" />
+  <Access Scope="Call" UId="1461">
+    <Instruction Name="MIN" UId="1462">
+      <Token Text="(" UId="1463" />
+      <Parameter Name="IN1" UId="1464">
+        <Blank UId="1465" />
+        <Token Text=":=" UId="1466" />
+        <Blank UId="1467" />
+        <Token Text="(" UId="1468" />
+        <Access Scope="LocalVariable" UId="1469">
+          <Symbol UId="1470">
+            <Component Name="stat1" UId="1471" />
+          </Symbol>
+        </Access>
+        <Blank UId="1472" />
+        <Token Text="/" UId="1473" />
+        <Blank UId="1474" />
+        <Access Scope="LocalVariable" UId="1475">
+          <Symbol UId="1476">
+            <Component Name="statTDs" UId="1477" />
+          </Symbol>
+        </Access>
+        <Token Text=")" UId="1478" />
+      </Parameter>
+      <Token Text="," UId="1479" />
+      <Blank UId="1480" />
+      <Parameter Name="IN2" UId="1481">
+        <Blank UId="1482" />
+        <Token Text=":=" UId="1483" />
+        <Blank UId="1484" />
+        <Token Text="(" UId="1485" />
+        <Access Scope="LocalVariable" UId="1486">
+          <Symbol UId="1487">
+            <Component Name="statY" UId="1488" />
+          </Symbol>
+        </Access>
+        <Blank UId="1489" />
+        <Token Text="-" UId="1490" />
+        <Blank UId="1491" />
+        <Access Scope="LocalVariable" UId="1492">
+          <Symbol UId="1493">
+            <Component Name="upperLimit" UId="1494" />
+          </Symbol>
+        </Access>
+        <Token Text=")" UId="1495" />
+      </Parameter>
+      <Token Text=")" UId="1497" />
+    </Instruction>
+  </Access>
+  <Token Text=";" UId="1498" />
+  <Blank Num="3" UId="1499" />
+  <LineComment UId="1500">
+    <Text UId="1501"> DOWN with neg. increment: 0 --- TARGET &lt;--- Y</Text>
+  </LineComment>
+  <NewLine UId="1502" />
+  <Blank Num="24" UId="1503" />
+  <Token Text="ELSE" UId="1504" />
+  <Blank Num="65" UId="1505" />
+  <LineComment UId="1506">
+    <Text UId="1507"> Y &lt;= 0 direction OF rotation opposite</Text>
+  </LineComment>
+  <NewLine UId="1508" />
+  <Blank Num="28" UId="1509" />
+  <Access Scope="LocalVariable" UId="1510">
+    <Symbol UId="1511">
+      <Component Name="ya" UId="1512" />
+    </Symbol>
+  </Access>
+  <Blank UId="1513" />
+  <Token Text=":=" UId="1514" />
+  <Blank UId="1515" />
+  <Token Text="-" UId="1516" />
+  <Blank UId="1517" />
+  <Access Scope="Call" UId="1518">
+    <Instruction Name="MIN" UId="1519">
+      <Token Text="(" UId="1520" />
+      <Parameter Name="IN1" UId="1521">
+        <Blank UId="1522" />
+        <Token Text=":=" UId="1523" />
+        <Blank UId="1524" />
+        <Token Text="(" UId="1525" />
+        <Access Scope="LocalVariable" UId="1526">
+          <Symbol UId="1527">
+            <Component Name="stat1" UId="1528" />
+          </Symbol>
+        </Access>
+        <Blank UId="1529" />
+        <Token Text="/" UId="1530" />
+        <Blank UId="1531" />
+        <Access Scope="LocalVariable" UId="1532">
+          <Symbol UId="1533">
+            <Component Name="statTUs" UId="1534" />
+          </Symbol>
+        </Access>
+        <Token Text=")" UId="1535" />
+      </Parameter>
+      <Token Text="," UId="1536" />
+      <Blank UId="1537" />
+      <Parameter Name="IN2" UId="1538">
+        <Blank UId="1539" />
+        <Token Text=":=" UId="1540" />
+        <Blank UId="1541" />
+        <Token Text="(" UId="1542" />
+        <Access Scope="LocalVariable" UId="1543">
+          <Symbol UId="1544">
+            <Component Name="statY" UId="1545" />
+          </Symbol>
+        </Access>
+        <Blank UId="1546" />
+        <Token Text="-" UId="1547" />
+        <Blank UId="1548" />
+        <Access Scope="LocalVariable" UId="1549">
+          <Symbol UId="1550">
+            <Component Name="upperLimit" UId="1551" />
+          </Symbol>
+        </Access>
+        <Token Text=")" UId="1552" />
+      </Parameter>
+      <Token Text=")" UId="1554" />
+    </Instruction>
+  </Access>
+  <Token Text=";" UId="1555" />
+  <Blank Num="3" UId="1556" />
+  <LineComment UId="1557">
+    <Text UId="1558"> UP with neg. increment: TARGET &lt;--- Y --- 0(Ramp up in negative direction) </Text>
+  </LineComment>
+  <NewLine UId="1559" />
+  <Blank Num="24" UId="1560" />
+  <Token Text="END_IF" UId="1561" />
+  <Token Text=";" UId="1562" />
+  <NewLine UId="1563" />
+  <Blank Num="20" UId="1564" />
+  <Access Scope="LocalConstant" UId="1565">
+    <Constant Name="DIFF_OF_CHANGE" UId="1566" />
+  </Access>
+  <Token Text=":" UId="1569" />
+  <NewLine UId="1570" />
+  <Blank Num="24" UId="1571" />
+  <Access Scope="LocalVariable" UId="1572">
+    <Symbol UId="1573">
+      <Component Name="ya" UId="1574" />
+    </Symbol>
+  </Access>
+  <Blank UId="1575" />
+  <Token Text=":=" UId="1576" />
+  <Blank UId="1577" />
+  <Token Text="-" UId="1578" />
+  <Blank UId="1579" />
+  <Access Scope="Call" UId="1580">
+    <Instruction Name="MIN" UId="1581">
+      <Token Text="(" UId="1582" />
+      <Parameter Name="IN1" UId="1583">
+        <Blank UId="1584" />
+        <Token Text=":=" UId="1585" />
+        <Blank UId="1586" />
+        <Token Text="(" UId="1587" />
+        <Access Scope="LocalVariable" UId="1588">
+          <Symbol UId="1589">
+            <Component Name="stat1" UId="1590" />
+          </Symbol>
+        </Access>
+        <Blank UId="1591" />
+        <Token Text="/" UId="1592" />
+        <Blank UId="1593" />
+        <Access Scope="LocalVariable" UId="1594">
+          <Symbol UId="1595">
+            <Component Name="statTUs" UId="1596" />
+          </Symbol>
+        </Access>
+        <Token Text=")" UId="1597" />
+      </Parameter>
+      <Token Text="," UId="1598" />
+      <Blank UId="1599" />
+      <Parameter Name="IN2" UId="1600">
+        <Blank UId="1601" />
+        <Token Text=":=" UId="1602" />
+        <Blank UId="1603" />
+        <Token Text="(" UId="1604" />
+        <Access Scope="LocalVariable" UId="1605">
+          <Symbol UId="1606">
+            <Component Name="statY" UId="1607" />
+          </Symbol>
+        </Access>
+        <Blank UId="1608" />
+        <Token Text="-" UId="1609" />
+        <Blank UId="1610" />
+        <Access Scope="LocalVariable" UId="1611">
+          <Symbol UId="1612">
+            <Component Name="upperLimit" UId="1613" />
+          </Symbol>
+        </Access>
+        <Token Text=")" UId="1614" />
+      </Parameter>
+      <Token Text=")" UId="1616" />
+    </Instruction>
+  </Access>
+  <Token Text=";" UId="1617" />
+  <NewLine UId="1618" />
+  <Blank Num="20" UId="1619" />
+  <Token Text="ELSE" UId="1620" />
+  <NewLine UId="1621" />
+  <Blank Num="24" UId="1622" />
+  <Token Text=";" UId="1623" />
+  <NewLine UId="1624" />
+  <Blank Num="16" UId="1625" />
+  <Token Text="END_CASE" UId="1626" />
+  <Token Text=";" UId="1627" />
+  <NewLine UId="1628" />
+  <Blank Num="12" UId="1629" />
+  <Token Text="END_IF" UId="1630" />
+  <Token Text=";" UId="1631" />
+  <NewLine UId="1632" />
+  <Blank Num="8" UId="1633" />
+  <Token Text="END_IF" UId="1634" />
+  <Token Text=";" UId="1635" />
+  <NewLine UId="1636" />
+  <Blank Num="8" UId="1637" />
+  <NewLine UId="1638" />
+  <Blank Num="4" UId="1639" />
+  <Token Text="ELSIF" UId="1640" />
+  <Blank UId="1641" />
+  <Token Text="(" UId="1642" />
+  <Access Scope="LocalVariable" UId="1643">
+    <Symbol UId="1644">
+      <Component Name="decrease" UId="1645" />
+    </Symbol>
+  </Access>
+  <Token Text=")" UId="1646" />
+  <Blank UId="1647" />
+  <Token Text="AND" UId="1648" />
+  <Blank UId="1649" />
+  <Token Text="(" UId="1650" />
+  <Token Text="NOT" UId="1651" />
+  <Blank UId="1652" />
+  <Access Scope="LocalVariable" UId="1653">
+    <Symbol UId="1654">
+      <Component Name="increase" UId="1655" />
+    </Symbol>
+  </Access>
+  <Token Text=")" UId="1656" />
+  <Blank UId="1657" />
+  <Token Text="THEN" UId="1658" />
+  <Blank Num="32" UId="1659" />
+  <LineComment UId="1660">
+    <Text UId="1661"> Check for active DOWN-command "cd"</Text>
+  </LineComment>
+  <NewLine UId="1662" />
+  <Blank Num="8" UId="1663" />
+  <Token Text="IF" UId="1664" />
+  <Blank UId="1665" />
+  <Token Text="(" UId="1666" />
+  <Access Scope="LocalVariable" UId="1667">
+    <Symbol UId="1668">
+      <Component Name="statLLs" UId="1669" />
+    </Symbol>
+  </Access>
+  <Blank UId="1670" />
+  <Token Text="=" UId="1671" />
+  <Blank UId="1672" />
+  <Access Scope="LocalVariable" UId="1673">
+    <Symbol UId="1674">
+      <Component Name="statY" UId="1675" />
+    </Symbol>
+  </Access>
+  <Token Text=")" UId="1676" />
+  <Blank UId="1677" />
+  <Token Text="THEN" UId="1678" />
+  <Blank Num="53" UId="1679" />
+  <LineComment UId="1680">
+    <Text UId="1681"> TARGET is an online preprocessed value                                                                                       </Text>
+  </LineComment>
+  <NewLine UId="1682" />
+  <Blank Num="12" UId="1683" />
+  <Access Scope="LocalVariable" UId="1684">
+    <Symbol UId="1685">
+      <Component Name="ya" UId="1686" />
+    </Symbol>
+  </Access>
+  <Blank UId="1687" />
+  <Token Text=":=" UId="1688" />
+  <Blank UId="1689" />
+  <Access Scope="LiteralConstant" UId="1690">
+    <Constant UId="1691">
+      <ConstantValue UId="1693">0.0</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="1694" />
+  <Blank Num="58" UId="1695" />
+  <LineComment UId="1696">
+    <Text UId="1697"> dominant to ll, and the command (cf, cu, cd) currently in use.  </Text>
+  </LineComment>
+  <NewLine UId="1698" />
+  <Blank Num="8" UId="1699" />
+  <Token Text="ELSE" UId="1700" />
+  <NewLine UId="1701" />
+  <Blank Num="12" UId="1702" />
+  <Access Scope="LocalVariable" UId="1703">
+    <Symbol UId="1704">
+      <Component Name="stat1" UId="1705" />
+    </Symbol>
+  </Access>
+  <Blank UId="1706" />
+  <Token Text=":=" UId="1707" />
+  <Blank UId="1708" />
+  <Access Scope="LocalVariable" UId="1709">
+    <Symbol UId="1710">
+      <Component Name="tCycle" UId="1711" />
+    </Symbol>
+  </Access>
+  <Blank UId="1712" />
+  <Token Text="*" UId="1713" />
+  <Blank UId="1714" />
+  <Access Scope="LocalVariable" UId="1715">
+    <Symbol UId="1716">
+      <Component Name="nominalValue" UId="1717" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="1718" />
+  <NewLine UId="1719" />
+  <Blank Num="12" UId="1720" />
+  <Token Text="IF" UId="1721" />
+  <Blank UId="1722" />
+  <Token Text="(" UId="1723" />
+  <Access Scope="LocalVariable" UId="1724">
+    <Symbol UId="1725">
+      <Component Name="statLLs" UId="1726" />
+    </Symbol>
+  </Access>
+  <Blank UId="1727" />
+  <Token Text="&gt;" UId="1728" />
+  <Blank UId="1729" />
+  <Access Scope="LocalVariable" UId="1730">
+    <Symbol UId="1731">
+      <Component Name="statY" UId="1732" />
+    </Symbol>
+  </Access>
+  <Token Text=")" UId="1733" />
+  <Blank UId="1734" />
+  <Token Text="THEN" UId="1735" />
+  <NewLine UId="1736" />
+  <Blank Num="16" UId="1737" />
+  <Token Text="CASE" UId="1738" />
+  <Blank UId="1739" />
+  <Access Scope="LocalVariable" UId="1740">
+    <Symbol UId="1741">
+      <Component Name="rampTimeMode" UId="1742" />
+    </Symbol>
+  </Access>
+  <Blank UId="1743" />
+  <Token Text="OF" UId="1744" />
+  <NewLine UId="1745" />
+  <Blank Num="20" UId="1746" />
+  <Access Scope="LocalConstant" UId="1747">
+    <Constant Name="DIFF_TO_ZERO" UId="1748" />
+  </Access>
+  <Token Text=":" UId="1751" />
+  <NewLine UId="1752" />
+  <Blank Num="24" UId="1753" />
+  <Token Text="IF" UId="1754" />
+  <Blank UId="1755" />
+  <Token Text="(" UId="1756" />
+  <Access Scope="LocalVariable" UId="1757">
+    <Symbol UId="1758">
+      <Component Name="statY" UId="1759" />
+    </Symbol>
+  </Access>
+  <Blank UId="1760" />
+  <Token Text="&gt;=" UId="1761" />
+  <Blank UId="1762" />
+  <Access Scope="LiteralConstant" UId="1763">
+    <Constant UId="1764">
+      <ConstantValue UId="1766">0.0</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=")" UId="1767" />
+  <Blank UId="1768" />
+  <Token Text="THEN" UId="1769" />
+  <Blank Num="48" UId="1770" />
+  <LineComment UId="1771">
+    <Text UId="1772">direction OF rotation positive </Text>
+  </LineComment>
+  <NewLine UId="1773" />
+  <Blank Num="28" UId="1774" />
+  <Access Scope="LocalVariable" UId="1775">
+    <Symbol UId="1776">
+      <Component Name="ya" UId="1777" />
+    </Symbol>
+  </Access>
+  <Blank UId="1778" />
+  <Token Text=":=" UId="1779" />
+  <Blank UId="1780" />
+  <Access Scope="Call" UId="1781">
+    <Instruction Name="MIN" UId="1782">
+      <Token Text="(" UId="1783" />
+      <Parameter Name="IN1" UId="1784">
+        <Blank UId="1785" />
+        <Token Text=":=" UId="1786" />
+        <Blank UId="1787" />
+        <Token Text="(" UId="1788" />
+        <Access Scope="LocalVariable" UId="1789">
+          <Symbol UId="1790">
+            <Component Name="stat1" UId="1791" />
+          </Symbol>
+        </Access>
+        <Blank UId="1792" />
+        <Token Text="/" UId="1793" />
+        <Blank UId="1794" />
+        <Access Scope="LocalVariable" UId="1795">
+          <Symbol UId="1796">
+            <Component Name="statTUs" UId="1797" />
+          </Symbol>
+        </Access>
+        <Token Text=")" UId="1798" />
+      </Parameter>
+      <Token Text="," UId="1799" />
+      <Blank UId="1800" />
+      <Parameter Name="IN2" UId="1801">
+        <Blank UId="1802" />
+        <Token Text=":=" UId="1803" />
+        <Blank UId="1804" />
+        <Token Text="(" UId="1805" />
+        <Access Scope="LocalVariable" UId="1806">
+          <Symbol UId="1807">
+            <Component Name="statLLs" UId="1808" />
+          </Symbol>
+        </Access>
+        <Blank UId="1809" />
+        <Token Text="-" UId="1810" />
+        <Blank UId="1811" />
+        <Access Scope="LocalVariable" UId="1812">
+          <Symbol UId="1813">
+            <Component Name="statY" UId="1814" />
+          </Symbol>
+        </Access>
+        <Token Text=")" UId="1815" />
+      </Parameter>
+      <Token Text=")" UId="1817" />
+    </Instruction>
+  </Access>
+  <Token Text=";" UId="1818" />
+  <Blank Num="9" UId="1819" />
+  <LineComment UId="1820">
+    <Text UId="1821"> (1) UP with pos. increment:   0 --- Y ---&gt; TARGET (Ramp up in positive direction)</Text>
+  </LineComment>
+  <NewLine UId="1822" />
+  <Blank Num="24" UId="1823" />
+  <Token Text="ELSE" UId="1824" />
+  <Blank Num="62" UId="1825" />
+  <LineComment UId="1826">
+    <Text UId="1827"> Y &lt; 0 direction OF rotation opposite      </Text>
+  </LineComment>
+  <NewLine UId="1828" />
+  <Blank Num="28" UId="1829" />
+  <Access Scope="LocalVariable" UId="1830">
+    <Symbol UId="1831">
+      <Component Name="ya" UId="1832" />
+    </Symbol>
+  </Access>
+  <Blank UId="1833" />
+  <Token Text=":=" UId="1834" />
+  <Blank UId="1835" />
+  <Access Scope="Call" UId="1836">
+    <Instruction Name="MIN" UId="1837">
+      <Token Text="(" UId="1838" />
+      <Parameter Name="IN1" UId="1839">
+        <Blank UId="1840" />
+        <Token Text=":=" UId="1841" />
+        <Blank UId="1842" />
+        <Token Text="(" UId="1843" />
+        <Access Scope="LocalVariable" UId="1844">
+          <Symbol UId="1845">
+            <Component Name="stat1" UId="1846" />
+          </Symbol>
+        </Access>
+        <Blank UId="1847" />
+        <Token Text="/" UId="1848" />
+        <Blank UId="1849" />
+        <Access Scope="LocalVariable" UId="1850">
+          <Symbol UId="1851">
+            <Component Name="statTDs" UId="1852" />
+          </Symbol>
+        </Access>
+        <Token Text=")" UId="1853" />
+      </Parameter>
+      <Token Text="," UId="1854" />
+      <Blank UId="1855" />
+      <Parameter Name="IN2" UId="1856">
+        <Blank UId="1857" />
+        <Token Text=":=" UId="1858" />
+        <Blank UId="1859" />
+        <Token Text="(" UId="1860" />
+        <Access Scope="LocalVariable" UId="1861">
+          <Symbol UId="1862">
+            <Component Name="statLLs" UId="1863" />
+          </Symbol>
+        </Access>
+        <Blank UId="1864" />
+        <Token Text="-" UId="1865" />
+        <Blank UId="1866" />
+        <Access Scope="LocalVariable" UId="1867">
+          <Symbol UId="1868">
+            <Component Name="statY" UId="1869" />
+          </Symbol>
+        </Access>
+        <Token Text=")" UId="1870" />
+      </Parameter>
+      <Token Text=")" UId="1872" />
+    </Instruction>
+  </Access>
+  <Token Text=";" UId="1873" />
+  <Blank Num="9" UId="1874" />
+  <LineComment UId="1875">
+    <Text UId="1876">(4) DOWN with pos. increment: Y ---&gt; TARGET --- 0  (Rampdown in positive direction)    </Text>
+  </LineComment>
+  <NewLine UId="1877" />
+  <Blank Num="24" UId="1878" />
+  <Token Text="END_IF" UId="1879" />
+  <Token Text=";" UId="1880" />
+  <NewLine UId="1881" />
+  <Blank Num="20" UId="1882" />
+  <Access Scope="LocalConstant" UId="1883">
+    <Constant Name="DIFF_OF_CHANGE" UId="1884" />
+  </Access>
+  <Token Text=":" UId="1887" />
+  <NewLine UId="1888" />
+  <Blank Num="24" UId="1889" />
+  <Access Scope="LocalVariable" UId="1890">
+    <Symbol UId="1891">
+      <Component Name="ya" UId="1892" />
+    </Symbol>
+  </Access>
+  <Blank UId="1893" />
+  <Token Text=":=" UId="1894" />
+  <Blank UId="1895" />
+  <Access Scope="Call" UId="1896">
+    <Instruction Name="MIN" UId="1897">
+      <Token Text="(" UId="1898" />
+      <Parameter Name="IN1" UId="1899">
+        <Blank UId="1900" />
+        <Token Text=":=" UId="1901" />
+        <Blank UId="1902" />
+        <Token Text="(" UId="1903" />
+        <Access Scope="LocalVariable" UId="1904">
+          <Symbol UId="1905">
+            <Component Name="stat1" UId="1906" />
+          </Symbol>
+        </Access>
+        <Blank UId="1907" />
+        <Token Text="/" UId="1908" />
+        <Blank UId="1909" />
+        <Access Scope="LocalVariable" UId="1910">
+          <Symbol UId="1911">
+            <Component Name="statTUs" UId="1912" />
+          </Symbol>
+        </Access>
+        <Token Text=")" UId="1913" />
+      </Parameter>
+      <Token Text="," UId="1914" />
+      <Blank UId="1915" />
+      <Parameter Name="IN2" UId="1916">
+        <Blank UId="1917" />
+        <Token Text=":=" UId="1918" />
+        <Blank UId="1919" />
+        <Token Text="(" UId="1920" />
+        <Access Scope="LocalVariable" UId="1921">
+          <Symbol UId="1922">
+            <Component Name="statLLs" UId="1923" />
+          </Symbol>
+        </Access>
+        <Blank UId="1924" />
+        <Token Text="-" UId="1925" />
+        <Blank UId="1926" />
+        <Access Scope="LocalVariable" UId="1927">
+          <Symbol UId="1928">
+            <Component Name="statY" UId="1929" />
+          </Symbol>
+        </Access>
+        <Token Text=")" UId="1930" />
+      </Parameter>
+      <Token Text=")" UId="1932" />
+    </Instruction>
+  </Access>
+  <Token Text=";" UId="1933" />
+  <NewLine UId="1934" />
+  <Blank Num="20" UId="1935" />
+  <Token Text="ELSE" UId="1936" />
+  <NewLine UId="1937" />
+  <Blank Num="24" UId="1938" />
+  <Token Text=";" UId="1939" />
+  <NewLine UId="1940" />
+  <Blank Num="16" UId="1941" />
+  <Token Text="END_CASE" UId="1942" />
+  <Token Text=";" UId="1943" />
+  <NewLine UId="1944" />
+  <Blank Num="12" UId="1945" />
+  <Token Text="ELSE" UId="1946" />
+  <Blank Num="64" UId="1947" />
+  <LineComment UId="1948">
+    <Text UId="1949"> TARGET &lt; Y</Text>
+  </LineComment>
+  <NewLine UId="1950" />
+  <Blank Num="16" UId="1951" />
+  <Token Text="CASE" UId="1952" />
+  <Blank UId="1953" />
+  <Access Scope="LocalVariable" UId="1954">
+    <Symbol UId="1955">
+      <Component Name="rampTimeMode" UId="1956" />
+    </Symbol>
+  </Access>
+  <Blank UId="1957" />
+  <Token Text="OF" UId="1958" />
+  <NewLine UId="1959" />
+  <Blank Num="20" UId="1960" />
+  <Access Scope="LocalConstant" UId="1961">
+    <Constant Name="DIFF_TO_ZERO" UId="1962" />
+  </Access>
+  <Token Text=":" UId="1965" />
+  <NewLine UId="1966" />
+  <Blank Num="24" UId="1967" />
+  <Token Text="IF" UId="1968" />
+  <Blank UId="1969" />
+  <Token Text="(" UId="1970" />
+  <Access Scope="LocalVariable" UId="1971">
+    <Symbol UId="1972">
+      <Component Name="statY" UId="1973" />
+    </Symbol>
+  </Access>
+  <Blank UId="1974" />
+  <Token Text="&gt;" UId="1975" />
+  <Blank UId="1976" />
+  <Access Scope="LiteralConstant" UId="1977">
+    <Constant UId="1978">
+      <ConstantValue UId="1980">0.0</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=")" UId="1981" />
+  <Blank UId="1982" />
+  <Token Text="THEN" UId="1983" />
+  <Blank Num="48" UId="1984" />
+  <LineComment UId="1985">
+    <Text UId="1986">direction OF rotation positive   DOWN with neg. increment: 0 --- TARGET &lt;--- Y        </Text>
+  </LineComment>
+  <NewLine UId="1987" />
+  <Blank Num="28" UId="1988" />
+  <Access Scope="LocalVariable" UId="1989">
+    <Symbol UId="1990">
+      <Component Name="ya" UId="1991" />
+    </Symbol>
+  </Access>
+  <Blank UId="1992" />
+  <Token Text=":=" UId="1993" />
+  <Blank UId="1994" />
+  <Token Text="-" UId="1995" />
+  <Blank UId="1996" />
+  <Access Scope="Call" UId="1997">
+    <Instruction Name="MIN" UId="1998">
+      <Token Text="(" UId="1999" />
+      <Parameter Name="IN1" UId="2000">
+        <Blank UId="2001" />
+        <Token Text=":=" UId="2002" />
+        <Blank UId="2003" />
+        <Token Text="(" UId="2004" />
+        <Access Scope="LocalVariable" UId="2005">
+          <Symbol UId="2006">
+            <Component Name="stat1" UId="2007" />
+          </Symbol>
+        </Access>
+        <Blank UId="2008" />
+        <Token Text="/" UId="2009" />
+        <Blank UId="2010" />
+        <Access Scope="LocalVariable" UId="2011">
+          <Symbol UId="2012">
+            <Component Name="statTDs" UId="2013" />
+          </Symbol>
+        </Access>
+        <Token Text=")" UId="2014" />
+      </Parameter>
+      <Token Text="," UId="2015" />
+      <Blank UId="2016" />
+      <Parameter Name="IN2" UId="2017">
+        <Blank UId="2018" />
+        <Token Text=":=" UId="2019" />
+        <Blank UId="2020" />
+        <Token Text="(" UId="2021" />
+        <Access Scope="LocalVariable" UId="2022">
+          <Symbol UId="2023">
+            <Component Name="statY" UId="2024" />
+          </Symbol>
+        </Access>
+        <Blank UId="2025" />
+        <Token Text="-" UId="2026" />
+        <Blank UId="2027" />
+        <Access Scope="LocalVariable" UId="2028">
+          <Symbol UId="2029">
+            <Component Name="statLLs" UId="2030" />
+          </Symbol>
+        </Access>
+        <Token Text=")" UId="2031" />
+      </Parameter>
+      <Token Text=")" UId="2033" />
+    </Instruction>
+  </Access>
+  <Token Text=";" UId="2034" />
+  <Blank Num="5" UId="2035" />
+  <LineComment UId="2036">
+    <Text UId="2037">DOWN with neg. increment: 0 --- TARGET &lt;--- Y     (Ramp down in negative direction)    </Text>
+  </LineComment>
+  <NewLine UId="2038" />
+  <Blank Num="24" UId="2039" />
+  <Token Text="ELSE" UId="2040" />
+  <Blank Num="62" UId="2041" />
+  <LineComment UId="2042">
+    <Text UId="2043"> Y &lt;= 0  direction OF rotation opposite        </Text>
+  </LineComment>
+  <NewLine UId="2044" />
+  <Blank Num="28" UId="2045" />
+  <Access Scope="LocalVariable" UId="2046">
+    <Symbol UId="2047">
+      <Component Name="ya" UId="2048" />
+    </Symbol>
+  </Access>
+  <Blank UId="2049" />
+  <Token Text=":=" UId="2050" />
+  <Blank UId="2051" />
+  <Token Text="-" UId="2052" />
+  <Blank UId="2053" />
+  <Access Scope="Call" UId="2054">
+    <Instruction Name="MIN" UId="2055">
+      <Token Text="(" UId="2056" />
+      <Parameter Name="IN1" UId="2057">
+        <Blank UId="2058" />
+        <Token Text=":=" UId="2059" />
+        <Blank UId="2060" />
+        <Token Text="(" UId="2061" />
+        <Access Scope="LocalVariable" UId="2062">
+          <Symbol UId="2063">
+            <Component Name="stat1" UId="2064" />
+          </Symbol>
+        </Access>
+        <Blank UId="2065" />
+        <Token Text="/" UId="2066" />
+        <Blank UId="2067" />
+        <Access Scope="LocalVariable" UId="2068">
+          <Symbol UId="2069">
+            <Component Name="statTUs" UId="2070" />
+          </Symbol>
+        </Access>
+        <Token Text=")" UId="2071" />
+      </Parameter>
+      <Token Text="," UId="2072" />
+      <Blank UId="2073" />
+      <Parameter Name="IN2" UId="2074">
+        <Blank UId="2075" />
+        <Token Text=":=" UId="2076" />
+        <Blank UId="2077" />
+        <Token Text="(" UId="2078" />
+        <Access Scope="LocalVariable" UId="2079">
+          <Symbol UId="2080">
+            <Component Name="statY" UId="2081" />
+          </Symbol>
+        </Access>
+        <Blank UId="2082" />
+        <Token Text="-" UId="2083" />
+        <Blank UId="2084" />
+        <Access Scope="LocalVariable" UId="2085">
+          <Symbol UId="2086">
+            <Component Name="statLLs" UId="2087" />
+          </Symbol>
+        </Access>
+        <Token Text=")" UId="2088" />
+      </Parameter>
+      <Token Text=")" UId="2090" />
+    </Instruction>
+  </Access>
+  <Token Text=";" UId="2091" />
+  <Blank Num="5" UId="2092" />
+  <LineComment UId="2093">
+    <Text UId="2094">UP with neg. increment:   TARGET &lt;--- Y --- 0     (Ramp up in negative direction)</Text>
+  </LineComment>
+  <NewLine UId="2095" />
+  <Blank Num="24" UId="2096" />
+  <Token Text="END_IF" UId="2097" />
+  <Token Text=";" UId="2098" />
+  <NewLine UId="2099" />
+  <Blank Num="20" UId="2100" />
+  <Access Scope="LocalConstant" UId="2101">
+    <Constant Name="DIFF_OF_CHANGE" UId="2102" />
+  </Access>
+  <Token Text=":" UId="2105" />
+  <NewLine UId="2106" />
+  <Blank Num="24" UId="2107" />
+  <Access Scope="LocalVariable" UId="2108">
+    <Symbol UId="2109">
+      <Component Name="ya" UId="2110" />
+    </Symbol>
+  </Access>
+  <Blank UId="2111" />
+  <Token Text=":=" UId="2112" />
+  <Blank UId="2113" />
+  <Token Text="-" UId="2114" />
+  <Blank UId="2115" />
+  <Access Scope="Call" UId="2116">
+    <Instruction Name="MIN" UId="2117">
+      <Token Text="(" UId="2118" />
+      <Parameter Name="IN1" UId="2119">
+        <Blank UId="2120" />
+        <Token Text=":=" UId="2121" />
+        <Blank UId="2122" />
+        <Token Text="(" UId="2123" />
+        <Access Scope="LocalVariable" UId="2124">
+          <Symbol UId="2125">
+            <Component Name="stat1" UId="2126" />
+          </Symbol>
+        </Access>
+        <Blank UId="2127" />
+        <Token Text="/" UId="2128" />
+        <Blank UId="2129" />
+        <Access Scope="LocalVariable" UId="2130">
+          <Symbol UId="2131">
+            <Component Name="statTDs" UId="2132" />
+          </Symbol>
+        </Access>
+        <Token Text=")" UId="2133" />
+      </Parameter>
+      <Token Text="," UId="2134" />
+      <Blank UId="2135" />
+      <Parameter Name="IN2" UId="2136">
+        <Blank UId="2137" />
+        <Token Text=":=" UId="2138" />
+        <Blank UId="2139" />
+        <Token Text="(" UId="2140" />
+        <Access Scope="LocalVariable" UId="2141">
+          <Symbol UId="2142">
+            <Component Name="statY" UId="2143" />
+          </Symbol>
+        </Access>
+        <Blank UId="2144" />
+        <Token Text="-" UId="2145" />
+        <Blank UId="2146" />
+        <Access Scope="LocalVariable" UId="2147">
+          <Symbol UId="2148">
+            <Component Name="statLLs" UId="2149" />
+          </Symbol>
+        </Access>
+        <Token Text=")" UId="2150" />
+      </Parameter>
+      <Token Text=")" UId="2152" />
+    </Instruction>
+  </Access>
+  <Token Text=";" UId="2153" />
+  <NewLine UId="2154" />
+  <Blank Num="20" UId="2155" />
+  <Token Text="ELSE" UId="2156" />
+  <NewLine UId="2157" />
+  <Blank Num="24" UId="2158" />
+  <Token Text=";" UId="2159" />
+  <NewLine UId="2160" />
+  <Blank Num="16" UId="2161" />
+  <Token Text="END_CASE" UId="2162" />
+  <Token Text=";" UId="2163" />
+  <NewLine UId="2164" />
+  <Blank Num="12" UId="2165" />
+  <Token Text="END_IF" UId="2166" />
+  <Token Text=";" UId="2167" />
+  <NewLine UId="2168" />
+  <Blank Num="8" UId="2169" />
+  <Token Text="END_IF" UId="2170" />
+  <Token Text=";" UId="2171" />
+  <NewLine UId="2172" />
+  <Blank Num="4" UId="2173" />
+  <Token Text="END_IF" UId="2174" />
+  <Token Text=";" UId="2175" />
+  <Blank Num="18" UId="2176" />
+  <LineComment UId="2177">
+    <Text UId="2178"> The previous code has computed the acceleration value Ya     </Text>
+  </LineComment>
+  <NewLine UId="2179" />
+  <Blank Num="4" UId="2180" />
+  <Token Text="IF" UId="2181" />
+  <Blank UId="2182" />
+  <Token Text="(" UId="2183" />
+  <Token Text="(" UId="2184" />
+  <Token Text="(" UId="2185" />
+  <Access Scope="LocalVariable" UId="2186">
+    <Symbol UId="2187">
+      <Component Name="statY" UId="2188" />
+    </Symbol>
+  </Access>
+  <Blank UId="2189" />
+  <Token Text="=" UId="2190" />
+  <Blank UId="2191" />
+  <Access Scope="LocalVariable" UId="2192">
+    <Symbol UId="2193">
+      <Component Name="upperLimit" UId="2194" />
+    </Symbol>
+  </Access>
+  <Token Text=")" UId="2195" />
+  <NewLine UId="2196" />
+  <Blank Num="8" UId="2197" />
+  <Token Text="AND" UId="2198" />
+  <Blank UId="2199" />
+  <Token Text="(" UId="2200" />
+  <Access Scope="LocalVariable" UId="2201">
+    <Symbol UId="2202">
+      <Component Name="x" UId="2203" />
+    </Symbol>
+  </Access>
+  <Blank UId="2204" />
+  <Token Text="&gt;" UId="2205" />
+  <Blank UId="2206" />
+  <Access Scope="LocalVariable" UId="2207">
+    <Symbol UId="2208">
+      <Component Name="statY" UId="2209" />
+    </Symbol>
+  </Access>
+  <Token Text=")" UId="2210" />
+  <Token Text=")" UId="2211" />
+  <NewLine UId="2212" />
+  <Blank Num="8" UId="2213" />
+  <Token Text="OR" UId="2214" />
+  <Blank UId="2215" />
+  <Token Text="(" UId="2216" />
+  <Token Text="(" UId="2217" />
+  <Access Scope="LocalVariable" UId="2218">
+    <Symbol UId="2219">
+      <Component Name="statY" UId="2220" />
+    </Symbol>
+  </Access>
+  <Blank UId="2221" />
+  <Token Text="=" UId="2222" />
+  <Blank UId="2223" />
+  <Access Scope="LocalVariable" UId="2224">
+    <Symbol UId="2225">
+      <Component Name="lowerLimit" UId="2226" />
+    </Symbol>
+  </Access>
+  <Token Text=")" UId="2227" />
+  <NewLine UId="2228" />
+  <Blank Num="8" UId="2229" />
+  <Token Text="AND" UId="2230" />
+  <Blank UId="2231" />
+  <Token Text="(" UId="2232" />
+  <Access Scope="LocalVariable" UId="2233">
+    <Symbol UId="2234">
+      <Component Name="x" UId="2235" />
+    </Symbol>
+  </Access>
+  <Blank UId="2236" />
+  <Token Text="&lt;" UId="2237" />
+  <Blank UId="2238" />
+  <Access Scope="LocalVariable" UId="2239">
+    <Symbol UId="2240">
+      <Component Name="statY" UId="2241" />
+    </Symbol>
+  </Access>
+  <Token Text=")" UId="2242" />
+  <Token Text=")" UId="2243" />
+  <Token Text=")" UId="2244" />
+  <NewLine UId="2245" />
+  <Blank Num="8" UId="2246" />
+  <Token Text="AND" UId="2247" />
+  <Blank UId="2248" />
+  <Token Text="NOT" UId="2249" />
+  <Blank UId="2250" />
+  <Token Text="(" UId="2251" />
+  <Access Scope="LocalVariable" UId="2252">
+    <Symbol UId="2253">
+      <Component Name="increase" UId="2254" />
+    </Symbol>
+  </Access>
+  <Blank UId="2255" />
+  <Token Text="OR" UId="2256" />
+  <Blank UId="2257" />
+  <Access Scope="LocalVariable" UId="2258">
+    <Symbol UId="2259">
+      <Component Name="decrease" UId="2260" />
+    </Symbol>
+  </Access>
+  <Token Text=")" UId="2261" />
+  <Blank Num="2" UId="2262" />
+  <LineComment UId="2263">
+    <Text UId="2264"> (*c_00012)*</Text>
+  </LineComment>
+  <NewLine UId="2265" />
+  <Blank Num="4" UId="2266" />
+  <Token Text="THEN" UId="2267" />
+  <NewLine UId="2268" />
+  <Blank Num="8" UId="2269" />
+  <Access Scope="LocalVariable" UId="2270">
+    <Symbol UId="2271">
+      <Component Name="ya" UId="2272" />
+    </Symbol>
+  </Access>
+  <Blank UId="2273" />
+  <Token Text=":=" UId="2274" />
+  <Blank UId="2275" />
+  <Access Scope="LiteralConstant" UId="2276">
+    <Constant UId="2277">
+      <ConstantValue UId="2279">0.0</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="2280" />
+  <NewLine UId="2281" />
+  <Blank Num="4" UId="2282" />
+  <Token Text="END_IF" UId="2283" />
+  <Token Text=";" UId="2284" />
+  <NewLine UId="2285" />
+  <Blank Num="4" UId="2286" />
+  <Access Scope="LocalVariable" UId="2287">
+    <Symbol UId="2288">
+      <Component Name="statY" UId="2289" />
+    </Symbol>
+  </Access>
+  <Blank UId="2290" />
+  <Token Text=":=" UId="2291" />
+  <Blank UId="2292" />
+  <Access Scope="LocalVariable" UId="2293">
+    <Symbol UId="2294">
+      <Component Name="statYkm1" UId="2295" />
+    </Symbol>
+  </Access>
+  <Blank UId="2296" />
+  <Token Text="+" UId="2297" />
+  <Blank UId="2298" />
+  <Access Scope="LocalVariable" UId="2299">
+    <Symbol UId="2300">
+      <Component Name="ya" UId="2301" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="2302" />
+  <Blank Num="36" UId="2303" />
+  <LineComment UId="2304">
+    <Text UId="2305"> Now we are going to increment our output Y by this value:</Text>
+  </LineComment>
+  <NewLine UId="2306" />
+  <Blank Num="4" UId="2307" />
+  <Access Scope="LocalVariable" UId="2308">
+    <Symbol UId="2309">
+      <Component Name="SetpointReached" UId="2310" />
+    </Symbol>
+  </Access>
+  <Blank UId="2311" />
+  <Token Text=":=" UId="2312" />
+  <Blank UId="2313" />
+  <Token Text="(" UId="2314" />
+  <Access Scope="LocalVariable" UId="2315">
+    <Symbol UId="2316">
+      <Component Name="x" UId="2317" />
+    </Symbol>
+  </Access>
+  <Blank UId="2318" />
+  <Token Text="=" UId="2319" />
+  <Blank UId="2320" />
+  <Access Scope="LocalVariable" UId="2321">
+    <Symbol UId="2322">
+      <Component Name="statY" UId="2323" />
+    </Symbol>
+  </Access>
+  <Token Text=")" UId="2324" />
+  <Token Text=";" UId="2325" />
+  <Blank Num="38" UId="2326" />
+  <LineComment UId="2327">
+    <Text UId="2328"> set EQUAL-flag</Text>
+  </LineComment>
+  <NewLine UId="2329" />
+  <Blank Num="4" UId="2330" />
+  <Access Scope="LocalVariable" UId="2331">
+    <Symbol UId="2332">
+      <Component Name="upperLimitReached" UId="2333" />
+    </Symbol>
+  </Access>
+  <Blank UId="2334" />
+  <Token Text=":=" UId="2335" />
+  <Blank UId="2336" />
+  <Token Text="(" UId="2337" />
+  <Access Scope="LocalVariable" UId="2338">
+    <Symbol UId="2339">
+      <Component Name="upperLimit" UId="2340" />
+    </Symbol>
+  </Access>
+  <Blank UId="2341" />
+  <Token Text="&lt;=" UId="2342" />
+  <Blank UId="2343" />
+  <Access Scope="LocalVariable" UId="2344">
+    <Symbol UId="2345">
+      <Component Name="statY" UId="2346" />
+    </Symbol>
+  </Access>
+  <Token Text=")" UId="2347" />
+  <Token Text=";" UId="2348" />
+  <Blank Num="28" UId="2349" />
+  <LineComment UId="2350">
+    <Text UId="2351"> set upperLimit-flag</Text>
+  </LineComment>
+  <NewLine UId="2352" />
+  <Blank Num="4" UId="2353" />
+  <Access Scope="LocalVariable" UId="2354">
+    <Symbol UId="2355">
+      <Component Name="lowerLimitReached" UId="2356" />
+    </Symbol>
+  </Access>
+  <Blank UId="2357" />
+  <Token Text=":=" UId="2358" />
+  <Blank UId="2359" />
+  <Token Text="(" UId="2360" />
+  <Access Scope="LocalVariable" UId="2361">
+    <Symbol UId="2362">
+      <Component Name="lowerLimit" UId="2363" />
+    </Symbol>
+  </Access>
+  <Blank UId="2364" />
+  <Token Text="&gt;=" UId="2365" />
+  <Blank UId="2366" />
+  <Access Scope="LocalVariable" UId="2367">
+    <Symbol UId="2368">
+      <Component Name="statY" UId="2369" />
+    </Symbol>
+  </Access>
+  <Token Text=")" UId="2370" />
+  <Token Text=";" UId="2371" />
+  <Blank Num="28" UId="2372" />
+  <LineComment UId="2373">
+    <Text UId="2374"> set lowerLimit-flag</Text>
+  </LineComment>
+  <NewLine UId="2375" />
+  <Token Text="END_IF" UId="2376" />
+  <Token Text=";" UId="2377" />
+  <NewLine Num="2" UId="2378" />
+  <LineComment UId="2379">
+    <Text UId="2380"> set outputs</Text>
+  </LineComment>
+  <NewLine UId="2381" />
+  <Access Scope="LocalVariable" UId="2382">
+    <Symbol UId="2383">
+      <Component Name="error" UId="2384" />
+    </Symbol>
+  </Access>
+  <Blank UId="2385" />
+  <Token Text=":=" UId="2386" />
+  <Blank UId="2387" />
+  <Access Scope="LocalVariable" UId="2388">
+    <Symbol UId="2389">
+      <Component Name="statError" UId="2390" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="2391" />
+  <NewLine UId="2392" />
+  <Access Scope="LocalVariable" UId="2393">
+    <Symbol UId="2394">
+      <Component Name="y" UId="2395" />
+    </Symbol>
+  </Access>
+  <Blank UId="2396" />
+  <Token Text=":=" UId="2397" />
+  <Blank UId="2398" />
+  <Access Scope="LocalVariable" UId="2399">
+    <Symbol UId="2400">
+      <Component Name="statY" UId="2401" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="2402" />
+  <NewLine UId="2403" />
+</StructuredText></NetworkSource>
+          <ProgrammingLanguage>SCL</ProgrammingLanguage>
+        </AttributeList>
+        <ObjectList>
+          <MultilingualText ID="B" CompositionName="Comment">
+            <ObjectList>
+              <MultilingualTextItem ID="C" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="D" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-GB</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="E" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="F" CompositionName="Items">
+                <AttributeList>
+                  <Culture>es-ES</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="10" CompositionName="Items">
+                <AttributeList>
+                  <Culture>fr-FR</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="11" CompositionName="Items">
+                <AttributeList>
+                  <Culture>it-IT</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="12" CompositionName="Items">
+                <AttributeList>
+                  <Culture>ko-KR</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="13" CompositionName="Items">
+                <AttributeList>
+                  <Culture>zh-CN</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+          <MultilingualText ID="14" CompositionName="Title">
+            <ObjectList>
+              <MultilingualTextItem ID="15" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="16" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-GB</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="17" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="18" CompositionName="Items">
+                <AttributeList>
+                  <Culture>es-ES</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="19" CompositionName="Items">
+                <AttributeList>
+                  <Culture>fr-FR</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="1A" CompositionName="Items">
+                <AttributeList>
+                  <Culture>it-IT</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="1B" CompositionName="Items">
+                <AttributeList>
+                  <Culture>ko-KR</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="1C" CompositionName="Items">
+                <AttributeList>
+                  <Culture>zh-CN</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+        </ObjectList>
+      </SW.Blocks.CompileUnit>
+      <MultilingualText ID="1D" CompositionName="Title">
+        <ObjectList>
+          <MultilingualTextItem ID="1E" CompositionName="Items">
+            <AttributeList>
+              <Culture>de-DE</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="1F" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-GB</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="20" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-US</Culture>
+              <Text>LConSMC_RFG</Text>
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="21" CompositionName="Items">
+            <AttributeList>
+              <Culture>es-ES</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="22" CompositionName="Items">
+            <AttributeList>
+              <Culture>fr-FR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="23" CompositionName="Items">
+            <AttributeList>
+              <Culture>it-IT</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="24" CompositionName="Items">
+            <AttributeList>
+              <Culture>ko-KR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="25" CompositionName="Items">
+            <AttributeList>
+              <Culture>zh-CN</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+        </ObjectList>
+      </MultilingualText>
+    </ObjectList>
+  </SW.Blocks.FB>
+</Document>

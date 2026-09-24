@@ -1,0 +1,2409 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Document>
+  <Engineering version="V20" />
+  <SW.Blocks.FB ID="0">
+    <AttributeList>
+      <Access>Published</Access>
+      <Interface><Sections xmlns="http://www.siemens.com/automation/Openness/SW/Interface/v5">
+  <Section Name="Input">
+    <Member Name="enable" Datatype="Bool">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <Comment>
+        <MultiLanguageText Lang="de-DE">TRUE: Funktionsbaustein aktivieren</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">TRUE: Enable function block</MultiLanguageText>
+      </Comment>
+      <StartValue>FALSE</StartValue>
+    </Member>
+    <Member Name="metricUnits" Datatype="Bool">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <Comment>
+        <MultiLanguageText Lang="de-DE">TRUE: Verwendung metrischer Einheiten [m] / [m/min] / [m/s^2] / [N] FALSE: Verwendung angloamerikanischer Einheiten [inch] / [ft/min] / [ft/s^2] / [Lbf]</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">TRUE: Use metric system [m] / [m/min] / [m/s^2] / [N]  FALSE: Use angloamerican system [inch] / [ft/min] / [ft/s^2] / [Lbf]</MultiLanguageText>
+      </Comment>
+      <StartValue>TRUE</StartValue>
+    </Member>
+    <Member Name="typeOfDrive" Datatype="Int">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <Comment>
+        <MultiLanguageText Lang="de-DE">Definition der Bahnzugrichtung  0: Bahnzug vor der Rolle wird geregelt (Pull)  1: Bahnzug nach der Rolle wird geregelt (Push)</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">Definition of web tension direction  0: Web tension bevor the roll is controlled (Pull)  1: Web tension after the roll is controlled (Push)</MultiLanguageText>
+      </Comment>
+      <StartValue>0</StartValue>
+    </Member>
+    <Member Name="drivespeed" Datatype="LReal">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <Comment>
+        <MultiLanguageText Lang="de-DE">[1/min] Antriebsdrehzahl für das Auslesen der Reibkennlinie</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">[RPM] Drive speed for the friction characteristic</MultiLanguageText>
+      </Comment>
+      <StartValue>0.0</StartValue>
+    </Member>
+    <Member Name="lineAcceleration" Datatype="LReal">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <Comment>
+        <MultiLanguageText Lang="de-DE">[m/s^2]/[ft/s^2] Bahnbeschleunigung</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">[m/s^2]/[ft/s^2] Web acceleration</MultiLanguageText>
+      </Comment>
+      <StartValue>0.0</StartValue>
+    </Member>
+    <Member Name="diameter" Datatype="LReal">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <Comment>
+        <MultiLanguageText Lang="de-DE">[m] / [inch] Durchmesser der Bahnzugachse</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">[m] / [inch] Diameter of sectional drive</MultiLanguageText>
+      </Comment>
+      <StartValue>0.0</StartValue>
+    </Member>
+    <Member Name="tensionSetpoint" Datatype="LReal">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <Comment>
+        <MultiLanguageText Lang="de-DE">[N] / [lbf] Zugsollwert</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">[N] / [lbf] Tension setpoint</MultiLanguageText>
+      </Comment>
+      <StartValue>0.0</StartValue>
+    </Member>
+    <Member Name="JFix" Datatype="LReal">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <Comment>
+        <MultiLanguageText Lang="de-DE">[kgm^2] / [lbft^2] Trägheit bezogen auf Motorseite (ohne Motor, z.B. Getriebe)</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">[kgm^2] / [lbft^2] Inertia on drive side (without drive, e.g. gear box)</MultiLanguageText>
+      </Comment>
+    </Member>
+    <Member Name="JMandrel" Datatype="LReal">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <Comment>
+        <MultiLanguageText Lang="de-DE">[kgm^2] / [lbft^2] Trägheit auf der Lastseite (z.B. Rolle)</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">[kgm^2] / [lbft^2] Inertia on load side (e.g. mandrel)</MultiLanguageText>
+      </Comment>
+    </Member>
+    <Member Name="JMot" Datatype="LReal">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <Comment>
+        <MultiLanguageText Lang="de-DE">[kgm^2] / [lbft^2] Motorträgheit</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">[kgm^2] / [lbft^2] Drive inertia</MultiLanguageText>
+      </Comment>
+    </Member>
+    <Member Name="gearRatio" Datatype="LReal">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <Comment>
+        <MultiLanguageText Lang="de-DE">Getriebeverhältnis</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">Gear ratio</MultiLanguageText>
+      </Comment>
+    </Member>
+    <Member Name="frictionAdjustment" Datatype="Real">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <Comment>
+        <MultiLanguageText Lang="de-DE">Multiplikativer Faktor zur Adaption des Reibmomentes (1.0 = 100%)</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">Multiplicative adaption factor for friction torque (1.0 = 100%)</MultiLanguageText>
+      </Comment>
+    </Member>
+    <Member Name="tensionAdjustment" Datatype="Real">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <Comment>
+        <MultiLanguageText Lang="de-DE">Multiplikativer Faktor zur Adaption des Zugmomentes (1.0 = 100%)</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">Multiplicative adaption factor for tension torque (1.0 = 100%)</MultiLanguageText>
+      </Comment>
+    </Member>
+    <Member Name="accelerationAdjustment" Datatype="Real">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <Comment>
+        <MultiLanguageText Lang="de-DE">Multiplikativer Faktor zur Adaption des Beschleunigungsmomentes (1.0 = 100%)</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">Multiplicative adaption factor for acceleration torque (1.0 = 100%)</MultiLanguageText>
+      </Comment>
+      <StartValue>1.0</StartValue>
+    </Member>
+    <Member Name="sizeOfArray" Datatype="Int">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <Comment>
+        <MultiLanguageText Lang="de-DE">Anzahl an Stützpunkten die Verwendet werden sollen aus der Reibkennlinie</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">Numer of breakpoints that should be used from the friction characteristic</MultiLanguageText>
+      </Comment>
+      <StartValue>20</StartValue>
+    </Member>
+    <Member Name="xn_speedValues" Datatype="&quot;LConSMC_typeBreakPointTable&quot;">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <Comment>
+        <MultiLanguageText Lang="de-DE">Geschwindigkeitsstützpunkte für die Reibkennlinie</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">Speed breakpoints for friction characteristic</MultiLanguageText>
+      </Comment>
+      <Sections>
+        <Section Name="None">
+          <Member Name="values" Datatype="Array[0..&quot;LCON_MAX_VALUE_BREAK_POINT_TABLE&quot;] of LReal">
+            <Subelement Path="0">
+              <StartValue>0.0</StartValue>
+            </Subelement>
+            <Subelement Path="1">
+              <StartValue>0.0</StartValue>
+            </Subelement>
+            <Subelement Path="2">
+              <StartValue>0.0</StartValue>
+            </Subelement>
+            <Subelement Path="3">
+              <StartValue>0.0</StartValue>
+            </Subelement>
+            <Subelement Path="4">
+              <StartValue>0.0</StartValue>
+            </Subelement>
+            <Subelement Path="5">
+              <StartValue>0.0</StartValue>
+            </Subelement>
+            <Subelement Path="6">
+              <StartValue>0.0</StartValue>
+            </Subelement>
+            <Subelement Path="7">
+              <StartValue>0.0</StartValue>
+            </Subelement>
+            <Subelement Path="8">
+              <StartValue>0.0</StartValue>
+            </Subelement>
+            <Subelement Path="9">
+              <StartValue>0.0</StartValue>
+            </Subelement>
+            <Subelement Path="10">
+              <StartValue>0.0</StartValue>
+            </Subelement>
+            <Subelement Path="11">
+              <StartValue>0.0</StartValue>
+            </Subelement>
+            <Subelement Path="12">
+              <StartValue>0.0</StartValue>
+            </Subelement>
+            <Subelement Path="13">
+              <StartValue>0.0</StartValue>
+            </Subelement>
+            <Subelement Path="14">
+              <StartValue>0.0</StartValue>
+            </Subelement>
+            <Subelement Path="15">
+              <StartValue>0.0</StartValue>
+            </Subelement>
+            <Subelement Path="16">
+              <StartValue>0.0</StartValue>
+            </Subelement>
+            <Subelement Path="17">
+              <StartValue>0.0</StartValue>
+            </Subelement>
+            <Subelement Path="18">
+              <StartValue>0.0</StartValue>
+            </Subelement>
+            <Subelement Path="19">
+              <StartValue>0.0</StartValue>
+            </Subelement>
+          </Member>
+        </Section>
+      </Sections>
+    </Member>
+    <Member Name="yn_torqueValues" Datatype="&quot;LConSMC_typeBreakPointTable&quot;">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <Comment>
+        <MultiLanguageText Lang="de-DE">Drehmomentenwerte für die Reibkennlinie</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">Torque breakpoints for friction characteristic</MultiLanguageText>
+      </Comment>
+      <Sections>
+        <Section Name="None">
+          <Member Name="values" Datatype="Array[0..&quot;LCON_MAX_VALUE_BREAK_POINT_TABLE&quot;] of LReal">
+            <Subelement Path="0">
+              <StartValue>0.0</StartValue>
+            </Subelement>
+            <Subelement Path="1">
+              <StartValue>0.0</StartValue>
+            </Subelement>
+            <Subelement Path="2">
+              <StartValue>0.0</StartValue>
+            </Subelement>
+            <Subelement Path="3">
+              <StartValue>0.0</StartValue>
+            </Subelement>
+            <Subelement Path="4">
+              <StartValue>0.0</StartValue>
+            </Subelement>
+            <Subelement Path="5">
+              <StartValue>0.0</StartValue>
+            </Subelement>
+            <Subelement Path="6">
+              <StartValue>0.0</StartValue>
+            </Subelement>
+            <Subelement Path="7">
+              <StartValue>0.0</StartValue>
+            </Subelement>
+            <Subelement Path="8">
+              <StartValue>0.0</StartValue>
+            </Subelement>
+            <Subelement Path="9">
+              <StartValue>0.0</StartValue>
+            </Subelement>
+            <Subelement Path="10">
+              <StartValue>0.0</StartValue>
+            </Subelement>
+            <Subelement Path="11">
+              <StartValue>0.0</StartValue>
+            </Subelement>
+            <Subelement Path="12">
+              <StartValue>0.0</StartValue>
+            </Subelement>
+            <Subelement Path="13">
+              <StartValue>0.0</StartValue>
+            </Subelement>
+            <Subelement Path="14">
+              <StartValue>0.0</StartValue>
+            </Subelement>
+            <Subelement Path="15">
+              <StartValue>0.0</StartValue>
+            </Subelement>
+            <Subelement Path="16">
+              <StartValue>0.0</StartValue>
+            </Subelement>
+            <Subelement Path="17">
+              <StartValue>0.0</StartValue>
+            </Subelement>
+            <Subelement Path="18">
+              <StartValue>0.0</StartValue>
+            </Subelement>
+            <Subelement Path="19">
+              <StartValue>0.0</StartValue>
+            </Subelement>
+          </Member>
+        </Section>
+      </Sections>
+    </Member>
+  </Section>
+  <Section Name="Output">
+    <Member Name="busy" Datatype="Bool">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <Comment>
+        <MultiLanguageText Lang="de-DE">TRUE : Der Funktionsbaustein wird ausgeführt</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">TRUE : Function block is executed</MultiLanguageText>
+      </Comment>
+    </Member>
+    <Member Name="error" Datatype="Bool">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <Comment>
+        <MultiLanguageText Lang="de-DE">TRUE: Es ist ein Fehler aufgetreten</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">TRUE: Function block has detected an error</MultiLanguageText>
+      </Comment>
+      <StartValue>FALSE</StartValue>
+    </Member>
+    <Member Name="errorID" Datatype="DWord">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <Comment>
+        <MultiLanguageText Lang="de-DE">Weiteren Informationen zu aufgetretenem Fehler (&lt;&gt; 16#0000_0000)</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">Further information on occured error (&lt;&gt; 16#0000_0000)</MultiLanguageText>
+      </Comment>
+      <StartValue>16#0000_0000</StartValue>
+    </Member>
+    <Member Name="totalinertia" Datatype="LReal">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <Comment>
+        <MultiLanguageText Lang="de-DE">[kgm^2] / [lbft^2] Gesamtes Trägheitsmoment auf die Motorseite umgerechnet</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">[kgm^2] / [lbft^2] Total inertia on the drive side</MultiLanguageText>
+      </Comment>
+      <StartValue>0.0</StartValue>
+    </Member>
+    <Member Name="preCtrlMotor" Datatype="LReal">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <Comment>
+        <MultiLanguageText Lang="de-DE">[Nm] / [Lbf ft] Motordrehmoment aus Reibung und Beschleunigung</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">[Nm] / [Lbf ft] Drive torque from friction and acceleration</MultiLanguageText>
+      </Comment>
+      <StartValue>0.0</StartValue>
+    </Member>
+    <Member Name="totalTorquePreCtrl" Datatype="LReal">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <Comment>
+        <MultiLanguageText Lang="de-DE">[Nm] / [Lbf ft] Gesamtes Vorsteuermoment auf Motorseite</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">[Nm] / [Lbf ft] Total torque precontrol value on drive side</MultiLanguageText>
+      </Comment>
+      <StartValue>0.0</StartValue>
+    </Member>
+    <Member Name="tensionTorque" Datatype="LReal">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <Comment>
+        <MultiLanguageText Lang="de-DE">[Nm] / [Lbf ft] Zugmoment auf Motorseite</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">[Nm] / [Lbf ft] Tension torque on drive side</MultiLanguageText>
+      </Comment>
+      <StartValue>0.0</StartValue>
+    </Member>
+  </Section>
+  <Section Name="InOut" />
+  <Section Name="Static">
+    <Member Name="instTableChar" Datatype="&quot;LConSMC_TableChar&quot;">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="statAlpha" Datatype="LReal">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="statMfrict" Datatype="LReal">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="statMAccel" Datatype="LReal">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="statGearRatio2" Datatype="LReal">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="statSignDrivespeed" Datatype="Int">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="statEnableOld" Datatype="Bool">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+    </Member>
+    <Member Name="statBusy" Datatype="Bool">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">false</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <StartValue>FALSE</StartValue>
+    </Member>
+  </Section>
+  <Section Name="Temp" />
+  <Section Name="Constant">
+    <Member Name="PI" Datatype="Real">
+      <StartValue>3.141592</StartValue>
+    </Member>
+    <Member Name="NO_ERROR" Datatype="DWord">
+      <StartValue>16#0000_0000</StartValue>
+    </Member>
+  </Section>
+</Sections></Interface>
+      <IsIECCheckEnabled>true</IsIECCheckEnabled>
+      <MemoryReserve>100</MemoryReserve>
+      <Name>LConSMC_TorquePrecontrol</Name>
+      <Namespace />
+      <Number>32005</Number>
+      <ProgrammingLanguage>SCL</ProgrammingLanguage>
+      <SetENOAutomatically>true</SetENOAutomatically>
+    </AttributeList>
+    <ObjectList>
+      <MultilingualText ID="1" CompositionName="Comment">
+        <ObjectList>
+          <MultilingualTextItem ID="2" CompositionName="Items">
+            <AttributeList>
+              <Culture>de-DE</Culture>
+              <Text>Berechnung der Drehmomentvorsteuerung. Der Baustein muss in einem zyklischen Interrupt aufgerufen werden.  Funktionsbaustein ID: 6101</Text>
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="3" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-GB</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="4" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-US</Culture>
+              <Text>Torque pre-control calculation. The function block must be called in a cyclic task.  Function block ID: 6101</Text>
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="5" CompositionName="Items">
+            <AttributeList>
+              <Culture>es-ES</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="6" CompositionName="Items">
+            <AttributeList>
+              <Culture>fr-FR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="7" CompositionName="Items">
+            <AttributeList>
+              <Culture>it-IT</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="8" CompositionName="Items">
+            <AttributeList>
+              <Culture>ko-KR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="9" CompositionName="Items">
+            <AttributeList>
+              <Culture>zh-CN</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+        </ObjectList>
+      </MultilingualText>
+      <SW.Blocks.CompileUnit ID="A" CompositionName="CompileUnits">
+        <AttributeList>
+          <NetworkSource><StructuredText xmlns="http://www.siemens.com/automation/Openness/SW/NetworkSource/StructuredText/v4">
+  <Token Text="REGION" UId="21" />
+  <Blank UId="22" />
+  <Text UId="23">BLOCK INFO HEADER</Text>
+  <NewLine UId="24" />
+  <Blank Num="2" UId="25" />
+  <LineComment UId="26">
+    <Text UId="27">===============================================================================</Text>
+  </LineComment>
+  <NewLine UId="28" />
+  <Blank Num="2" UId="29" />
+  <LineComment UId="30">
+    <Text UId="31"> SIEMENS AG / (c)Copyright 2023</Text>
+  </LineComment>
+  <NewLine UId="32" />
+  <Blank Num="2" UId="33" />
+  <LineComment UId="34">
+    <Text UId="35">-------------------------------------------------------------------------------</Text>
+  </LineComment>
+  <NewLine UId="36" />
+  <Blank Num="2" UId="37" />
+  <LineComment UId="38">
+    <Text UId="39"> Title:            LConSMC_TorquePreControl</Text>
+  </LineComment>
+  <NewLine UId="40" />
+  <Blank Num="2" UId="41" />
+  <LineComment UId="42">
+    <Text UId="43"> Comment/Function: Torque Precontrol Calculation for sectional drives</Text>
+  </LineComment>
+  <NewLine UId="44" />
+  <Blank Num="2" UId="45" />
+  <LineComment UId="46">
+    <Text UId="47"> Library/Family:   LConSMC</Text>
+  </LineComment>
+  <NewLine UId="48" />
+  <Blank Num="2" UId="49" />
+  <LineComment UId="50">
+    <Text UId="51"> Author:           APC Erlangen</Text>
+  </LineComment>
+  <NewLine UId="52" />
+  <Blank Num="2" UId="53" />
+  <LineComment UId="54">
+    <Text UId="55"> Tested with:      FW 2.8</Text>
+  </LineComment>
+  <NewLine UId="56" />
+  <Blank Num="2" UId="57" />
+  <LineComment UId="58">
+    <Text UId="59"> Engineering:      TIA Portal V16</Text>
+  </LineComment>
+  <NewLine UId="60" />
+  <Blank Num="2" UId="61" />
+  <LineComment UId="62">
+    <Text UId="63"> Restrictions:     Needs to be called in a cyclic task</Text>
+  </LineComment>
+  <NewLine UId="64" />
+  <Blank Num="2" UId="65" />
+  <LineComment UId="66">
+    <Text UId="67"> Requirements:     -</Text>
+  </LineComment>
+  <NewLine UId="68" />
+  <Blank Num="2" UId="69" />
+  <LineComment UId="70">
+    <Text UId="71">-------------------------------------------------------------------------------</Text>
+  </LineComment>
+  <NewLine UId="72" />
+  <Blank Num="2" UId="73" />
+  <LineComment UId="74">
+    <Text UId="75"> Change log table:</Text>
+  </LineComment>
+  <NewLine UId="76" />
+  <Blank Num="2" UId="77" />
+  <LineComment UId="78">
+    <Text UId="79"> Version  | Date       | Expert in charge       | Changes applied</Text>
+  </LineComment>
+  <NewLine UId="80" />
+  <Blank Num="2" UId="81" />
+  <LineComment UId="82">
+    <Text UId="83">----------|------------|------------------------|------------------------------</Text>
+  </LineComment>
+  <NewLine UId="84" />
+  <Blank Num="2" UId="85" />
+  <LineComment UId="86">
+    <Text UId="87"> 01.02.00 | 2018-07-20 | APC Erlangen           | additional input "accelerationAdjustment"</Text>
+  </LineComment>
+  <NewLine UId="88" />
+  <Blank Num="2" UId="89" />
+  <LineComment UId="90">
+    <Text UId="91"> 01.01.00 | 2016-11-17 | APC Erlangen           | adapted to styleguide; warning "variable might not be initialized" removed</Text>
+  </LineComment>
+  <NewLine UId="92" />
+  <Blank Num="2" UId="93" />
+  <LineComment UId="94">
+    <Text UId="95"> 01.00.00 | 2012-08-08 | APC Erlangen           | First released version</Text>
+  </LineComment>
+  <NewLine UId="96" />
+  <Blank Num="2" UId="97" />
+  <LineComment UId="98">
+    <Text UId="99">===============================================================================</Text>
+  </LineComment>
+  <NewLine UId="100" />
+  <Token Text="END_REGION" UId="101" />
+  <Blank UId="102" />
+  <Text UId="103">BLOCK INFO HEADER</Text>
+  <NewLine Num="2" UId="104" />
+  <Token Text="REGION" UId="105" />
+  <Blank UId="106" />
+  <Text UId="107">DESCRIPTION</Text>
+  <NewLine UId="108" />
+  <Comment Inserted="true" UId="109">
+    <MultiLanguageText Lang="de-DE" />
+    <MultiLanguageText Lang="en-GB" />
+    <MultiLanguageText Lang="en-US">
+The function block determines the pre-controlled torque for sectional drives.
+The torque pre-control outputs the following torque setpoints to pre-control the drive:  
+  
+1. A torque setpoint as a function of the acceleration setpoint of the machine/system ramp-function generator and the inertia
+2. Friction torque setpoint is generated depending on the drive speed using a characteristic
+3. Tension torque based on the tension setpoint and the diameter  
+  
+In order to quickly compensate for disturbances and to implement the closed-loop control, the torque to be provided from the drive must be calculated as accurate as possible.
+Depending on the control type, this is either realized additively after the speed controller or by dynamically adjusting the torque limits.
+In both cases the appropriate torque must be calculated using its moment of inertia and transferred to the drive.
+As an alternative to the method integrated in this block, the integrated friction characteristic of the drive system (only in SINAMICS S120) can also be used.
+
+NOTE
+:    The precise setting of the compensation is especially important for indirect tension control.
+This is so that the torque-generating current emulates, as far as possible, the material Tension.
+
+---
+
+#### Calculations
+
+The function block calculates the following physical quantities:  
+  
+* Total moment of inertia
+
+$ TotalInertia = \frac{J_{Mandrel}}{GearRatio^2}\ + J_{Mot} + J_{Fix} $
+
+* Angular acceleration of the drive
+
+$ \alpha = 2 \cdot \frac{lineAcceleration \cdot GearRatio}{diameter}\ $
+
+* Acceleration torque
+
+$ M_{acc} = TotalInertia \cdot \alpha \cdot accelerationAdjustment $
+
+* Friction torque
+
+$ M_{fric} = f(n) \cdot frictionAdjustment $
+
+* Tension torque
+
+$ M_{tension} = \frac{tensionSetpoint \cdot tensionAdjustment \cdot diameter}{2 \cdot GearRatio}\ $
+
+This friction torque is internally determined using the function block LConSMC_TableChar.
+The user is responsible for providing valid and sensible values in the appropriate data fields.
+If the factor FrictionAdjustment is set to 0.0, TableChar is not called and therefore a frictional torque is not added.
+The pre-control torque of the motor, the sum of all pre-control torques, and the tension torque are calculated depending on the drive type.
+The total torque is always the sum of the preCtrlMotor and tensionTorque.
+
+* Drive mode = PULL
+
+$ M_{preCtrlMotor} = M_{acc} + M_{fric} \qquad M_{TensionTorque} = M_{TensionTorque} $
+
+* Drive mode = HELD
+
+$ M_{preCtrlMotor} = M_{acc} + M_{fric} \qquad M_{TensionTorque} = - M_{TensionTorque} $
+
+------
+
+#### Block diagram
+
+![Block diagram](TorquePreControl_Diagram.png)
+
+
+</MultiLanguageText>
+    <MultiLanguageText Lang="es-ES" />
+    <MultiLanguageText Lang="fr-FR" />
+    <MultiLanguageText Lang="it-IT" />
+    <MultiLanguageText Lang="ko-KR" />
+    <MultiLanguageText Lang="zh-CN" />
+  </Comment>
+  <NewLine UId="118" />
+  <Token Text="END_REGION" UId="119" />
+  <Blank UId="120" />
+  <Text UId="121">DESCRIPTION</Text>
+  <NewLine Num="2" UId="122" />
+  <Access Scope="LocalVariable" UId="123">
+    <Symbol UId="124">
+      <Component Name="preCtrlMotor" UId="125" />
+    </Symbol>
+  </Access>
+  <Blank UId="126" />
+  <Token Text=":=" UId="127" />
+  <Blank UId="128" />
+  <Access Scope="LiteralConstant" UId="129">
+    <Constant UId="130">
+      <ConstantValue UId="132">0.0</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="133" />
+  <NewLine UId="134" />
+  <Access Scope="LocalVariable" UId="135">
+    <Symbol UId="136">
+      <Component Name="totalTorquePreCtrl" UId="137" />
+    </Symbol>
+  </Access>
+  <Blank UId="138" />
+  <Token Text=":=" UId="139" />
+  <Blank UId="140" />
+  <Access Scope="LiteralConstant" UId="141">
+    <Constant UId="142">
+      <ConstantValue UId="144">0.0</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="145" />
+  <NewLine UId="146" />
+  <Access Scope="LocalVariable" UId="147">
+    <Symbol UId="148">
+      <Component Name="tensionTorque" UId="149" />
+    </Symbol>
+  </Access>
+  <Blank UId="150" />
+  <Token Text=":=" UId="151" />
+  <Blank UId="152" />
+  <Access Scope="LiteralConstant" UId="153">
+    <Constant UId="154">
+      <ConstantValue UId="156">0.0</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="157" />
+  <NewLine UId="158" />
+  <Access Scope="LocalVariable" UId="159">
+    <Symbol UId="160">
+      <Component Name="totalinertia" UId="161" />
+    </Symbol>
+  </Access>
+  <Blank UId="162" />
+  <Token Text=":=" UId="163" />
+  <Blank UId="164" />
+  <Access Scope="LiteralConstant" UId="165">
+    <Constant UId="166">
+      <ConstantValue UId="168">0.0</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="169" />
+  <NewLine Num="3" UId="170" />
+  <Token Text="IF" UId="171" />
+  <Blank UId="172" />
+  <Access Scope="LocalVariable" UId="173">
+    <Symbol UId="174">
+      <Component Name="enable" UId="175" />
+    </Symbol>
+  </Access>
+  <Blank UId="176" />
+  <Token Text="AND" UId="177" />
+  <Blank UId="178" />
+  <Token Text="NOT" UId="179" />
+  <Blank UId="180" />
+  <Token Text="(" UId="181" />
+  <Access Scope="LocalVariable" UId="182">
+    <Symbol UId="183">
+      <Component Name="statEnableOld" UId="184" />
+    </Symbol>
+  </Access>
+  <Token Text=")" UId="185" />
+  <Blank UId="186" />
+  <Token Text="THEN" UId="187" />
+  <Blank Num="43" UId="188" />
+  <LineComment UId="189">
+    <Text UId="190"> rising edge, init</Text>
+  </LineComment>
+  <NewLine UId="191" />
+  <Blank Num="4" UId="192" />
+  <Access Scope="Call" UId="193">
+    <CallInfo UId="194" BlockType="FB" Name="LConSMC_TableChar">
+      <Instance Scope="LocalVariable" UId="195">
+        <Component Name="instTableChar" UId="196" />
+      </Instance>
+      <Token Text="(" UId="197" />
+      <Parameter Name="enable" UId="198">
+        <Blank UId="199" />
+        <Token Text=":=" UId="200" />
+        <Blank UId="201" />
+        <Access Scope="LiteralConstant" UId="202">
+          <Constant UId="203">
+            <ConstantValue UId="205">false</ConstantValue>
+          </Constant>
+        </Access>
+      </Parameter>
+      <Token Text="," UId="206" />
+      <NewLine UId="207" />
+      <Blank Num="19" UId="208" />
+      <Parameter Name="x" UId="209">
+        <Blank UId="210" />
+        <Token Text=":=" UId="211" />
+        <Blank UId="212" />
+        <Token Text="(" UId="213" />
+        <Access Scope="Call" UId="214">
+          <Instruction Name="ABS" UId="215">
+            <Token Text="(" UId="216" />
+            <NamelessParameter UId="217">
+              <Access Scope="LocalVariable" UId="218">
+                <Symbol UId="219">
+                  <Component Name="drivespeed" UId="220" />
+                </Symbol>
+              </Access>
+            </NamelessParameter>
+            <Token Text=")" UId="222" />
+          </Instruction>
+        </Access>
+        <Token Text=")" UId="223" />
+      </Parameter>
+      <Token Text="," UId="224" />
+      <NewLine UId="225" />
+      <Blank Num="19" UId="226" />
+      <Parameter Name="sizeOfArray" UId="227">
+        <Blank UId="228" />
+        <Token Text=":=" UId="229" />
+        <Blank UId="230" />
+        <Access Scope="LocalVariable" UId="231">
+          <Symbol UId="232">
+            <Component Name="sizeOfArray" UId="233" />
+          </Symbol>
+        </Access>
+      </Parameter>
+      <Token Text="," UId="234" />
+      <NewLine UId="235" />
+      <Blank Num="19" UId="236" />
+      <Parameter Name="xn" UId="237">
+        <Blank UId="238" />
+        <Token Text=":=" UId="239" />
+        <Blank UId="240" />
+        <Access Scope="LocalVariable" UId="241">
+          <Symbol UId="242">
+            <Component Name="xn_speedValues" UId="243" />
+          </Symbol>
+        </Access>
+      </Parameter>
+      <Token Text="," UId="244" />
+      <NewLine UId="245" />
+      <Blank Num="19" UId="246" />
+      <Parameter Name="yn" UId="247">
+        <Blank UId="248" />
+        <Token Text=":=" UId="249" />
+        <Blank UId="250" />
+        <Access Scope="LocalVariable" UId="251">
+          <Symbol UId="252">
+            <Component Name="yn_torqueValues" UId="253" />
+          </Symbol>
+        </Access>
+      </Parameter>
+      <Token Text=")" UId="258" />
+    </CallInfo>
+  </Access>
+  <Token Text=";" UId="259" />
+  <NewLine UId="260" />
+  <Blank Num="4" UId="261" />
+  <Access Scope="LocalVariable" UId="262">
+    <Symbol UId="263">
+      <Component Name="error" UId="264" />
+    </Symbol>
+  </Access>
+  <Blank UId="265" />
+  <Token Text=":=" UId="266" />
+  <Blank UId="267" />
+  <Token Text="(" UId="268" />
+  <Access Scope="LocalVariable" UId="269">
+    <Symbol UId="270">
+      <Component Name="gearRatio" UId="271" />
+    </Symbol>
+  </Access>
+  <Blank UId="272" />
+  <Token Text="&lt;=" UId="273" />
+  <Blank UId="274" />
+  <Access Scope="LiteralConstant" UId="275">
+    <Constant UId="276">
+      <ConstantValue UId="278">0.0</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=")" UId="279" />
+  <NewLine UId="280" />
+  <Blank Num="4" UId="281" />
+  <Token Text="OR" UId="282" />
+  <Blank UId="283" />
+  <Token Text="(" UId="284" />
+  <Access Scope="LocalVariable" UId="285">
+    <Symbol UId="286">
+      <Component Name="JFix" UId="287" />
+    </Symbol>
+  </Access>
+  <Blank UId="288" />
+  <Token Text="&lt;" UId="289" />
+  <Blank UId="290" />
+  <Access Scope="LiteralConstant" UId="291">
+    <Constant UId="292">
+      <ConstantValue UId="294">0.0</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=")" UId="295" />
+  <NewLine UId="296" />
+  <Blank Num="4" UId="297" />
+  <Token Text="OR" UId="298" />
+  <Blank UId="299" />
+  <Token Text="(" UId="300" />
+  <Access Scope="LocalVariable" UId="301">
+    <Symbol UId="302">
+      <Component Name="JMandrel" UId="303" />
+    </Symbol>
+  </Access>
+  <Blank UId="304" />
+  <Token Text="&lt;" UId="305" />
+  <Blank UId="306" />
+  <Access Scope="LiteralConstant" UId="307">
+    <Constant UId="308">
+      <ConstantValue UId="310">0.0</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=")" UId="311" />
+  <NewLine UId="312" />
+  <Blank Num="4" UId="313" />
+  <Token Text="OR" UId="314" />
+  <Blank UId="315" />
+  <Token Text="(" UId="316" />
+  <Access Scope="LocalVariable" UId="317">
+    <Symbol UId="318">
+      <Component Name="JMot" UId="319" />
+    </Symbol>
+  </Access>
+  <Blank UId="320" />
+  <Token Text="&lt;" UId="321" />
+  <Blank UId="322" />
+  <Access Scope="LiteralConstant" UId="323">
+    <Constant UId="324">
+      <ConstantValue UId="326">0.0</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=")" UId="327" />
+  <NewLine UId="328" />
+  <Blank Num="4" UId="329" />
+  <Token Text="OR" UId="330" />
+  <Blank UId="331" />
+  <Access Scope="LocalVariable" UId="332">
+    <Symbol UId="333">
+      <Component Name="typeOfDrive" UId="334" />
+    </Symbol>
+  </Access>
+  <Blank UId="335" />
+  <Token Text="&lt;" UId="336" />
+  <Blank UId="337" />
+  <Access Scope="LiteralConstant" UId="338">
+    <Constant UId="339">
+      <ConstantValue UId="341">0</ConstantValue>
+    </Constant>
+  </Access>
+  <NewLine UId="342" />
+  <Blank Num="4" UId="343" />
+  <Token Text="OR" UId="344" />
+  <Blank UId="345" />
+  <Access Scope="LocalVariable" UId="346">
+    <Symbol UId="347">
+      <Component Name="typeOfDrive" UId="348" />
+    </Symbol>
+  </Access>
+  <Blank UId="349" />
+  <Token Text="&gt;" UId="350" />
+  <Blank UId="351" />
+  <Access Scope="LiteralConstant" UId="352">
+    <Constant UId="353">
+      <ConstantValue UId="355">1</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="356" />
+  <NewLine UId="357" />
+  <Blank Num="4" UId="358" />
+  <NewLine UId="359" />
+  <Blank Num="4" UId="360" />
+  <Token Text="IF" UId="361" />
+  <Blank UId="362" />
+  <Access Scope="LocalVariable" UId="363">
+    <Symbol UId="364">
+      <Component Name="error" UId="365" />
+    </Symbol>
+  </Access>
+  <Blank UId="366" />
+  <Token Text="THEN" UId="367" />
+  <NewLine UId="368" />
+  <Blank Num="6" UId="369" />
+  <Access Scope="LocalVariable" UId="370">
+    <Symbol UId="371">
+      <Component Name="errorID" UId="372" />
+    </Symbol>
+  </Access>
+  <Blank UId="373" />
+  <Token Text=":=" UId="374" />
+  <Blank UId="375" />
+  <Access Scope="GlobalConstant" UId="376">
+    <Constant Name="LCON_ERROR_TORQUE_PRECONTROL_INVALID_CONFIGURATION" UId="377" />
+  </Access>
+  <Token Text=";" UId="380" />
+  <Blank Num="26" UId="381" />
+  <LineComment UId="382">
+    <Text UId="383"> One or more Configuration Data are wrong or not plausible</Text>
+  </LineComment>
+  <NewLine UId="384" />
+  <Blank Num="8" UId="385" />
+  <Access Scope="LocalVariable" UId="386">
+    <Symbol UId="387">
+      <Component Name="statBusy" UId="388" />
+    </Symbol>
+  </Access>
+  <Blank UId="389" />
+  <Token Text=":=" UId="390" />
+  <Blank UId="391" />
+  <Access Scope="LiteralConstant" UId="392">
+    <Constant UId="393">
+      <ConstantValue UId="395">FALSE</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="396" />
+  <NewLine UId="397" />
+  <Blank Num="4" UId="398" />
+  <Token Text="ELSE" UId="399" />
+  <NewLine UId="400" />
+  <Blank Num="8" UId="401" />
+  <Access Scope="LocalVariable" UId="402">
+    <Symbol UId="403">
+      <Component Name="statBusy" UId="404" />
+    </Symbol>
+  </Access>
+  <Blank UId="405" />
+  <Token Text=":=" UId="406" />
+  <Blank UId="407" />
+  <Access Scope="LiteralConstant" UId="408">
+    <Constant UId="409">
+      <ConstantValue UId="411">TRUE</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="412" />
+  <NewLine UId="413" />
+  <Blank Num="8" UId="414" />
+  <Access Scope="LocalVariable" UId="415">
+    <Symbol UId="416">
+      <Component Name="errorID" UId="417" />
+    </Symbol>
+  </Access>
+  <Blank UId="418" />
+  <Token Text=":=" UId="419" />
+  <Blank UId="420" />
+  <Access Scope="LocalConstant" UId="421">
+    <Constant Name="NO_ERROR" UId="422" />
+  </Access>
+  <Token Text=";" UId="425" />
+  <NewLine UId="426" />
+  <Blank Num="4" UId="427" />
+  <Token Text="END_IF" UId="428" />
+  <Token Text=";" UId="429" />
+  <NewLine UId="430" />
+  <Blank Num="4" UId="431" />
+  <Access Scope="LocalVariable" UId="432">
+    <Symbol UId="433">
+      <Component Name="statEnableOld" UId="434" />
+    </Symbol>
+  </Access>
+  <Blank UId="435" />
+  <Token Text=":=" UId="436" />
+  <Blank UId="437" />
+  <Access Scope="LocalVariable" UId="438">
+    <Symbol UId="439">
+      <Component Name="enable" UId="440" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="441" />
+  <NewLine UId="442" />
+  <Blank Num="4" UId="443" />
+  <Token Text="RETURN" UId="444" />
+  <Token Text=";" UId="445" />
+  <NewLine UId="446" />
+  <Token Text="END_IF" UId="447" />
+  <Token Text=";" UId="448" />
+  <NewLine Num="2" UId="449" />
+  <Token Text="IF" UId="450" />
+  <Blank UId="451" />
+  <Token Text="NOT" UId="452" />
+  <Blank UId="453" />
+  <Token Text="(" UId="454" />
+  <Access Scope="LocalVariable" UId="455">
+    <Symbol UId="456">
+      <Component Name="enable" UId="457" />
+    </Symbol>
+  </Access>
+  <Token Text=")" UId="458" />
+  <Blank UId="459" />
+  <Token Text="AND" UId="460" />
+  <Blank UId="461" />
+  <Access Scope="LocalVariable" UId="462">
+    <Symbol UId="463">
+      <Component Name="statEnableOld" UId="464" />
+    </Symbol>
+  </Access>
+  <Blank UId="465" />
+  <Token Text="THEN" UId="466" />
+  <Blank Num="43" UId="467" />
+  <LineComment UId="468">
+    <Text UId="469"> falling edge, disable</Text>
+  </LineComment>
+  <NewLine UId="470" />
+  <Blank Num="4" UId="471" />
+  <Access Scope="Call" UId="472">
+    <CallInfo UId="473" BlockType="FB" Name="LConSMC_TableChar">
+      <Instance Scope="LocalVariable" UId="474">
+        <Component Name="instTableChar" UId="475" />
+      </Instance>
+      <Token Text="(" UId="476" />
+      <Parameter Name="enable" UId="477">
+        <Blank UId="478" />
+        <Token Text=":=" UId="479" />
+        <Blank UId="480" />
+        <Access Scope="LiteralConstant" UId="481">
+          <Constant UId="482">
+            <ConstantValue UId="484">false</ConstantValue>
+          </Constant>
+        </Access>
+      </Parameter>
+      <Token Text="," UId="485" />
+      <NewLine UId="486" />
+      <Blank Num="19" UId="487" />
+      <Parameter Name="x" UId="488">
+        <Blank UId="489" />
+        <Token Text=":=" UId="490" />
+        <Blank UId="491" />
+        <Token Text="(" UId="492" />
+        <Access Scope="Call" UId="493">
+          <Instruction Name="ABS" UId="494">
+            <Token Text="(" UId="495" />
+            <NamelessParameter UId="496">
+              <Access Scope="LocalVariable" UId="497">
+                <Symbol UId="498">
+                  <Component Name="drivespeed" UId="499" />
+                </Symbol>
+              </Access>
+            </NamelessParameter>
+            <Token Text=")" UId="501" />
+          </Instruction>
+        </Access>
+        <Token Text=")" UId="502" />
+      </Parameter>
+      <Token Text="," UId="503" />
+      <NewLine UId="504" />
+      <Blank Num="19" UId="505" />
+      <Parameter Name="sizeOfArray" UId="506">
+        <Blank UId="507" />
+        <Token Text=":=" UId="508" />
+        <Blank UId="509" />
+        <Access Scope="LocalVariable" UId="510">
+          <Symbol UId="511">
+            <Component Name="sizeOfArray" UId="512" />
+          </Symbol>
+        </Access>
+      </Parameter>
+      <Token Text="," UId="513" />
+      <NewLine UId="514" />
+      <Blank Num="19" UId="515" />
+      <Parameter Name="xn" UId="516">
+        <Blank UId="517" />
+        <Token Text=":=" UId="518" />
+        <Blank UId="519" />
+        <Access Scope="LocalVariable" UId="520">
+          <Symbol UId="521">
+            <Component Name="xn_speedValues" UId="522" />
+          </Symbol>
+        </Access>
+      </Parameter>
+      <Token Text="," UId="523" />
+      <NewLine UId="524" />
+      <Blank Num="19" UId="525" />
+      <Parameter Name="yn" UId="526">
+        <Blank UId="527" />
+        <Token Text=":=" UId="528" />
+        <Blank UId="529" />
+        <Access Scope="LocalVariable" UId="530">
+          <Symbol UId="531">
+            <Component Name="yn_torqueValues" UId="532" />
+          </Symbol>
+        </Access>
+      </Parameter>
+      <Token Text=")" UId="537" />
+    </CallInfo>
+  </Access>
+  <Token Text=";" UId="538" />
+  <NewLine UId="539" />
+  <Blank Num="4" UId="540" />
+  <Access Scope="LocalVariable" UId="541">
+    <Symbol UId="542">
+      <Component Name="statBusy" UId="543" />
+    </Symbol>
+  </Access>
+  <Blank UId="544" />
+  <Token Text=":=" UId="545" />
+  <Blank UId="546" />
+  <Access Scope="LiteralConstant" UId="547">
+    <Constant UId="548">
+      <ConstantValue UId="550">FALSE</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="551" />
+  <NewLine UId="552" />
+  <Blank Num="4" UId="553" />
+  <Access Scope="LocalVariable" UId="554">
+    <Symbol UId="555">
+      <Component Name="error" UId="556" />
+    </Symbol>
+  </Access>
+  <Blank UId="557" />
+  <Token Text=":=" UId="558" />
+  <Blank UId="559" />
+  <Access Scope="LiteralConstant" UId="560">
+    <Constant UId="561">
+      <ConstantValue UId="563">FALSE</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="564" />
+  <NewLine UId="565" />
+  <Blank Num="4" UId="566" />
+  <Access Scope="LocalVariable" UId="567">
+    <Symbol UId="568">
+      <Component Name="errorID" UId="569" />
+    </Symbol>
+  </Access>
+  <Blank UId="570" />
+  <Token Text=":=" UId="571" />
+  <Blank UId="572" />
+  <Access Scope="LocalConstant" UId="573">
+    <Constant Name="NO_ERROR" UId="574" />
+  </Access>
+  <Token Text=";" UId="577" />
+  <NewLine UId="578" />
+  <Blank Num="4" UId="579" />
+  <Access Scope="LocalVariable" UId="580">
+    <Symbol UId="581">
+      <Component Name="statEnableOld" UId="582" />
+    </Symbol>
+  </Access>
+  <Blank UId="583" />
+  <Token Text=":=" UId="584" />
+  <Blank UId="585" />
+  <Access Scope="LocalVariable" UId="586">
+    <Symbol UId="587">
+      <Component Name="enable" UId="588" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="589" />
+  <NewLine UId="590" />
+  <Blank Num="4" UId="591" />
+  <Token Text="RETURN" UId="592" />
+  <Token Text=";" UId="593" />
+  <NewLine UId="594" />
+  <Token Text="END_IF" UId="595" />
+  <Token Text=";" UId="596" />
+  <NewLine Num="3" UId="597" />
+  <Token Text="IF" UId="598" />
+  <Blank UId="599" />
+  <Access Scope="LocalVariable" UId="600">
+    <Symbol UId="601">
+      <Component Name="statBusy" UId="602" />
+    </Symbol>
+  </Access>
+  <Blank UId="603" />
+  <Token Text="THEN" UId="604" />
+  <NewLine UId="605" />
+  <Blank Num="4" UId="606" />
+  <Token Text="IF" UId="607" />
+  <Blank UId="608" />
+  <Access Scope="LocalVariable" UId="609">
+    <Symbol UId="610">
+      <Component Name="diameter" UId="611" />
+    </Symbol>
+  </Access>
+  <Blank UId="612" />
+  <Token Text="&lt;=" UId="613" />
+  <Blank UId="614" />
+  <Access Scope="LiteralConstant" UId="615">
+    <Constant UId="616">
+      <ConstantValue UId="618">0.0</ConstantValue>
+    </Constant>
+  </Access>
+  <Blank UId="619" />
+  <Token Text="THEN" UId="620" />
+  <NewLine UId="621" />
+  <Blank Num="6" UId="622" />
+  <Access Scope="LocalVariable" UId="623">
+    <Symbol UId="624">
+      <Component Name="errorID" UId="625" />
+    </Symbol>
+  </Access>
+  <Blank UId="626" />
+  <Token Text=":=" UId="627" />
+  <Blank UId="628" />
+  <Access Scope="GlobalConstant" UId="629">
+    <Constant Name="LCON_ERROR_TORQUE_PRECONTROL_INVALID_INPUT" UId="630" />
+  </Access>
+  <Token Text=";" UId="633" />
+  <Blank Num="29" UId="634" />
+  <LineComment UId="635">
+    <Text UId="636"> Calculated diameter Value is not plausible</Text>
+  </LineComment>
+  <NewLine UId="637" />
+  <Blank Num="8" UId="638" />
+  <Access Scope="LocalVariable" UId="639">
+    <Symbol UId="640">
+      <Component Name="error" UId="641" />
+    </Symbol>
+  </Access>
+  <Blank UId="642" />
+  <Token Text=":=" UId="643" />
+  <Blank UId="644" />
+  <Access Scope="LiteralConstant" UId="645">
+    <Constant UId="646">
+      <ConstantValue UId="648">TRUE</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="649" />
+  <NewLine UId="650" />
+  <Blank Num="8" UId="651" />
+  <Access Scope="LocalVariable" UId="652">
+    <Symbol UId="653">
+      <Component Name="statBusy" UId="654" />
+    </Symbol>
+  </Access>
+  <Blank UId="655" />
+  <Token Text=":=" UId="656" />
+  <Blank UId="657" />
+  <Access Scope="LiteralConstant" UId="658">
+    <Constant UId="659">
+      <ConstantValue UId="661">FALSE</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="662" />
+  <NewLine UId="663" />
+  <Blank Num="4" UId="664" />
+  <Token Text="END_IF" UId="665" />
+  <Token Text=";" UId="666" />
+  <NewLine UId="667" />
+  <Blank Num="4" UId="668" />
+  <NewLine UId="669" />
+  <Blank Num="4" UId="670" />
+  <Access Scope="LocalVariable" UId="671">
+    <Symbol UId="672">
+      <Component Name="statGearRatio2" UId="673" />
+    </Symbol>
+  </Access>
+  <Blank UId="674" />
+  <Token Text=":=" UId="675" />
+  <Blank UId="676" />
+  <Access Scope="LocalVariable" UId="677">
+    <Symbol UId="678">
+      <Component Name="gearRatio" UId="679" />
+    </Symbol>
+  </Access>
+  <Blank UId="680" />
+  <Token Text="*" UId="681" />
+  <Blank UId="682" />
+  <Access Scope="LocalVariable" UId="683">
+    <Symbol UId="684">
+      <Component Name="gearRatio" UId="685" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="686" />
+  <NewLine UId="687" />
+  <Blank Num="4" UId="688" />
+  <Access Scope="LocalVariable" UId="689">
+    <Symbol UId="690">
+      <Component Name="totalinertia" UId="691" />
+    </Symbol>
+  </Access>
+  <Blank UId="692" />
+  <Token Text=":=" UId="693" />
+  <Blank UId="694" />
+  <Token Text="(" UId="695" />
+  <Access Scope="LocalVariable" UId="696">
+    <Symbol UId="697">
+      <Component Name="JMandrel" UId="698" />
+    </Symbol>
+  </Access>
+  <Blank UId="699" />
+  <Token Text="/" UId="700" />
+  <Blank UId="701" />
+  <Access Scope="LocalVariable" UId="702">
+    <Symbol UId="703">
+      <Component Name="statGearRatio2" UId="704" />
+    </Symbol>
+  </Access>
+  <Token Text=")" UId="705" />
+  <Blank Num="28" UId="706" />
+  <LineComment UId="707">
+    <Text UId="708"> totalInertia = (jMandrel + jFix ) / gearRatio**2  + jMot</Text>
+  </LineComment>
+  <NewLine UId="709" />
+  <Blank Num="4" UId="710" />
+  <Token Text="+" UId="711" />
+  <Blank UId="712" />
+  <Access Scope="LocalVariable" UId="713">
+    <Symbol UId="714">
+      <Component Name="JMot" UId="715" />
+    </Symbol>
+  </Access>
+  <NewLine UId="716" />
+  <Blank Num="4" UId="717" />
+  <Token Text="+" UId="718" />
+  <Blank UId="719" />
+  <Access Scope="LocalVariable" UId="720">
+    <Symbol UId="721">
+      <Component Name="JFix" UId="722" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="723" />
+  <NewLine UId="724" />
+  <Blank Num="4" UId="725" />
+  <NewLine UId="726" />
+  <Blank Num="4" UId="727" />
+  <LineComment UId="728">
+    <Text UId="729"> Acceleration precontrol</Text>
+  </LineComment>
+  <NewLine UId="730" />
+  <Blank Num="4" UId="731" />
+  <Token Text="IF" UId="732" />
+  <Blank UId="733" />
+  <Access Scope="LocalVariable" UId="734">
+    <Symbol UId="735">
+      <Component Name="metricUnits" UId="736" />
+    </Symbol>
+  </Access>
+  <Blank UId="737" />
+  <Token Text="THEN" UId="738" />
+  <NewLine UId="739" />
+  <Blank Num="8" UId="740" />
+  <Access Scope="LocalVariable" UId="741">
+    <Symbol UId="742">
+      <Component Name="statAlpha" UId="743" />
+    </Symbol>
+  </Access>
+  <Blank UId="744" />
+  <Token Text=":=" UId="745" />
+  <Blank UId="746" />
+  <Token Text="(" UId="747" />
+  <Access Scope="LocalVariable" UId="748">
+    <Symbol UId="749">
+      <Component Name="lineAcceleration" UId="750" />
+    </Symbol>
+  </Access>
+  <Blank UId="751" />
+  <Token Text="*" UId="752" />
+  <Blank UId="753" />
+  <Access Scope="LocalVariable" UId="754">
+    <Symbol UId="755">
+      <Component Name="gearRatio" UId="756" />
+    </Symbol>
+  </Access>
+  <Blank UId="757" />
+  <Token Text="/" UId="758" />
+  <Blank UId="759" />
+  <Token Text="(" UId="760" />
+  <Access Scope="LocalVariable" UId="761">
+    <Symbol UId="762">
+      <Component Name="diameter" UId="763" />
+    </Symbol>
+  </Access>
+  <Blank UId="764" />
+  <Token Text="/" UId="765" />
+  <Blank UId="766" />
+  <Access Scope="LiteralConstant" UId="767">
+    <Constant UId="768">
+      <ConstantValue UId="770">2.0</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=")" UId="771" />
+  <Token Text=")" UId="772" />
+  <Token Text=";" UId="773" />
+  <Blank Num="9" UId="774" />
+  <LineComment UId="775">
+    <Text UId="776"> alpha = (acceleration * gearRatio) / ( diamActVal / 2.0 ) [ 1/s? ]   </Text>
+  </LineComment>
+  <NewLine UId="777" />
+  <Blank Num="4" UId="778" />
+  <Token Text="ELSE" UId="779" />
+  <NewLine UId="780" />
+  <Blank Num="8" UId="781" />
+  <Access Scope="LocalVariable" UId="782">
+    <Symbol UId="783">
+      <Component Name="statAlpha" UId="784" />
+    </Symbol>
+  </Access>
+  <Blank UId="785" />
+  <Token Text=":=" UId="786" />
+  <Blank UId="787" />
+  <Token Text="(" UId="788" />
+  <Access Scope="LocalVariable" UId="789">
+    <Symbol UId="790">
+      <Component Name="lineAcceleration" UId="791" />
+    </Symbol>
+  </Access>
+  <Blank UId="792" />
+  <Token Text="*" UId="793" />
+  <Blank UId="794" />
+  <Access Scope="LocalVariable" UId="795">
+    <Symbol UId="796">
+      <Component Name="gearRatio" UId="797" />
+    </Symbol>
+  </Access>
+  <Blank UId="798" />
+  <Token Text="/" UId="799" />
+  <Blank UId="800" />
+  <Token Text="(" UId="801" />
+  <Access Scope="LocalVariable" UId="802">
+    <Symbol UId="803">
+      <Component Name="diameter" UId="804" />
+    </Symbol>
+  </Access>
+  <Blank UId="805" />
+  <Token Text="/" UId="806" />
+  <Blank UId="807" />
+  <Access Scope="LiteralConstant" UId="808">
+    <Constant UId="809">
+      <ConstantValue UId="811">2.0</ConstantValue>
+    </Constant>
+  </Access>
+  <Blank UId="812" />
+  <Token Text="/" UId="813" />
+  <Blank UId="814" />
+  <Access Scope="LiteralConstant" UId="815">
+    <Constant UId="816">
+      <ConstantValue UId="818">12.0</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=")" UId="819" />
+  <Token Text=")" UId="820" />
+  <Token Text=";" UId="821" />
+  <Blank Num="2" UId="822" />
+  <LineComment UId="823">
+    <Text UId="824"> alpha = (acceleration * gearRatio) / ( diamActVal / 2.0 ) [ 1/s? ]   </Text>
+  </LineComment>
+  <NewLine UId="825" />
+  <Blank Num="4" UId="826" />
+  <Token Text="END_IF" UId="827" />
+  <Token Text=";" UId="828" />
+  <NewLine UId="829" />
+  <Blank Num="4" UId="830" />
+  <NewLine UId="831" />
+  <Blank Num="4" UId="832" />
+  <Access Scope="LocalVariable" UId="833">
+    <Symbol UId="834">
+      <Component Name="statMAccel" UId="835" />
+    </Symbol>
+  </Access>
+  <Blank UId="836" />
+  <Token Text=":=" UId="837" />
+  <Blank UId="838" />
+  <Access Scope="LocalVariable" UId="839">
+    <Symbol UId="840">
+      <Component Name="statAlpha" UId="841" />
+    </Symbol>
+  </Access>
+  <Blank UId="842" />
+  <Token Text="*" UId="843" />
+  <Blank UId="844" />
+  <Access Scope="LocalVariable" UId="845">
+    <Symbol UId="846">
+      <Component Name="totalinertia" UId="847" />
+    </Symbol>
+  </Access>
+  <Blank UId="848" />
+  <Token Text="*" UId="849" />
+  <Blank UId="850" />
+  <Access Scope="LocalVariable" UId="851">
+    <Symbol UId="852">
+      <Component Name="accelerationAdjustment" UId="853" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="854" />
+  <NewLine UId="855" />
+  <Blank Num="4" UId="856" />
+  <NewLine UId="857" />
+  <Blank Num="4" UId="858" />
+  <LineComment UId="859">
+    <Text UId="860"> Friction precontrol</Text>
+  </LineComment>
+  <NewLine UId="861" />
+  <Blank Num="4" UId="862" />
+  <Token Text="IF" UId="863" />
+  <Blank UId="864" />
+  <Access Scope="LocalVariable" UId="865">
+    <Symbol UId="866">
+      <Component Name="drivespeed" UId="867" />
+    </Symbol>
+  </Access>
+  <Blank UId="868" />
+  <Token Text="&lt;&gt;" UId="869" />
+  <Blank UId="870" />
+  <Access Scope="LiteralConstant" UId="871">
+    <Constant UId="872">
+      <ConstantValue UId="874">0.0</ConstantValue>
+    </Constant>
+  </Access>
+  <Blank UId="875" />
+  <Token Text="THEN" UId="876" />
+  <NewLine UId="877" />
+  <Blank Num="8" UId="878" />
+  <Access Scope="LocalVariable" UId="879">
+    <Symbol UId="880">
+      <Component Name="statSignDrivespeed" UId="881" />
+    </Symbol>
+  </Access>
+  <Blank UId="882" />
+  <Token Text=":=" UId="883" />
+  <Blank UId="884" />
+  <Access Scope="Call" UId="885">
+    <Instruction Name="LREAL_TO_INT" UId="886">
+      <Token Text="(" UId="887" />
+      <NamelessParameter UId="888">
+        <Access Scope="LocalVariable" UId="889">
+          <Symbol UId="890">
+            <Component Name="drivespeed" UId="891" />
+          </Symbol>
+        </Access>
+        <Blank UId="892" />
+        <Token Text="/" UId="893" />
+        <Blank UId="894" />
+        <Access Scope="Call" UId="895">
+          <Instruction Name="ABS" UId="896">
+            <Token Text="(" UId="897" />
+            <NamelessParameter UId="898">
+              <Access Scope="LocalVariable" UId="899">
+                <Symbol UId="900">
+                  <Component Name="drivespeed" UId="901" />
+                </Symbol>
+              </Access>
+            </NamelessParameter>
+            <Token Text=")" UId="903" />
+          </Instruction>
+        </Access>
+      </NamelessParameter>
+      <Token Text=")" UId="905" />
+    </Instruction>
+  </Access>
+  <Token Text=";" UId="906" />
+  <NewLine UId="907" />
+  <Blank Num="4" UId="908" />
+  <Token Text="ELSE" UId="909" />
+  <NewLine UId="910" />
+  <Blank Num="8" UId="911" />
+  <Access Scope="LocalVariable" UId="912">
+    <Symbol UId="913">
+      <Component Name="statSignDrivespeed" UId="914" />
+    </Symbol>
+  </Access>
+  <Blank UId="915" />
+  <Token Text=":=" UId="916" />
+  <Blank UId="917" />
+  <Access Scope="LiteralConstant" UId="918">
+    <Constant UId="919">
+      <ConstantValue UId="921">0</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="922" />
+  <NewLine UId="923" />
+  <Blank Num="4" UId="924" />
+  <Token Text="END_IF" UId="925" />
+  <Token Text=";" UId="926" />
+  <NewLine UId="927" />
+  <Blank Num="4" UId="928" />
+  <NewLine UId="929" />
+  <Blank Num="4" UId="930" />
+  <Token Text="IF" UId="931" />
+  <Blank UId="932" />
+  <Token Text="(" UId="933" />
+  <Access Scope="LocalVariable" UId="934">
+    <Symbol UId="935">
+      <Component Name="frictionAdjustment" UId="936" />
+    </Symbol>
+  </Access>
+  <Blank UId="937" />
+  <Token Text="&lt;&gt;" UId="938" />
+  <Blank UId="939" />
+  <Access Scope="LiteralConstant" UId="940">
+    <Constant UId="941">
+      <ConstantValue UId="943">0.0</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=")" UId="944" />
+  <Blank UId="945" />
+  <Token Text="THEN" UId="946" />
+  <NewLine UId="947" />
+  <Blank Num="8" UId="948" />
+  <Access Scope="Call" UId="949">
+    <CallInfo UId="950" BlockType="FB" Name="LConSMC_TableChar">
+      <Instance Scope="LocalVariable" UId="951">
+        <Component Name="instTableChar" UId="952" />
+      </Instance>
+      <Token Text="(" UId="953" />
+      <Parameter Name="enable" UId="954">
+        <Blank UId="955" />
+        <Token Text=":=" UId="956" />
+        <Blank UId="957" />
+        <Access Scope="LiteralConstant" UId="958">
+          <Constant UId="959">
+            <ConstantValue UId="961">true</ConstantValue>
+          </Constant>
+        </Access>
+      </Parameter>
+      <Token Text="," UId="962" />
+      <NewLine UId="963" />
+      <Blank Num="23" UId="964" />
+      <Parameter Name="x" UId="965">
+        <Blank UId="966" />
+        <Token Text=":=" UId="967" />
+        <Blank UId="968" />
+        <Token Text="(" UId="969" />
+        <Access Scope="Call" UId="970">
+          <Instruction Name="ABS" UId="971">
+            <Token Text="(" UId="972" />
+            <NamelessParameter UId="973">
+              <Access Scope="LocalVariable" UId="974">
+                <Symbol UId="975">
+                  <Component Name="drivespeed" UId="976" />
+                </Symbol>
+              </Access>
+            </NamelessParameter>
+            <Token Text=")" UId="978" />
+          </Instruction>
+        </Access>
+        <Token Text=")" UId="979" />
+      </Parameter>
+      <Token Text="," UId="980" />
+      <NewLine UId="981" />
+      <Blank Num="23" UId="982" />
+      <Parameter Name="sizeOfArray" UId="983">
+        <Blank UId="984" />
+        <Token Text=":=" UId="985" />
+        <Blank UId="986" />
+        <Access Scope="LocalVariable" UId="987">
+          <Symbol UId="988">
+            <Component Name="sizeOfArray" UId="989" />
+          </Symbol>
+        </Access>
+      </Parameter>
+      <Token Text="," UId="990" />
+      <NewLine UId="991" />
+      <Blank Num="23" UId="992" />
+      <Parameter Name="xn" UId="993">
+        <Blank UId="994" />
+        <Token Text=":=" UId="995" />
+        <Blank UId="996" />
+        <Access Scope="LocalVariable" UId="997">
+          <Symbol UId="998">
+            <Component Name="xn_speedValues" UId="999" />
+          </Symbol>
+        </Access>
+      </Parameter>
+      <Token Text="," UId="1000" />
+      <NewLine UId="1001" />
+      <Blank Num="23" UId="1002" />
+      <Parameter Name="yn" UId="1003">
+        <Blank UId="1004" />
+        <Token Text=":=" UId="1005" />
+        <Blank UId="1006" />
+        <Access Scope="LocalVariable" UId="1007">
+          <Symbol UId="1008">
+            <Component Name="yn_torqueValues" UId="1009" />
+          </Symbol>
+        </Access>
+      </Parameter>
+      <Token Text=")" UId="1014" />
+    </CallInfo>
+  </Access>
+  <Token Text=";" UId="1015" />
+  <NewLine UId="1016" />
+  <Blank Num="8" UId="1017" />
+  <Token Text="IF" UId="1018" />
+  <Blank UId="1019" />
+  <Token Text="(" UId="1020" />
+  <Access Scope="LocalVariable" UId="1021">
+    <Symbol UId="1022">
+      <Component Name="instTableChar" UId="1023" />
+      <Token Text="." UId="1024" />
+      <Component Name="error" UId="1025" />
+    </Symbol>
+  </Access>
+  <Token Text=")" UId="1026" />
+  <Blank UId="1027" />
+  <Token Text="THEN" UId="1028" />
+  <Blank Num="39" UId="1029" />
+  <LineComment UId="1030">
+    <Text UId="1031"> If there's no error yet or its prio is below new prio</Text>
+  </LineComment>
+  <NewLine UId="1032" />
+  <Blank Num="12" UId="1033" />
+  <Access Scope="LocalVariable" UId="1034">
+    <Symbol UId="1035">
+      <Component Name="statMfrict" UId="1036" />
+    </Symbol>
+  </Access>
+  <Blank UId="1037" />
+  <Token Text=":=" UId="1038" />
+  <Blank UId="1039" />
+  <Access Scope="LiteralConstant" UId="1040">
+    <Constant UId="1041">
+      <ConstantValue UId="1043">0.0</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="1044" />
+  <NewLine UId="1045" />
+  <Blank Num="12" UId="1046" />
+  <Access Scope="LocalVariable" UId="1047">
+    <Symbol UId="1048">
+      <Component Name="error" UId="1049" />
+    </Symbol>
+  </Access>
+  <Blank UId="1050" />
+  <Token Text=":=" UId="1051" />
+  <Blank UId="1052" />
+  <Access Scope="LiteralConstant" UId="1053">
+    <Constant UId="1054">
+      <ConstantValue UId="1056">TRUE</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="1057" />
+  <NewLine UId="1058" />
+  <Blank Num="12" UId="1059" />
+  <Access Scope="LocalVariable" UId="1060">
+    <Symbol UId="1061">
+      <Component Name="errorID" UId="1062" />
+    </Symbol>
+  </Access>
+  <Blank UId="1063" />
+  <Token Text=":=" UId="1064" />
+  <Blank UId="1065" />
+  <Access Scope="LocalVariable" UId="1066">
+    <Symbol UId="1067">
+      <Component Name="instTableChar" UId="1068" />
+      <Token Text="." UId="1069" />
+      <Component Name="errorID" UId="1070" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="1071" />
+  <NewLine UId="1072" />
+  <Blank Num="8" UId="1073" />
+  <Token Text="ELSE" UId="1074" />
+  <NewLine UId="1075" />
+  <Blank Num="12" UId="1076" />
+  <Access Scope="LocalVariable" UId="1077">
+    <Symbol UId="1078">
+      <Component Name="statMfrict" UId="1079" />
+    </Symbol>
+  </Access>
+  <Blank UId="1080" />
+  <Token Text=":=" UId="1081" />
+  <Blank UId="1082" />
+  <Access Scope="LocalVariable" UId="1083">
+    <Symbol UId="1084">
+      <Component Name="instTableChar" UId="1085" />
+      <Token Text="." UId="1086" />
+      <Component Name="y" UId="1087" />
+    </Symbol>
+  </Access>
+  <Blank UId="1088" />
+  <Token Text="*" UId="1089" />
+  <Blank UId="1090" />
+  <Access Scope="LocalVariable" UId="1091">
+    <Symbol UId="1092">
+      <Component Name="frictionAdjustment" UId="1093" />
+    </Symbol>
+  </Access>
+  <Blank UId="1094" />
+  <Token Text="*" UId="1095" />
+  <Blank UId="1096" />
+  <Access Scope="LocalVariable" UId="1097">
+    <Symbol UId="1098">
+      <Component Name="statSignDrivespeed" UId="1099" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="1100" />
+  <LineComment UId="1101">
+    <Text UId="1102"> [ M ] friction;</Text>
+  </LineComment>
+  <NewLine UId="1103" />
+  <Blank Num="8" UId="1104" />
+  <Token Text="END_IF" UId="1105" />
+  <Token Text=";" UId="1106" />
+  <NewLine UId="1107" />
+  <Blank Num="4" UId="1108" />
+  <Token Text="ELSE" UId="1109" />
+  <NewLine UId="1110" />
+  <Blank Num="8" UId="1111" />
+  <Access Scope="LocalVariable" UId="1112">
+    <Symbol UId="1113">
+      <Component Name="statMfrict" UId="1114" />
+    </Symbol>
+  </Access>
+  <Blank UId="1115" />
+  <Token Text=":=" UId="1116" />
+  <Blank UId="1117" />
+  <Access Scope="LiteralConstant" UId="1118">
+    <Constant UId="1119">
+      <ConstantValue UId="1121">0.0</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="1122" />
+  <NewLine UId="1123" />
+  <Blank Num="4" UId="1124" />
+  <Token Text="END_IF" UId="1125" />
+  <Token Text=";" UId="1126" />
+  <NewLine UId="1127" />
+  <Blank Num="4" UId="1128" />
+  <NewLine UId="1129" />
+  <Blank Num="4" UId="1130" />
+  <LineComment UId="1131">
+    <Text UId="1132"> Tension precontrol</Text>
+  </LineComment>
+  <NewLine UId="1133" />
+  <Blank Num="4" UId="1134" />
+  <Token Text="IF" UId="1135" />
+  <Blank UId="1136" />
+  <Access Scope="LocalVariable" UId="1137">
+    <Symbol UId="1138">
+      <Component Name="metricUnits" UId="1139" />
+    </Symbol>
+  </Access>
+  <Blank UId="1140" />
+  <Token Text="THEN" UId="1141" />
+  <NewLine UId="1142" />
+  <Blank Num="8" UId="1143" />
+  <Access Scope="LocalVariable" UId="1144">
+    <Symbol UId="1145">
+      <Component Name="tensionTorque" UId="1146" />
+    </Symbol>
+  </Access>
+  <Blank UId="1147" />
+  <Token Text=":=" UId="1148" />
+  <Blank UId="1149" />
+  <Token Text="(" UId="1150" />
+  <Token Text="(" UId="1151" />
+  <Access Scope="LocalVariable" UId="1152">
+    <Symbol UId="1153">
+      <Component Name="tensionSetpoint" UId="1154" />
+    </Symbol>
+  </Access>
+  <Blank UId="1155" />
+  <Token Text="*" UId="1156" />
+  <Blank UId="1157" />
+  <Access Scope="LocalVariable" UId="1158">
+    <Symbol UId="1159">
+      <Component Name="tensionAdjustment" UId="1160" />
+    </Symbol>
+  </Access>
+  <Token Text=")" UId="1161" />
+  <NewLine UId="1162" />
+  <Blank Num="8" UId="1163" />
+  <Token Text="*" UId="1164" />
+  <Blank UId="1165" />
+  <Token Text="(" UId="1166" />
+  <Access Scope="LocalVariable" UId="1167">
+    <Symbol UId="1168">
+      <Component Name="diameter" UId="1169" />
+    </Symbol>
+  </Access>
+  <Blank UId="1170" />
+  <Token Text="/" UId="1171" />
+  <Blank UId="1172" />
+  <Access Scope="LiteralConstant" UId="1173">
+    <Constant UId="1174">
+      <ConstantValue UId="1176">2.0</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=")" UId="1177" />
+  <Token Text=")" UId="1178" />
+  <Blank UId="1179" />
+  <Token Text="/" UId="1180" />
+  <Blank UId="1181" />
+  <Access Scope="LocalVariable" UId="1182">
+    <Symbol UId="1183">
+      <Component Name="gearRatio" UId="1184" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="1185" />
+  <Blank Num="26" UId="1186" />
+  <LineComment UId="1187">
+    <Text UId="1188"> [M] Motor torque (Nm) required for tension [tension(N) * radius(M)/gear ratio]</Text>
+  </LineComment>
+  <NewLine UId="1189" />
+  <Blank Num="4" UId="1190" />
+  <Token Text="ELSE" UId="1191" />
+  <NewLine UId="1192" />
+  <Blank Num="8" UId="1193" />
+  <Access Scope="LocalVariable" UId="1194">
+    <Symbol UId="1195">
+      <Component Name="tensionTorque" UId="1196" />
+    </Symbol>
+  </Access>
+  <Blank UId="1197" />
+  <Token Text=":=" UId="1198" />
+  <Blank UId="1199" />
+  <Token Text="(" UId="1200" />
+  <Token Text="(" UId="1201" />
+  <Access Scope="LocalVariable" UId="1202">
+    <Symbol UId="1203">
+      <Component Name="tensionSetpoint" UId="1204" />
+    </Symbol>
+  </Access>
+  <Blank UId="1205" />
+  <Token Text="*" UId="1206" />
+  <Blank UId="1207" />
+  <Access Scope="LocalVariable" UId="1208">
+    <Symbol UId="1209">
+      <Component Name="tensionAdjustment" UId="1210" />
+    </Symbol>
+  </Access>
+  <Token Text=")" UId="1211" />
+  <Blank UId="1212" />
+  <Token Text="*" UId="1213" />
+  <Blank UId="1214" />
+  <Token Text="(" UId="1215" />
+  <Access Scope="LocalVariable" UId="1216">
+    <Symbol UId="1217">
+      <Component Name="diameter" UId="1218" />
+    </Symbol>
+  </Access>
+  <Blank UId="1219" />
+  <Token Text="/" UId="1220" />
+  <Blank UId="1221" />
+  <Access Scope="LiteralConstant" UId="1222">
+    <Constant UId="1223">
+      <ConstantValue UId="1225">2.0</ConstantValue>
+    </Constant>
+  </Access>
+  <Blank UId="1226" />
+  <Token Text="/" UId="1227" />
+  <Blank UId="1228" />
+  <Access Scope="LiteralConstant" UId="1229">
+    <Constant UId="1230">
+      <ConstantValue UId="1232">12.0</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=")" UId="1233" />
+  <Token Text=")" UId="1234" />
+  <Blank UId="1235" />
+  <Token Text="/" UId="1236" />
+  <Blank UId="1237" />
+  <Access Scope="LocalVariable" UId="1238">
+    <Symbol UId="1239">
+      <Component Name="gearRatio" UId="1240" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="1241" />
+  <Blank Num="2" UId="1242" />
+  <LineComment UId="1243">
+    <Text UId="1244"> [lbf ft]</Text>
+  </LineComment>
+  <NewLine UId="1245" />
+  <Blank Num="4" UId="1246" />
+  <Token Text="END_IF" UId="1247" />
+  <Token Text=";" UId="1248" />
+  <NewLine UId="1249" />
+  <Blank Num="4" UId="1250" />
+  <LineComment UId="1251">
+    <Text UId="1252"> Torque addition          </Text>
+  </LineComment>
+  <NewLine UId="1253" />
+  <Blank Num="4" UId="1254" />
+  <LineComment UId="1255">
+    <Text UId="1256"> Invert tensionTorque</Text>
+  </LineComment>
+  <NewLine UId="1257" />
+  <Blank Num="4" UId="1258" />
+  <Token Text="IF" UId="1259" />
+  <Blank UId="1260" />
+  <Access Scope="LocalVariable" UId="1261">
+    <Symbol UId="1262">
+      <Component Name="typeOfDrive" UId="1263" />
+    </Symbol>
+  </Access>
+  <Blank UId="1264" />
+  <Token Text="=" UId="1265" />
+  <Blank UId="1266" />
+  <Access Scope="GlobalConstant" UId="1267">
+    <Constant Name="LCON_TYPE_OF_DRIVE_HELD" UId="1268" />
+  </Access>
+  <Blank UId="1271" />
+  <Token Text="THEN" UId="1272" />
+  <NewLine UId="1273" />
+  <Blank Num="8" UId="1274" />
+  <Access Scope="LocalVariable" UId="1275">
+    <Symbol UId="1276">
+      <Component Name="tensionTorque" UId="1277" />
+    </Symbol>
+  </Access>
+  <Blank UId="1278" />
+  <Token Text=":=" UId="1279" />
+  <Blank UId="1280" />
+  <Token Text="-" UId="1281" />
+  <Blank UId="1282" />
+  <Access Scope="LocalVariable" UId="1283">
+    <Symbol UId="1284">
+      <Component Name="tensionTorque" UId="1285" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="1286" />
+  <NewLine UId="1287" />
+  <Blank Num="4" UId="1288" />
+  <Token Text="END_IF" UId="1289" />
+  <Token Text=";" UId="1290" />
+  <NewLine UId="1291" />
+  <Blank Num="4" UId="1292" />
+  <Access Scope="LocalVariable" UId="1293">
+    <Symbol UId="1294">
+      <Component Name="preCtrlMotor" UId="1295" />
+    </Symbol>
+  </Access>
+  <Blank UId="1296" />
+  <Token Text=":=" UId="1297" />
+  <Blank UId="1298" />
+  <Access Scope="LocalVariable" UId="1299">
+    <Symbol UId="1300">
+      <Component Name="statMAccel" UId="1301" />
+    </Symbol>
+  </Access>
+  <Blank UId="1302" />
+  <Token Text="+" UId="1303" />
+  <Blank UId="1304" />
+  <Access Scope="LocalVariable" UId="1305">
+    <Symbol UId="1306">
+      <Component Name="statMfrict" UId="1307" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="1308" />
+  <Blank Num="33" UId="1309" />
+  <LineComment UId="1310">
+    <Text UId="1311"> Friction, acceleration</Text>
+  </LineComment>
+  <NewLine UId="1312" />
+  <Blank Num="4" UId="1313" />
+  <Access Scope="LocalVariable" UId="1314">
+    <Symbol UId="1315">
+      <Component Name="totalTorquePreCtrl" UId="1316" />
+    </Symbol>
+  </Access>
+  <Blank UId="1317" />
+  <Token Text=":=" UId="1318" />
+  <Blank UId="1319" />
+  <Access Scope="LocalVariable" UId="1320">
+    <Symbol UId="1321">
+      <Component Name="preCtrlMotor" UId="1322" />
+    </Symbol>
+  </Access>
+  <Blank UId="1323" />
+  <Token Text="+" UId="1324" />
+  <Blank UId="1325" />
+  <Access Scope="LocalVariable" UId="1326">
+    <Symbol UId="1327">
+      <Component Name="tensionTorque" UId="1328" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="1329" />
+  <Blank Num="20" UId="1330" />
+  <LineComment UId="1331">
+    <Text UId="1332"> Add tension torque</Text>
+  </LineComment>
+  <NewLine UId="1333" />
+  <Token Text="END_IF" UId="1334" />
+  <Token Text=";" UId="1335" />
+  <NewLine Num="2" UId="1336" />
+  <LineComment UId="1337">
+    <Text UId="1338"> set outputs</Text>
+  </LineComment>
+  <NewLine UId="1339" />
+  <Access Scope="LocalVariable" UId="1340">
+    <Symbol UId="1341">
+      <Component Name="busy" UId="1342" />
+    </Symbol>
+  </Access>
+  <Blank UId="1343" />
+  <Token Text=":=" UId="1344" />
+  <Blank UId="1345" />
+  <Access Scope="LocalVariable" UId="1346">
+    <Symbol UId="1347">
+      <Component Name="statBusy" UId="1348" />
+    </Symbol>
+  </Access>
+  <Token Text=";" UId="1349" />
+  <NewLine UId="1350" />
+</StructuredText></NetworkSource>
+          <ProgrammingLanguage>SCL</ProgrammingLanguage>
+        </AttributeList>
+        <ObjectList>
+          <MultilingualText ID="B" CompositionName="Comment">
+            <ObjectList>
+              <MultilingualTextItem ID="C" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="D" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-GB</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="E" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="F" CompositionName="Items">
+                <AttributeList>
+                  <Culture>es-ES</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="10" CompositionName="Items">
+                <AttributeList>
+                  <Culture>fr-FR</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="11" CompositionName="Items">
+                <AttributeList>
+                  <Culture>it-IT</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="12" CompositionName="Items">
+                <AttributeList>
+                  <Culture>ko-KR</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="13" CompositionName="Items">
+                <AttributeList>
+                  <Culture>zh-CN</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+          <MultilingualText ID="14" CompositionName="Title">
+            <ObjectList>
+              <MultilingualTextItem ID="15" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="16" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-GB</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="17" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="18" CompositionName="Items">
+                <AttributeList>
+                  <Culture>es-ES</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="19" CompositionName="Items">
+                <AttributeList>
+                  <Culture>fr-FR</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="1A" CompositionName="Items">
+                <AttributeList>
+                  <Culture>it-IT</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="1B" CompositionName="Items">
+                <AttributeList>
+                  <Culture>ko-KR</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="1C" CompositionName="Items">
+                <AttributeList>
+                  <Culture>zh-CN</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+        </ObjectList>
+      </SW.Blocks.CompileUnit>
+      <MultilingualText ID="1D" CompositionName="Title">
+        <ObjectList>
+          <MultilingualTextItem ID="1E" CompositionName="Items">
+            <AttributeList>
+              <Culture>de-DE</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="1F" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-GB</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="20" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-US</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="21" CompositionName="Items">
+            <AttributeList>
+              <Culture>es-ES</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="22" CompositionName="Items">
+            <AttributeList>
+              <Culture>fr-FR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="23" CompositionName="Items">
+            <AttributeList>
+              <Culture>it-IT</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="24" CompositionName="Items">
+            <AttributeList>
+              <Culture>ko-KR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="25" CompositionName="Items">
+            <AttributeList>
+              <Culture>zh-CN</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+        </ObjectList>
+      </MultilingualText>
+    </ObjectList>
+  </SW.Blocks.FB>
+</Document>

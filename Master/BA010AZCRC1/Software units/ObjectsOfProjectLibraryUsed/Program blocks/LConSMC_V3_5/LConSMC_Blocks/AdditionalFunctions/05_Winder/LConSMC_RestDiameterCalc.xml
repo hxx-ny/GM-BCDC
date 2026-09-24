@@ -1,0 +1,705 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Document>
+  <Engineering version="V20" />
+  <SW.Blocks.FC ID="0">
+    <AttributeList>
+      <Access>Published</Access>
+      <Interface><Sections xmlns="http://www.siemens.com/automation/Openness/SW/Interface/v5">
+  <Section Name="Input">
+    <Member Name="webThickness" Datatype="LReal">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">[m oder inch] Dicke des Materials</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">[m or inch] Thickness of material</MultiLanguageText>
+      </Comment>
+    </Member>
+    <Member Name="actualDiameter" Datatype="LReal">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">[m oder inch] Aktueller Durchmesser der Spule</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">[m or inch] Actual diameter of coil</MultiLanguageText>
+      </Comment>
+    </Member>
+    <Member Name="length" Datatype="LReal">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">[m oder inch] Ab- bzw. aufzuwickelnde Länge</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">[m or inch] Length to un/rewind</MultiLanguageText>
+      </Comment>
+    </Member>
+    <Member Name="rewind" Datatype="Bool">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">TRUE: Aufwickler FALSE: Abwickler</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">TRUE: Rewinder  FALSE: Unwinder</MultiLanguageText>
+      </Comment>
+    </Member>
+  </Section>
+  <Section Name="Output" />
+  <Section Name="InOut" />
+  <Section Name="Temp">
+    <Member Name="tmpTempReal" Datatype="LReal" />
+  </Section>
+  <Section Name="Constant">
+    <Member Name="Pi" Datatype="Real">
+      <StartValue>3.141592</StartValue>
+    </Member>
+  </Section>
+  <Section Name="Return">
+    <Member Name="Ret_Val" Datatype="LReal">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">[m or inch] Verbleibender auf-/abzuspulender Durchmesser</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">[m or inch] Rest diameter to be coiled</MultiLanguageText>
+      </Comment>
+    </Member>
+  </Section>
+</Sections></Interface>
+      <IsIECCheckEnabled>true</IsIECCheckEnabled>
+      <Name>LConSMC_RestDiameterCalc</Name>
+      <Namespace />
+      <Number>32051</Number>
+      <ProgrammingLanguage>SCL</ProgrammingLanguage>
+      <SetENOAutomatically>true</SetENOAutomatically>
+    </AttributeList>
+    <ObjectList>
+      <MultilingualText ID="1" CompositionName="Comment">
+        <ObjectList>
+          <MultilingualTextItem ID="2" CompositionName="Items">
+            <AttributeList>
+              <Culture>de-DE</Culture>
+              <Text>Berechnung des Restdurchmessers der Spule. Die Funktion kann aus jeder Task aufgerufen werden.  Funktions-ID: 4002
+</Text>
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="3" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-GB</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="4" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-US</Culture>
+              <Text>Calculation of the rest diameter of the coil. The function can be called in any task.  Function ID: 4002</Text>
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="5" CompositionName="Items">
+            <AttributeList>
+              <Culture>es-ES</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="6" CompositionName="Items">
+            <AttributeList>
+              <Culture>fr-FR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="7" CompositionName="Items">
+            <AttributeList>
+              <Culture>it-IT</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="8" CompositionName="Items">
+            <AttributeList>
+              <Culture>ko-KR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="9" CompositionName="Items">
+            <AttributeList>
+              <Culture>zh-CN</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+        </ObjectList>
+      </MultilingualText>
+      <SW.Blocks.CompileUnit ID="A" CompositionName="CompileUnits">
+        <AttributeList>
+          <NetworkSource><StructuredText xmlns="http://www.siemens.com/automation/Openness/SW/NetworkSource/StructuredText/v4">
+  <Token Text="REGION" UId="21" />
+  <Blank UId="22" />
+  <Text UId="23">BLOCK INFO HEADER</Text>
+  <NewLine UId="24" />
+  <Blank Num="2" UId="25" />
+  <LineComment UId="26">
+    <Text UId="27">===============================================================================</Text>
+  </LineComment>
+  <NewLine UId="28" />
+  <Blank Num="2" UId="29" />
+  <LineComment UId="30">
+    <Text UId="31"> SIEMENS AG / (c)Copyright 2023</Text>
+  </LineComment>
+  <NewLine UId="32" />
+  <Blank Num="2" UId="33" />
+  <LineComment UId="34">
+    <Text UId="35">-------------------------------------------------------------------------------</Text>
+  </LineComment>
+  <NewLine UId="36" />
+  <Blank Num="2" UId="37" />
+  <LineComment UId="38">
+    <Text UId="39"> Title:            LConSMC_RestDiameterCalc</Text>
+  </LineComment>
+  <NewLine UId="40" />
+  <Blank Num="2" UId="41" />
+  <LineComment UId="42">
+    <Text UId="43"> Comment/Function: Target diameter calculation</Text>
+  </LineComment>
+  <NewLine UId="44" />
+  <Blank Num="2" UId="45" />
+  <LineComment UId="46">
+    <Text UId="47"> Library/Family:   LConSMC</Text>
+  </LineComment>
+  <NewLine UId="48" />
+  <Blank Num="2" UId="49" />
+  <LineComment UId="50">
+    <Text UId="51"> Author:           APC Erlangen</Text>
+  </LineComment>
+  <NewLine UId="52" />
+  <Blank Num="2" UId="53" />
+  <LineComment UId="54">
+    <Text UId="55"> Tested with:      FW 2.8</Text>
+  </LineComment>
+  <NewLine UId="56" />
+  <Blank Num="2" UId="57" />
+  <LineComment UId="58">
+    <Text UId="59"> Engineering:      TIA Portal V16</Text>
+  </LineComment>
+  <NewLine UId="60" />
+  <Blank Num="2" UId="61" />
+  <LineComment UId="62">
+    <Text UId="63"> Restrictions:     -</Text>
+  </LineComment>
+  <NewLine UId="64" />
+  <Blank Num="2" UId="65" />
+  <LineComment UId="66">
+    <Text UId="67"> Requirements:     -</Text>
+  </LineComment>
+  <NewLine UId="68" />
+  <Blank Num="2" UId="69" />
+  <LineComment UId="70">
+    <Text UId="71">-------------------------------------------------------------------------------</Text>
+  </LineComment>
+  <NewLine UId="72" />
+  <Blank Num="2" UId="73" />
+  <LineComment UId="74">
+    <Text UId="75"> Change log table:</Text>
+  </LineComment>
+  <NewLine UId="76" />
+  <Blank Num="2" UId="77" />
+  <LineComment UId="78">
+    <Text UId="79"> Version  | Date       | Expert in charge       | Changes applied</Text>
+  </LineComment>
+  <NewLine UId="80" />
+  <Blank Num="2" UId="81" />
+  <LineComment UId="82">
+    <Text UId="83">----------|------------|------------------------|------------------------------</Text>
+  </LineComment>
+  <NewLine UId="84" />
+  <Blank Num="2" UId="85" />
+  <LineComment UId="86">
+    <Text UId="87"> 01.01.00 | 2016-11-17 | APC Erlangen           | adapted to styleguide</Text>
+  </LineComment>
+  <NewLine UId="88" />
+  <Blank Num="2" UId="89" />
+  <LineComment UId="90">
+    <Text UId="91"> 01.00.00 | 2012-07-10 | APC Erlangen           | First released version</Text>
+  </LineComment>
+  <NewLine UId="92" />
+  <Blank Num="2" UId="93" />
+  <LineComment UId="94">
+    <Text UId="95">===============================================================================</Text>
+  </LineComment>
+  <NewLine UId="96" />
+  <Token Text="END_REGION" UId="97" />
+  <Blank UId="98" />
+  <Text UId="99">BLOCK INFO HEADER</Text>
+  <NewLine Num="2" UId="100" />
+  <Token Text="REGION" UId="101" />
+  <Blank UId="102" />
+  <Text UId="103">DESCRIPTION</Text>
+  <NewLine UId="104" />
+  <Comment Inserted="true" UId="105">
+    <MultiLanguageText Lang="de-DE" />
+    <MultiLanguageText Lang="en-GB" />
+    <MultiLanguageText Lang="en-US">
+The function uses the input parameters to calculate the target diameter of a roll.
+The calculation relies on the material thickness (webThickness), the actual roll diameter (actualDiameter) and the material length to be wound or unwound (length).
+The winding mode is defined using the windingMode input.
+The material thickness (webThickness) is internally limited (MIN_THICKNESS, MAX_THICKNESS).
+In case of a too high material length input of the function result is zero.  
+  
+* Rewinder
+
+$ RestDiameterCalc = 2 \cdot \sqrt{ \frac{actualDiameter^2}{4}\  + \frac{webThickness \cdot length}{\pi}\  } $
+
+* Unwinder
+
+$ RestDiameterCalc = 2 \cdot \sqrt{ \frac{actualDiameter^2}{4}\  - \frac{webThickness \cdot length}{\pi}\  } $
+
+---
+
+![Rest length](RestDiameterCalc_Diagram.png)
+
+---
+
+|Winder mode|Actual diameter|Target diameter                |
+|-----------|---------------|-------------------------------|
+|Rewinder   | d1 &lt; d2       | d2 (full roll, max. diameter) |
+|Uwinder    | d2 &lt; d1       | d1 (empty roll, min. diameter |
+
+</MultiLanguageText>
+    <MultiLanguageText Lang="es-ES" />
+    <MultiLanguageText Lang="fr-FR" />
+    <MultiLanguageText Lang="it-IT" />
+    <MultiLanguageText Lang="ko-KR" />
+    <MultiLanguageText Lang="zh-CN" />
+  </Comment>
+  <NewLine UId="114" />
+  <Token Text="END_REGION" UId="115" />
+  <Blank UId="116" />
+  <Text UId="117">DESCRIPTION</Text>
+  <NewLine Num="2" UId="118" />
+  <Token Text="IF" UId="119" />
+  <Blank UId="120" />
+  <Access Scope="LocalVariable" UId="121">
+    <Symbol UId="122">
+      <Component Name="rewind" UId="123" />
+    </Symbol>
+  </Access>
+  <Blank UId="124" />
+  <Token Text="THEN" UId="125" />
+  <NewLine UId="126" />
+  <Blank Num="4" UId="127" />
+  <Access Scope="LocalVariable" UId="128">
+    <Symbol UId="129">
+      <Component Name="tmpTempReal" UId="130" />
+    </Symbol>
+  </Access>
+  <Blank UId="131" />
+  <Token Text=":=" UId="132" />
+  <Blank UId="133" />
+  <Token Text="(" UId="134" />
+  <Access Scope="LocalVariable" UId="135">
+    <Symbol UId="136">
+      <Component Name="actualDiameter" UId="137" />
+    </Symbol>
+  </Access>
+  <Blank UId="138" />
+  <Token Text="*" UId="139" />
+  <Blank UId="140" />
+  <Access Scope="LocalVariable" UId="141">
+    <Symbol UId="142">
+      <Component Name="actualDiameter" UId="143" />
+    </Symbol>
+  </Access>
+  <Token Text=")" UId="144" />
+  <Blank UId="145" />
+  <Token Text="/" UId="146" />
+  <Blank UId="147" />
+  <Access Scope="LiteralConstant" UId="148">
+    <Constant UId="149">
+      <ConstantValue UId="151">4</ConstantValue>
+    </Constant>
+  </Access>
+  <Blank UId="152" />
+  <Token Text="+" UId="153" />
+  <Blank UId="154" />
+  <Token Text="(" UId="155" />
+  <Access Scope="LocalVariable" UId="156">
+    <Symbol UId="157">
+      <Component Name="webThickness" UId="158" />
+    </Symbol>
+  </Access>
+  <Blank UId="159" />
+  <Token Text="*" UId="160" />
+  <Blank UId="161" />
+  <Access Scope="LocalVariable" UId="162">
+    <Symbol UId="163">
+      <Component Name="length" UId="164" />
+    </Symbol>
+  </Access>
+  <Token Text=")" UId="165" />
+  <Blank UId="166" />
+  <Token Text="/" UId="167" />
+  <Blank UId="168" />
+  <Access Scope="LocalConstant" UId="169">
+    <Constant Name="Pi" UId="170" />
+  </Access>
+  <Token Text=";" UId="173" />
+  <NewLine UId="174" />
+  <Blank Num="4" UId="175" />
+  <Token Text="IF" UId="176" />
+  <Blank UId="177" />
+  <Access Scope="LocalVariable" UId="178">
+    <Symbol UId="179">
+      <Component Name="tmpTempReal" UId="180" />
+    </Symbol>
+  </Access>
+  <Blank UId="181" />
+  <Token Text="&gt;" UId="182" />
+  <Blank UId="183" />
+  <Access Scope="LiteralConstant" UId="184">
+    <Constant UId="185">
+      <ConstantValue UId="187">0.0</ConstantValue>
+    </Constant>
+  </Access>
+  <Blank UId="188" />
+  <Token Text="THEN" UId="189" />
+  <NewLine UId="190" />
+  <Blank Num="8" UId="191" />
+  <Access Scope="LocalVariable" UId="192">
+    <Symbol UId="193">
+      <Component Name="LConSMC_RestDiameterCalc" UId="194" />
+    </Symbol>
+  </Access>
+  <Blank UId="195" />
+  <Token Text=":=" UId="196" />
+  <Blank UId="197" />
+  <Access Scope="LiteralConstant" UId="198">
+    <Constant UId="199">
+      <ConstantValue UId="201">2.0</ConstantValue>
+    </Constant>
+  </Access>
+  <Blank UId="202" />
+  <Token Text="*" UId="203" />
+  <Blank UId="204" />
+  <Access Scope="Call" UId="205">
+    <Instruction Name="SQRT" UId="206">
+      <Token Text="(" UId="207" />
+      <NamelessParameter UId="208">
+        <Access Scope="LocalVariable" UId="209">
+          <Symbol UId="210">
+            <Component Name="tmpTempReal" UId="211" />
+          </Symbol>
+        </Access>
+      </NamelessParameter>
+      <Token Text=")" UId="213" />
+    </Instruction>
+  </Access>
+  <Token Text=";" UId="214" />
+  <NewLine UId="215" />
+  <Blank Num="4" UId="216" />
+  <Token Text="ELSE" UId="217" />
+  <NewLine UId="218" />
+  <Blank Num="8" UId="219" />
+  <Access Scope="LocalVariable" UId="220">
+    <Symbol UId="221">
+      <Component Name="LConSMC_RestDiameterCalc" UId="222" />
+    </Symbol>
+  </Access>
+  <Blank UId="223" />
+  <Token Text=":=" UId="224" />
+  <Blank UId="225" />
+  <Access Scope="LiteralConstant" UId="226">
+    <Constant UId="227">
+      <ConstantValue UId="229">0.0</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="230" />
+  <NewLine UId="231" />
+  <Blank Num="4" UId="232" />
+  <Token Text="END_IF" UId="233" />
+  <Token Text=";" UId="234" />
+  <NewLine UId="235" />
+  <Token Text="ELSE" UId="236" />
+  <NewLine UId="237" />
+  <Blank Num="4" UId="238" />
+  <Access Scope="LocalVariable" UId="239">
+    <Symbol UId="240">
+      <Component Name="tmpTempReal" UId="241" />
+    </Symbol>
+  </Access>
+  <Blank UId="242" />
+  <Token Text=":=" UId="243" />
+  <Blank UId="244" />
+  <Token Text="(" UId="245" />
+  <Access Scope="LocalVariable" UId="246">
+    <Symbol UId="247">
+      <Component Name="actualDiameter" UId="248" />
+    </Symbol>
+  </Access>
+  <Blank UId="249" />
+  <Token Text="*" UId="250" />
+  <Blank UId="251" />
+  <Access Scope="LocalVariable" UId="252">
+    <Symbol UId="253">
+      <Component Name="actualDiameter" UId="254" />
+    </Symbol>
+  </Access>
+  <Token Text=")" UId="255" />
+  <Blank UId="256" />
+  <Token Text="/" UId="257" />
+  <Blank UId="258" />
+  <Access Scope="LiteralConstant" UId="259">
+    <Constant UId="260">
+      <ConstantValue UId="262">4</ConstantValue>
+    </Constant>
+  </Access>
+  <Blank UId="263" />
+  <Token Text="-" UId="264" />
+  <Blank UId="265" />
+  <Token Text="(" UId="266" />
+  <Access Scope="LocalVariable" UId="267">
+    <Symbol UId="268">
+      <Component Name="webThickness" UId="269" />
+    </Symbol>
+  </Access>
+  <Blank UId="270" />
+  <Token Text="*" UId="271" />
+  <Blank UId="272" />
+  <Access Scope="LocalVariable" UId="273">
+    <Symbol UId="274">
+      <Component Name="length" UId="275" />
+    </Symbol>
+  </Access>
+  <Token Text=")" UId="276" />
+  <Blank UId="277" />
+  <Token Text="/" UId="278" />
+  <Blank UId="279" />
+  <Access Scope="LocalConstant" UId="280">
+    <Constant Name="Pi" UId="281" />
+  </Access>
+  <Token Text=";" UId="284" />
+  <NewLine UId="285" />
+  <Blank Num="4" UId="286" />
+  <NewLine UId="287" />
+  <Blank Num="4" UId="288" />
+  <Token Text="IF" UId="289" />
+  <Blank UId="290" />
+  <Access Scope="LocalVariable" UId="291">
+    <Symbol UId="292">
+      <Component Name="tmpTempReal" UId="293" />
+    </Symbol>
+  </Access>
+  <Blank UId="294" />
+  <Token Text="&gt;" UId="295" />
+  <Blank UId="296" />
+  <Access Scope="LiteralConstant" UId="297">
+    <Constant UId="298">
+      <ConstantValue UId="300">0.0</ConstantValue>
+    </Constant>
+  </Access>
+  <Blank UId="301" />
+  <Token Text="THEN" UId="302" />
+  <NewLine UId="303" />
+  <Blank Num="8" UId="304" />
+  <Access Scope="LocalVariable" UId="305">
+    <Symbol UId="306">
+      <Component Name="LConSMC_RestDiameterCalc" UId="307" />
+    </Symbol>
+  </Access>
+  <Blank UId="308" />
+  <Token Text=":=" UId="309" />
+  <Blank UId="310" />
+  <Access Scope="LiteralConstant" UId="311">
+    <Constant UId="312">
+      <ConstantValue UId="314">2.0</ConstantValue>
+    </Constant>
+  </Access>
+  <Blank UId="315" />
+  <Token Text="*" UId="316" />
+  <Blank UId="317" />
+  <Access Scope="Call" UId="318">
+    <Instruction Name="SQRT" UId="319">
+      <Token Text="(" UId="320" />
+      <NamelessParameter UId="321">
+        <Access Scope="LocalVariable" UId="322">
+          <Symbol UId="323">
+            <Component Name="tmpTempReal" UId="324" />
+          </Symbol>
+        </Access>
+      </NamelessParameter>
+      <Token Text=")" UId="326" />
+    </Instruction>
+  </Access>
+  <Token Text=";" UId="327" />
+  <NewLine UId="328" />
+  <Blank Num="4" UId="329" />
+  <Token Text="ELSE" UId="330" />
+  <NewLine UId="331" />
+  <Blank Num="8" UId="332" />
+  <Access Scope="LocalVariable" UId="333">
+    <Symbol UId="334">
+      <Component Name="LConSMC_RestDiameterCalc" UId="335" />
+    </Symbol>
+  </Access>
+  <Blank UId="336" />
+  <Token Text=":=" UId="337" />
+  <Blank UId="338" />
+  <Access Scope="LiteralConstant" UId="339">
+    <Constant UId="340">
+      <ConstantValue UId="342">0.0</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="343" />
+  <NewLine UId="344" />
+  <Blank Num="4" UId="345" />
+  <Token Text="END_IF" UId="346" />
+  <Token Text=";" UId="347" />
+  <NewLine UId="348" />
+  <Token Text="END_IF" UId="349" />
+  <Token Text=";" UId="350" />
+  <NewLine UId="351" />
+</StructuredText></NetworkSource>
+          <ProgrammingLanguage>SCL</ProgrammingLanguage>
+        </AttributeList>
+        <ObjectList>
+          <MultilingualText ID="B" CompositionName="Comment">
+            <ObjectList>
+              <MultilingualTextItem ID="C" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="D" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-GB</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="E" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="F" CompositionName="Items">
+                <AttributeList>
+                  <Culture>es-ES</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="10" CompositionName="Items">
+                <AttributeList>
+                  <Culture>fr-FR</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="11" CompositionName="Items">
+                <AttributeList>
+                  <Culture>it-IT</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="12" CompositionName="Items">
+                <AttributeList>
+                  <Culture>ko-KR</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="13" CompositionName="Items">
+                <AttributeList>
+                  <Culture>zh-CN</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+          <MultilingualText ID="14" CompositionName="Title">
+            <ObjectList>
+              <MultilingualTextItem ID="15" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="16" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-GB</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="17" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="18" CompositionName="Items">
+                <AttributeList>
+                  <Culture>es-ES</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="19" CompositionName="Items">
+                <AttributeList>
+                  <Culture>fr-FR</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="1A" CompositionName="Items">
+                <AttributeList>
+                  <Culture>it-IT</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="1B" CompositionName="Items">
+                <AttributeList>
+                  <Culture>ko-KR</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="1C" CompositionName="Items">
+                <AttributeList>
+                  <Culture>zh-CN</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+        </ObjectList>
+      </SW.Blocks.CompileUnit>
+      <MultilingualText ID="1D" CompositionName="Title">
+        <ObjectList>
+          <MultilingualTextItem ID="1E" CompositionName="Items">
+            <AttributeList>
+              <Culture>de-DE</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="1F" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-GB</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="20" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-US</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="21" CompositionName="Items">
+            <AttributeList>
+              <Culture>es-ES</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="22" CompositionName="Items">
+            <AttributeList>
+              <Culture>fr-FR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="23" CompositionName="Items">
+            <AttributeList>
+              <Culture>it-IT</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="24" CompositionName="Items">
+            <AttributeList>
+              <Culture>ko-KR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="25" CompositionName="Items">
+            <AttributeList>
+              <Culture>zh-CN</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+        </ObjectList>
+      </MultilingualText>
+    </ObjectList>
+  </SW.Blocks.FC>
+</Document>

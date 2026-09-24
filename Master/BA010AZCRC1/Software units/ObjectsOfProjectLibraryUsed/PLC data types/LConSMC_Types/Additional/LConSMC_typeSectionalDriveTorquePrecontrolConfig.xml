@@ -1,0 +1,354 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Document>
+  <Engineering version="V20" />
+  <SW.Types.PlcStruct ID="0">
+    <AttributeList>
+      <Access>Published</Access>
+      <Interface><Sections xmlns="http://www.siemens.com/automation/Openness/SW/Interface/v5">
+  <Section Name="None">
+    <Member Name="useSetValForFrictionComp" Datatype="Bool">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">TRUE: Drehzahl-Sollwert wird für die Kompensastion der Reibung verwendet  FALSE: Drehzahl-Istwert wird für die Kompensation der Reibung verwendet</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">TRUE: Use speed setpoint for friction compensation  FALSE: Use speed actual value</MultiLanguageText>
+      </Comment>
+      <StartValue>FALSE</StartValue>
+    </Member>
+    <Member Name="frictionAdjustment" Datatype="Real">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">Multiplikativer Faktor zur Adaption des Reibmomentes (1.0 = 100%)</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">Multiplicative adaption factor for friction torque (1.0 = 100%)</MultiLanguageText>
+      </Comment>
+      <StartValue>0.0</StartValue>
+    </Member>
+    <Member Name="xn_speedValues" Datatype="&quot;LConSMC_typeBreakPointTable&quot;">
+      <AttributeList>
+        <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+      </AttributeList>
+      <Comment>
+        <MultiLanguageText Lang="de-DE">[1/min] Drehzahlwerte der Reibkennlinie</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">[1/min] Speed values for fiction characteristic</MultiLanguageText>
+      </Comment>
+      <Sections>
+        <Section Name="None">
+          <Member Name="values" Datatype="Array[0..&quot;LCON_MAX_VALUE_BREAK_POINT_TABLE&quot;] of LReal">
+            <Subelement Path="0">
+              <StartValue>0.0</StartValue>
+            </Subelement>
+            <Subelement Path="1">
+              <StartValue>0.0</StartValue>
+            </Subelement>
+            <Subelement Path="2">
+              <StartValue>0.0</StartValue>
+            </Subelement>
+            <Subelement Path="3">
+              <StartValue>0.0</StartValue>
+            </Subelement>
+            <Subelement Path="4">
+              <StartValue>0.0</StartValue>
+            </Subelement>
+            <Subelement Path="5">
+              <StartValue>0.0</StartValue>
+            </Subelement>
+            <Subelement Path="6">
+              <StartValue>0.0</StartValue>
+            </Subelement>
+            <Subelement Path="7">
+              <StartValue>0.0</StartValue>
+            </Subelement>
+            <Subelement Path="8">
+              <StartValue>0.0</StartValue>
+            </Subelement>
+            <Subelement Path="9">
+              <StartValue>0.0</StartValue>
+            </Subelement>
+            <Subelement Path="10">
+              <StartValue>0.0</StartValue>
+            </Subelement>
+            <Subelement Path="11">
+              <StartValue>0.0</StartValue>
+            </Subelement>
+            <Subelement Path="12">
+              <StartValue>0.0</StartValue>
+            </Subelement>
+            <Subelement Path="13">
+              <StartValue>0.0</StartValue>
+            </Subelement>
+            <Subelement Path="14">
+              <StartValue>0.0</StartValue>
+            </Subelement>
+            <Subelement Path="15">
+              <StartValue>0.0</StartValue>
+            </Subelement>
+            <Subelement Path="16">
+              <StartValue>0.0</StartValue>
+            </Subelement>
+            <Subelement Path="17">
+              <StartValue>0.0</StartValue>
+            </Subelement>
+            <Subelement Path="18">
+              <StartValue>0.0</StartValue>
+            </Subelement>
+            <Subelement Path="19">
+              <StartValue>0.0</StartValue>
+            </Subelement>
+          </Member>
+        </Section>
+      </Sections>
+    </Member>
+    <Member Name="yn_torqueValues" Datatype="&quot;LConSMC_typeBreakPointTable&quot;">
+      <AttributeList>
+        <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+      </AttributeList>
+      <Comment>
+        <MultiLanguageText Lang="de-DE">[Nm oder lbf ft] Drehmomentenwerte der Reibkennlinie</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">[Nm or lbf ft] Torque values for friction characteristic</MultiLanguageText>
+      </Comment>
+      <Sections>
+        <Section Name="None">
+          <Member Name="values" Datatype="Array[0..&quot;LCON_MAX_VALUE_BREAK_POINT_TABLE&quot;] of LReal">
+            <Subelement Path="0">
+              <StartValue>0.0</StartValue>
+            </Subelement>
+            <Subelement Path="1">
+              <StartValue>0.0</StartValue>
+            </Subelement>
+            <Subelement Path="2">
+              <StartValue>0.0</StartValue>
+            </Subelement>
+            <Subelement Path="3">
+              <StartValue>0.0</StartValue>
+            </Subelement>
+            <Subelement Path="4">
+              <StartValue>0.0</StartValue>
+            </Subelement>
+            <Subelement Path="5">
+              <StartValue>0.0</StartValue>
+            </Subelement>
+            <Subelement Path="6">
+              <StartValue>0.0</StartValue>
+            </Subelement>
+            <Subelement Path="7">
+              <StartValue>0.0</StartValue>
+            </Subelement>
+            <Subelement Path="8">
+              <StartValue>0.0</StartValue>
+            </Subelement>
+            <Subelement Path="9">
+              <StartValue>0.0</StartValue>
+            </Subelement>
+            <Subelement Path="10">
+              <StartValue>0.0</StartValue>
+            </Subelement>
+            <Subelement Path="11">
+              <StartValue>0.0</StartValue>
+            </Subelement>
+            <Subelement Path="12">
+              <StartValue>0.0</StartValue>
+            </Subelement>
+            <Subelement Path="13">
+              <StartValue>0.0</StartValue>
+            </Subelement>
+            <Subelement Path="14">
+              <StartValue>0.0</StartValue>
+            </Subelement>
+            <Subelement Path="15">
+              <StartValue>0.0</StartValue>
+            </Subelement>
+            <Subelement Path="16">
+              <StartValue>0.0</StartValue>
+            </Subelement>
+            <Subelement Path="17">
+              <StartValue>0.0</StartValue>
+            </Subelement>
+            <Subelement Path="18">
+              <StartValue>0.0</StartValue>
+            </Subelement>
+            <Subelement Path="19">
+              <StartValue>0.0</StartValue>
+            </Subelement>
+          </Member>
+        </Section>
+      </Sections>
+    </Member>
+    <Member Name="sizeOfArray" Datatype="Int">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">Anzahl verwendeter Stützpunkte der Reibkennlinie</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">Size of friction characteristic array</MultiLanguageText>
+      </Comment>
+      <StartValue>20</StartValue>
+    </Member>
+    <Member Name="loadGear" Datatype="&quot;LConSMC_typeLoadGear&quot;">
+      <AttributeList>
+        <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+      </AttributeList>
+      <Comment>
+        <MultiLanguageText Lang="de-DE">Motorgetriebe</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">Load gear settings</MultiLanguageText>
+      </Comment>
+    </Member>
+    <Member Name="JFixed" Datatype="LReal">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">[kgm^2] / [lbft^2] Trägheit bezogen auf Motorseite (ohne Motor, z.B. Getriebe)</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">[kgm^2] / [lbft^2] Inertia on drive side (without drive, e.g. gear box)</MultiLanguageText>
+      </Comment>
+    </Member>
+    <Member Name="JMandrel" Datatype="LReal">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">[kgm^2] / [lbft^2] Trägheit auf der Lastseite (z.B. Rolle)</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">[kgm^2] / [lbft^2] Inertia on load side (e.g. mandrel)</MultiLanguageText>
+      </Comment>
+    </Member>
+    <Member Name="JMotor" Datatype="LReal">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">[kgm^2] / [lbft^2] Motorträgheit</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">[kgm^2] / [lbft^2] Drive inertia</MultiLanguageText>
+      </Comment>
+    </Member>
+    <Member Name="tensionAdjustment" Datatype="Real">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">Multiplikativer Faktor zur Adaption des Zugmomentes (1.0 = 100%)</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">Multiplicative adaption factor for tension torque (1.0 = 100%)</MultiLanguageText>
+      </Comment>
+      <StartValue>0.0</StartValue>
+    </Member>
+    <Member Name="accelerationAdjustment" Datatype="Real">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">Multiplikativer Faktor zur Adaption des Beschleunigungsmomentes aus der Bahnbeschleunigung (1.0 = 100%)</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">Multiplicative adaption factor for acceleration torque from web acceleration (1.0 = 100%)</MultiLanguageText>
+      </Comment>
+      <StartValue>1.0</StartValue>
+    </Member>
+    <Member Name="upperTorqueLimit" Datatype="LReal">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">[%] 1.0 = 100% Obere Drehmomentengrenze  0-200% des Bezugsmomentes</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">[%] 1.0 = 100%  Upper torque limit  0..200% of nominal torque</MultiLanguageText>
+      </Comment>
+      <StartValue>1.0</StartValue>
+    </Member>
+    <Member Name="lowerTorqueLimit" Datatype="LReal">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">[%] 1.0 = 100% Untere Drehmomentengrenze  0-200% des Bezugsmomentes</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">[%] 1.0 = 100%  Lower torque limit (0..-200% of nominal torque)</MultiLanguageText>
+      </Comment>
+      <StartValue>-1.0</StartValue>
+    </Member>
+    <Member Name="referenceTorque" Datatype="LReal">
+      <Comment>
+        <MultiLanguageText Lang="de-DE">Referenzdrehmoment (SINAMICS p2003)  !Nur notwendig wenn "getAxisConfigAtStart" = FALSE!</MultiLanguageText>
+        <MultiLanguageText Lang="en-US">Reference torque (SINAMICS p2003)  !Only necessary if "getAxisConfigAtStart" = FALSE!</MultiLanguageText>
+      </Comment>
+    </Member>
+  </Section>
+</Sections></Interface>
+      <Name>LConSMC_typeSectionalDriveTorquePrecontrolConfig</Name>
+      <Namespace />
+    </AttributeList>
+    <ObjectList>
+      <MultilingualText ID="1" CompositionName="Comment">
+        <ObjectList>
+          <MultilingualTextItem ID="2" CompositionName="Items">
+            <AttributeList>
+              <Culture>de-DE</Culture>
+              <Text>Konfigurationsdaten der Momentenvorsteuerung einer Bahnzugregelung
+</Text>
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="3" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-GB</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="4" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-US</Culture>
+              <Text>Configuration data of torque precontrol for sectional drives</Text>
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="5" CompositionName="Items">
+            <AttributeList>
+              <Culture>es-ES</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="6" CompositionName="Items">
+            <AttributeList>
+              <Culture>fr-FR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="7" CompositionName="Items">
+            <AttributeList>
+              <Culture>it-IT</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="8" CompositionName="Items">
+            <AttributeList>
+              <Culture>ko-KR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="9" CompositionName="Items">
+            <AttributeList>
+              <Culture>zh-CN</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+        </ObjectList>
+      </MultilingualText>
+      <MultilingualText ID="A" CompositionName="Title">
+        <ObjectList>
+          <MultilingualTextItem ID="B" CompositionName="Items">
+            <AttributeList>
+              <Culture>de-DE</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="C" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-GB</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="D" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-US</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="E" CompositionName="Items">
+            <AttributeList>
+              <Culture>es-ES</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="F" CompositionName="Items">
+            <AttributeList>
+              <Culture>fr-FR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="10" CompositionName="Items">
+            <AttributeList>
+              <Culture>it-IT</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="11" CompositionName="Items">
+            <AttributeList>
+              <Culture>ko-KR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="12" CompositionName="Items">
+            <AttributeList>
+              <Culture>zh-CN</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+        </ObjectList>
+      </MultilingualText>
+    </ObjectList>
+  </SW.Types.PlcStruct>
+</Document>

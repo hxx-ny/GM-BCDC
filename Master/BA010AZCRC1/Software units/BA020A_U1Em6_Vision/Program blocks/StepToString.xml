@@ -1,0 +1,743 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Document>
+  <Engineering version="V20" />
+  <SW.Blocks.FC ID="0">
+    <AttributeList>
+      <Interface><Sections xmlns="http://www.siemens.com/automation/Openness/SW/Interface/v5">
+  <Section Name="Input">
+    <Member Name="StepDINT" Datatype="DInt">
+      <Comment>
+        <MultiLanguageText Lang="en-US">DINT value of the step</MultiLanguageText>
+      </Comment>
+    </Member>
+  </Section>
+  <Section Name="Output" />
+  <Section Name="InOut" />
+  <Section Name="Temp" />
+  <Section Name="Constant" />
+  <Section Name="Return">
+    <Member Name="Ret_Val" Datatype="String" />
+  </Section>
+</Sections></Interface>
+      <Name>StepToString</Name>
+      <Namespace>Unit1.Em6</Namespace>
+      <Number>89</Number>
+      <ProgrammingLanguage>SCL</ProgrammingLanguage>
+      <SetENOAutomatically>false</SetENOAutomatically>
+    </AttributeList>
+    <ObjectList>
+      <MultilingualText ID="1" CompositionName="Comment">
+        <ObjectList>
+          <MultilingualTextItem ID="2" CompositionName="Items">
+            <AttributeList>
+              <Culture>de-DE</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="3" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-GB</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="4" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-US</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="5" CompositionName="Items">
+            <AttributeList>
+              <Culture>es-ES</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="6" CompositionName="Items">
+            <AttributeList>
+              <Culture>fr-FR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="7" CompositionName="Items">
+            <AttributeList>
+              <Culture>it-IT</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="8" CompositionName="Items">
+            <AttributeList>
+              <Culture>ko-KR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="9" CompositionName="Items">
+            <AttributeList>
+              <Culture>zh-CN</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+        </ObjectList>
+      </MultilingualText>
+      <SW.Blocks.CompileUnit ID="A" CompositionName="CompileUnits">
+        <AttributeList>
+          <NetworkSource><StructuredText xmlns="http://www.siemens.com/automation/Openness/SW/NetworkSource/StructuredText/v4">
+  <LineComment UId="21">
+    <Text UId="22"> Translates shared vision sequence step numbers to step names</Text>
+  </LineComment>
+  <NewLine UId="23" />
+  <LineComment UId="24">
+    <Text UId="25"> Sequence-specific duplicate numbers are expressed as combined labels</Text>
+  </LineComment>
+  <NewLine Num="2" UId="26" />
+  <Token Text="CASE" UId="27" />
+  <Blank UId="28" />
+  <Access Scope="LocalVariable" UId="29">
+    <Symbol UId="30">
+      <Component Name="StepDINT" UId="31" />
+    </Symbol>
+  </Access>
+  <Blank UId="32" />
+  <Token Text="OF" UId="33" />
+  <NewLine UId="34" />
+  <Blank Num="4" UId="35" />
+  <Access Scope="LiteralConstant" UId="36">
+    <Constant UId="37">
+      <ConstantValue UId="39">1</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=":" UId="40" />
+  <NewLine UId="41" />
+  <Blank Num="8" UId="42" />
+  <Access Scope="LocalVariable" UId="43">
+    <Symbol UId="44">
+      <Component Name="StepToString" UId="45" />
+    </Symbol>
+  </Access>
+  <Blank UId="46" />
+  <Token Text=":=" UId="47" />
+  <Blank UId="48" />
+  <Access Scope="LiteralConstant" UId="49">
+    <Constant UId="50">
+      <ConstantValue UId="52">'Idle'</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="53" />
+  <NewLine Num="2" UId="54" />
+  <Blank Num="4" UId="55" />
+  <Access Scope="LiteralConstant" UId="56">
+    <Constant UId="57">
+      <ConstantValue UId="59">101</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=":" UId="60" />
+  <NewLine UId="61" />
+  <Blank Num="8" UId="62" />
+  <Access Scope="LocalVariable" UId="63">
+    <Symbol UId="64">
+      <Component Name="StepToString" UId="65" />
+    </Symbol>
+  </Access>
+  <Blank UId="66" />
+  <Token Text=":=" UId="67" />
+  <Blank UId="68" />
+  <Access Scope="LiteralConstant" UId="69">
+    <Constant UId="70">
+      <ConstantValue UId="72">'JOB[1] Condition'</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="73" />
+  <NewLine UId="74" />
+  <Blank Num="4" UId="75" />
+  <Access Scope="LiteralConstant" UId="76">
+    <Constant UId="77">
+      <ConstantValue UId="79">111</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=":" UId="80" />
+  <NewLine UId="81" />
+  <Blank Num="8" UId="82" />
+  <Access Scope="LocalVariable" UId="83">
+    <Symbol UId="84">
+      <Component Name="StepToString" UId="85" />
+    </Symbol>
+  </Access>
+  <Blank UId="86" />
+  <Token Text=":=" UId="87" />
+  <Blank UId="88" />
+  <Access Scope="LiteralConstant" UId="89">
+    <Constant UId="90">
+      <ConstantValue UId="92">'Axis Homed / Controller Ready / QR Ready'</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="93" />
+  <NewLine UId="94" />
+  <Blank Num="4" UId="95" />
+  <Access Scope="LiteralConstant" UId="96">
+    <Constant UId="97">
+      <ConstantValue UId="99">121</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=":" UId="100" />
+  <NewLine UId="101" />
+  <Blank Num="8" UId="102" />
+  <Access Scope="LocalVariable" UId="103">
+    <Symbol UId="104">
+      <Component Name="StepToString" UId="105" />
+    </Symbol>
+  </Access>
+  <Blank UId="106" />
+  <Token Text=":=" UId="107" />
+  <Blank UId="108" />
+  <Access Scope="LiteralConstant" UId="109">
+    <Constant UId="110">
+      <ConstantValue UId="112">'Axis HomePos Check / Gauge R&amp;R Count Reset'</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="113" />
+  <NewLine UId="114" />
+  <Blank Num="4" UId="115" />
+  <Access Scope="LiteralConstant" UId="116">
+    <Constant UId="117">
+      <ConstantValue UId="119">131</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=":" UId="120" />
+  <NewLine UId="121" />
+  <Blank Num="8" UId="122" />
+  <Access Scope="LocalVariable" UId="123">
+    <Symbol UId="124">
+      <Component Name="StepToString" UId="125" />
+    </Symbol>
+  </Access>
+  <Blank UId="126" />
+  <Token Text=":=" UId="127" />
+  <Blank UId="128" />
+  <Access Scope="LiteralConstant" UId="129">
+    <Constant UId="130">
+      <ConstantValue UId="132">'Vision Pusher Support WorkPos Check'</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="133" />
+  <NewLine UId="134" />
+  <Blank Num="4" UId="135" />
+  <Access Scope="LiteralConstant" UId="136">
+    <Constant UId="137">
+      <ConstantValue UId="139">191</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=":" UId="140" />
+  <NewLine UId="141" />
+  <Blank Num="8" UId="142" />
+  <Access Scope="LocalVariable" UId="143">
+    <Symbol UId="144">
+      <Component Name="StepToString" UId="145" />
+    </Symbol>
+  </Access>
+  <Blank UId="146" />
+  <Token Text=":=" UId="147" />
+  <Blank UId="148" />
+  <Access Scope="LiteralConstant" UId="149">
+    <Constant UId="150">
+      <ConstantValue UId="152">'JOB[1] Step End'</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="153" />
+  <NewLine Num="2" UId="154" />
+  <Blank Num="4" UId="155" />
+  <Access Scope="LiteralConstant" UId="156">
+    <Constant UId="157">
+      <ConstantValue UId="159">201</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=":" UId="160" />
+  <NewLine UId="161" />
+  <Blank Num="8" UId="162" />
+  <Access Scope="LocalVariable" UId="163">
+    <Symbol UId="164">
+      <Component Name="StepToString" UId="165" />
+    </Symbol>
+  </Access>
+  <Blank UId="166" />
+  <Token Text=":=" UId="167" />
+  <Blank UId="168" />
+  <Access Scope="LiteralConstant" UId="169">
+    <Constant UId="170">
+      <ConstantValue UId="172">'JOB[2] Condition'</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="173" />
+  <NewLine UId="174" />
+  <Blank Num="4" UId="175" />
+  <Access Scope="LiteralConstant" UId="176">
+    <Constant UId="177">
+      <ConstantValue UId="179">211</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=":" UId="180" />
+  <NewLine UId="181" />
+  <Blank Num="8" UId="182" />
+  <Access Scope="LocalVariable" UId="183">
+    <Symbol UId="184">
+      <Component Name="StepToString" UId="185" />
+    </Symbol>
+  </Access>
+  <Blank UId="186" />
+  <Token Text=":=" UId="187" />
+  <Blank UId="188" />
+  <Access Scope="LiteralConstant" UId="189">
+    <Constant UId="190">
+      <ConstantValue UId="192">'Axis WorkPos / Vision Trigger / QR Trigger'</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="193" />
+  <NewLine UId="194" />
+  <Blank Num="4" UId="195" />
+  <Access Scope="LiteralConstant" UId="196">
+    <Constant UId="197">
+      <ConstantValue UId="199">291</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=":" UId="200" />
+  <NewLine UId="201" />
+  <Blank Num="8" UId="202" />
+  <Access Scope="LocalVariable" UId="203">
+    <Symbol UId="204">
+      <Component Name="StepToString" UId="205" />
+    </Symbol>
+  </Access>
+  <Blank UId="206" />
+  <Token Text=":=" UId="207" />
+  <Blank UId="208" />
+  <Access Scope="LiteralConstant" UId="209">
+    <Constant UId="210">
+      <ConstantValue UId="212">'JOB[2] Step End'</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="213" />
+  <NewLine Num="2" UId="214" />
+  <Blank Num="4" UId="215" />
+  <Access Scope="LiteralConstant" UId="216">
+    <Constant UId="217">
+      <ConstantValue UId="219">301</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=":" UId="220" />
+  <NewLine UId="221" />
+  <Blank Num="8" UId="222" />
+  <Access Scope="LocalVariable" UId="223">
+    <Symbol UId="224">
+      <Component Name="StepToString" UId="225" />
+    </Symbol>
+  </Access>
+  <Blank UId="226" />
+  <Token Text=":=" UId="227" />
+  <Blank UId="228" />
+  <Access Scope="LiteralConstant" UId="229">
+    <Constant UId="230">
+      <ConstantValue UId="232">'JOB[3] Condition'</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="233" />
+  <NewLine UId="234" />
+  <Blank Num="4" UId="235" />
+  <Access Scope="LiteralConstant" UId="236">
+    <Constant UId="237">
+      <ConstantValue UId="239">311</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=":" UId="240" />
+  <NewLine UId="241" />
+  <Blank Num="8" UId="242" />
+  <Access Scope="LocalVariable" UId="243">
+    <Symbol UId="244">
+      <Component Name="StepToString" UId="245" />
+    </Symbol>
+  </Access>
+  <Blank UId="246" />
+  <Token Text=":=" UId="247" />
+  <Blank UId="248" />
+  <Access Scope="LiteralConstant" UId="249">
+    <Constant UId="250">
+      <ConstantValue UId="252">'Vision Unit AxisZ HomePos Command'</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="253" />
+  <NewLine UId="254" />
+  <Blank Num="4" UId="255" />
+  <Access Scope="LiteralConstant" UId="256">
+    <Constant UId="257">
+      <ConstantValue UId="259">391</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=":" UId="260" />
+  <NewLine UId="261" />
+  <Blank Num="8" UId="262" />
+  <Access Scope="LocalVariable" UId="263">
+    <Symbol UId="264">
+      <Component Name="StepToString" UId="265" />
+    </Symbol>
+  </Access>
+  <Blank UId="266" />
+  <Token Text=":=" UId="267" />
+  <Blank UId="268" />
+  <Access Scope="LiteralConstant" UId="269">
+    <Constant UId="270">
+      <ConstantValue UId="272">'JOB[3] Step End'</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="273" />
+  <NewLine Num="2" UId="274" />
+  <Blank Num="4" UId="275" />
+  <Access Scope="LiteralConstant" UId="276">
+    <Constant UId="277">
+      <ConstantValue UId="279">901</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=":" UId="280" />
+  <NewLine UId="281" />
+  <Blank Num="8" UId="282" />
+  <Access Scope="LocalVariable" UId="283">
+    <Symbol UId="284">
+      <Component Name="StepToString" UId="285" />
+    </Symbol>
+  </Access>
+  <Blank UId="286" />
+  <Token Text=":=" UId="287" />
+  <Blank UId="288" />
+  <Access Scope="LiteralConstant" UId="289">
+    <Constant UId="290">
+      <ConstantValue UId="292">'Immediate Stop'</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="293" />
+  <NewLine Num="2" UId="294" />
+  <Blank Num="4" UId="295" />
+  <Access Scope="LiteralConstant" UId="296">
+    <Constant UId="297">
+      <ConstantValue UId="299">1001</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=":" UId="300" />
+  <NewLine UId="301" />
+  <Blank Num="8" UId="302" />
+  <Access Scope="LocalVariable" UId="303">
+    <Symbol UId="304">
+      <Component Name="StepToString" UId="305" />
+    </Symbol>
+  </Access>
+  <Blank UId="306" />
+  <Token Text=":=" UId="307" />
+  <Blank UId="308" />
+  <Access Scope="LiteralConstant" UId="309">
+    <Constant UId="310">
+      <ConstantValue UId="312">'JOB[10] Condition'</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="313" />
+  <NewLine UId="314" />
+  <Blank Num="4" UId="315" />
+  <Access Scope="LiteralConstant" UId="316">
+    <Constant UId="317">
+      <ConstantValue UId="319">1011</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=":" UId="320" />
+  <NewLine UId="321" />
+  <Blank Num="8" UId="322" />
+  <Access Scope="LocalVariable" UId="323">
+    <Symbol UId="324">
+      <Component Name="StepToString" UId="325" />
+    </Symbol>
+  </Access>
+  <Blank UId="326" />
+  <Token Text=":=" UId="327" />
+  <Blank UId="328" />
+  <Access Scope="LiteralConstant" UId="329">
+    <Constant UId="330">
+      <ConstantValue UId="332">'Vision Unit AxisZ WorkPos Command'</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="333" />
+  <NewLine UId="334" />
+  <Blank Num="4" UId="335" />
+  <Access Scope="LiteralConstant" UId="336">
+    <Constant UId="337">
+      <ConstantValue UId="339">1021</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=":" UId="340" />
+  <NewLine UId="341" />
+  <Blank Num="8" UId="342" />
+  <Access Scope="LocalVariable" UId="343">
+    <Symbol UId="344">
+      <Component Name="StepToString" UId="345" />
+    </Symbol>
+  </Access>
+  <Blank UId="346" />
+  <Token Text=":=" UId="347" />
+  <Blank UId="348" />
+  <Access Scope="LiteralConstant" UId="349">
+    <Constant UId="350">
+      <ConstantValue UId="352">'Vision Controller Trigger &amp; QR Reader Trigger'</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="353" />
+  <NewLine UId="354" />
+  <Blank Num="4" UId="355" />
+  <Access Scope="LiteralConstant" UId="356">
+    <Constant UId="357">
+      <ConstantValue UId="359">1031</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=":" UId="360" />
+  <NewLine UId="361" />
+  <Blank Num="8" UId="362" />
+  <Access Scope="LocalVariable" UId="363">
+    <Symbol UId="364">
+      <Component Name="StepToString" UId="365" />
+    </Symbol>
+  </Access>
+  <Blank UId="366" />
+  <Token Text=":=" UId="367" />
+  <Blank UId="368" />
+  <Access Scope="LiteralConstant" UId="369">
+    <Constant UId="370">
+      <ConstantValue UId="372">'Vision Unit AxisZ HomePos Command'</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="373" />
+  <NewLine UId="374" />
+  <Blank Num="4" UId="375" />
+  <Access Scope="LiteralConstant" UId="376">
+    <Constant UId="377">
+      <ConstantValue UId="379">1091</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=":" UId="380" />
+  <NewLine UId="381" />
+  <Blank Num="8" UId="382" />
+  <Access Scope="LocalVariable" UId="383">
+    <Symbol UId="384">
+      <Component Name="StepToString" UId="385" />
+    </Symbol>
+  </Access>
+  <Blank UId="386" />
+  <Token Text=":=" UId="387" />
+  <Blank UId="388" />
+  <Access Scope="LiteralConstant" UId="389">
+    <Constant UId="390">
+      <ConstantValue UId="392">'JOB[10] Step End'</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="393" />
+  <NewLine Num="2" UId="394" />
+  <Blank Num="4" UId="395" />
+  <Access Scope="LiteralConstant" UId="396">
+    <Constant UId="397">
+      <ConstantValue UId="399">9001</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=":" UId="400" />
+  <NewLine UId="401" />
+  <Blank Num="8" UId="402" />
+  <Access Scope="LocalVariable" UId="403">
+    <Symbol UId="404">
+      <Component Name="StepToString" UId="405" />
+    </Symbol>
+  </Access>
+  <Blank UId="406" />
+  <Token Text=":=" UId="407" />
+  <Blank UId="408" />
+  <Access Scope="LiteralConstant" UId="409">
+    <Constant UId="410">
+      <ConstantValue UId="412">'Immediate Stop'</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="413" />
+  <NewLine Num="2" UId="414" />
+  <Blank Num="4" UId="415" />
+  <Token Text="ELSE" UId="416" />
+  <NewLine UId="417" />
+  <Blank Num="8" UId="418" />
+  <Access Scope="LocalVariable" UId="419">
+    <Symbol UId="420">
+      <Component Name="StepToString" UId="421" />
+    </Symbol>
+  </Access>
+  <Blank UId="422" />
+  <Token Text=":=" UId="423" />
+  <Blank UId="424" />
+  <Access Scope="LiteralConstant" UId="425">
+    <Constant UId="426">
+      <ConstantValue UId="428">'N/A'</ConstantValue>
+    </Constant>
+  </Access>
+  <Token Text=";" UId="429" />
+  <NewLine Num="2" UId="430" />
+  <Token Text="END_CASE" UId="431" />
+  <Token Text=";" UId="432" />
+</StructuredText></NetworkSource>
+          <ProgrammingLanguage>SCL</ProgrammingLanguage>
+        </AttributeList>
+        <ObjectList>
+          <MultilingualText ID="B" CompositionName="Comment">
+            <ObjectList>
+              <MultilingualTextItem ID="C" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="D" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-GB</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="E" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="F" CompositionName="Items">
+                <AttributeList>
+                  <Culture>es-ES</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="10" CompositionName="Items">
+                <AttributeList>
+                  <Culture>fr-FR</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="11" CompositionName="Items">
+                <AttributeList>
+                  <Culture>it-IT</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="12" CompositionName="Items">
+                <AttributeList>
+                  <Culture>ko-KR</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="13" CompositionName="Items">
+                <AttributeList>
+                  <Culture>zh-CN</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+          <MultilingualText ID="14" CompositionName="Title">
+            <ObjectList>
+              <MultilingualTextItem ID="15" CompositionName="Items">
+                <AttributeList>
+                  <Culture>de-DE</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="16" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-GB</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="17" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="18" CompositionName="Items">
+                <AttributeList>
+                  <Culture>es-ES</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="19" CompositionName="Items">
+                <AttributeList>
+                  <Culture>fr-FR</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="1A" CompositionName="Items">
+                <AttributeList>
+                  <Culture>it-IT</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="1B" CompositionName="Items">
+                <AttributeList>
+                  <Culture>ko-KR</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="1C" CompositionName="Items">
+                <AttributeList>
+                  <Culture>zh-CN</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+        </ObjectList>
+      </SW.Blocks.CompileUnit>
+      <MultilingualText ID="1D" CompositionName="Title">
+        <ObjectList>
+          <MultilingualTextItem ID="1E" CompositionName="Items">
+            <AttributeList>
+              <Culture>de-DE</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="1F" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-GB</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="20" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-US</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="21" CompositionName="Items">
+            <AttributeList>
+              <Culture>es-ES</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="22" CompositionName="Items">
+            <AttributeList>
+              <Culture>fr-FR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="23" CompositionName="Items">
+            <AttributeList>
+              <Culture>it-IT</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="24" CompositionName="Items">
+            <AttributeList>
+              <Culture>ko-KR</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="25" CompositionName="Items">
+            <AttributeList>
+              <Culture>zh-CN</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+        </ObjectList>
+      </MultilingualText>
+    </ObjectList>
+  </SW.Blocks.FC>
+</Document>
